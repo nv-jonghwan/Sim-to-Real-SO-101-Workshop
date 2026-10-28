@@ -457,6 +457,14 @@ indent on shell continuations. Omit args with working defaults
 
 ## AI Days Seoul student course support
 
+Student requests may be ordinary Korean or English, without a skill mention.
+Choose and read the matching student skill before answering or running an exercise;
+do not require the student to type a skill name. For a single-topic request, use
+the specialist listed in `skills/so101-dli/SKILL.md`; use course Q&A for broad or
+cross-lesson questions. Read only relevant skills and lesson sections. If skill
+discovery is unavailable but files are accessible, read the canonical `skills/`
+file directly. If file access is missing, explain the missing project connection.
+
 For course navigation or the next exercise, use `skills/so101-dli/SKILL.md`.
 For questions across the whole course, use `skills/so101-dli-qa/SKILL.md` and read
 the relevant lesson before answering. Use `docs/seoul-workshop-schedule.md` for

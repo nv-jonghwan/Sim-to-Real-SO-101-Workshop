@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-28 20:45+0900\n"
+"POT-Creation-Date: 2026-10-28 21:11+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ko\n"
@@ -42,66 +42,214 @@ msgstr ""
 "답하고, 실제 장비 실습은 강사의 진행 순서와 station 준비 상태에 맞춰 수행합니다."
 
 #: docs/01-codex.md:7
-msgid "Open the workshop in Codex"
-msgstr "Codex에서 수업 저장소 열기"
+msgid "Choose your starting point"
+msgstr "사용 환경 선택하기"
 
 #: docs/01-codex.md:9
 msgid ""
-"Use the prepared Codex installation on your RTX Laptop. If it is not installed, follow the "
-"[official Codex CLI guide](https://learn.chatgpt.com/docs/codex/cli). Sign in with the account "
-"provided or approved for the course."
+"The same nine course skills support both the ChatGPT desktop app and Codex CLI. Open the workshop"
+" folder once, then ask naturally. Skill names are optional; the agent selects relevant "
+"instructions from the question and available skills."
 msgstr ""
-"RTX Laptop에 준비된 Codex를 사용합니다. 설치되어 있지 않으면 [공식 Codex CLI "
-"안내](https://learn.chatgpt.com/docs/codex/cli)를 따릅니다. 수업에서 안내한 계정으로 로그인합니다."
+"같은 수업용 스킬 9개를 ChatGPT desktop app과 Codex CLI에서 활용합니다. 수업 폴더를 연결한 뒤에는 평소처럼 질문하면 됩니다. 스킬 이름은 생략해도 "
+"되며, agent가 질문과 사용 가능한 스킬을 바탕으로 관련 지침을 선택합니다."
 
-#: docs/01-codex.md:11
-msgid "In a Host terminal, enter the cloned workshop repository and check its branch."
-msgstr "Host terminal에서 clone한 수업 저장소로 이동하고 branch를 확인합니다."
+#: docs/01-codex.md
+msgid "Interface"
+msgstr "화면"
 
-#: docs/01-codex.md:20
+#: docs/01-codex.md
+msgid "Start here"
+msgstr "시작 방법"
+
+#: docs/01-codex.md
+msgid "Optional skill selection"
+msgstr "스킬 직접 선택 — 선택 사항"
+
+#: docs/01-codex.md
+msgid "ChatGPT app · Codex"
+msgstr "ChatGPT app · Codex"
+
+#: docs/01-codex.md
+msgid "Open the local workshop project"
+msgstr "로컬 수업 project 열기"
+
+#: docs/01-codex.md
+msgid "`$so101-dli`"
+msgstr "`$so101-dli`"
+
+#: docs/01-codex.md
+msgid "Codex CLI"
+msgstr "Codex CLI"
+
+#: docs/01-codex.md
+msgid "Run `codex` in the workshop directory"
+msgstr "수업 폴더에서 `codex` 실행"
+
+#: docs/01-codex.md
+msgid "`/skills` or `$so101-dli`"
+msgstr "`/skills` 또는 `$so101-dli`"
+
+#: docs/01-codex.md
+msgid "ChatGPT app · Work"
+msgstr "ChatGPT app · Work"
+
+#: docs/01-codex.md
+msgid "Use a project with local file access when available"
+msgstr "로컬 파일 접근이 가능한 project 사용"
+
+#: docs/01-codex.md
+msgid "`@so101-dli` when listed"
+msgstr "목록에 표시되면 `@so101-dli`"
+
+#: docs/01-codex.md:17
 msgid ""
-"The branch should be `aidayseoul2026`. On the first run, complete the sign-in prompts. In the "
-"Codex desktop app or IDE extension, open this same repository folder. The workshop container and "
-"Codex must refer to the same checkout."
+"The mention syntax follows the [official Skills & Plugins guide](https://learn.chatgpt.com/docs"
+"/skills-and-plugins). Natural-language questions work without a mention when the relevant skills "
+"are available."
 msgstr ""
-"Branch는 `aidayseoul2026`이어야 합니다. 처음 실행할 때 로그인 안내를 완료합니다. Codex desktop app이나 IDE extension에서는 같은 "
-"저장소 폴더를 엽니다. Workshop container와 Codex가 같은 checkout을 사용해야 합니다."
+"직접 선택할 때의 표기는 [공식 Skills & Plugins 안내](https://learn.chatgpt.com/docs/skills-and-plugins)를 따릅니다. "
+"관련 스킬이 준비되어 있으면 이름을 지정하지 않고 자연어로 질문할 수 있습니다."
 
-#: docs/01-codex.md:22
+#: docs/01-codex.md:19
+msgid "Option A: ChatGPT app"
+msgstr "ChatGPT app에서 시작하기"
+
+#: docs/01-codex.md:21
+msgid "Codex in the desktop app"
+msgstr "Desktop app의 Codex 사용하기"
+
+#: docs/01-codex.md:23
+msgid "Sign in to the prepared ChatGPT desktop app and select **Codex** in the product selector."
+msgstr "준비된 ChatGPT desktop app에 로그인하고 제품 선택 메뉴에서 **Codex**를 선택합니다."
+
+#: docs/01-codex.md:25
+msgid ""
+"Open a local project for `~/Sim-to-Real-SO-101-Workshop`. In an existing project, use **Edit "
+"project → Add folder**; make this repository the primary folder with **Make primary**. New chats "
+"use it to find the course files and skills."
+msgstr ""
+"`~/Sim-to-Real-SO-101-Workshop`을 로컬 project로 엽니다. 기존 project에서는 **Edit project → Add folder**로 "
+"추가하고, **Make primary**로 수업 저장소를 기본 폴더로 지정합니다. 새 채팅이 이 폴더에서 교재와 스킬을 찾습니다."
+
+#: docs/01-codex.md:27
+msgid ""
+"For this workshop, choose **Work in → This computer / Local** and use the prepared checkout on "
+"branch `aidayseoul2026`. This keeps the chat aligned with the folder mounted in the workshop "
+"Container."
+msgstr ""
+"이번 수업에서는 **Work in → This computer / Local**을 선택하고 `aidayseoul2026` branch의 준비된 checkout을 사용합니다. "
+"채팅과 Workshop Container가 같은 수업 폴더를 사용하도록 맞춥니다."
+
+#: docs/01-codex.md:29
+msgid ""
+"Open **Skills** in the sidebar to check the course skills, then start a chat in this project. Ask"
+" the connection-check question below once, followed by your lesson question."
+msgstr "Sidebar의 **Skills**에서 수업용 스킬을 확인하고 이 project 안에서 채팅을 시작합니다. 아래 연결 확인 질문을 한 번 입력한 뒤 교재에 대해 질문합니다."
+
+#: docs/01-codex.md:31
+msgid ""
+"Folder selection is described in [Projects and chats](https://learn.chatgpt.com/docs/projects); "
+"execution choices are described in [Codex "
+"environments](https://learn.chatgpt.com/docs/environments/modes). A cloud environment needs its "
+"own files and tools; it does not automatically receive the laptop’s USB devices, running "
+"Container or GPU."
+msgstr ""
+"폴더 연결은 [Projects and chats](https://learn.chatgpt.com/docs/projects), 실행 위치는 [Codex "
+"environments](https://learn.chatgpt.com/docs/environments/modes)를 참고하세요. Cloud 환경에는 사용할 파일과 도구가 "
+"따로 준비되어야 하며, Laptop의 USB 장치·실행 중인 Container·GPU가 자동으로 연결되지는 않습니다."
+
+#: docs/01-codex.md:40
+msgid "ChatGPT Work in the app"
+msgstr "App의 ChatGPT Work 사용하기"
+
+#: docs/01-codex.md:42
+msgid ""
+"If you prefer the ChatGPT interface, select **ChatGPT → Work** and use a project that can access "
+"the local workshop folder. Availability depends on the account and workspace. Start with the same"
+" connection check. See [Use ChatGPT](https://learn.chatgpt.com/docs/use-chatgpt)."
+msgstr ""
+"ChatGPT 화면을 사용하려면 **ChatGPT → Work**를 선택하고 로컬 수업 폴더에 접근할 수 있는 project를 사용합니다. 지원 여부는 계정과 "
+"workspace 설정에 따라 다릅니다. 같은 연결 확인 질문으로 시작하세요. [Use ChatGPT](https://learn.chatgpt.com/docs/use-"
+"chatgpt)에서 자세한 내용을 확인할 수 있습니다."
+
+#: docs/01-codex.md:44
+msgid ""
+"Ask naturally after the files are accessible. If `so101-dli` is listed in the skill selector, you"
+" can also select it with `@`. If it is missing, ask the agent to read the repository’s skill file"
+" directly, or open the same folder in Codex."
+msgstr ""
+"파일에 접근할 수 있으면 자연어로 질문합니다. 스킬 선택 목록에 `so101-dli`가 표시되면 `@`로 직접 선택할 수도 있습니다. 보이지 않으면 저장소의 스킬 파일을 직접"
+" 읽어 달라고 요청하거나, 같은 폴더를 Codex에서 엽니다."
+
+#: docs/01-codex.md:46
+msgid ""
+"For ordinary web/mobile Chat without local folder access, attach the relevant lesson and ask "
+"questions about it. A GitHub link alone does not install these repository skills or connect the "
+"classroom robot. This course distributes local skill folders; it has no separately published "
+"ChatGPT plugin."
+msgstr ""
+"로컬 폴더 접근이 없는 일반 web/mobile Chat에서는 관련 교재 파일을 첨부해 Q&A를 진행합니다. GitHub 링크만으로 저장소 스킬이 설치되거나 교실의 로봇이 "
+"연결되지는 않습니다. 이 과정은 로컬 스킬 폴더를 제공하며, 별도로 게시된 ChatGPT plugin은 없습니다."
+
+#: docs/01-codex.md:48
+msgid "Option B: Codex CLI"
+msgstr "Codex CLI에서 시작하기"
+
+#: docs/01-codex.md:50
+msgid ""
+"Use the prepared CLI, or follow the [official Codex CLI "
+"guide](https://learn.chatgpt.com/docs/codex/cli) if installation is needed. In a Host terminal, "
+"enter the workshop folder and start Codex."
+msgstr ""
+"준비된 CLI를 사용합니다. 설치가 필요하면 [공식 Codex CLI 안내](https://learn.chatgpt.com/docs/codex/cli)를 따릅니다. Host "
+"terminal에서 수업 폴더로 이동하고 Codex를 시작합니다."
+
+#: docs/01-codex.md:59
+msgid ""
+"Confirm branch `aidayseoul2026` and complete sign-in if prompted. Enter your question at the "
+"Codex prompt. For an optional explicit choice, use `/skills` or `$so101-dli`."
+msgstr ""
+"Branch가 `aidayseoul2026`인지 확인하고, 로그인 안내가 나오면 완료합니다. Codex 입력창에 질문을 입력합니다. 스킬을 직접 선택하려면 `/skills` "
+"또는 `$so101-dli`를 사용합니다."
+
+#: docs/01-codex.md:61
 msgid "Set up the course skills"
 msgstr "수업용 스킬 설정하기"
 
-#: docs/01-codex.md:24
+#: docs/01-codex.md:63
 msgid ""
-"The instructions live in `skills/`. This repository also includes `.agents/skills/` links to "
-"those student skills, so Codex can discover them when opened in this repository. No copy into a "
-"personal skill folder is required."
+"The repository stores the instructions in `skills/` and links the nine student skills under "
+"`.agents/skills/`. Codex discovers these project skills from the checkout. Keep the folder "
+"structure intact so each skill can read its lesson references. No personal-folder copy is needed."
+" See the [official skills guide](https://learn.chatgpt.com/docs/build-skills)."
 msgstr ""
-"스킬 원문은 `skills/`에 있습니다. 저장소에는 학생용 스킬을 가리키는 `.agents/skills/` 링크도 포함되어 있어 이 폴더에서 Codex를 열면 스킬을 찾을 "
-"수 있습니다. 개인 스킬 폴더로 따로 복사할 필요는 없습니다."
+"스킬 원문은 `skills/`에 있고, `.agents/skills/`에서 학생용 스킬 9개로 연결합니다. Codex는 이 checkout에서 project 스킬을 찾습니다."
+" 각 스킬이 교재 참조를 읽을 수 있도록 폴더 구조를 유지하세요. 개인 폴더로 따로 복사할 필요는 없습니다. [공식 스킬 "
+"안내](https://learn.chatgpt.com/docs/build-skills)를 참고하세요."
 
-#: docs/01-codex.md:30
+#: docs/01-codex.md:65
 msgid ""
-"In Codex CLI, enter `/skills` or type `$` to find a skill. You can request one explicitly with "
-"`$so101-dli`; Codex can also select an appropriate skill from a natural-language question. These "
-"discovery locations and invocation methods follow the [official skills "
-"guide](https://learn.chatgpt.com/docs/build-skills)."
+"Automatic selection is enabled by default. The repository’s `AGENTS.md` directs ordinary student "
+"questions to the relevant course skill; the skill then reads the lesson before answering. A "
+"single-topic request uses its specialist, while a comparison across lessons uses course Q&A."
 msgstr ""
-"Codex CLI 입력창에서 `/skills`를 실행하거나 `$`를 입력해 스킬을 찾습니다. `$so101-dli`로 직접 지정할 수 있고, 자연어 질문에 맞춰 Codex가 "
-"적절한 스킬을 선택할 수도 있습니다. 설정 경로와 호출 방법은 [공식 스킬 안내](https://learn.chatgpt.com/docs/build-skills)를 따릅니다."
+"자동 선택은 기본으로 허용되어 있습니다. 저장소의 `AGENTS.md`는 학생의 일반 질문에 맞는 수업 스킬을 선택하도록 안내하고, 선택된 스킬은 교재를 읽은 뒤 답합니다. "
+"한 주제의 요청에는 해당 전문 스킬을, 여러 교재를 연결하는 질문에는 전체 과정 Q&A 스킬을 사용합니다."
 
-#: docs/01-codex.md:32
+#: docs/01-codex.md:67
 msgid ""
-"If a skill does not appear, check that the repository root is open and that the links resolve to "
-"a `SKILL.md` file, then restart Codex. You can also ask Codex to read `skills/so101-dli/SKILL.md`"
-" directly. The repository’s `AGENTS.md` connects course requests to these instructions."
+"If a skill is missing, check the primary folder and `.agents/skills/` links, then reopen the chat"
+" or restart the app/CLI. Use the connection-check prompt to confirm access. Selecting a skill "
+"does not grant additional file access or authorize robot motion; those depend on the current "
+"environment and request."
 msgstr ""
-"스킬이 보이지 않으면 저장소 root를 열었는지, 링크가 `SKILL.md` 파일로 연결되는지 확인한 뒤 Codex를 다시 시작합니다. "
-"`skills/so101-dli/SKILL.md`를 직접 읽어 달라고 요청할 수도 있습니다. 저장소의 `AGENTS.md`는 과정 요청을 이 스킬로 연결합니다."
+"스킬이 보이지 않으면 기본 폴더와 `.agents/skills/` 링크를 확인하고 채팅을 다시 열거나 app/CLI를 다시 시작합니다. 연결 확인 질문으로 파일 접근을 "
+"확인하세요. 스킬 선택만으로 추가 파일 접근이나 로봇 동작이 허용되는 것은 아니며, 현재 환경과 요청 범위에 따라 진행합니다."
 
-#: docs/01-codex.md:34
-msgid "Choose a skill for your question or exercise"
-msgstr "질문과 실습에 맞는 스킬 선택하기"
+#: docs/01-codex.md:69
+msgid "What the course skills cover"
+msgstr "스킬이 지원하는 내용"
 
 #: docs/01-codex.md
 msgid "Skill"
@@ -183,7 +331,7 @@ msgstr "`so101-dli-sysid`"
 msgid "Actuation gap, System Identification and AnchorBench"
 msgstr "Actuation gap, System Identification과 AnchorBench"
 
-#: docs/01-codex.md:48
+#: docs/01-codex.md:83
 msgid ""
 "The skills read the current lesson Markdown, Korean catalogs, interactive explanations and "
 "relevant code. Ask for a source section when you want to relate an answer back to the lesson."
@@ -191,15 +339,15 @@ msgstr ""
 "스킬은 현재 교재의 Markdown, 한국어 catalog, interactive 설명과 관련 코드를 읽습니다. 답변이 교재의 어느 내용인지 확인하고 싶으면 해당 절도 함께 "
 "알려 달라고 요청하세요."
 
-#: docs/01-codex.md:50
+#: docs/01-codex.md:85
 msgid "First example: ask for today’s schedule"
 msgstr "첫 번째 예제: 오늘의 일정 묻기"
 
-#: docs/01-codex.md:52
-msgid "Enter this short question in Codex."
-msgstr "Codex 입력창에 다음과 같이 질문합니다."
+#: docs/01-codex.md:87
+msgid "After opening the workshop folder in the app or CLI, enter this question without a skill name."
+msgstr "App 또는 CLI에서 수업 폴더를 연 뒤, 스킬 이름 없이 다음과 같이 질문합니다."
 
-#: docs/01-codex.md:58
+#: docs/01-codex.md:93
 msgid ""
 "Codex should read `docs/seoul-workshop-schedule.md` and return a table with the time, topic, "
 "duration and instructor. It should include arrival, breaks and lunch, and state that all times "
@@ -208,11 +356,21 @@ msgstr ""
 "Codex가 `docs/seoul-workshop-schedule.md`를 읽고 시간·주제·소요 시간·진행자를 표로 제시하는지 확인합니다. 입장·휴식·점심이 포함되고 모든 "
 "시간이 KST 기준인지도 확인합니다. 답변을 [오늘의 일정](seoul-workshop-schedule.md)과 비교하세요."
 
-#: docs/01-codex.md:60
-msgid "To request the same workflow explicitly, use:"
-msgstr "같은 작업에 스킬을 직접 지정하려면 다음과 같이 입력합니다."
+#: docs/01-codex.md:95
+msgid "Optional: choose a skill explicitly"
+msgstr "선택 사항: 스킬 직접 지정하기"
 
-#: docs/01-codex.md:66
+#: docs/01-codex.md:97
+msgid ""
+"Use this only when you want to choose the skill yourself. In the ChatGPT app’s Codex view or "
+"Codex CLI:"
+msgstr "직접 스킬을 고르고 싶을 때만 사용합니다. ChatGPT app의 Codex 화면 또는 Codex CLI에서는 다음과 같이 입력합니다."
+
+#: docs/01-codex.md:103
+msgid "In ChatGPT Work, select the available skill with `@`, then ask:"
+msgstr "ChatGPT Work에서는 사용 가능한 스킬을 `@`로 선택한 뒤 질문합니다."
+
+#: docs/01-codex.md:109
 msgid ""
 "Check that teaching begins at 09:00, lunch is 12:45–13:45 and the conclusion ends at 17:15. Use "
 "each detailed session row for its instructor. This exercise reads documents and does not need to "
@@ -221,11 +379,11 @@ msgstr ""
 "수업 시작이 09:00, 점심이 12:45–13:45, 마무리 종료가 17:15인지 확인합니다. 세션별 진행자는 상세 일정의 각 행을 기준으로 확인합니다. 이 예제는 문서를 "
 "읽는 작업이므로 robot이나 simulation을 시작할 필요가 없습니다."
 
-#: docs/01-codex.md:68
+#: docs/01-codex.md:111
 msgid "Verified schedule example"
 msgstr "확인한 일정 답변 예시"
 
-#: docs/01-codex.md:70
+#: docs/01-codex.md:113
 msgid ""
 "A read-only Codex run with the question above produced the 22-row schedule below. Times, "
 "durations and instructors were checked against the lesson. Topic labels are aligned with the "
@@ -470,11 +628,17 @@ msgstr "17:05–17:15"
 msgid "Conclusion"
 msgstr "Conclusion"
 
-#: docs/01-codex.md:97
+#: docs/01-codex.md:140
 msgid "Try course questions and hands-on requests"
 msgstr "과정 Q&A와 실습 요청 예시"
 
-#: docs/01-codex.md:117
+#: docs/01-codex.md:142
+msgid ""
+"These examples need no skill names. The agent uses the relevant available course skill and "
+"lesson. You can ask which skill and source section it used."
+msgstr "아래 예시는 스킬 이름 없이 입력합니다. Agent가 관련 수업 스킬과 교재를 찾아 사용합니다. 어떤 스킬과 교재의 어느 절을 사용했는지 물어볼 수도 있습니다."
+
+#: docs/01-codex.md:162
 msgid ""
 "For an error, provide the command, whether it ran on the Host or in the Container, and the "
 "relevant error text. Codex can connect it to [Troubleshooting](troubleshooting.md). Before "

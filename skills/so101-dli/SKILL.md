@@ -11,6 +11,13 @@ Start with the current checkout, [course contents](../../docs/index.md),
 Read the requested lesson before answering or executing; do not substitute the
 public latest course or remembered model IDs for this checkout.
 
+Use the table below to route ordinary Korean or English requests without
+requiring a skill mention. For one lesson, read the relevant specialist; for
+cross-lesson explanations, read `so101-dli-qa`. Read only the material needed for
+the request. Automatic selection depends on skill/file availability in the
+current app or CLI project; if discovery is missing, use the canonical skill
+file when accessible. Do not ask students to install a personal copy by default.
+
 ## Schedule and course navigation
 
 For “오늘의 일정이 뭐야?” or a similar agenda question, read the schedule file

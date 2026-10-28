@@ -4,11 +4,50 @@ Use Codex throughout today’s workshop to understand the course, find the right
 
 Ask in Korean and keep technical names such as Physical AI, GR00T, Co-Training and HG-DAgger in English. A course question can be answered from the documents; physical exercises follow the instructor’s sequence and the readiness of your station.
 
-## Open the workshop in Codex
+## Choose your starting point
 
-Use the prepared Codex installation on your RTX Laptop. If it is not installed, follow the [official Codex CLI guide](https://learn.chatgpt.com/docs/codex/cli). Sign in with the account provided or approved for the course.
+The same nine course skills support both the ChatGPT desktop app and Codex CLI. Open the workshop folder once, then ask naturally. Skill names are optional; the agent selects relevant instructions from the question and available skills.
 
-In a Host terminal, enter the cloned workshop repository and check its branch.
+| Interface | Start here | Optional skill selection |
+|---|---|---|
+| ChatGPT app · Codex | Open the local workshop project | `$so101-dli` |
+| Codex CLI | Run `codex` in the workshop directory | `/skills` or `$so101-dli` |
+| ChatGPT app · Work | Use a project with local file access when available | `@so101-dli` when listed |
+
+The mention syntax follows the [official Skills & Plugins guide](https://learn.chatgpt.com/docs/skills-and-plugins). Natural-language questions work without a mention when the relevant skills are available.
+
+## Option A: ChatGPT app
+
+### Codex in the desktop app
+
+1. Sign in to the prepared ChatGPT desktop app and select **Codex** in the product selector.
+
+2. Open a local project for `~/Sim-to-Real-SO-101-Workshop`. In an existing project, use **Edit project → Add folder**; make this repository the primary folder with **Make primary**. New chats use it to find the course files and skills.
+
+3. For this workshop, choose **Work in → This computer / Local** and use the prepared checkout on branch `aidayseoul2026`. This keeps the chat aligned with the folder mounted in the workshop Container.
+
+4. Open **Skills** in the sidebar to check the course skills, then start a chat in this project. Ask the connection-check question below once, followed by your lesson question.
+
+Folder selection is described in [Projects and chats](https://learn.chatgpt.com/docs/projects); execution choices are described in [Codex environments](https://learn.chatgpt.com/docs/environments/modes). A cloud environment needs its own files and tools; it does not automatically receive the laptop’s USB devices, running Container or GPU.
+
+```text
+현재 작업 폴더와 Git branch를 확인해줘.
+AGENTS.md, skills/so101-dli/SKILL.md, docs/seoul-workshop-schedule.md를 읽을 수 있는지 확인하고,
+앞으로 수업 질문이나 실습 요청에 맞는 스킬을 찾아 적용해줘.
+이번에는 파일 접근만 확인해줘.
+```
+
+### ChatGPT Work in the app
+
+If you prefer the ChatGPT interface, select **ChatGPT → Work** and use a project that can access the local workshop folder. Availability depends on the account and workspace. Start with the same connection check. See [Use ChatGPT](https://learn.chatgpt.com/docs/use-chatgpt).
+
+Ask naturally after the files are accessible. If `so101-dli` is listed in the skill selector, you can also select it with `@`. If it is missing, ask the agent to read the repository’s skill file directly, or open the same folder in Codex.
+
+For ordinary web/mobile Chat without local folder access, attach the relevant lesson and ask questions about it. A GitHub link alone does not install these repository skills or connect the classroom robot. This course distributes local skill folders; it has no separately published ChatGPT plugin.
+
+## Option B: Codex CLI
+
+Use the prepared CLI, or follow the [official Codex CLI guide](https://learn.chatgpt.com/docs/codex/cli) if installation is needed. In a Host terminal, enter the workshop folder and start Codex.
 
 ```bash
 cd ~/Sim-to-Real-SO-101-Workshop
@@ -17,21 +56,17 @@ codex --version
 codex
 ```
 
-The branch should be `aidayseoul2026`. On the first run, complete the sign-in prompts. In the Codex desktop app or IDE extension, open this same repository folder. The workshop container and Codex must refer to the same checkout.
+Confirm branch `aidayseoul2026` and complete sign-in if prompted. Enter your question at the Codex prompt. For an optional explicit choice, use `/skills` or `$so101-dli`.
 
 ## Set up the course skills
 
-The instructions live in `skills/`. This repository also includes `.agents/skills/` links to those student skills, so Codex can discover them when opened in this repository. No copy into a personal skill folder is required.
+The repository stores the instructions in `skills/` and links the nine student skills under `.agents/skills/`. Codex discovers these project skills from the checkout. Keep the folder structure intact so each skill can read its lesson references. No personal-folder copy is needed. See the [official skills guide](https://learn.chatgpt.com/docs/build-skills).
 
-```bash
-ls .agents/skills
-```
+Automatic selection is enabled by default. The repository’s `AGENTS.md` directs ordinary student questions to the relevant course skill; the skill then reads the lesson before answering. A single-topic request uses its specialist, while a comparison across lessons uses course Q&A.
 
-In Codex CLI, enter `/skills` or type `$` to find a skill. You can request one explicitly with `$so101-dli`; Codex can also select an appropriate skill from a natural-language question. These discovery locations and invocation methods follow the [official skills guide](https://learn.chatgpt.com/docs/build-skills).
+If a skill is missing, check the primary folder and `.agents/skills/` links, then reopen the chat or restart the app/CLI. Use the connection-check prompt to confirm access. Selecting a skill does not grant additional file access or authorize robot motion; those depend on the current environment and request.
 
-If a skill does not appear, check that the repository root is open and that the links resolve to a `SKILL.md` file, then restart Codex. You can also ask Codex to read `skills/so101-dli/SKILL.md` directly. The repository’s `AGENTS.md` connects course requests to these instructions.
-
-## Choose a skill for your question or exercise
+## What the course skills cover
 
 | Skill | When to use it |
 |---|---|
@@ -49,7 +84,7 @@ The skills read the current lesson Markdown, Korean catalogs, interactive explan
 
 ## First example: ask for today’s schedule
 
-Enter this short question in Codex.
+After opening the workshop folder in the app or CLI, enter this question without a skill name.
 
 ```text
 오늘의 일정이 뭐야?
@@ -57,10 +92,18 @@ Enter this short question in Codex.
 
 Codex should read `docs/seoul-workshop-schedule.md` and return a table with the time, topic, duration and instructor. It should include arrival, breaks and lunch, and state that all times are KST. Compare the answer with [Today’s Schedule](seoul-workshop-schedule.md).
 
-To request the same workflow explicitly, use:
+### Optional: choose a skill explicitly
+
+Use this only when you want to choose the skill yourself. In the ChatGPT app’s Codex view or Codex CLI:
 
 ```text
 $so101-dli 오늘의 일정이 뭐야? 시간, 주제, 소요 시간, 진행자를 표로 보여줘.
+```
+
+In ChatGPT Work, select the available skill with `@`, then ask:
+
+```text
+@so101-dli 오늘의 일정이 뭐야? 시간, 주제, 소요 시간, 진행자를 표로 보여줘.
 ```
 
 Check that teaching begins at 09:00, lunch is 12:45–13:45 and the conclusion ends at 17:15. Use each detailed session row for its instructor. This exercise reads documents and does not need to start a robot or simulation.
@@ -96,22 +139,24 @@ A read-only Codex run with the question above produced the 22-row schedule below
 
 ## Try course questions and hands-on requests
 
+These examples need no skill names. The agent uses the relevant available course skill and lesson. You can ask which skill and source section it used.
+
 ```text
-$so101-dli-qa Sim-to-Real Gap과 Domain Randomization의 관계를 오늘 task 기준으로 설명해줘.
+Sim-to-Real Gap과 Domain Randomization의 관계를 오늘 task 기준으로 설명해줘.
 
-$so101-dli-gr00t VLA의 입력과 action chunk가 뭔지 GR00T 교재를 읽고 설명해줘.
+VLA의 입력과 action chunk가 뭔지 GR00T 교재를 읽고 설명해줘.
 
-$so101-dli-hardware 교재의 calibration부터 한 단계씩 진행하자. 현재 연결을 먼저 확인해줘.
+교재의 calibration부터 한 단계씩 진행하자. 현재 연결을 먼저 확인해줘.
 
-$so101-dli-collect State Machine으로 수집한 dataset과 Teleop dataset은 어떻게 달라?
+State Machine으로 수집한 dataset과 Teleop dataset은 어떻게 달라?
 
-$so101-dli-evaluate Sim-only와 Co-Training model을 어떤 조건으로 비교해야 해?
+Sim-only와 Co-Training model을 어떤 조건으로 비교해야 해?
 
-$so101-dli-dagger HG-DAgger에서 leader가 언제 움직이는지 실습 전에 설명해줘.
+HG-DAgger에서 leader가 언제 움직이는지 실습 전에 설명해줘.
 
-$so101-dli-cosmos 원본과 augmented video에서 무엇을 비교해야 해?
+원본과 augmented video에서 무엇을 비교해야 해?
 
-$so101-dli-sysid AnchorBench와 calibration의 차이가 뭐야?
+AnchorBench와 calibration의 차이가 뭐야?
 ```
 
 For an error, provide the command, whether it ran on the Host or in the Container, and the relevant error text. Codex can connect it to [Troubleshooting](troubleshooting.md). Before physical motion, follow the instructor’s safety guidance and confirm that the station is ready.
