@@ -17,6 +17,29 @@
 Lightbox 내부의 기준 배치입니다. 열린 앞면에서 바라볼 때 rack은 왼쪽, pickup 영역은 오른쪽입니다. Leader와 참가자 PC는 사진 밖의 별도 공간에 배치합니다.
 ```
 
+(desk-layout-reference)=
+### 데스크 전체 배치: Laptop·Leader·Follower
+
+아래는 기존 workshop의 **2인 station 전체 배치 참고 사진**입니다. 참가자가 앉는 정면에서 보면 **Laptop은 왼쪽, leader는 Laptop 오른쪽의 테이블 앞 가장자리, follower는 오른쪽 Lightbox의 열린 앞면**에 있습니다. 장비의 상대적인 위치를 참고하되, 실제 셋업에서는 leader가 움직일 공간을 먼저 확보한 뒤 Laptop과 좌석의 위치를 정합니다.
+
+```{figure} images/workshop-desk-layout-reference.jpg
+:alt: 참가자 정면에서 본 2인 station. 왼쪽에 Laptop, 그 오른쪽 테이블 앞 가장자리에 clamp로 고정한 SO-101 leader, 오른쪽 Lightbox의 열린 앞면에 고정한 follower와 앞쪽 좌석 두 개가 보입니다.
+:width: 100%
+
+기존 workshop의 최소 공간 배치 사례입니다. 사진 속 Laptop과 leader 사이의 간격을 그대로 적용하지 말고, HG-DAgger에서 leader가 motor로 움직일 범위까지 고려해 여유 공간을 확보합니다.
+```
+
+| 장비·공간 | 사진에서의 위치 | 셋업 시 확인할 사항 |
+|---|---|---|
+| RTX Laptop·mouse | Lightbox 바깥의 왼쪽, 참가자가 화면과 입력 장치를 사용할 수 있는 위치 | Laptop·mouse·개인 물품을 leader의 전체 가동 범위 밖에 둡니다. 전원·USB cable이 arm의 움직임을 가로지르지 않도록 정리합니다. |
+| SO-101 leader | Laptop 오른쪽, Lightbox 바깥의 테이블 앞 가장자리 | Clamp로 단단히 고정하고 참가자가 손으로 조작할 공간을 남깁니다. HG-DAgger 중 motor 구동으로 움직여도 Laptop·Lightbox·cable에 닿지 않아야 합니다. |
+| SO-101 follower | 오른쪽 Lightbox의 열린 앞면, base를 테이블에 고정한 위치 | Arm이 Lightbox 내부의 rack과 pickup 영역에 접근하도록 배치합니다. Camera와 소품의 세부 위치는 위의 기준 사진과 아래 셋업 절차에 맞춥니다. |
+| 참가자 좌석·TA 통로 | Station 앞쪽의 2인 좌석과 참가자 뒤쪽 통로 | 두 사람이 화면과 작업 영역을 함께 볼 수 있도록 배치합니다. TA가 뒤에서 접근할 수 있고, 이동할 때 테이블 앞쪽으로 돌출된 clamp에 부딪히지 않도록 동선을 확보합니다. |
+
+:::{important}
+**5 ft(약 1.52 m)는 2인 station 전체 폭의 최소 배치 예시**입니다. 작업대 깊이나 arm 주변의 안전 여유를 뜻하지 않습니다. 실제 배치는 이보다 여유 있게 구성하고, HG-DAgger 시연 전에 leader의 가동 범위와 Laptop 간격, 참가자 뒤쪽 통로를 다시 확인합니다.
+:::
+
 ### Station 한 세트의 구성
 
 | 구역 | 준비할 구성 | 완료 모습과 확인 기준 |
@@ -27,8 +50,6 @@ Lightbox 내부의 기준 배치입니다. 열린 앞면에서 바라볼 때 rac
 | Camera | Wrist camera와 external camera 각 1대 | 두 camera를 각각 식별하고 실제 영상을 확인합니다. Wrist focus가 맞고 external view에서 rack과 pickup 영역이 보여야 합니다. |
 | Leader·PC 공간 | Leader 동작 공간, 참가자 PC·mouse | PC와 개인 물품은 leader가 움직이는 범위 밖에 둡니다. 참가자 뒤로 강사와 TA가 이동할 통로를 확보합니다. |
 | Cable·전원 | Robot·camera·light별 cable 정리와 label | Arm을 움직여도 cable이 당겨지거나 감기지 않아야 합니다. 전원 연결부와 차단 위치를 쉽게 확인할 수 있도록 정리합니다. |
-
-**5 ft(약 1.52 m)는 2인 station 전체 폭의 최소 배치 예시**입니다. 실제 배치는 leader 동작 범위, PC 분리 공간, 후방 통로를 확보할 수 있도록 여유 있게 구성합니다. 이 수치가 작업대 깊이나 arm 주변의 안전 여유를 뜻하지는 않습니다.
 
 ### 1. 작업대와 동선을 확보합니다
 
