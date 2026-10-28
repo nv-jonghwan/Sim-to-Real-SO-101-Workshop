@@ -28,6 +28,7 @@ print(release)
 
 extensions = [
     'course_i18n',
+    'course_navigation',
     'interactive_i18n',
     'sphinx.ext.intersphinx',
     'myst_parser',

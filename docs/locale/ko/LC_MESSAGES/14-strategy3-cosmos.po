@@ -417,15 +417,3 @@ msgid ""
 msgstr ""
 "[Cosmos Cookbook](https://nvidia-cosmos.github.io/cosmos-cookbook/) — Cosmos world foundation "
 "model recipe와 예시"
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Next, [Sim-to-Real Strategy 5: System Identification With AnchorBench](15-strategy4-sysid.md) "
-"examines the actuation gap through measured SO-101 motions, fitted actuator parameters, and a "
-"paired policy comparison."
-msgstr ""
-"다음 [Sim-to-Real Strategy 5: System Identification With AnchorBench](15-strategy4-sysid.md)에서는 "
-"SO-101 측정 motion, fitted actuator parameter, paired policy 비교로 actuation gap을 살펴봅니다."
-

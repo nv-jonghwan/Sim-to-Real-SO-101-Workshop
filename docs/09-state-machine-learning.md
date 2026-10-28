@@ -180,7 +180,3 @@ Review these rollouts the way you reviewed the state machine's. Check the starti
 - **Inspect the motion and contact.** Check joint configurations, grasp positions, and interactions with real materials.
 - **Compare trends, not just outcomes.** Small differences in poses and timing can accumulate across a trajectory.
 - **Use agents to review, compare, and refine.** Inspect the generated demonstrations before scaling up collection, then evaluate the trained policy in both sim and real.
-
-## What's Next?
-
-Continue to [Sim Evaluation](11-sim-evaluation.md) to run a supplied policy in this environment. The [scripted collection reference](08-simulation-teleoperation.md) provides the collection commands.

@@ -107,10 +107,3 @@ msgid ""
 "Pause the robot before reaching in to reset the props. Between trials, return the rack and loose "
 "vials to the same general areas."
 msgstr "소품을 다시 배치하려고 손을 넣기 전에 robot을 일시 정지하세요. Trial 사이에는 rack과 vial을 원래의 대략적인 영역으로 돌려놓습니다."
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid "Continue to [Calibrating the SO-101](07-calibrating-so101.md) to power on and calibrate the arms."
-msgstr "[Calibrating the SO-101](07-calibrating-so101.md)에서 arm 전원을 켜고 calibration을 진행하세요."
-

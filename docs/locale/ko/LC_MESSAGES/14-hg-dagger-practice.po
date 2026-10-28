@@ -516,16 +516,6 @@ msgstr "[수집 Demonstration 검토](08-simulation-teleoperation.md#review-and-
 msgid "[GR00T Post-Training](10-groot.md)"
 msgstr "[GR00T Post-Training](10-groot.md)"
 
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [Strategy 4: Augmenting Datasets With Cosmos](14-strategy3-cosmos.md) to explore "
-"synthetic video augmentation for robot training."
-msgstr ""
-"[Strategy 4: Augmenting Datasets With Cosmos](14-strategy3-cosmos.md)에서 robot 학습을 위한 synthetic "
-"video augmentation을 살펴보세요."
-
 msgid "Action"
 msgstr "동작"
 
@@ -563,4 +553,3 @@ msgstr "**Ctrl+C**"
 
 msgid "Stop the rollout and run cleanup."
 msgstr "Rollout을 중단하고 cleanup을 실행합니다."
-

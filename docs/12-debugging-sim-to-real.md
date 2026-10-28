@@ -57,7 +57,3 @@ These checks come from this workshop's SO-101 vial-to-rack case study. They are 
    :::
 
 There is no single sim-to-real solution. It remains an active robotics research area with both strong results and unresolved challenges. Learning to isolate hardware, observation, policy, action, and environment failures helps you choose the next experiment instead of changing several factors at once.
-
-## What's Next?
-
-Continue to [Isaac GR00T: Vision-Language-Action Models](10-groot.md).

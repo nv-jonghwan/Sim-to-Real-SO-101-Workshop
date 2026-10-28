@@ -420,7 +420,3 @@ Adjust these diagrams to see the relationships. They are teaching illustrations,
 
 - [NVIDIA Isaac GR00T GitHub](https://github.com/NVIDIA/Isaac-GR00T) — Source code, model weights, and documentation
 - [Isaac-GR00T FAQ: Improving Policies](https://github.com/NVIDIA/Isaac-GR00T/blob/main/FAQ.md) — Policy-improvement and troubleshooting guidance from the GR00T repository
-
-## What's Next?
-
-Confirm the physical setup matches [Building the Workspace](05-building-workspace.md), then continue to [Real Evaluation](12-real-evaluation.md).

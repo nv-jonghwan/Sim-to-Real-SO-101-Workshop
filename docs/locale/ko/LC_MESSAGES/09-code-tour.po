@@ -262,14 +262,3 @@ msgid ""
 "During policy evaluation, the policy supplies actions instead of the leader. The same simulation "
 "scene and task checks tell us what happened."
 msgstr "Policy 평가에서는 leader 대신 policy가 action을 제공합니다. 같은 simulation scene과 task 검사를 사용해 결과를 확인합니다."
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [Learning From Real Demonstrations With a State Machine](09-state-machine-"
-"learning.md) to explore automated collection guided by human examples."
-msgstr ""
-"[Learning From Real Demonstrations With a State Machine](09-state-machine-learning.md)에서 사람의 예시를 "
-"활용한 자동 수집을 살펴보세요."
-

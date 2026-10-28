@@ -83,7 +83,3 @@ Details on the robot and workspace requirements can be found in [Building the Wo
 The event workstation provides the required software and GPU. To see the hardware and installation requirements in [Get the Code](06-get-the-code.md), under **Setup References**.
 
 ::::::::
-
-## What's Next?
-
-Continue to [LeRobot and the SO-101](04-lerobot.md).

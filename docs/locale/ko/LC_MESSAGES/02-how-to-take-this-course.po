@@ -126,10 +126,3 @@ msgid ""
 "Details on the robot and workspace requirements can be found in [Building the Workspace](05"
 "-building-workspace.md)."
 msgstr "Robot과 workspace 요구사항은 [Building the Workspace](05-building-workspace.md)에서 확인할 수 있습니다."
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid "Continue to [LeRobot and the SO-101](04-lerobot.md)."
-msgstr "[LeRobot and the SO-101](04-lerobot.md)으로 이동하세요."
-

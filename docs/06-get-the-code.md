@@ -162,7 +162,3 @@ hf auth login
 ```
 
 8. **Use** [Datasets and Models](datasets-and-models.md) to select a compatible LeRobot GR00T 1.7 checkpoint, or train one in [GR00T Post-Training](10-groot.md#reference-post-train-your-own-model). Downloads belong under `models/`.
-
-## What's Next?
-
-Continue to [Calibrating the SO-101](07-calibrating-so101.md).

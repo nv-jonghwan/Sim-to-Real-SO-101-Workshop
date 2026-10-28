@@ -271,12 +271,6 @@ msgstr ""
 "Post-Training](10-groot.md#reference-post-train-your-own-model)으로 직접 학습합니다. Download한 파일은 "
 "`models/` 아래에 둡니다."
 
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid "Continue to [Calibrating the SO-101](07-calibrating-so101.md)."
-msgstr "[Calibrating the SO-101](07-calibrating-so101.md)으로 이동하세요."
-
 msgid "Host location"
 msgstr "Host 위치"
 
@@ -331,4 +325,3 @@ msgstr "`~/.cache/ovrtx/`, `~/.cache/warp/`"
 
 msgid "Renderer and physics caches"
 msgstr "Renderer와 physics cache"
-

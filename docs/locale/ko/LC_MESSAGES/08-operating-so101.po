@@ -325,14 +325,3 @@ msgstr ""
 
 msgid "[Rerun](https://rerun.io/) — A tool for visualizing camera views and robot actions"
 msgstr "[Rerun](https://rerun.io/) — Camera view와 robot action visualization 도구"
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [Domain Randomization](10-domain-randomization.md) to see how we vary the simulated "
-"scene before practicing and collecting demonstrations."
-msgstr ""
-"[Domain Randomization](10-domain-randomization.md)에서 실습과 demonstration 수집 전에 simulation scene을 "
-"변화시키는 방법을 살펴보세요."
-

@@ -306,7 +306,3 @@ There is no fixed teleoperation-to-automation ratio for every task. Start with a
 
 - Teleoperation captures human expertise in demonstration form
 - Always teleoperate using only camera views—not your eyes
-
-## What's Next?
-
-Continue to the [Architecture Tour](09-code-tour.md) to see how the simulation application fits together.

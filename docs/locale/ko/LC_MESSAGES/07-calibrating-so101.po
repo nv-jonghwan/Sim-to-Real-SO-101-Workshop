@@ -379,12 +379,3 @@ msgstr "Calibration 시 wrist roll을 중앙에 맞추되 range sweep은 생략�
 
 msgid "Check both calibrations and the camera view before collecting data or running a policy."
 msgstr "Data 수집이나 policy 실행 전에 두 arm의 calibration과 camera view를 확인하세요."
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [Teleoperating](08-operating-so101.md) to move the follower with the leader and set "
-"up live camera views."
-msgstr "[Teleoperating](08-operating-so101.md)에서 leader로 follower를 움직이고 live camera view를 설정하세요."
-

@@ -386,14 +386,6 @@ msgstr ""
 "[Sim-and-Real Co-Training: A Simple Recipe for Vision-Based Robotic Manipulation](https://co-"
 "training.github.io/) — Co-Training 전략을 다룬 RSS 2025 paper"
 
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [Strategy 3: HG-DAgger](14-hg-dagger.md) to learn how human corrections can target "
-"the failures you observed during real evaluation."
-msgstr "[Strategy 3: HG-DAgger](14-hg-dagger.md)에서 실제 평가 중 발견한 실패를 human correction으로 개선하는 방법을 배웁니다."
-
 #. Reviewed: retain original technical label, identifier, source title, or existing Korean.
 msgid "Key"
 msgstr "Key"
@@ -445,4 +437,3 @@ msgstr ""
 "**이미 준비되어 있습니다:** 행사 dataset과 학습 model이 제공되므로 이 실습에서 수집, merge, upload, 학습할 필요는 없습니다. [Deploy a "
 "Co-Trained Policy](#hands-on-deploy-a-co-trained-policy)로 진행하세요. 아래 dropdown은 나중에 준비 workflow를 직접"
 " 해보기 위한 참고입니다."
-

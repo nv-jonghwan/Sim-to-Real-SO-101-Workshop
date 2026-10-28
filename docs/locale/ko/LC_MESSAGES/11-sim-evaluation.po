@@ -326,12 +326,3 @@ msgid ""
 "**Keep** this terminal and the workshop container open. Before evaluating the next policy in "
 "simulation."
 msgstr "다음 simulation 평가를 위해 이 terminal과 workshop container는 **열어 둡니다**."
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [What Is Sim-to-Real?](03-sim-to-real.md) to explore why simulation and real-world "
-"results can differ."
-msgstr "[What Is Sim-to-Real?](03-sim-to-real.md)에서 simulation과 실제 결과가 달라지는 이유를 살펴보세요."
-

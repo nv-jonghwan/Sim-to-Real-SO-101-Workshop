@@ -345,25 +345,3 @@ msgstr "Hugging Face community에서 지속적인 지원과 자료를 얻을 수
 
 msgid "You're joining a growing community of robot learners and practitioners"
 msgstr "계속 성장하는 robot 학습자와 실무자 community에 함께 참여할 수 있습니다."
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Next, [Building the Workspace](05-building-workspace.md) walks through assembling and lighting "
-"the physical lightbox and task props. After that, [Calibrating the SO-101](07-calibrating-"
-"so101.md) covers power-on and calibration, and [Teleoperating](08-operating-so101.md) covers "
-"teleoperation and camera setup."
-msgstr ""
-"다음 [Building the Workspace](05-building-workspace.md)에서 실제 lightbox와 task 소품의 조립 및 조명을 준비합니다. 이어서"
-" [Calibrating the SO-101](07-calibrating-so101.md)에서 전원 연결과 calibration을, [Teleoperating](08"
-"-operating-so101.md)에서 teleoperation과 camera 설정을 다룹니다."
-
-msgid ""
-"Continue to [Calibrating the SO-101](07-calibrating-so101.md) with the prepared event workspace. "
-"Follow your instructor's directions about calibration, then continue to [Teleoperating](08"
-"-operating-so101.md)."
-msgstr ""
-"준비된 행사 workspace에서 [Calibrating the SO-101](07-calibrating-so101.md)으로 이동하세요. Calibration은 "
-"instructor의 안내에 따르고, 이어서 [Teleoperating](08-operating-so101.md)을 진행하세요."
-

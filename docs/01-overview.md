@@ -216,19 +216,3 @@ This privileged information can accelerate learning, even when the final policy 
 Using a VLA (Vision Language Action) model from Isaac GR00T 1.7, our system will receive a language command like "pick up the vial and place it on the rack", and use robot joint feedback and camera observations as policy inputs. 
 
 The policy then outputs motor positions to execute the task.
-
-## What's Next?
-
-::::::::{audience} learner
-
-This learning path has some flexibility built-in to match your goals and time constraints. Let's cover those options next!
-
-Continue to [How to Take This Course](02-how-to-take-this-course.md).
-
-::::::::
-
-::::::::{audience} event
-
-Continue to [LeRobot and the SO-101](04-lerobot.md).
-
-::::::::

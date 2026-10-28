@@ -5,12 +5,15 @@ import json
 import argparse
 class Page(HTMLParser):
  def __init__(self,path):
-  super().__init__(convert_charrefs=True);self.ids=set();self.links=[];self.text=[];self.pre=[];self.depth=0;self.anchors=[];self.language=None
+  super().__init__(convert_charrefs=True);self.ids=set();self.links=[];self.text=[];self.pre=[];self.depth=0;self.anchors=[];self.language=None;self.next_head=None;self.next_body=[];self.next_footer=[]
   self.feed(path.read_text())
  def handle_starttag(self,tag,attrs):
   a=dict(attrs)
   if a.get('id'):self.ids.add(a['id'])
   if tag=='html':self.language=a.get('lang')
+  if tag=='link' and 'next' in a.get('rel','').split():self.next_head=a.get('href')
+  if tag=='a' and 'course-next-link' in a.get('class','').split():self.next_body.append(a.get('href'))
+  if tag=='a' and 'right-next' in a.get('class','').split():self.next_footer.append(a.get('href'))
   if tag in ('a','img','script','link','iframe','source','video'):
    v=a.get('href') if tag in ('a','link') else a.get('src')
    if v:self.links.append(v)
@@ -56,6 +59,18 @@ for audience in audiences:
   missing=set(a.anchors)-b.ids
   if missing:errors.append(['original-anchors-lost',audience,p.name,sorted(missing)])
   if b.language!='ko':errors.append(['wrong-language',p.name,b.language])
+navigation_checks = 0
+for audience in audiences:
+ for prefix in ('', 'ko/'):
+  html = build / (prefix + audience) / 'html'
+  for path in html.glob('*.html'):
+   doc = page(path)
+   expected = [doc.next_head] if doc.next_head else []
+   if doc.next_body != expected or doc.next_footer != expected:
+    errors.append(['next-navigation-mismatch', str(path.relative_to(build)),
+                   {'head': doc.next_head, 'body': doc.next_body, 'footer': doc.next_footer}])
+   if expected:
+    navigation_checks += 1
 # These artifacts are trusted outputs of this repository's local Sphinx build.
 import pickle
 from sphinx.search import js_index
@@ -100,7 +115,7 @@ for prefix in ('', 'ko/'):
    if (marker in search) != instructor:
     errors.append(['wrong-instructor-search-visibility', prefix + audience, marker])
   audience_checks += 1
-report={'pages':pages,'local_links_checked':links,'code_blocks_identical':code_blocks,'audience_checks':audience_checks,'errors':errors,'passed':not errors}
+report={'pages':pages,'local_links_checked':links,'code_blocks_identical':code_blocks,'audience_checks':audience_checks,'navigation_checks':navigation_checks,'errors':errors,'passed':not errors}
 (root/'.local').mkdir(exist_ok=True)
 (root/'.local/docs-ko-rendered-20261028.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

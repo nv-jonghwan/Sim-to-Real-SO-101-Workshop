@@ -474,14 +474,6 @@ msgstr "Teleoperation은 사람의 전문성을 demonstration으로 기록합니
 msgid "Always teleoperate using only camera views—not your eyes"
 msgstr "Demonstration 수집 시에는 workspace를 직접 보지 말고 camera view만 사용하세요."
 
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to the [Architecture Tour](09-code-tour.md) to see how the simulation application fits "
-"together."
-msgstr "[Architecture Tour](09-code-tour.md)에서 simulation application의 구성을 살펴보세요."
-
 #. Reviewed: retain original technical label, identifier, source title, or existing Korean.
 msgid "Environment"
 msgstr "Environment"
@@ -590,4 +582,3 @@ msgstr "근사값"
 #. Reviewed: retain original technical label, identifier, source title, or existing Korean.
 msgid "Ground truth"
 msgstr "Ground truth"
-

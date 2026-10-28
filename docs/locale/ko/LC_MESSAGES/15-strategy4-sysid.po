@@ -307,12 +307,3 @@ msgid ""
 msgstr ""
 "[Paired demonstrations](https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-"
 "paired-demos)"
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [Explore and Experiment](15-explore.md) to choose a follow-up experiment and find "
-"further resources."
-msgstr "[Explore and Experiment](15-explore.md)에서 후속 실험과 추가 자료를 확인하세요."
-

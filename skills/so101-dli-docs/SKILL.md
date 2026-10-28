@@ -125,3 +125,10 @@ Disable source copying/source links for student outputs and remove stale
 reveal hidden blocks through the served guide. Validate rendered text, links,
 search and source-copy absence, not just whether the staff section is hidden.
 The shared repository and canonical skills remain the same for everyone.
+
+## End-of-page navigation
+
+`course_navigation` renders the next-step section from Sphinx’s `next` page context,
+the same toctree relation used by the theme footer. Keep lesson transitions there
+instead of adding manual end-of-page links. `verify_html.py` checks that the
+body, footer and HTML next relation agree in both languages for every selected audience.

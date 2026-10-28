@@ -987,16 +987,6 @@ msgstr ""
 "[Isaac-GR00T FAQ: Improving Policies](https://github.com/NVIDIA/Isaac-GR00T/blob/main/FAQ.md) — "
 "GR00T repository의 policy 개선 및 troubleshooting 안내"
 
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Confirm the physical setup matches [Building the Workspace](05-building-workspace.md), then "
-"continue to [Real Evaluation](12-real-evaluation.md)."
-msgstr ""
-"실물 구성이 [Building the Workspace](05-building-workspace.md)와 맞는지 확인하고 [Real Evaluation](12-real-"
-"evaluation.md)로 이동하세요."
-
 #. Reviewed: retain original technical label, identifier, source title, or existing Korean.
 msgid "Parameter"
 msgstr "Parameter"
@@ -1293,4 +1283,3 @@ msgstr "Workshop 중에는 학습 시간이 부족하므로 준비된 checkpoint
 
 msgid "Training instructions for later"
 msgstr "추후 실습용 학습 안내"
-

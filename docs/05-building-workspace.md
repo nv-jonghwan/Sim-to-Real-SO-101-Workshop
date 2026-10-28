@@ -229,7 +229,3 @@ Re-check this checklist **before** [Real Evaluation](12-real-evaluation.md) and 
 ## Key Takeaways
 
 - Workspace setup is critical for successful training and deployment.
-
-## What's Next?
-
-With the workspace built and staged, continue to [Get the Code](06-get-the-code.md).

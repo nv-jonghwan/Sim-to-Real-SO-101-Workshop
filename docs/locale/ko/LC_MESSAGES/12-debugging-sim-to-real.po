@@ -148,10 +148,3 @@ msgid ""
 msgstr ""
 "Sim-to-Real에 하나의 정답은 없습니다. 좋은 성과와 미해결 과제가 함께 있는 활발한 robotics 연구 분야입니다. Hardware, observation, "
 "policy, action, environment의 실패를 분리해 진단하면 여러 요인을 한꺼번에 바꾸는 대신 다음 실험을 정할 수 있습니다."
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid "Continue to [Isaac GR00T: Vision-Language-Action Models](10-groot.md)."
-msgstr "[Isaac GR00T: Vision-Language-Action Models](10-groot.md)로 이동하세요."
-

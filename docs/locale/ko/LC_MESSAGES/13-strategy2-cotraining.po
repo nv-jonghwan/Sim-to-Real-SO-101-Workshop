@@ -158,14 +158,3 @@ msgid ""
 msgstr ""
 "모든 task에 맞는 하나의 recipe는 없습니다. 유용한 sim/real 조합은 data 품질, coverage, simulation과 실제 setup의 일치 정도에 달려"
 " 있습니다. 본인의 robot에서 시험하고 실패 양상에 맞춰 비율과 수집 예시를 조정하세요."
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [Co-Training in Practice](13-cotraining-practice.md) to watch example results and "
-"compare a co-trained policy with your sim-only baseline."
-msgstr ""
-"[Co-Training in Practice](13-cotraining-practice.md)에서 예시 결과를 보고 Co-Trained policy를 sim-only "
-"baseline과 비교하세요."
-

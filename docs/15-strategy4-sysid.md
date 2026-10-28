@@ -133,7 +133,3 @@ This isn't always the case with SysID, and likely points to poor tuning with the
 - [Anchor-Lab measurements](https://huggingface.co/datasets/nvidia/Anchor-Lab)
 - [SO-101 profiles and reproduction notes](https://huggingface.co/VigneshBhavan/so101-newton-actuator-ab-paired-checkpoints/blob/123b6cbc48f7bb948397cb0ad5b9dac8a4ab38d8/reproduction/README.md)
 - [Paired demonstrations](https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-paired-demos)
-
-## What's Next?
-
-Continue to [Explore and Experiment](15-explore.md) to choose a follow-up experiment and find further resources.

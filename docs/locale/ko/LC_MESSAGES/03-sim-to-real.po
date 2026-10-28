@@ -347,14 +347,6 @@ msgid ""
 "address each category."
 msgstr "이러한 gap을 이해하는 것이 중요합니다. 이 과정에서 각 범주에 대응하는 전략을 배웁니다."
 
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [Debugging Sim-to-Real Issues](12-debugging-sim-to-real.md) to explore common causes "
-"of the gap."
-msgstr "[Debugging Sim-to-Real Issues](12-debugging-sim-to-real.md)에서 gap의 흔한 원인을 살펴보세요."
-
 msgid "Setting"
 msgstr "설정"
 
@@ -466,4 +458,3 @@ msgstr "추가 blur 없음"
 
 msgid "Wrist softness, sampled independently per environment at reset."
 msgstr "Wrist image의 부드러움. Reset 시 environment마다 독립적으로 sampling합니다."
-

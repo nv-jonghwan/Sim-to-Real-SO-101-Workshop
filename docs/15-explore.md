@@ -85,7 +85,3 @@ use higher-fidelity assets.
 
 ### Papers
 - [The Reality Gap in Robotics: Challenges, Solutions, and Best Practices](https://arxiv.org/pdf/2510.20808)
-
-## What's Next?
-
-Continue to the [Conclusion](16-conclusion.md) for the recap, workshop availability, and feedback.

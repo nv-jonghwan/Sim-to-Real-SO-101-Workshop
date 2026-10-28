@@ -234,9 +234,3 @@ Now trace how these building blocks work together in one control loop iteration.
 During teleoperation, the leader supplies a command through the LeRobot interface, and the workshop bridge converts it to simulation joint commands. When recording is active, the recorder pairs the current camera images and joint state with the command about to be applied, in LeRobot format. Then `env.step(actions)` advances Newton physics through Isaac Lab, ovrtx renders the cameras, and Isaac Lab returns the observations for the next iteration.
 
 During policy evaluation, the policy supplies actions instead of the leader. The same simulation scene and task checks tell us what happened.
-
-
-
-## What's Next?
-
-Continue to [Learning From Real Demonstrations With a State Machine](09-state-machine-learning.md) to explore automated collection guided by human examples.

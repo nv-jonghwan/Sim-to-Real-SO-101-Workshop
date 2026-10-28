@@ -261,7 +261,3 @@ lerobot-rollout --strategy.type=workshop --policy.path="$MODEL_ID" --policy.base
 - [HG-DAgger: Interactive Imitation Learning with Human Experts](https://arxiv.org/abs/1810.02890) — the original method. This workshop prototype demonstrates manual takeovers, however the paper also explores an uncertainty-based risk measure for deciding when the expert should take over.
 - [Reviewing collected demonstrations](08-simulation-teleoperation.md#review-and-upload-collected-data)
 - [GR00T Post-Training](10-groot.md)
-
-## What's Next?
-
-Continue to [Strategy 4: Augmenting Datasets With Cosmos](14-strategy3-cosmos.md) to explore synthetic video augmentation for robot training.

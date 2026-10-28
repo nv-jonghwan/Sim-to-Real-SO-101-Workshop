@@ -302,16 +302,6 @@ msgstr "DR 증강은 여러 조건의 예시로 dataset을 확장합니다."
 msgid "Combined real demonstrations + DR augmentation is a powerful baseline"
 msgstr "실제 demonstration과 DR 증강의 조합은 강력한 baseline입니다."
 
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [Teleoperating in Sim](08-simulation-teleoperation.md) to explore teleoperated and "
-"state-machine demonstrations."
-msgstr ""
-"[Teleoperating in Sim](08-simulation-teleoperation.md)에서 teleoperation과 state machine 기반 "
-"demonstration을 살펴보세요."
-
 #. Reviewed: retain original technical label, identifier, source title, or existing Korean.
 msgid "Parameter"
 msgstr "Parameter"
@@ -407,4 +397,3 @@ msgstr "External camera position과 wrist camera calibration"
 
 msgid "Fixed"
 msgstr "고정"
-

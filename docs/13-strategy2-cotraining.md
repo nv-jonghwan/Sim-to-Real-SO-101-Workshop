@@ -90,7 +90,3 @@ Neither source alone is ideal:
 :::{note}
 There isn't one co-training recipe that works for every task. The useful sim/real mix depends on data quality, coverage, and how closely simulation matches your setup. Test on your robot, then adjust the mix and collect examples around its failures.
 :::
-
-## What's Next?
-
-Continue to [Co-Training in Practice](13-cotraining-practice.md) to watch example results and compare a co-trained policy with your sim-only baseline.

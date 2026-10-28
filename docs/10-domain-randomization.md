@@ -229,7 +229,3 @@ Edit event parameters in the mounted `source/` directory, restart the simulation
 - Domain randomization makes policies robust by training on varied conditions
 - DR augmentation multiplies your dataset with varied conditions
 - Combined real demonstrations + DR augmentation is a powerful baseline
-
-## What's Next?
-
-Continue to [Teleoperating in Sim](08-simulation-teleoperation.md) to explore teleoperated and state-machine demonstrations.

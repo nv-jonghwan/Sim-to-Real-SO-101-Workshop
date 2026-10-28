@@ -261,16 +261,6 @@ msgid ""
 "approach, grasp, and placement: where does their behavior differ?"
 msgstr "왼쪽 baseline policy와 오른쪽 HG-DAgger policy를 비교하세요. Approach, grasp, placement 중 어디서 행동이 달라지나요?"
 
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [HG-DAgger: Collect Corrections](14-hg-dagger-practice.md) to align the leader arm "
-"and collect corrections with the workshop interface."
-msgstr ""
-"[HG-DAgger: Collect Corrections](14-hg-dagger-practice.md)에서 leader를 정렬하고 workshop interface로 "
-"correction을 수집합니다."
-
 msgid "Method"
 msgstr "방법"
 
@@ -292,4 +282,3 @@ msgstr "Reinforcement learning (RL)"
 
 msgid "A reward signal scores behavior. Training seeks actions that earn more reward over time."
 msgstr "Reward signal로 행동을 평가하고, 시간이 지남에 따라 더 큰 reward를 얻는 action을 학습합니다."
-

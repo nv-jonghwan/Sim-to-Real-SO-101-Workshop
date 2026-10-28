@@ -328,7 +328,3 @@ Check the camera tilt with the phone.
 - Keep each arm's port, ID, and calibration file together.
 - Center wrist roll for calibration, but skip its range sweep.
 - Check both calibrations and the camera view before collecting data or running a policy.
-
-## What's Next?
-
-Continue to [Teleoperating](08-operating-so101.md) to move the follower with the leader and set up live camera views.

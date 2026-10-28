@@ -187,7 +187,3 @@ Compare the baseline policy on the left with the HG-DAgger policy on the right. 
   <figcaption id="hg-dagger-comparison-caption">Baseline (left) and policy trained with corrections (right), viewed from the external camera.</figcaption>
 </figure>
 ```
-
-## What's Next?
-
-Continue to [HG-DAgger: Collect Corrections](14-hg-dagger-practice.md) to align the leader arm and collect corrections with the workshop interface.

@@ -182,7 +182,3 @@ Reject examples that move the vial, change a grasp, or alter contact timing in a
 - [Cosmos 3 research](https://research.nvidia.com/labs/cosmos-lab/cosmos3/) — Examples of reasoning, world prediction, and action modeling
 - [Cosmos 3 video transfer](https://github.com/NVIDIA/cosmos/tree/main/cookbooks/cosmos3/generator/transfer) — Controlled video generation for augmentation
 - [Cosmos Cookbook](https://nvidia-cosmos.github.io/cosmos-cookbook/) — Recipes and examples for Cosmos world foundation models
-
-## What's Next?
-
-Next, [Sim-to-Real Strategy 5: System Identification With AnchorBench](15-strategy4-sysid.md) examines the actuation gap through measured SO-101 motions, fitted actuator parameters, and a paired policy comparison.

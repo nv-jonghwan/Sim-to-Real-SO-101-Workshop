@@ -191,7 +191,3 @@ pkill -f '[l]erobot\.async_inference\.policy_server'
 ```
 
 3. **Keep** this terminal and the workshop container open. Before evaluating the next policy in simulation.
-
-## What's Next?
-
-Continue to [What Is Sim-to-Real?](03-sim-to-real.md) to explore why simulation and real-world results can differ.

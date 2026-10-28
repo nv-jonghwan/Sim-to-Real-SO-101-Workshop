@@ -238,7 +238,3 @@ Before attributing a failure to the policy, check camera assignments, joint orde
 | Modeling | CAD errors, mass/inertia estimates |
 
 Understanding these gaps is essential—throughout this learning path, you'll learn strategies to address each category.
-
-## What's Next?
-
-Continue to [Debugging Sim-to-Real Issues](12-debugging-sim-to-real.md) to explore common causes of the gap.

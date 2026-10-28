@@ -328,17 +328,6 @@ msgstr ""
 msgid "The policy then outputs motor positions to execute the task."
 msgstr "Policy는 task를 수행하기 위한 motor position을 출력합니다."
 
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"This learning path has some flexibility built-in to match your goals and time constraints. Let's "
-"cover those options next!"
-msgstr "이 과정은 목표와 사용 가능한 시간에 맞춰 유연하게 진행할 수 있습니다. 다음에서 선택지를 살펴봅니다."
-
-msgid "Continue to [How to Take This Course](02-how-to-take-this-course.md)."
-msgstr "[How to Take This Course](02-how-to-take-this-course.md)로 이동하세요."
-
 msgid "Challenge"
 msgstr "과제"
 
@@ -385,7 +374,3 @@ msgstr "수동 설정"
 #. Reviewed: retain original technical label, identifier, source title, or existing Korean.
 msgid "Procedural generation"
 msgstr "Procedural generation"
-
-msgid "Continue to [LeRobot and the SO-101](04-lerobot.md)."
-msgstr "[LeRobot and the SO-101](04-lerobot.md)으로 이동하세요."
-

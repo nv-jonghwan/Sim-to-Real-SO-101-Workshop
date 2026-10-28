@@ -356,12 +356,6 @@ msgstr "학습된 복귀와 **S/F** 또는 **N** 뒤 rollout controller의 homin
 msgid "Match the starting pose to each policy's own training data, and record the behavior you observe."
 msgstr "각 policy의 training data에 시작 pose를 맞추고 관찰한 행동을 기록합니다."
 
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid "Continue to [Strategy 2: Co-Training With Real Data](13-strategy2-cotraining.md)."
-msgstr "[Strategy 2: Co-Training With Real Data](13-strategy2-cotraining.md)로 이동하세요."
-
 #. Reviewed: retain original technical label, identifier, source title, or existing Korean.
 msgid "Key"
 msgstr "Key"
@@ -403,4 +397,3 @@ msgstr "**Ctrl+C**"
 
 msgid "Stop the rollout and run cleanup."
 msgstr "Rollout을 중단하고 cleanup을 실행합니다."
-

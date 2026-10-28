@@ -650,10 +650,3 @@ msgstr "핵심 내용"
 
 msgid "Workspace setup is critical for successful training and deployment."
 msgstr "Workspace 설정은 성공적인 학습과 배포에 매우 중요합니다."
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid "With the workspace built and staged, continue to [Get the Code](06-get-the-code.md)."
-msgstr "Workspace 조립과 배치를 마쳤다면 [Get the Code](06-get-the-code.md)로 이동하세요."
-

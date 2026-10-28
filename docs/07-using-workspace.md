@@ -42,7 +42,3 @@ The power and brightness controls on the workshop light.
 - Make sure the robot clamp is secure and cables are clear of the arm's motion.
 - When you open the camera preview, check that the **external camera** can see the rack and pickup area, and the **wrist camera** has a clear image.
 - Pause the robot before reaching in to reset the props. Between trials, return the rack and loose vials to the same general areas.
-
-## What's Next?
-
-Continue to [Calibrating the SO-101](07-calibrating-so101.md) to power on and calibrate the arms.

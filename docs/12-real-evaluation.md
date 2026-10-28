@@ -344,7 +344,3 @@ lerobot-rollout --strategy.type=workshop --policy.path="$MODEL_ID" --policy.base
 - The second policy's teleoperated demonstrations include continuation after placement. Watch how this supports returning to a ready pose and attempting another pickup.
 - A learned return is different from the rollout controller's homing after **S/F** or **N**. Compare what the policy does before you end the trial.
 - Match the starting pose to each policy's own training data, and record the behavior you observe.
-
-## What's Next?
-
-Continue to [Strategy 2: Co-Training With Real Data](13-strategy2-cotraining.md).

@@ -306,7 +306,3 @@ lerobot-rollout --strategy.type=workshop --policy.path="$MODEL_ID" --policy.base
 - [Isaac-GR00T Repository](https://github.com/NVIDIA/Isaac-GR00T) — Source code for GR00T deployment including SO-101 evaluation scripts
 - [SO-101 Finetuning Guide](https://github.com/NVIDIA/Isaac-GR00T/blob/main/examples/SO100/README.md) — Full instructions for finetuning and evaluation
 - [Sim-and-Real Co-Training: A Simple Recipe for Vision-Based Robotic Manipulation](https://co-training.github.io/) — RSS 2025 paper on co-training strategies
-
-## What's Next?
-
-Continue to [Strategy 3: HG-DAgger](14-hg-dagger.md) to learn how human corrections can target the failures you observed during real evaluation.

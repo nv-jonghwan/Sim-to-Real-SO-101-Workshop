@@ -264,15 +264,3 @@ msgid ""
 msgstr ""
 "**Agent로 검토·비교·개선하세요.** 수집 규모를 늘리기 전에 생성된 demonstration을 확인하고, 학습한 policy를 simulation과 실제 환경에서 모두"
 " 평가합니다."
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid ""
-"Continue to [Sim Evaluation](11-sim-evaluation.md) to run a supplied policy in this environment. "
-"The [scripted collection reference](08-simulation-teleoperation.md) provides the collection "
-"commands."
-msgstr ""
-"[Sim Evaluation](11-sim-evaluation.md)에서 제공된 policy를 실행합니다. 수집 명령은 [scripted collection "
-"reference](08-simulation-teleoperation.md)를 확인하세요."
-

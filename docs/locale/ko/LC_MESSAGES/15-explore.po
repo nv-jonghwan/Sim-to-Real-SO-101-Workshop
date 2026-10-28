@@ -195,10 +195,3 @@ msgid ""
 msgstr ""
 "[The Reality Gap in Robotics: Challenges, Solutions, and Best "
 "Practices](https://arxiv.org/pdf/2510.20808)"
-
-msgid "What's Next?"
-msgstr "다음 단계"
-
-msgid "Continue to the [Conclusion](16-conclusion.md) for the recap, workshop availability, and feedback."
-msgstr "[Conclusion](16-conclusion.md)에서 과정 정리, workshop 제공 정보, feedback을 확인하세요."
-

@@ -190,7 +190,3 @@ Notice what makes this task challenging:
 
 - [SO-101 Getting Started Guide](https://huggingface.co/docs/lerobot/en/so101) — Full assembly, motor setup, and calibration instructions
 - [Rerun](https://rerun.io/) — A tool for visualizing camera views and robot actions
-
-## What's Next?
-
-Continue to [Domain Randomization](10-domain-randomization.md) to see how we vary the simulated scene before practicing and collecting demonstrations.
