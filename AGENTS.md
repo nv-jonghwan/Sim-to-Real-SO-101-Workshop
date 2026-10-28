@@ -470,6 +470,9 @@ For schedule questions read `docs/seoul-workshop-schedule.md` and return its
 detailed rows in Korean, including time, topic, duration, instructor, arrival,
 breaks, lunch and the 17:15 end in KST. A Q&A request does not start workloads.
 
+For questions such as "이 컴퓨터에서 DLI를 실행할 수 있어?" or "Minimum requirement를 만족해?",
+read `skills/so101-dli-prepare/SKILL.md` and run its read-only assessment. Report
+basic Host eligibility separately from actual runtime and robot qualification.
 For requests such as "환경설정해줘", "설치해줘" or DLI Laptop setup, read
 `skills/so101-dli-prepare/SKILL.md` and the preparation guide. Use the same
 installation checkpoints and assets on student and instructor computers.

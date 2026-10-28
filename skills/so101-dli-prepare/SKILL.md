@@ -1,6 +1,6 @@
 ---
 name: so101-dli-prepare
-description: Prepare or resume SO-101 DLI environment setup on any station, including Host prerequisites, Container, lesson models and datasets, precision, and demonstrated readiness. Use for installation and classroom provisioning; select instructor documents only on an explicit request, otherwise student documents.
+description: Prepare or resume SO-101 DLI environment setup on any station, including Host prerequisites, Container, lesson models and datasets, precision, and demonstrated readiness. Use for checking whether this computer can run the DLI, installation and classroom provisioning; select instructor documents only on an explicit request, otherwise student documents.
 ---
 
 # Prepare and hand over a DLI station
@@ -17,6 +17,44 @@ setup request means perform the authorized installation and verification steps,
 continuing until complete or a concrete prerequisite is missing. Do not treat a
 skill update, guide build or inventory request as authorization to install,
 download, restart Docker, run GPU workloads or move robots.
+
+## Assess whether this computer can run the DLI
+
+Route questions such as “이 컴퓨터에서 DLI를 실행할 수 있어?”, “Minimum requirement를
+만족해?” and “환경을 확인해줘” here. Run the read-only preflight automatically,
+using the intended Host and actual model/dataset mounts. No installation,
+download, GPU workload or device operation follows from an eligibility question.
+
+```bash
+python3 <repo>/skills/so101-dli-prepare/scripts/preflight.py --repo <repo> --format markdown
+```
+
+Requirements come from `docs/_static/dli-requirements.json`, maintained with the
+preparation guide: Ubuntu 24.04 native Linux, x86_64, an RTX GPU and R580+ Driver.
+Other OS versions are unverified against this course baseline, not automatically
+incompatible. The README's tested GPU list is not an exhaustive compatibility list.
+Host CUDA Toolkit is not required separately for the Container workflow.
+The course has no numeric minimum for RAM, VRAM or free storage; report observed
+values and leave capacity qualification unknown. Never invent thresholds or sum
+VRAM across GPUs. Hardware eligibility and missing software are separate results.
+
+Use the generated Korean assessment table and summary: `passed` means only the
+basic Host conditions were observed and environment preparation can proceed;
+`failed` names a concrete mismatch; `unknown` names missing evidence. Report
+software, source/assets, capacity and runtime separately. `dli_ready` stays
+unknown in this read-only audit, even when every observed file/tool is present.
+If sandbox permissions hide GPU or Docker, inspect the actual Host with an
+available authorized read-only tool; report a remaining permission limit as
+unknown. Do not report that absent sandbox visibility means absent hardware.
+
+To confirm actual classroom execution, follow the preparation guide's runtime
+checks and relevant specialists within the user's authorized scope. Verify
+physics, both cameras/viewer and policy inference together without OOM, using
+the selected image/revisions/mounts; record live evidence. State any remaining
+power/display/network and physical station checks separately. Only after those
+checks pass can you say “DLI 수업 진행 가능”; a preflight-only answer must say
+“기본 실행 조건 충족, 수업 실행 미검증”. Physical motion still requires the
+requested exercise and current operator readiness.
 
 ## Select the document profile from the request
 

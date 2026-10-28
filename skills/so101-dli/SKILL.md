@@ -57,7 +57,7 @@ For performed exercises, keep concise local results with source/model revision,
 conditions, evidence and the next step under ignored `runs/`. Never mark a task
 passed from a historical result or from connection messages alone.
 
-For any station installation, setup or provisioning request, read
+For computer eligibility, minimum-requirement checks, or any station installation, setup or provisioning request, read
 [so101-dli-prepare](../so101-dli-prepare/SKILL.md). Everyone uses that same skill.
 Default new setups to student documents; use instructor documents only when
 explicitly requested. Use [so101-dli-docs](../so101-dli-docs/SKILL.md) for the

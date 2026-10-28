@@ -758,3 +758,13 @@ msgstr ""
 #~ "Korean guide first. Check the actual LAN address "
 #~ "and choose an available port for the preview:"
 #~ msgstr "두 언어의 문서를 준비하고 한국어 교재를 먼저 엽니다. 실제 사내 IP를 확인하고 사용 가능한 preview 포트를 선택합니다."
+
+#: docs/_includes/student-environment-setup.md:6
+msgid ""
+"To check this computer first, ask `현재 컴퓨터가 DLI를 실행할 수 있는 환경인지 확인해줘`. The preparation skill "
+"automatically reports basic Host eligibility, missing tools/assets and unverified "
+"capacity/runtime checks. A read-only report does not certify classroom execution or start "
+"installation, downloads or robot motion."
+msgstr ""
+"먼저 이 컴퓨터를 점검하려면 `현재 컴퓨터가 DLI를 실행할 수 있는 환경인지 확인해줘`라고 요청합니다. 준비 스킬이 Host의 기본 실행 조건, 누락된 도구·자산, 미확인 "
+"용량·runtime 검증 항목을 자동으로 보고합니다. 읽기 전용 보고서만으로 수업 실행을 보장하거나 설치·다운로드·robot 동작을 시작하지 않습니다."

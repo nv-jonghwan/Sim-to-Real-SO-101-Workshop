@@ -160,6 +160,18 @@ df -h
 
 수업용 laptop 기종의 적합성은 아래 완료 기준으로 판정합니다. Driver의 CUDA 호환 기준은 [NVIDIA CUDA Compatibility](https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html)를 참고합니다.
 
+### 현재 컴퓨터의 DLI 실행 조건을 자동 점검합니다
+
+같은 repo를 연 Codex에 `현재 컴퓨터가 DLI를 실행할 수 있는 환경인지 확인해줘`라고 요청합니다. `so101-dli-prepare` 스킬이 설치나 GPU 작업 없이 OS·architecture·GPU·Driver·RAM·VRAM·저장 공간·도구·Docker runtime·수업 자산을 확인하고 **충족·미충족·미확인** 표와 다음 조치를 보여줍니다. 직접 실행할 때는 Host의 repository root에서 아래 명령을 사용합니다.
+
+```bash
+python3 skills/so101-dli-prepare/scripts/preflight.py --format markdown
+```
+
+자동 비교 기준은 [DLI 요구사항](_static/dli-requirements.json)에 관리합니다. 이 수업의 기준 환경은 Ubuntu 24.04 native Linux·x86_64·RTX GPU·R580 이상 Driver입니다. 다른 OS 버전은 이 기준에서 미확인으로 표시합니다. README의 검증 GPU 목록을 유일한 지원 목록으로 해석하지 않습니다. RAM·VRAM·저장 공간의 최소 수치는 아직 정해져 있지 않으므로 실제 값을 보고하고 용량 적합성을 미확인으로 남깁니다. 여러 GPU의 VRAM은 합산하지 않습니다.
+
+**기본 실행 조건 충족**은 환경 준비를 진행할 수 있다는 뜻입니다. 설치되지 않은 도구와 미완료 자산은 별도로 표시하며, 파일이 있다는 이유로 실제 실행에 합격했다고 판정하지 않습니다. 권한 때문에 읽을 수 없는 GPU·Docker 정보도 미확인으로 남깁니다. **DLI 수업 진행 가능**은 아래 완료 기준에 따라 simulation·두 camera·viewer·policy 동시 실행과 실제 station을 검증한 후 확인합니다. 읽기 전용 점검만으로 robot을 움직이거나 설치·다운로드를 시작하지 않습니다.
+
 ### 2. Host software와 NVIDIA Container Toolkit을 준비합니다
 
 Git·Git LFS, Docker Engine과 NVIDIA Container Toolkit을 준비합니다. CUDA 13 실행 환경은 workshop Container에서 제공하므로 Host CUDA Toolkit의 별도 설치는 이 Container 실행 절차의 필수 조건이 아닙니다. Docker는 [Ubuntu 설치 안내](https://docs.docker.com/engine/install/ubuntu/), NVIDIA Container Toolkit은 [공식 설치 안내](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)를 따릅니다. 수업에 사용할 계정으로 Docker 명령을 실행할 수 있는지 확인합니다.

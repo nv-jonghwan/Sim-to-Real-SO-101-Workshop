@@ -79,6 +79,75 @@ class PreparationTests(unittest.TestCase):
             (root / "docs/workshop-preparation.md").write_text('hf download owner/new-model\n## Download Starting-Pose Data\n  owner/new-data \\\n')
             self.assertEqual(preflight.course_assets(root), (["owner/new-model"], ["owner/new-data"]))
 
+    def assessment_fixture(self):
+        ok = {"status": "ok", "output": "available"}
+        return {
+            "host": {"os": {"ID": "ubuntu", "VERSION_ID": "24.04", "PRETTY_NAME": "Ubuntu 24.04"},
+                     "architecture": "x86_64", "ram_gib": 64},
+            "disk_free_gib": 500,
+            "gpu": {"status": "ok", "output": "0, NVIDIA GeForce RTX 5090, 580.95.05, 32768, 30000, 0"},
+            "tools": {"docker": ok, "uv": ok},
+            "docker_runtimes": {"status": "ok", "output": "nvidia runc"},
+            "source": {"matches_expected_revision": True},
+            "lfs": {"pointers": [], "errors": []}, "models": [], "starting_pose_datasets": []}
+
+    def requirements(self):
+        return json.loads((Path(__file__).parents[3] / "docs/_static/dli-requirements.json").read_text())
+
+    def test_eligible_host_does_not_certify_unrun_class(self):
+        report = self.assessment_fixture()
+        report["models"] = [{"id": "owner/policy", "status": "candidates_observed", "snapshots": [
+            {"status": "files_observed", "precision": {"course_precision": True}}]}]
+        assessment = preflight.assess(report, self.requirements())
+        self.assertEqual(assessment["eligibility"], "passed")
+        self.assertEqual(assessment["dli_ready"], "unknown")
+        self.assertTrue(all(c["status"] == "unknown" for c in assessment["checks"] if c["group"] in {"capacity", "runtime"}))
+        self.assertEqual(next(c for c in assessment["checks"] if c["name"] == "owner/policy")["status"], "unknown")
+        report.update(assessment=assessment, hostname="fixture")
+        self.assertIn("수업 실행 검증은 아직 완료되지 않았습니다", preflight.markdown_report(report))
+
+    def test_incompatible_architecture_driver_and_gpu_are_blocked(self):
+        for name, change in (
+                ("old_driver", lambda r: r["gpu"].update(output="0, NVIDIA RTX 5090, 570.1, 32768, 30000, 0")),
+                ("non_rtx", lambda r: r["gpu"].update(output="0, NVIDIA A100, 580.1, 81920, 80000, 0")),
+                ("architecture", lambda r: r["host"].update(architecture="aarch64"))):
+            with self.subTest(name=name):
+                report = self.assessment_fixture()
+                change(report)
+                self.assertEqual(preflight.assess(report, self.requirements())["eligibility"], "failed")
+
+    def test_unobserved_hardware_and_permissions_are_unknown(self):
+        report = self.assessment_fixture()
+        report["gpu"] = {"status": "unknown", "output": "Permission denied"}
+        report["docker_runtimes"] = {"status": "unknown", "output": "Permission denied"}
+        assessment = preflight.assess(report, self.requirements())
+        self.assertEqual(assessment["eligibility"], "unknown")
+        self.assertEqual(next(c for c in assessment["checks"] if c["name"] == "Docker NVIDIA runtime")["status"], "unknown")
+        report = self.assessment_fixture()
+        report["host"]["os"]["VERSION_ID"] = "22.04"
+        self.assertEqual(preflight.assess(report, self.requirements())["eligibility"], "unknown")
+
+    def test_missing_installation_is_distinct_from_host_eligibility(self):
+        report = self.assessment_fixture()
+        report["tools"]["docker"] = {"status": "missing"}
+        report["docker_runtimes"] = {"status": "ok", "output": "runc"}
+        assessment = preflight.assess(report, self.requirements())
+        self.assertEqual(assessment["eligibility"], "passed")
+        self.assertEqual(next(c for c in assessment["checks"] if c["name"] == "docker")["status"], "failed")
+        self.assertEqual(next(c for c in assessment["checks"] if c["name"] == "Docker NVIDIA runtime")["status"], "failed")
+
+    def test_capacity_uses_only_a_compatible_gpu_and_course_thresholds(self):
+        report = self.assessment_fixture()
+        report["gpu"]["output"] = "0, NVIDIA RTX 6000, 570.1, 49152, 40000, 0\n1, NVIDIA RTX 5090, 580.1, 16384, 16000, 0"
+        requirements = self.requirements()
+        requirements.update(minimum_vram_gib=24, minimum_ram_gib=128, minimum_free_disk_gib=100)
+        assessment = preflight.assess(report, requirements)
+        capacity = {c["name"]: c for c in assessment["checks"] if c["group"] == "capacity"}
+        self.assertEqual(capacity["VRAM GiB"]["observed"], 16)
+        self.assertEqual(capacity["VRAM GiB"]["status"], "failed")
+        self.assertEqual(capacity["RAM GiB"]["status"], "failed")
+        self.assertEqual(capacity["disk free GiB"]["status"], "passed")
+
     def test_default_setup_selects_only_student_documents(self):
         with tempfile.TemporaryDirectory() as tmp:
             plan = plans.build_plan(tmp)

@@ -2,6 +2,12 @@
 
 Ask `환경설정을 해줘` in the shared workshop project. The agent reads `AGENTS.md` and `skills/so101-dli-prepare/SKILL.md`, checks the existing installation, and follows the preparation guide. The same skill files support installation, course questions and exercises.
 
+To check this computer first, ask `현재 컴퓨터가 DLI를 실행할 수 있는 환경인지 확인해줘`. The preparation skill automatically reports basic Host eligibility, missing tools/assets and unverified capacity/runtime checks. A read-only report does not certify classroom execution or start installation, downloads or robot motion.
+
+```bash
+python3 skills/so101-dli-prepare/scripts/preflight.py --format markdown
+```
+
 A read-only plan shows the installation checkpoints and commands without executing them:
 
 ```bash
