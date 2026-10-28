@@ -43,11 +43,14 @@ Serve **only docs/_build**, never the repository, models, docker/env or raw
 planning/handoff records. Use a free port and a single owned process:
 
 ```bash
-python3 <repo>/skills/so101-dli-docs/scripts/preview.py start --profile student --bind <verified-LAN-IP> --port 8095
+python3 <repo>/skills/so101-dli-docs/scripts/preview.py start --profile student --bind 127.0.0.1 --port 8095
 python3 <repo>/skills/so101-dli-docs/scripts/preview.py status
 python3 <repo>/skills/so101-dli-docs/scripts/preview.py stop
 ```
 
+For build and browser use on the same Laptop, bind `127.0.0.1` and open
+`http://localhost:8095/ko/event/html/index.html` (or the selected Instructor
+path). Building alone does not start the preview or browser.
 For requested LAN access, bind the station's verified interface address and
 report the access scope. A local preview is not public publication. Avoid changing
 firewall rules or existing web services. The helper records owned PID/start time,

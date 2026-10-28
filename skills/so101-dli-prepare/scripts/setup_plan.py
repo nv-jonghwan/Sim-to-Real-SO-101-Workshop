@@ -26,7 +26,7 @@ def build_plan(repo, profile="student", language="all", bind=None, port=8095, ex
         "document_environment_command": ["uv", "sync", "--frozen", "--project", str(repo)],
         "document_build_command": ["bash", str(tools / "build.sh"), audience, language],
         "preview_command": ["python3", str(tools / "preview.py"), "start", "--profile", profile,
-                            "--bind", bind or "<verified-LAN-IP>", "--port", str(port)],
+                            "--bind", bind or "127.0.0.1", "--port", str(port)],
         "checkpoints": ["Host prerequisites", "Container", "models and datasets", "precision",
                         "selected documents and preview", "simulation and inference", "hardware qualification and handover"],
         "executed": False,
@@ -38,7 +38,7 @@ def main():
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[3])
     parser.add_argument("--profile", choices=["student", "instructor"], default="student")
     parser.add_argument("--language", choices=["en", "ko", "all"], default="all")
-    parser.add_argument("--bind", help="verified interface IP for the preview command")
+    parser.add_argument("--bind", help="preview bind address (default: 127.0.0.1; use a verified LAN IP for remote access)")
     parser.add_argument("--port", type=int, default=8095)
     parser.add_argument("--expected-revision")
     args = parser.parse_args()

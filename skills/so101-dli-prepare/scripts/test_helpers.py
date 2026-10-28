@@ -87,12 +87,14 @@ class PreparationTests(unittest.TestCase):
             self.assertEqual(plan["document_build_command"][-2:], ["event", "all"])
             self.assertIn("/ko/event/", plan["guide_path"])
             self.assertIn("student", plan["preview_command"])
+            self.assertEqual(plan["preview_command"][-4:], ["--bind", "127.0.0.1", "--port", "8095"])
             self.assertFalse(plan["executed"])
             self.assertEqual(list(Path(tmp).iterdir()), [])
 
     def test_explicit_instructor_uses_the_same_installation_checkpoints(self):
         student = plans.build_plan(".")
-        instructor = plans.build_plan(".", profile="instructor", language="en")
+        instructor = plans.build_plan(".", profile="instructor", language="en", bind="10.0.0.1")
+        self.assertEqual(instructor["preview_command"][-4:], ["--bind", "10.0.0.1", "--port", "8095"])
         self.assertEqual(student["checkpoints"], instructor["checkpoints"])
         self.assertEqual(student["preflight_command"], instructor["preflight_command"])
         self.assertEqual(instructor["document_build_command"][-2:], ["instructor", "en"])

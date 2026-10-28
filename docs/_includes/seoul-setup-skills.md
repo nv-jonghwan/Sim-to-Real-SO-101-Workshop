@@ -20,7 +20,7 @@ python3 skills/so101-dli-prepare/scripts/setup_plan.py
 python3 skills/so101-dli-prepare/scripts/setup_plan.py --profile instructor
 ```
 
-계획은 기본적으로 학생용 문서를 두 언어로 빌드하고 한국어 페이지를 먼저 엽니다. `--language`, `--expected-revision`, `--bind`, `--port`로 합의한 언어·기준 commit·실제 사내 IP·사용 가능한 포트를 전달합니다. Branch 이름은 나중에 다른 commit을 가리킬 수 있으므로 실제 commit을 기록합니다.
+계획은 기본적으로 학생용 문서를 두 언어로 빌드하고 한국어 페이지를 먼저 엽니다. `--language`, `--expected-revision`, `--bind`, `--port`로 합의한 언어·기준 commit·preview 접속 주소·사용 가능한 포트를 전달합니다. Branch 이름은 나중에 다른 commit을 가리킬 수 있으므로 실제 commit을 기록합니다.
 
 ```bash
 python3 skills/so101-dli-prepare/scripts/preflight.py --repo . --expected-revision <agreed-commit> --output runs/setup/laptop-01/preflight.json
@@ -43,12 +43,16 @@ Instructor용을 명시한 컴퓨터에서는 마지막 명령 대신 아래 명
 bash skills/so101-dli-docs/scripts/build.sh instructor all
 ```
 
-Preview도 같은 profile을 선택합니다. 점검한 사내 IP에 bind하고 충돌하지 않는 포트를 사용합니다. 학생용 preview는 이전 Instructor 빌드가 남아 있어도 그 문서를 제공하지 않습니다. 실행 PID·명령·작업 폴더·로그·중지 방법과 실제 URL을 기록하고 사용자가 볼 서버는 유지합니다.
+Preview도 같은 profile을 선택합니다. 같은 Laptop에서 빌드하고 브라우저로 볼 때는 `127.0.0.1`에 bind하고 사용 가능한 포트를 선택합니다. 학생용 preview는 이전 Instructor 빌드가 남아 있어도 그 문서를 제공하지 않습니다. 실행 PID·명령·작업 폴더·로그·중지 방법과 실제 URL을 기록하고 사용자가 볼 서버는 유지합니다.
 
 ```bash
-python3 skills/so101-dli-docs/scripts/preview.py start --profile student --bind <verified-LAN-IP> --port 8095
-python3 skills/so101-dli-docs/scripts/preview.py start --profile instructor --bind <verified-LAN-IP> --port 8095
+python3 skills/so101-dli-docs/scripts/preview.py start --profile student --bind 127.0.0.1 --port 8095
+python3 skills/so101-dli-docs/scripts/preview.py start --profile instructor --bind 127.0.0.1 --port 8095
 ```
+
+Preview를 시작한 뒤 같은 Laptop의 브라우저에서 [Instructor 교재 열기](http://localhost:8095/ko/instructor/html/index.html) 또는 [Instructor DLI준비와 진행 열기](http://localhost:8095/ko/instructor/html/2026-10-28-seoul-preparation.html)를 클릭합니다. 학생용을 빌드했다면 [학생용 교재 열기](http://localhost:8095/ko/event/html/index.html)를 사용합니다. 문서 빌드만으로 서버나 브라우저가 실행되지는 않습니다. 포트를 바꾸면 링크의 포트도 바꿉니다.
+
+`localhost`는 브라우저를 실행하는 컴퓨터를 가리킵니다. 다른 PC에서 접속할 때만 시작 명령의 `127.0.0.1`을 서버의 실제 LAN IP로 바꾸고 preview가 보고한 IP URL을 사용합니다.
 
 위 두 preview 명령은 선택한 profile 하나만 실행합니다. 같은 포트에 두 서버를 동시에 띄우지 않습니다. 다른 profile의 서버가 이미 실행 중이면 그 서버의 소유 관계를 확인하고 해당 preview만 정리한 뒤 전환합니다. 전체 문서를 검증하는 관리 작업에서만 명시적으로 `build.sh all all`과 `--profile all`을 사용합니다.
 

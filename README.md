@@ -420,13 +420,13 @@ Instructor HTML, navigation and search. Student guides do not advertise the
 Instructor build; source copying and source links are disabled for those guides. Outputs are separate: `docs/_build/ko/event/html` and
 `docs/_build/ko/instructor/html`. Both languages are built; language switches stay inside the selected guide.
 
-Choose one preview matching the setup profile. Replace `<verified-LAN-IP>` with
-the station's actual interface address and use a free port. The preview serves
+Choose one preview matching the setup profile. On the same Laptop, bind
+`127.0.0.1` and open the links below in its browser. Use a free port. The preview serves
 only its selected guide, even when other build outputs remain on disk.
 
 ```bash
-python3 skills/so101-dli-docs/scripts/preview.py start --profile student --bind <verified-LAN-IP> --port 8095
-python3 skills/so101-dli-docs/scripts/preview.py start --profile instructor --bind <verified-LAN-IP> --port 8095
+python3 skills/so101-dli-docs/scripts/preview.py start --profile student --bind 127.0.0.1 --port 8095
+python3 skills/so101-dli-docs/scripts/preview.py start --profile instructor --bind 127.0.0.1 --port 8095
 ```
 
 Use only one of these start commands on a given port. An existing owned preview
@@ -439,8 +439,12 @@ python3 skills/so101-dli-docs/scripts/preview.py status
 python3 skills/so101-dli-docs/scripts/preview.py stop
 ```
 
-The student URL is `http://<verified-LAN-IP>:8095/ko/event/html/index.html`;
-the Instructor URL is `http://<verified-LAN-IP>:8095/ko/instructor/html/index.html`.
+After starting the preview, open the [student guide](http://localhost:8095/ko/event/html/index.html)
+or [Instructor guide](http://localhost:8095/ko/instructor/html/index.html) matching
+your build. Building alone does not start the server or open the browser.
+`localhost` refers to the browser’s computer. For access from another PC, replace
+`127.0.0.1` with the server’s verified LAN IP and use its reported IP URL.
+Update the link port if you choose a port other than 8095.
 Verify the actual HTTP response and desktop browser; keep a requested preview
 running. No public tunnel or firewall change is part of setup.
 

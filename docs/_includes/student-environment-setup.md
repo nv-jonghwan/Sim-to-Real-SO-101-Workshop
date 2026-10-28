@@ -20,12 +20,16 @@ bash skills/so101-dli-docs/scripts/build.sh
 python3 skills/so101-dli-docs/scripts/verify_html.py
 ```
 
-The build prepares both languages and opens the Korean guide first. Check the actual LAN address and choose an available port for the preview:
+The build prepares both languages. When you build and browse on the same Laptop, start a local preview on an available port:
 
 ```bash
-python3 skills/so101-dli-docs/scripts/preview.py start --bind <verified-LAN-IP> --port 8095
+python3 skills/so101-dli-docs/scripts/preview.py start --bind 127.0.0.1 --port 8095
 python3 skills/so101-dli-docs/scripts/preview.py status
 ```
+
+After the preview starts, open [the course guide](http://localhost:8095/ko/event/html/index.html) or [DLI preparation and delivery](http://localhost:8095/ko/event/html/2026-10-28-seoul-preparation.html) in that Laptop’s browser. The local service uses `http://localhost:8095`; building alone does not start the server or open the browser. If you choose a different port, update the links accordingly.
+
+`localhost` refers to the computer running your browser. For access from another PC, replace `127.0.0.1` in the start command with the server’s verified LAN IP and open the URL reported by the preview on that PC.
 
 Use the verified URL reported by the preview. Keep the requested preview running; its PID, command and log are recorded locally. Use `preview.py stop` to stop that owned preview. This is background execution, not boot autostart.
 
