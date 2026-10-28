@@ -1,5 +1,5 @@
 # Korean translations for SO-101 Sim-to-Real Workshop.
-# Copyright (C) 2026 NVIDIA
+# Copyright (C) 2026 ORGANIZATION
 # This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-28 20:23+0900\n"
+"POT-Creation-Date: 2026-10-28 20:45+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ko\n"
@@ -1100,8 +1100,12 @@ msgid "저장소의 실행 스킬"
 msgstr "저장소의 실행 스킬"
 
 #: docs/2026-10-28-seoul-preparation.md:326
-msgid "저장소의 `skills/`에는 학생이 수업 실습을 단계별로 진행할 때 사용하는 스킬만 포함합니다."
-msgstr "저장소의 `skills/`에는 학생이 수업 실습을 단계별로 진행할 때 사용하는 스킬만 포함합니다."
+msgid ""
+"저장소의 `skills/`에는 학생이 전체 교재에 대해 질문하고 수업 실습을 단계별로 진행하는 데 사용하는 스킬을 포함합니다. 설정과 사용 예시는 "
+"[CODEX](01-codex.md)를 참고하세요."
+msgstr ""
+"저장소의 `skills/`에는 학생이 전체 교재에 대해 질문하고 수업 실습을 단계별로 진행하는 데 사용하는 스킬을 포함합니다. 설정과 사용 예시는 "
+"[CODEX](01-codex.md)를 참고하세요."
 
 #: docs/2026-10-28-seoul-preparation.md:112
 msgid "스킬"
@@ -1118,6 +1122,38 @@ msgstr "`so101-dli`"
 #: docs/2026-10-28-seoul-preparation.md:112
 msgid "오늘의 일정과 교재에 따라 다음 학생 실습 단계 선택"
 msgstr "오늘의 일정과 교재에 따라 다음 학생 실습 단계 선택"
+
+#: docs/2026-10-28-seoul-preparation.md:112
+msgid "`so101-dli-qa`"
+msgstr "`so101-dli-qa`"
+
+#: docs/2026-10-28-seoul-preparation.md:112
+msgid "전체 교재의 개념·명령·오류 Q&A"
+msgstr "전체 교재의 개념·명령·오류 Q&A"
+
+#: docs/2026-10-28-seoul-preparation.md:112
+msgid "`so101-dli-gr00t`"
+msgstr "`so101-dli-gr00t`"
+
+#: docs/2026-10-28-seoul-preparation.md:112
+msgid "VLA·GR00T·post-training·Co-Training 학습"
+msgstr "VLA·GR00T·post-training·Co-Training 학습"
+
+#: docs/2026-10-28-seoul-preparation.md:112
+msgid "`so101-dli-cosmos`"
+msgstr "`so101-dli-cosmos`"
+
+#: docs/2026-10-28-seoul-preparation.md:112
+msgid "Cosmos augmentation과 video 비교"
+msgstr "Cosmos augmentation과 video 비교"
+
+#: docs/2026-10-28-seoul-preparation.md:112
+msgid "`so101-dli-sysid`"
+msgstr "`so101-dli-sysid`"
+
+#: docs/2026-10-28-seoul-preparation.md:112
+msgid "Actuation gap·System Identification·AnchorBench 학습"
+msgstr "Actuation gap·System Identification·AnchorBench 학습"
 
 #: docs/2026-10-28-seoul-preparation.md:112
 msgid "`so101-dli-hardware`"
@@ -1151,7 +1187,7 @@ msgstr "`so101-dli-dagger`"
 msgid "HG-DAgger 시연, correction 수집·저장·검토"
 msgstr "HG-DAgger 시연, correction 수집·저장·검토"
 
-#: docs/2026-10-28-seoul-preparation.md:336
+#: docs/2026-10-28-seoul-preparation.md:340
 msgid "실행 요청 예시: “`skills/so101-dli/SKILL.md`를 읽고, 교재의 calibration 실습부터 한 단계씩 진행해 주세요.”"
 msgstr "실행 요청 예시: “`skills/so101-dli/SKILL.md`를 읽고, 교재의 calibration 실습부터 한 단계씩 진행해 주세요.”"
 

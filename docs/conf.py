@@ -65,8 +65,9 @@ _overview_toctree = """:::{toctree}
 :hidden:
 
 01-overview
-{how_to}
+01-codex
 04-lerobot
+{how_to}
 :::"""
 _setup_toctree = """:::{toctree}
 :caption: {caption}

@@ -323,11 +323,15 @@ zero_agent --task Newton-So101-Teleop-Vials-To-Rack-v0 --cameras all presets=new
 
 ## 저장소의 실행 스킬
 
-저장소의 `skills/`에는 학생이 수업 실습을 단계별로 진행할 때 사용하는 스킬만 포함합니다.
+저장소의 `skills/`에는 학생이 전체 교재에 대해 질문하고 수업 실습을 단계별로 진행하는 데 사용하는 스킬을 포함합니다. 설정과 사용 예시는 [CODEX](01-codex.md)를 참고하세요.
 
 | 스킬 | 사용하는 시점 |
 |---|---|
 | `so101-dli` | 오늘의 일정과 교재에 따라 다음 학생 실습 단계 선택 |
+| `so101-dli-qa` | 전체 교재의 개념·명령·오류 Q&A |
+| `so101-dli-gr00t` | VLA·GR00T·post-training·Co-Training 학습 |
+| `so101-dli-cosmos` | Cosmos augmentation과 video 비교 |
+| `so101-dli-sysid` | Actuation gap·System Identification·AnchorBench 학습 |
 | `so101-dli-hardware` | 작업대·arm·calibration·camera·real teleop 점검 |
 | `so101-dli-collect` | Sim/real demonstration 수집, Domain Randomization, State Machine, episode 검토 |
 | `so101-dli-evaluate` | Sim/real rollout과 Co-Training model 비교, policy server 정리 |

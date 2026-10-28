@@ -1,0 +1,485 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 20:45+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: docs/01-codex.md:1
+msgid "CODEX"
+msgstr "CODEX"
+
+#: docs/01-codex.md:3
+msgid ""
+"Use Codex throughout today’s workshop to understand the course, find the right command, follow an"
+" exercise, and discuss what you observe. The repository includes student skills that connect "
+"questions and hands-on work to the actual lesson documents."
+msgstr ""
+"오늘 과정에서는 Codex를 활용해 교재를 이해하고, 필요한 명령을 찾고, 실습을 진행하며 관찰한 결과를 함께 살펴봅니다. 저장소에는 질문과 실습을 실제 교재로 연결하는 "
+"학생용 스킬을 준비했습니다."
+
+#: docs/01-codex.md:5
+msgid ""
+"Ask in Korean and keep technical names such as Physical AI, GR00T, Co-Training and HG-DAgger in "
+"English. A course question can be answered from the documents; physical exercises follow the "
+"instructor’s sequence and the readiness of your station."
+msgstr ""
+"한국어로 질문하고 Physical AI, GR00T, Co-Training, HG-DAgger와 같은 전문 용어는 영어로 사용해도 됩니다. 과정 질문은 교재를 바탕으로 "
+"답하고, 실제 장비 실습은 강사의 진행 순서와 station 준비 상태에 맞춰 수행합니다."
+
+#: docs/01-codex.md:7
+msgid "Open the workshop in Codex"
+msgstr "Codex에서 수업 저장소 열기"
+
+#: docs/01-codex.md:9
+msgid ""
+"Use the prepared Codex installation on your RTX Laptop. If it is not installed, follow the "
+"[official Codex CLI guide](https://learn.chatgpt.com/docs/codex/cli). Sign in with the account "
+"provided or approved for the course."
+msgstr ""
+"RTX Laptop에 준비된 Codex를 사용합니다. 설치되어 있지 않으면 [공식 Codex CLI "
+"안내](https://learn.chatgpt.com/docs/codex/cli)를 따릅니다. 수업에서 안내한 계정으로 로그인합니다."
+
+#: docs/01-codex.md:11
+msgid "In a Host terminal, enter the cloned workshop repository and check its branch."
+msgstr "Host terminal에서 clone한 수업 저장소로 이동하고 branch를 확인합니다."
+
+#: docs/01-codex.md:20
+msgid ""
+"The branch should be `aidayseoul2026`. On the first run, complete the sign-in prompts. In the "
+"Codex desktop app or IDE extension, open this same repository folder. The workshop container and "
+"Codex must refer to the same checkout."
+msgstr ""
+"Branch는 `aidayseoul2026`이어야 합니다. 처음 실행할 때 로그인 안내를 완료합니다. Codex desktop app이나 IDE extension에서는 같은 "
+"저장소 폴더를 엽니다. Workshop container와 Codex가 같은 checkout을 사용해야 합니다."
+
+#: docs/01-codex.md:22
+msgid "Set up the course skills"
+msgstr "수업용 스킬 설정하기"
+
+#: docs/01-codex.md:24
+msgid ""
+"The instructions live in `skills/`. This repository also includes `.agents/skills/` links to "
+"those student skills, so Codex can discover them when opened in this repository. No copy into a "
+"personal skill folder is required."
+msgstr ""
+"스킬 원문은 `skills/`에 있습니다. 저장소에는 학생용 스킬을 가리키는 `.agents/skills/` 링크도 포함되어 있어 이 폴더에서 Codex를 열면 스킬을 찾을 "
+"수 있습니다. 개인 스킬 폴더로 따로 복사할 필요는 없습니다."
+
+#: docs/01-codex.md:30
+msgid ""
+"In Codex CLI, enter `/skills` or type `$` to find a skill. You can request one explicitly with "
+"`$so101-dli`; Codex can also select an appropriate skill from a natural-language question. These "
+"discovery locations and invocation methods follow the [official skills "
+"guide](https://learn.chatgpt.com/docs/build-skills)."
+msgstr ""
+"Codex CLI 입력창에서 `/skills`를 실행하거나 `$`를 입력해 스킬을 찾습니다. `$so101-dli`로 직접 지정할 수 있고, 자연어 질문에 맞춰 Codex가 "
+"적절한 스킬을 선택할 수도 있습니다. 설정 경로와 호출 방법은 [공식 스킬 안내](https://learn.chatgpt.com/docs/build-skills)를 따릅니다."
+
+#: docs/01-codex.md:32
+msgid ""
+"If a skill does not appear, check that the repository root is open and that the links resolve to "
+"a `SKILL.md` file, then restart Codex. You can also ask Codex to read `skills/so101-dli/SKILL.md`"
+" directly. The repository’s `AGENTS.md` connects course requests to these instructions."
+msgstr ""
+"스킬이 보이지 않으면 저장소 root를 열었는지, 링크가 `SKILL.md` 파일로 연결되는지 확인한 뒤 Codex를 다시 시작합니다. "
+"`skills/so101-dli/SKILL.md`를 직접 읽어 달라고 요청할 수도 있습니다. 저장소의 `AGENTS.md`는 과정 요청을 이 스킬로 연결합니다."
+
+#: docs/01-codex.md:34
+msgid "Choose a skill for your question or exercise"
+msgstr "질문과 실습에 맞는 스킬 선택하기"
+
+#: docs/01-codex.md
+msgid "Skill"
+msgstr "스킬"
+
+#: docs/01-codex.md
+msgid "When to use it"
+msgstr "사용하는 시점"
+
+#: docs/01-codex.md
+msgid "`so101-dli`"
+msgstr "`so101-dli`"
+
+#: docs/01-codex.md
+msgid "Today’s schedule, lesson navigation and the next exercise"
+msgstr "오늘의 일정, 교재 탐색, 다음 실습 진행"
+
+#: docs/01-codex.md
+msgid "`so101-dli-qa`"
+msgstr "`so101-dli-qa`"
+
+#: docs/01-codex.md
+msgid "Questions and explanations across the complete course"
+msgstr "전체 과정의 개념·명령·오류에 대한 Q&A"
+
+#: docs/01-codex.md
+msgid "`so101-dli-hardware`"
+msgstr "`so101-dli-hardware`"
+
+#: docs/01-codex.md
+msgid "Workspace checks, calibration, cameras and Real Teleop"
+msgstr "Workspace 점검, calibration, camera와 Real Teleop"
+
+#: docs/01-codex.md
+msgid "`so101-dli-collect`"
+msgstr "`so101-dli-collect`"
+
+#: docs/01-codex.md
+msgid "Sim Teleop, Domain Randomization, State Machine and datasets"
+msgstr "Sim Teleop, Domain Randomization, State Machine과 dataset"
+
+#: docs/01-codex.md
+msgid "`so101-dli-gr00t`"
+msgstr "`so101-dli-gr00t`"
+
+#: docs/01-codex.md
+msgid "VLA, GR00T, post-training and Co-Training"
+msgstr "VLA, GR00T, post-training과 Co-Training"
+
+#: docs/01-codex.md
+msgid "`so101-dli-evaluate`"
+msgstr "`so101-dli-evaluate`"
+
+#: docs/01-codex.md
+msgid "Sim/real evaluation and comparisons of prepared policies"
+msgstr "Sim/real 평가와 준비된 policy 비교"
+
+#: docs/01-codex.md
+msgid "`so101-dli-dagger`"
+msgstr "`so101-dli-dagger`"
+
+#: docs/01-codex.md
+msgid "HG-DAgger correction collection and review"
+msgstr "HG-DAgger correction 수집과 검토"
+
+#: docs/01-codex.md
+msgid "`so101-dli-cosmos`"
+msgstr "`so101-dli-cosmos`"
+
+#: docs/01-codex.md
+msgid "Cosmos augmentation and source/generated video comparison"
+msgstr "Cosmos augmentation과 원본·생성 video 비교"
+
+#: docs/01-codex.md
+msgid "`so101-dli-sysid`"
+msgstr "`so101-dli-sysid`"
+
+#: docs/01-codex.md
+msgid "Actuation gap, System Identification and AnchorBench"
+msgstr "Actuation gap, System Identification과 AnchorBench"
+
+#: docs/01-codex.md:48
+msgid ""
+"The skills read the current lesson Markdown, Korean catalogs, interactive explanations and "
+"relevant code. Ask for a source section when you want to relate an answer back to the lesson."
+msgstr ""
+"스킬은 현재 교재의 Markdown, 한국어 catalog, interactive 설명과 관련 코드를 읽습니다. 답변이 교재의 어느 내용인지 확인하고 싶으면 해당 절도 함께 "
+"알려 달라고 요청하세요."
+
+#: docs/01-codex.md:50
+msgid "First example: ask for today’s schedule"
+msgstr "첫 번째 예제: 오늘의 일정 묻기"
+
+#: docs/01-codex.md:52
+msgid "Enter this short question in Codex."
+msgstr "Codex 입력창에 다음과 같이 질문합니다."
+
+#: docs/01-codex.md:58
+msgid ""
+"Codex should read `docs/seoul-workshop-schedule.md` and return a table with the time, topic, "
+"duration and instructor. It should include arrival, breaks and lunch, and state that all times "
+"are KST. Compare the answer with [Today’s Schedule](seoul-workshop-schedule.md)."
+msgstr ""
+"Codex가 `docs/seoul-workshop-schedule.md`를 읽고 시간·주제·소요 시간·진행자를 표로 제시하는지 확인합니다. 입장·휴식·점심이 포함되고 모든 "
+"시간이 KST 기준인지도 확인합니다. 답변을 [오늘의 일정](seoul-workshop-schedule.md)과 비교하세요."
+
+#: docs/01-codex.md:60
+msgid "To request the same workflow explicitly, use:"
+msgstr "같은 작업에 스킬을 직접 지정하려면 다음과 같이 입력합니다."
+
+#: docs/01-codex.md:66
+msgid ""
+"Check that teaching begins at 09:00, lunch is 12:45–13:45 and the conclusion ends at 17:15. Use "
+"each detailed session row for its instructor. This exercise reads documents and does not need to "
+"start a robot or simulation."
+msgstr ""
+"수업 시작이 09:00, 점심이 12:45–13:45, 마무리 종료가 17:15인지 확인합니다. 세션별 진행자는 상세 일정의 각 행을 기준으로 확인합니다. 이 예제는 문서를 "
+"읽는 작업이므로 robot이나 simulation을 시작할 필요가 없습니다."
+
+#: docs/01-codex.md:68
+msgid "Verified schedule example"
+msgstr "확인한 일정 답변 예시"
+
+#: docs/01-codex.md:70
+msgid ""
+"A read-only Codex run with the question above produced the 22-row schedule below. Times, "
+"durations and instructors were checked against the lesson. Topic labels are aligned with the "
+"course terminology; wording may vary between runs."
+msgstr ""
+"위 질문으로 Codex를 읽기 전용 실행해 아래 22개 항목의 일정 표가 출력되는 것을 확인했습니다. 시간·소요 시간·진행자는 교재와 대조했습니다. 주제 표기는 교재 용어에 "
+"맞춰 정리했으며, 답변 문장은 실행마다 달라질 수 있습니다."
+
+#: docs/01-codex.md
+msgid "Time"
+msgstr "시간"
+
+#: docs/01-codex.md
+msgid "Topic"
+msgstr "주제"
+
+#: docs/01-codex.md
+msgid "Duration"
+msgstr "소요 시간"
+
+#: docs/01-codex.md
+msgid "Instructor"
+msgstr "진행자"
+
+#: docs/01-codex.md
+msgid "08:30–09:00"
+msgstr "08:30–09:00"
+
+#: docs/01-codex.md
+msgid "도착 및 착석"
+msgstr "도착 및 착석"
+
+#: docs/01-codex.md
+msgid "30분"
+msgstr "30분"
+
+#: docs/01-codex.md
+msgid "—"
+msgstr "—"
+
+#: docs/01-codex.md
+msgid "09:00–09:10"
+msgstr "09:00–09:10"
+
+#: docs/01-codex.md
+msgid "Physical AI & today’s task"
+msgstr "Physical AI & today’s task"
+
+#: docs/01-codex.md
+msgid "10분"
+msgstr "10분"
+
+#: docs/01-codex.md
+msgid "Jonghwan Lee"
+msgstr "Jonghwan Lee"
+
+#: docs/01-codex.md
+msgid "09:10–09:30"
+msgstr "09:10–09:30"
+
+#: docs/01-codex.md
+msgid "LeRobot"
+msgstr "LeRobot"
+
+#: docs/01-codex.md
+msgid "20분"
+msgstr "20분"
+
+#: docs/01-codex.md
+msgid "09:30–10:40"
+msgstr "09:30–10:40"
+
+#: docs/01-codex.md
+msgid "Robot setup · calibration · Real Teleop"
+msgstr "Robot setup · calibration · Real Teleop"
+
+#: docs/01-codex.md
+msgid "70분"
+msgstr "70분"
+
+#: docs/01-codex.md
+msgid "10:40–11:05"
+msgstr "10:40–11:05"
+
+#: docs/01-codex.md
+msgid "Understanding GR00T"
+msgstr "Understanding GR00T"
+
+#: docs/01-codex.md
+msgid "25분"
+msgstr "25분"
+
+#: docs/01-codex.md
+msgid "11:05–11:25"
+msgstr "11:05–11:25"
+
+#: docs/01-codex.md
+msgid "Sim Teleop · Domain Randomization"
+msgstr "Sim Teleop · Domain Randomization"
+
+#: docs/01-codex.md
+msgid "11:25–11:50"
+msgstr "11:25–11:50"
+
+#: docs/01-codex.md
+msgid "Software stack, architecture"
+msgstr "Software stack, architecture"
+
+#: docs/01-codex.md
+msgid "11:50–12:00"
+msgstr "11:50–12:00"
+
+#: docs/01-codex.md
+msgid "Break"
+msgstr "Break"
+
+#: docs/01-codex.md
+msgid "12:00–12:15"
+msgstr "12:00–12:15"
+
+#: docs/01-codex.md
+msgid "State Machine"
+msgstr "State Machine"
+
+#: docs/01-codex.md
+msgid "15분"
+msgstr "15분"
+
+#: docs/01-codex.md
+msgid "12:15–12:35"
+msgstr "12:15–12:35"
+
+#: docs/01-codex.md
+msgid "Sim Evaluation"
+msgstr "Sim Evaluation"
+
+#: docs/01-codex.md
+msgid "12:35–12:45"
+msgstr "12:35–12:45"
+
+#: docs/01-codex.md
+msgid "Q&A"
+msgstr "Q&A"
+
+#: docs/01-codex.md
+msgid "12:45–13:45"
+msgstr "12:45–13:45"
+
+#: docs/01-codex.md
+msgid "Lunch"
+msgstr "Lunch"
+
+#: docs/01-codex.md
+msgid "60분"
+msgstr "60분"
+
+#: docs/01-codex.md
+msgid "13:45–13:55"
+msgstr "13:45–13:55"
+
+#: docs/01-codex.md
+msgid "오후 시작, 오전 내용 정리 및 Q&A"
+msgstr "오후 시작, 오전 내용 정리 및 Q&A"
+
+#: docs/01-codex.md
+msgid "Jihyeon Ryu"
+msgstr "Jihyeon Ryu"
+
+#: docs/01-codex.md
+msgid "13:55–14:10"
+msgstr "13:55–14:10"
+
+#: docs/01-codex.md
+msgid "Sim-to-Real Gap"
+msgstr "Sim-to-Real Gap"
+
+#: docs/01-codex.md
+msgid "Hogun Kee"
+msgstr "Hogun Kee"
+
+#: docs/01-codex.md
+msgid "14:10–14:40"
+msgstr "14:10–14:40"
+
+#: docs/01-codex.md
+msgid "Real Robot Rollouts with sim-only data"
+msgstr "Real Robot Rollouts with sim-only data"
+
+#: docs/01-codex.md
+msgid "14:40–15:10"
+msgstr "14:40–15:10"
+
+#: docs/01-codex.md
+msgid "Co-Training theory and practice"
+msgstr "Co-Training theory and practice"
+
+#: docs/01-codex.md
+msgid "15:10–15:40"
+msgstr "15:10–15:40"
+
+#: docs/01-codex.md
+msgid "HG-DAgger"
+msgstr "HG-DAgger"
+
+#: docs/01-codex.md
+msgid "15:40–15:50"
+msgstr "15:40–15:50"
+
+#: docs/01-codex.md
+msgid "15:50–16:10"
+msgstr "15:50–16:10"
+
+#: docs/01-codex.md
+msgid "Cosmos"
+msgstr "Cosmos"
+
+#: docs/01-codex.md
+msgid "16:10–16:20"
+msgstr "16:10–16:20"
+
+#: docs/01-codex.md
+msgid "SysID / AnchorBench"
+msgstr "SysID / AnchorBench"
+
+#: docs/01-codex.md
+msgid "16:20–17:05"
+msgstr "16:20–17:05"
+
+#: docs/01-codex.md
+msgid "Explore, experiment & wrap up"
+msgstr "Explore, experiment & wrap up"
+
+#: docs/01-codex.md
+msgid "45분"
+msgstr "45분"
+
+#: docs/01-codex.md
+msgid "17:05–17:15"
+msgstr "17:05–17:15"
+
+#: docs/01-codex.md
+msgid "Conclusion"
+msgstr "Conclusion"
+
+#: docs/01-codex.md:97
+msgid "Try course questions and hands-on requests"
+msgstr "과정 Q&A와 실습 요청 예시"
+
+#: docs/01-codex.md:117
+msgid ""
+"For an error, provide the command, whether it ran on the Host or in the Container, and the "
+"relevant error text. Codex can connect it to [Troubleshooting](troubleshooting.md). Before "
+"physical motion, follow the instructor’s safety guidance and confirm that the station is ready."
+msgstr ""
+"오류가 발생하면 실행한 명령, Host/Container 중 실행 위치, 관련 오류 메시지를 함께 알려 주세요. Codex가 "
+"[Troubleshooting](troubleshooting.md)과 연결해 원인을 살펴볼 수 있습니다. 실제 장비를 움직이기 전에는 강사의 안전 안내를 따르고 station"
+" 준비 상태를 확인합니다."

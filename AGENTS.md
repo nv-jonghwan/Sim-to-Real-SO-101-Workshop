@@ -455,6 +455,16 @@ indent on shell continuations. Omit args with working defaults
 (`--port`, `--robot_id`) unless the user is overriding them.
 
 
-## AI Days Seoul DLI skills
+## AI Days Seoul student course support
 
-For preparation or guided DLI work, read `skills/so101-dli/SKILL.md` and route to the relevant repository skill. Use this fork's `aidayseoul2026` branch unless the user selects another baseline, and record the exact commit used for each exercise. Existing station evidence does not count as a new exercise result. Use the Hugging Face account authorized for the current station and follow any organization-specific account policy; do not print credentials.
+For course navigation or the next exercise, use `skills/so101-dli/SKILL.md`.
+For questions across the whole course, use `skills/so101-dli-qa/SKILL.md` and read
+the relevant lesson before answering. Use `docs/seoul-workshop-schedule.md` for
+“오늘의 일정이 뭐야?” and show its detailed schedule as a Korean Markdown table,
+including time, topic, duration and instructor. A schedule or Q&A request does
+not start containers, GPU jobs or robot movement. Student skills are linked
+under `.agents/skills/`; see `docs/01-codex.md` for setup and examples.
+
+Use this fork's `aidayseoul2026` branch unless the user selects another baseline,
+and record the exact commit for exercises. Use the HF account authorized for
+the current station and its organization policy. Never print credentials.

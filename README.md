@@ -6,7 +6,7 @@ Welcome to this workshop on sim-to-real transfer for the SO-101 robot!
 
 This repository contains the assets and code to accompany this [learning content](https://docs.nvidia.com/learning/physical-ai/sim-to-real-so-101/latest/index.html).
 
-This fork’s `aidayseoul2026` branch contains the AI Day Seoul 2026 course snapshot, Korean documentation, schedule and execution skills. Start with [DLI preparation and RTX Laptop setup](docs/2026-10-28-seoul-preparation.md). The public upstream repository remains available at [isaac-sim/Sim-to-Real-SO-101-Workshop](https://github.com/isaac-sim/Sim-to-Real-SO-101-Workshop).
+This fork’s `aidayseoul2026` branch contains the AI Day Seoul 2026 course snapshot, Korean documentation, schedule and nine student skills for hands-on exercises and whole-course Q&A. Students can start with [CODEX](docs/01-codex.md) and [Today’s Schedule](docs/seoul-workshop-schedule.md). Instructor setup is covered separately in [DLI preparation and RTX Laptop setup](docs/2026-10-28-seoul-preparation.md). The public upstream repository remains available at [isaac-sim/Sim-to-Real-SO-101-Workshop](https://github.com/isaac-sim/Sim-to-Real-SO-101-Workshop).
 
 Documentation builds use the `sphinx-nvlearning` extension from NVIDIA’s internal GitLab and require authorized access. This documentation dependency is separate from the workshop Docker runtime.
 
