@@ -1,0 +1,593 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Teleoperating in Sim"
+msgstr "Simulation에서 Teleoperation"
+
+msgid "SO-101 teleoperation in the Newton browser display, with external and wrist cameras."
+msgstr "Newton browser display에서 external 및 wrist camera로 보는 SO-101 teleoperation입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"Hands-on. You'll need the `so101-workshop` container, your calibrated SO-101 leader arm, and an "
+"NVIDIA GPU for Isaac Lab simulation."
+msgstr ""
+"실습입니다. `so101-workshop` container, calibration된 SO-101 leader arm, Isaac Lab simulation용 NVIDIA "
+"GPU가 필요합니다."
+
+msgid "Now that you've done teleoperation on a real robot, let's try it in _simulation_ with Isaac Lab."
+msgstr "실제 robot에서 teleoperation을 해봤으니, 이제 Isaac Lab의 _simulation_에서 진행합니다."
+
+msgid ""
+"In this module, you'll use the leader arm to drive a simulated SO-101 robot, allowing us to "
+"collect demonstrations with Isaac Lab."
+msgstr "Leader arm으로 simulation의 SO-101을 제어하고 Isaac Lab에서 demonstration을 수집합니다."
+
+msgid ""
+"Because it's simulation, we have control of the world and can manipulate it in interesting ways, "
+"like using **domain randomization** to ensure our dataset will be sufficiently varied."
+msgstr "Simulation에서는 환경을 직접 제어할 수 있습니다. 예를 들어 **Domain Randomization**으로 dataset의 다양성을 확보할 수 있습니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "Drive the simulated SO-101 with the leader arm."
+msgstr "Leader arm으로 simulation의 SO-101 제어"
+
+msgid "Practice vial placement using the wrist and external camera views."
+msgstr "Wrist 및 external camera view로 vial 배치 연습"
+
+msgid "Record, review, and optionally upload demonstrations."
+msgstr "Demonstration 기록·검토 및 선택적인 upload"
+
+msgid "Explore optional scripted collection with the state machine."
+msgstr "State machine 기반 scripted collection 탐색"
+
+msgid "Teleoperation: Collecting Human Demonstrations"
+msgstr "Teleoperation: Human Demonstration 수집"
+
+msgid ""
+"In this lesson we'll apply domain randomization during teleoperation. We will use these to "
+"perform a kind of robot learning known as _imitation learning_."
+msgstr ""
+"이 실습에서는 teleoperation 중 Domain Randomization을 적용합니다. 수집한 data는 _Imitation Learning_이라는 robot "
+"learning 방식에 사용합니다."
+
+msgid "Why Imitation Learning? (expand to read)"
+msgstr "Imitation Learning을 사용하는 이유(펼쳐 보기)"
+
+msgid ""
+"Teleoperation enables us to capture human expertise in action, allowing the system to benefit "
+"from the natural, intuitive motions people provide when performing tasks."
+msgstr "Teleoperation은 task 수행 중 사람의 전문성을 action으로 기록해 자연스럽고 직관적인 motion을 학습에 활용할 수 있게 합니다."
+
+msgid ""
+"Humans instinctively know what matters for task success, leading to demonstrations that reflect "
+"important aspects of the job."
+msgstr "사람은 task 성공에 중요한 요소를 직관적으로 알기 때문에 demonstration에 작업의 핵심이 반영됩니다."
+
+msgid ""
+"This process also brings in diversity, as different individuals may approach the same task in "
+"unique ways. Review teleoperated demonstrations for successful task completion and clear, "
+"purposeful motion before using them for imitation learning."
+msgstr ""
+"사람마다 같은 task에 접근하는 방식이 달라 다양성도 생깁니다. Imitation Learning에 사용하기 전에 task 성공 여부와 명확하고 목적 있는 motion인지 "
+"검토하세요."
+
+msgid "Launch the Workshop Container"
+msgstr "Workshop Container 실행"
+
+msgid ""
+"**Use** your existing `so101-workshop` container terminal from previous modules. Stop any real "
+"teleoperation session with **Ctrl+C** and wait for shutdown before starting simulation."
+msgstr ""
+"앞 실습의 `so101-workshop` container terminal을 **사용**합니다. 실제 teleoperation이 실행 중이면 **Ctrl+C**로 중단하고 "
+"종료를 기다린 뒤 simulation을 시작하세요."
+
+msgid "Start or Reconnect to the Workshop Container"
+msgstr "Workshop Container 시작 또는 재접속"
+
+msgid "If the container is not running, **start** it from a host terminal using your workshop checkout:"
+msgstr "Container가 실행 중이 아니라면 host terminal에서 workshop checkout을 사용해 **시작**합니다."
+
+msgid "If the container is already running but you need to reconnect, use this from a host terminal:"
+msgstr "이미 실행 중인데 다시 접속해야 한다면 host terminal에서 다음을 사용합니다."
+
+msgid ""
+"**Continue** in the container terminal for the commands below. Its Python environment and saved "
+"settings load automatically."
+msgstr "이후 명령은 container terminal에서 **계속** 실행합니다. Python environment와 저장된 설정이 자동으로 로드됩니다."
+
+msgid "Practice Teleoperation in Simulation"
+msgstr "Simulation Teleoperation 연습"
+
+msgid "We’ll use `Newton-So101-Teleop-Vials-To-Rack-DR-v0` for practice and recording."
+msgstr "연습과 recording에는 `Newton-So101-Teleop-Vials-To-Rack-DR-v0`를 사용합니다."
+
+msgid ""
+"**Confirm** that `TELEOP_PORT` and `TELEOP_ID` match your calibrated leader. The agent reads "
+"these settings automatically."
+msgstr "`TELEOP_PORT`와 `TELEOP_ID`가 calibration한 leader와 맞는지 **확인**합니다. Agent는 이 설정을 자동으로 읽습니다."
+
+msgid "**Move** the leader arm to a compact pose clear of the simulated props."
+msgstr "Simulation 소품과 간섭하지 않는 작은 pose로 leader arm을 **옮깁니다**."
+
+msgid "Inside the container, **launch** the simulation:"
+msgstr "Container 안에서 simulation을 **실행**합니다."
+
+msgid "Compare all simulation environment choices"
+msgstr "Simulation Environment 선택지 비교"
+
+msgid ""
+"The task ID passed to `--task` selects the scene and its randomization. Use the collection "
+"variants with `lerobot_agent` or `vials_state_machine`, and the evaluation variants with "
+"`lerobot_eval`."
+msgstr ""
+"`--task`의 task ID로 scene과 randomization을 선택합니다. 수집용 variant는 `lerobot_agent` 또는 "
+"`vials_state_machine`, 평가용 variant는 `lerobot_eval`과 사용합니다."
+
+msgid ""
+"**Appearance components:** all vial tasks use matte foam, paper-like vial bodies, and blue-gray "
+"walls, and baseline camera grading/tone mapping. DR adds material and lighting variation, per-"
+"camera film grain, and wrist-only blur. Display, recordings, and policy observations share the "
+"processed RGB. These settings approximate camera appearance; compare policy behavior in "
+"simulation and reality to measure transfer."
+msgstr ""
+"**Appearance components:** 모든 vial task는 matte foam, 종이와 비슷한 vial body, blue-gray wall, 기본 camera"
+" grading/tone mapping을 사용합니다. DR은 material과 lighting variation, camera별 film grain, wrist 전용 "
+"blur를 추가합니다. Display, recording, policy observation은 같은 처리된 RGB를 사용합니다. 이 설정은 camera 외관을 근사하므로, "
+"실제 transfer는 simulation과 실제 환경의 policy 동작을 비교해 측정하세요."
+
+msgid ""
+"The first ovrtx launch can take a few minutes to warm up shader caches. If startup fails, read "
+"the terminal error and verify the leader connection."
+msgstr "ovrtx 첫 실행은 shader cache 준비에 몇 분 걸릴 수 있습니다. 시작에 실패하면 terminal error와 leader 연결을 확인하세요."
+
+msgid "**Keep** the simulation running for the next step."
+msgstr "다음 단계를 위해 simulation을 **계속 실행**해 둡니다."
+
+msgid "Set Up the Camera Display"
+msgstr "Camera Display 설정"
+
+msgid ""
+"**Open** [http://localhost:8090](http://localhost:8090) in a browser on the host. Use only one "
+"browser tab connected to the viewer at a time."
+msgstr ""
+"Host browser에서 [http://localhost:8090](http://localhost:8090)을 **엽니다**. Viewer에는 한 번에 browser tab"
+" 하나만 연결하세요."
+
+msgid "**Practice** picking up a vial and placing it in a rack slot using only the camera feeds."
+msgstr "Camera feed만 보면서 vial을 집어 rack slot에 넣는 연습을 **합니다**."
+
+msgid "**Focus** the browser and **press R** to reset the environment."
+msgstr "Browser에 **focus를 두고 R을 눌러** environment를 reset합니다."
+
+msgid "**Watch** the terminal for grasp and placement status as you practice."
+msgstr "연습 중 terminal의 grasp 및 placement 상태를 **확인**합니다."
+
+msgid "**Stop** with **Ctrl+C** in the terminal before starting a recording session."
+msgstr "Recording session을 시작하기 전에 terminal에서 **Ctrl+C**로 **종료**합니다."
+
+msgid ""
+"`--rerun` is an alternative to `--browser-display` for telemetry. The flags are mutually "
+"exclusive. Recording/reset keyboard controls require the browser; they are unavailable in Rerun, "
+"headless, and Newton-only modes."
+msgstr ""
+"Telemetry용으로 `--browser-display` 대신 `--rerun`을 사용할 수 있지만 두 flag는 함께 사용할 수 없습니다. Recording/reset "
+"keyboard control은 browser에서만 지원되며 Rerun, headless, Newton-only mode에서는 사용할 수 없습니다."
+
+msgid ""
+"Picking up and placing a vial while the external and wrist camera feeds and joint plots update in"
+" the Newton browser display."
+msgstr "Vial을 집고 배치하는 동안 Newton browser display의 두 camera feed와 joint plot이 갱신됩니다."
+
+msgid ""
+"Use both camera feeds to guide the vial into the rack. The browser also shows recording controls "
+"and joint observations and actions."
+msgstr "두 camera feed로 vial을 rack에 넣습니다. Browser에는 recording control, joint observation, action도 표시됩니다."
+
+msgid "Recording Demonstrations"
+msgstr "Demonstration 기록"
+
+#, python-format
+msgid ""
+"Explore an example dataset with the [Dataset "
+"Visualizer](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fsreetz-"
+"nv%2Fso101_teleop_vials_rack_left%2Fepisode_29%3Ft%3D0)"
+msgstr ""
+"[Dataset Visualizer](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fsreetz-"
+"nv%2Fso101_teleop_vials_rack_left%2Fepisode_29%3Ft%3D0)에서 예시 dataset을 탐색하세요."
+
+msgid ""
+"Having trouble with cameras or robot connection? See the [Troubleshooting "
+"Guide](troubleshooting.md)."
+msgstr "Camera나 robot 연결 문제는 [Troubleshooting Guide](troubleshooting.md)를 확인하세요."
+
+msgid "Inside a Demonstration"
+msgstr "Demonstration의 구성"
+
+msgid ""
+"An **episode** records a continuous task sequence, such as a full attempt or a saved correction. "
+"It keeps the wrist and external images, joint state, actions, task instruction, and timing "
+"together. State describes where the robot was; an action describes what it was commanded to do "
+"next."
+msgstr ""
+"**Episode**는 전체 시도 또는 저장된 correction처럼 연속된 task sequence를 기록합니다. Wrist 및 external image, joint "
+"state, action, task instruction, timing을 함께 보관합니다. State는 robot이 있던 상태, action은 다음에 하도록 명령한 동작을 "
+"나타냅니다."
+
+msgid "A LeRobot episode combines images, joint state, actions, and timing"
+msgstr "LeRobot episode는 image, joint state, action, timing을 함께 저장합니다."
+
+msgid "Set the Dataset Namespace"
+msgstr "Dataset Namespace 설정"
+
+msgid "When ready to collect data, we'll add a few extra arguments for where to save the data we collect."
+msgstr "Data를 수집할 준비가 되면 저장 위치를 지정하는 argument를 추가합니다."
+
+msgid ""
+"**Set** the dataset namespace. Keep `your-hf-username` for local-only collection, or replace it "
+"with your Hugging Face username if you plan to upload."
+msgstr ""
+"Dataset namespace를 **설정**합니다. Local 수집만 한다면 `your-hf-username`을 유지하고, upload할 계획이면 본인의 Hugging "
+"Face username으로 바꾸세요."
+
+msgid ""
+"You only need to set this once per terminal session. Local collection does not require a Hugging "
+"Face login."
+msgstr "Terminal session마다 한 번만 설정하면 됩니다. Local 수집에는 Hugging Face login이 필요하지 않습니다."
+
+msgid "Record Demonstrations"
+msgstr "Demonstration 기록 실행"
+
+msgid "**Launch** the recording session inside the container:"
+msgstr "Container에서 recording session을 **시작**합니다."
+
+msgid "The recorder derives the local path from the repo ID: `datasets/<user>/so101_teleop_vials_newton`."
+msgstr "Recorder는 repo ID로 local 경로를 정합니다: `datasets/<user>/so101_teleop_vials_newton`."
+
+msgid ""
+"Dataset folder already exists? If you see `[ERROR]: Dataset root already exists`, add `--resume` "
+"to append new episodes to the existing dataset. To start a separate dataset, choose a new "
+"`--repo_id` instead."
+msgstr ""
+"`[ERROR]: Dataset root already exists`가 나오면 `--resume`을 추가해 기존 dataset에 episode를 이어서 저장하세요. 별도 "
+"dataset을 만들려면 새로운 `--repo_id`를 선택합니다."
+
+msgid ""
+"To append to an existing dataset, run the command below. In a new shell, set `HF_USER` again "
+"first:"
+msgstr "기존 dataset에 추가하려면 아래 명령을 실행합니다. 새 shell이라면 먼저 `HF_USER`를 다시 설정하세요."
+
+msgid ""
+"**Open** [http://localhost:8090](http://localhost:8090). Use only one browser tab connected to "
+"the viewer at a time."
+msgstr "[http://localhost:8090](http://localhost:8090)을 **엽니다**. Viewer에는 browser tab 하나만 연결하세요."
+
+msgid ""
+"**Focus** the browser and **use** **Space** to start/save, **C** to discard, and **R** to discard"
+" and reset."
+msgstr "Browser에 **focus를 두고 Space**로 시작/저장, **C**로 폐기, **R**로 폐기 후 reset합니다."
+
+msgid "**Repeat** until you have collected the desired demonstrations."
+msgstr "원하는 demonstration 수를 모을 때까지 **반복**합니다."
+
+msgid ""
+"**Wait** for the saving indicator to clear in the browser, and the terminal to report the episode"
+" saved. Completed episodes save in the background. For example:"
+msgstr ""
+"Browser의 saving 표시가 사라지고 terminal에 episode 저장 완료가 표시될 때까지 **기다립니다**. 완료된 episode는 background에서 "
+"저장됩니다. 예시:"
+
+msgid "**Stop** with **Ctrl+C** in the terminal and **allow** shutdown to finish."
+msgstr "Terminal에서 **Ctrl+C**로 중단하고 shutdown이 끝날 때까지 **기다립니다**."
+
+msgid "Review and Upload Collected Data"
+msgstr "수집 Data 검토와 Upload"
+
+msgid "**Inspect** an episode with the dataset visualizer:"
+msgstr "Dataset visualizer로 episode를 **확인**합니다."
+
+msgid ""
+"The visualizer opens the episode in **Rerun**. Once it has loaded, press **Spacebar** to play or "
+"pause. You can replay it as many times as you like."
+msgstr "Visualizer가 **Rerun**에서 episode를 엽니다. 로드가 끝나면 **Spacebar**로 재생/일시 정지합니다. 원하는 만큼 반복 재생할 수 있습니다."
+
+msgid ""
+"**Change** `--episode-index` to review more takes and **verify** camera assignments and "
+"successful placement before training."
+msgstr "`--episode-index`를 **바꿔** 여러 take를 검토하고 학습 전에 camera 할당과 placement 성공을 **확인**합니다."
+
+msgid "Simulation recording writes to disk."
+msgstr "Simulation recording 결과는 disk에 저장됩니다."
+
+msgid "**Optional:** Authenticate and upload the completed dataset to share it or train from its Hub ID:"
+msgstr "**선택 사항:** 공유하거나 Hub ID로 학습하려면 인증 후 완료된 dataset을 upload합니다."
+
+msgid "Uploading more episodes to the same dataset?"
+msgstr "같은 Dataset에 Episode를 더 Upload하는 경우"
+
+msgid "After `hf upload` finishes, replace the existing `v3.0` tag so it points to the updated data:"
+msgstr "`hf upload` 완료 후 기존 `v3.0` tag를 교체해 갱신된 data를 가리키도록 합니다."
+
+msgid ""
+"`v3.0` is the dataset format used by this workshop. See the [Hugging Face CLI "
+"guide](https://huggingface.co/docs/huggingface_hub/en/guides/cli#hf-repos-tag) for more about "
+"tags."
+msgstr ""
+"`v3.0`은 이 workshop의 dataset format입니다. Tag에 관한 자세한 내용은 [Hugging Face CLI "
+"guide](https://huggingface.co/docs/huggingface_hub/en/guides/cli#hf-repos-tag)를 참고하세요."
+
+msgid "Optional: Automated Data Collection"
+msgstr "선택 사항: Automated Data Collection"
+
+msgid ""
+"The workshop also provides `vials_state_machine`, a scripted controller that approaches a vial, "
+"grasps it, transfers it to the rack, inserts it, and releases it. This path runs entirely in "
+"simulation and does not require a leader arm or a trained policy. It produces demonstrations for "
+"the same post-training workflow."
+msgstr ""
+"Workshop은 vial에 접근해 grasp하고 rack으로 옮긴 뒤 삽입·release하는 scripted controller인 `vials_state_machine`도 "
+"제공합니다. 전부 simulation에서 실행하므로 leader arm이나 학습된 policy가 필요 없으며, 같은 post-training workflow용 "
+"demonstration을 생성합니다."
+
+msgid "Preview the Scripted Controller"
+msgstr "Scripted Controller 미리 보기"
+
+msgid "**Stop** any running teleoperation or evaluation client to release the display ports."
+msgstr "Display port를 해제하도록 실행 중인 teleoperation 또는 evaluation client를 **종료**합니다."
+
+msgid "In the workshop container, **run** the base state-machine task without recording:"
+msgstr "Workshop container에서 recording 없이 기본 state-machine task를 **실행**합니다."
+
+msgid ""
+"**Open** [http://localhost:8090](http://localhost:8090) and **inspect** both camera feeds while "
+"the controller executes. Use only one browser tab connected to the viewer at a time."
+msgstr ""
+"[http://localhost:8090](http://localhost:8090)을 **열고** controller가 동작하는 동안 두 camera feed를 "
+"**확인**합니다. Viewer에는 tab 하나만 연결하세요."
+
+msgid "**Stop** the preview with **Ctrl+C** before starting collection."
+msgstr "수집 전에 **Ctrl+C**로 preview를 **종료**합니다."
+
+msgid "Record Successful Episodes"
+msgstr "성공한 Episode 기록"
+
+msgid ""
+"**Run** the domain-randomized task with recording enabled. Keep the `your_hf_username` "
+"placeholder for local-only collection, or use your Hugging Face username if you plan to upload:"
+msgstr ""
+"Recording을 활성화해 Domain Randomization task를 **실행**합니다. Local 수집만 한다면 `your_hf_username`을 유지하고, "
+"upload한다면 본인의 Hugging Face username을 사용하세요."
+
+msgid ""
+"The target is **5 successful episodes**, not 5 attempts. The recorder accepts successful episodes"
+" and discards unsuccessful attempts. Both cameras are required. Recording is automatic; the "
+"teleoperation **Space/C** controls are not part of this collection flow."
+msgstr ""
+"목표는 5번 시도가 아니라 **성공한 episode 5개**입니다. Recorder는 성공한 episode만 받아들이고 실패한 시도는 버립니다. 두 camera가 모두 "
+"필요하며 recording은 자동입니다. Teleoperation의 **Space/C** control은 이 흐름에 사용하지 않습니다."
+
+msgid ""
+"**Wait** for collection and dataset export to complete. Successful episodes are staged during the"
+" run; the LeRobot dataset is assembled when the collection target is reached. Stopping early can "
+"leave staged episodes without a completed dataset."
+msgstr ""
+"수집과 dataset export가 끝날 때까지 **기다립니다**. 실행 중 성공 episode를 임시 저장하고 목표 수를 채우면 LeRobot dataset으로 조립합니다."
+" 중간에 멈추면 임시 episode만 남고 dataset은 완성되지 않을 수 있습니다."
+
+msgid "**Inspect** the exported data before uploading:"
+msgstr "Upload 전에 export된 data를 **확인**합니다."
+
+msgid ""
+"**Optional:** Review several episodes for camera coverage, grasp quality, and placement, then "
+"upload the dataset:"
+msgstr "**선택 사항:** 여러 episode의 camera coverage, grasp 품질, placement를 검토한 뒤 dataset을 upload합니다."
+
+msgid "Sim vs. Real Teleoperation Comparison"
+msgstr "Simulation과 실제 Teleoperation 비교"
+
+msgid "Compare simulation and real teleoperation, and when to use each"
+msgstr "두 방식의 차이와 사용 시점 비교"
+
+msgid "When to Use Each"
+msgstr "각 방식을 사용하는 시점"
+
+msgid "**Use simulation when:**"
+msgstr "**Simulation 사용:**"
+
+msgid "Building initial dataset with DR"
+msgstr "DR로 초기 dataset을 구축할 때"
+
+msgid "Hardware is limited or shared"
+msgstr "Hardware가 부족하거나 공유 중일 때"
+
+msgid "Exploring task or policy variations quickly and safely"
+msgstr "Task 또는 policy variation을 빠르고 안전하게 탐색할 때"
+
+msgid "Real environment isn't ready, accessible, or during development"
+msgstr "실제 환경이 준비되지 않았거나 접근할 수 없거나 개발 중일 때"
+
+msgid "**Use real robot when:**"
+msgstr "**실제 Robot 사용:**"
+
+msgid "Collecting high-quality ground truth"
+msgstr "고품질 ground truth를 수집할 때"
+
+msgid "Validating sim-trained policies"
+msgstr "Simulation에서 학습한 policy를 검증할 때"
+
+msgid "Capturing real-world nuances (friction, lighting)"
+msgstr "Friction, lighting 등 실제 환경의 세부 특성을 기록할 때"
+
+msgid "Mix Teleoperation With Automated Demonstrations"
+msgstr "Teleoperation과 자동 생성 Demonstration 혼합"
+
+msgid ""
+"A mixed dataset can be a useful way to reduce collection effort. Teleoperation takes time and "
+"requires people to repeat the task many times (up to 75 in our examples), but it also provides "
+"useful variation for task generalization."
+msgstr ""
+"Dataset을 혼합하면 수집 부담을 줄일 수 있습니다. Teleoperation은 사람이 task를 여러 번 반복해야 하므로 시간이 걸리지만(예시에서는 최대 75회), "
+"task generalization에 유용한 variation도 제공합니다."
+
+msgid ""
+"Automated data collection can aid in testing and initial pipe-cleaning, or as a supplement to "
+"teleoperation. But it can easily result in an overfitted model if not properly randomized."
+msgstr ""
+"자동 수집은 초기 pipeline 점검과 시험 또는 teleoperation 보완에 도움이 됩니다. 다만 적절히 randomize하지 않으면 model이 쉽게 overfit될"
+" 수 있습니다."
+
+msgid ""
+"There is no fixed teleoperation-to-automation ratio for every task. Start with a deliberate mix, "
+"evaluate it against a teleoperation-only or automation-only baseline, and add examples where "
+"coverage is missing."
+msgstr ""
+"모든 task에 맞는 고정된 혼합 비율은 없습니다. 목적에 맞는 비율로 시작하고 teleoperation-only 또는 automation-only baseline과 비교한 "
+"뒤 부족한 조건의 예시를 추가하세요."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid "Teleoperation captures human expertise in demonstration form"
+msgstr "Teleoperation은 사람의 전문성을 demonstration으로 기록합니다."
+
+msgid "Always teleoperate using only camera views—not your eyes"
+msgstr "Demonstration 수집 시에는 workspace를 직접 보지 말고 camera view만 사용하세요."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to the [Architecture Tour](09-code-tour.md) to see how the simulation application fits "
+"together."
+msgstr "[Architecture Tour](09-code-tour.md)에서 simulation application의 구성을 살펴보세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Environment"
+msgstr "Environment"
+
+msgid "What it changes"
+msgstr "변경되는 요소"
+
+msgid "When to use it"
+msgstr "사용 시점"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`Newton-So101-Teleop-Vials-To-Rack-v0`"
+msgstr "`Newton-So101-Teleop-Vials-To-Rack-v0`"
+
+msgid "Base vial-to-rack scene with randomized object placement."
+msgstr "Object 배치가 randomize되는 기본 vial-to-rack scene"
+
+msgid "Practice teleoperation and establish a collection baseline."
+msgstr "Teleoperation 연습 및 수집 baseline 확보"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`Newton-So101-Teleop-Vials-To-Rack-DR-v0`"
+msgstr "`Newton-So101-Teleop-Vials-To-Rack-DR-v0`"
+
+msgid "Adds material and lighting variation, film grain, wrist blur, and broader mat variation."
+msgstr "Material·lighting variation, film grain, wrist blur, 더 넓은 mat variation 추가"
+
+msgid "Collect demonstrations across varied simulation conditions."
+msgstr "다양한 simulation 조건에서 demonstration 수집"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`Newton-So101-Teleop-Vials-To-Rack-Eval-v0`"
+msgstr "`Newton-So101-Teleop-Vials-To-Rack-Eval-v0`"
+
+msgid "Base scene with evaluation success termination."
+msgstr "평가 성공 시 종료하는 기본 scene"
+
+msgid "Measure baseline policy behavior in simulation."
+msgstr "Simulation의 baseline policy 동작 측정"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0`"
+msgstr "`Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0`"
+
+msgid "Standard DR scene with evaluation success termination."
+msgstr "평가 성공 시 종료하는 standard DR scene"
+
+msgid "Test robustness to the standard randomization."
+msgstr "Standard randomization에 대한 robustness 평가"
+
+msgid "Aspect"
+msgstr "비교 항목"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Simulation"
+msgstr "Simulation"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Real Robot"
+msgstr "Real Robot"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Domain randomization"
+msgstr "Domain randomization"
+
+msgid "Automatic"
+msgstr "자동"
+
+msgid "Manual, limited to what you can physically change in the environment"
+msgstr "실제로 바꿀 수 있는 환경 요소만 수동 변경"
+
+msgid "Data collection speed"
+msgstr "Data 수집 속도"
+
+msgid "Faster reset, parallel envs possible"
+msgstr "빠른 reset, parallel environment 가능"
+
+msgid "Real-time only"
+msgstr "실시간만 가능"
+
+msgid "Hardware wear"
+msgstr "Hardware 마모"
+
+msgid "None"
+msgstr "없음"
+
+msgid "Accumulates over time"
+msgstr "시간에 따라 누적"
+
+msgid "Visual diversity"
+msgstr "시각적 다양성"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Procedural generation"
+msgstr "Procedural generation"
+
+msgid "Requires manual variation"
+msgstr "수동 변경 필요"
+
+msgid "Physics accuracy"
+msgstr "Physics 정확도"
+
+msgid "Approximated"
+msgstr "근사값"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Ground truth"
+msgstr "Ground truth"
+

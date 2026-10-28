@@ -1,0 +1,48 @@
+<div class="groot-explorers">
+  <section class="groot-explorer" id="groot-training" aria-labelledby="groot-training-title">
+    <h4 id="groot-training-title">Training: many examples, one weight update</h4>
+    <p>Each sampled example pairs images, an instruction, and robot state with a future action window. The loss guides updates to the trainable weights.</p>
+    <div class="groot-controls" hidden>
+      <label>Batch per GPU <select id="groot-batch"><option>16</option><option selected>32</option><option>64</option><option>128</option></select></label>
+      <label>GPU processes <select id="groot-gpus"><option selected>1</option><option>2</option><option>4</option><option>8</option></select></label>
+      <label>Optimizer updates <select id="groot-steps"><option value="5000">5,000</option><option value="10000">10,000</option><option value="20000" selected>20,000</option><option value="40000">40,000</option></select></label>
+    </div>
+    <ol class="groot-flow" aria-label="Training data flow">
+      <li><strong>Sample windows</strong><span id="groot-batch-label">32 windows / update</span><small>Images + instruction + state</small></li>
+      <li><strong>Prepare targets</strong><span>16 future action steps</span><small>Image augmentation is optional</small></li>
+      <li><strong>Compute loss</strong><span>GR00T flow matching</span><small>Learn from noisy action targets</small></li>
+      <li><strong>Update weights</strong><span>Optimizer + learning rate</span><small id="groot-repeat-label">Repeat for 20,000 updates</small></li>
+    </ol>
+    <p class="groot-loop-note">Next update: sample another batch → repeat the loop.</p>
+    <div class="groot-results" aria-live="polite" aria-atomic="true">
+      <p><strong id="groot-effective-batch">32</strong> windows per update <span class="groot-equation" id="groot-batch-equation">= 32 × 1 GPU process</span></p>
+      <p><strong id="groot-total-windows">640,000</strong> sampled windows over the run <span class="groot-equation" id="groot-total-equation">= 32 × 20,000 updates</span></p>
+    </div>
+    <p class="groot-caption">Windows can overlap and repeat. This is not a count of unique demonstrations or a prediction of training time. More GPUs at the same batch setting change data exposure, not just speed.</p>
+    <button class="groot-reset" type="button" hidden>Reset training example</button>
+  </section>
+
+  <section class="groot-explorer" id="groot-inference" aria-labelledby="groot-inference-title">
+    <h4 id="groot-inference-title">Inference: observe, predict, execute, observe again</h4>
+    <p>Assume the robot executes one action every 33 ms (30 Hz). Use fewer actions from each prediction, and it needs a new prediction more often. The control rate stays the same.</p>
+    <div class="groot-controls" hidden>
+      <label class="groot-range">Actions used per cycle: <output id="groot-horizon-value" for="groot-horizon">16</output><input id="groot-horizon" type="range" min="1" max="16" value="16" step="1"></label>
+    </div>
+    <ol class="groot-flow" aria-label="Inference data flow">
+      <li><strong>Observe</strong><span>Two cameras + joint state</span><small>Keep the task instruction</small></li>
+      <li><strong>Predict a chunk</strong><span>Trained window: 16 steps</span><small>Frozen weights + saved processors</small></li>
+      <li><strong>Execute actions</strong><span id="groot-prefix-label">Execute 16 actions</span><small id="groot-horizon-flag">Control rate: 30 Hz</small></li>
+      <li><strong>Observe again</strong><span>Refill with a new prediction</span><small id="groot-refill-label">After the selected actions finish</small></li>
+    </ol>
+    <p class="groot-timeline-title">Same time span, same 32 actions <span>0 → 1.07 seconds at 30 Hz</span></p>
+    <div class="groot-action-window" id="groot-action-window" role="img" aria-label="32 actions at 30 Hz, with a prediction before actions 1 and 17"><span class="is-used prediction-start" title="Action 1">▼</span><span class="is-used " title="Action 2">·</span><span class="is-used " title="Action 3">·</span><span class="is-used " title="Action 4">·</span><span class="is-used " title="Action 5">·</span><span class="is-used " title="Action 6">·</span><span class="is-used " title="Action 7">·</span><span class="is-used " title="Action 8">·</span><span class="is-used " title="Action 9">·</span><span class="is-used " title="Action 10">·</span><span class="is-used " title="Action 11">·</span><span class="is-used " title="Action 12">·</span><span class="is-used " title="Action 13">·</span><span class="is-used " title="Action 14">·</span><span class="is-used " title="Action 15">·</span><span class="is-used " title="Action 16">·</span><span class="is-used prediction-start" title="Action 17">▼</span><span class="is-used " title="Action 18">·</span><span class="is-used " title="Action 19">·</span><span class="is-used " title="Action 20">·</span><span class="is-used " title="Action 21">·</span><span class="is-used " title="Action 22">·</span><span class="is-used " title="Action 23">·</span><span class="is-used " title="Action 24">·</span><span class="is-used " title="Action 25">·</span><span class="is-used " title="Action 26">·</span><span class="is-used " title="Action 27">·</span><span class="is-used " title="Action 28">·</span><span class="is-used " title="Action 29">·</span><span class="is-used " title="Action 30">·</span><span class="is-used " title="Action 31">·</span><span class="is-used " title="Action 32">·</span></div>
+    <p class="groot-legend">▼ New prediction · Each cell is one executed action</p>
+    <div class="groot-results" aria-live="polite" aria-atomic="true">
+      <p><strong id="groot-coverage">533 ms</strong> between predictions <span class="groot-equation" id="groot-coverage-equation">= 16 actions ÷ 30 Hz</span></p>
+      <p id="groot-tail">1.88 predictions per second. Using 8 actions doubles that to 3.75.</p>
+    </div>
+    <p class="groot-caption" id="groot-inference-note">Timing illustration: assumes prediction is instantaneous and requests a new chunk when the previous actions finish. Actual inference delays can add pauses. Keep workshop rollout commands at 16 actions.</p>
+    <button class="groot-reset" type="button" hidden>Reset inference example</button>
+  </section>
+  <noscript><p>The diagrams show the workshop defaults. Enable JavaScript to adjust the examples; the parameter tables above provide the same explanations without scripting.</p></noscript>
+</div>

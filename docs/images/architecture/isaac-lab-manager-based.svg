@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1490" height="1000" viewBox="0 0 1490 1000" role="group" aria-labelledby="title description">
+<title id="title">Isaac Lab manager-based workflow</title>
+<desc id="description">Robot, other assets, and sensors configure the scene. Scene, actions, simulation settings, events, observations, terminations, and rewards configure the environment. The environment exchanges actions and observations with a policy, teleoperator, or scripted controller. A compact rounded rectangular loop attached to the environment represents stepping physics and sensors.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-accent-text,#004831)"/></marker>
+</defs>
+<style>
+text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#1a1a1a);}
+.box {fill:var(--diagram-surface,#f7f7f7);stroke:var(--diagram-accent-text,#004831);stroke-width:2;}
+.heading {font-size:24px;font-weight:700;}
+.detail {font-size:19px;fill:var(--diagram-muted,#666);}
+.edge {fill:none;stroke:var(--diagram-accent-text,#004831);stroke-width:2;marker-end:url(#arrow);}
+.config {stroke:var(--diagram-muted,#666);stroke-dasharray:5 6;stroke-width:1.5;}
+.label {font-size:19px;paint-order:stroke;stroke:var(--diagram-bg,#fff);stroke-width:9px;stroke-linejoin:round;}
+</style>
+<rect width="1490" height="1000" fill="var(--diagram-bg,#fff)"/>
+
+<text x="40" y="80" class="detail">Dashed arrows: configuration · Solid arrows: runtime interaction</text>
+
+<path d="M 720 188 C 820 188, 805 424, 900 424" class="edge config"/>
+<path d="M 720 308 C 820 308, 805 442, 900 442" class="edge config"/>
+<path d="M 720 428 C 820 428, 805 460, 900 460" class="edge config"/>
+<path d="M 720 548 C 820 548, 805 478, 900 478" class="edge config"/>
+<path d="M 720 668 C 820 668, 805 496, 900 496" class="edge config"/>
+<path d="M 720 788 C 820 788, 805 514, 900 514" class="edge config"/>
+<path d="M 720 908 C 820 908, 805 532, 900 532" class="edge config"/>
+<path d="M 310 290 C 360 290, 350 308, 410 308" class="edge config"/>
+<path d="M 310 430 C 360 430, 350 308, 410 308" class="edge config"/>
+<path d="M 310 570 C 360 570, 350 308, 410 308" class="edge config"/>
+<path d="M 1135 400 V 370 Q 1135 350 1155 350 H 1410 Q 1430 350 1430 370 V 594 Q 1430 614 1410 614 H 1155 Q 1135 614 1135 594 V 564" class="edge"/>
+<path d="M 985 255 L 985 400" class="edge"/>
+<path d="M 1105 400 L 1105 255" class="edge"/>
+<rect x="40" y="240" width="270" height="104" rx="14" class="box"/>
+<text x="175.0" y="272" text-anchor="middle" class="heading">
+<tspan x="175.0" dy="0">Articulation / robot</tspan>
+</text>
+<text x="175.0" y="301" text-anchor="middle" class="detail">
+<tspan x="175.0" dy="0">Joints, actuators,</tspan>
+<tspan x="175.0" dy="23">physical properties</tspan>
+</text>
+<rect x="40" y="380" width="270" height="104" rx="14" class="box"/>
+<text x="175.0" y="412" text-anchor="middle" class="heading">
+<tspan x="175.0" dy="0">Assets</tspan>
+</text>
+<text x="175.0" y="441" text-anchor="middle" class="detail">
+<tspan x="175.0" dy="0">Static and dynamic objects,</tspan>
+<tspan x="175.0" dy="23">lights and materials</tspan>
+</text>
+<rect x="40" y="520" width="270" height="104" rx="14" class="box"/>
+<text x="175.0" y="552" text-anchor="middle" class="heading">
+<tspan x="175.0" dy="0">Sensors</tspan>
+</text>
+<text x="175.0" y="581" text-anchor="middle" class="detail">
+<tspan x="175.0" dy="0">Cameras, contact sensors, etc.</tspan>
+</text>
+<rect x="410" y="140" width="310" height="96" rx="14" class="box"/>
+<text x="565.0" y="172" text-anchor="middle" class="heading">
+<tspan x="565.0" dy="0">Actions</tspan>
+</text>
+<text x="565.0" y="201" text-anchor="middle" class="detail">
+<tspan x="565.0" dy="0">Convert controller outputs</tspan>
+<tspan x="565.0" dy="23">into robot commands</tspan>
+</text>
+<rect x="410" y="260" width="310" height="96" rx="14" class="box"/>
+<text x="565.0" y="292" text-anchor="middle" class="heading">
+<tspan x="565.0" dy="0">Scene</tspan>
+</text>
+<text x="565.0" y="321" text-anchor="middle" class="detail">
+<tspan x="565.0" dy="0">Asset placement and</tspan>
+<tspan x="565.0" dy="23">parallel environments</tspan>
+</text>
+<rect x="410" y="380" width="310" height="96" rx="14" class="box"/>
+<text x="565.0" y="412" text-anchor="middle" class="heading">
+<tspan x="565.0" dy="0">Simulation settings</tspan>
+</text>
+<text x="565.0" y="441" text-anchor="middle" class="detail">
+<tspan x="565.0" dy="0">Physics backend, solver,</tspan>
+<tspan x="565.0" dy="23">timestep, and rendering</tspan>
+</text>
+<rect x="410" y="500" width="310" height="96" rx="14" class="box"/>
+<text x="565.0" y="532" text-anchor="middle" class="heading">
+<tspan x="565.0" dy="0">Events</tspan>
+</text>
+<text x="565.0" y="561" text-anchor="middle" class="detail">
+<tspan x="565.0" dy="0">Startup, reset, and</tspan>
+<tspan x="565.0" dy="23">periodic operations</tspan>
+</text>
+<rect x="410" y="620" width="310" height="96" rx="14" class="box"/>
+<text x="565.0" y="652" text-anchor="middle" class="heading">
+<tspan x="565.0" dy="0">Observations</tspan>
+</text>
+<text x="565.0" y="681" text-anchor="middle" class="detail">
+<tspan x="565.0" dy="0">Build inputs from state</tspan>
+<tspan x="565.0" dy="23">and sensor data</tspan>
+</text>
+<rect x="410" y="740" width="310" height="96" rx="14" class="box"/>
+<text x="565.0" y="772" text-anchor="middle" class="heading">
+<tspan x="565.0" dy="0">Terminations</tspan>
+</text>
+<text x="565.0" y="801" text-anchor="middle" class="detail">
+<tspan x="565.0" dy="0">Success, failure, and</tspan>
+<tspan x="565.0" dy="23">episode time limits</tspan>
+</text>
+<rect x="410" y="860" width="310" height="96" rx="14" class="box"/>
+<text x="565.0" y="892" text-anchor="middle" class="heading">
+<tspan x="565.0" dy="0">Rewards</tspan>
+</text>
+<text x="565.0" y="921" text-anchor="middle" class="detail">
+<tspan x="565.0" dy="0">Compute task reward signals</tspan>
+</text>
+<rect x="900" y="400" width="290" height="164" rx="14" class="box"/>
+<text x="1045.0" y="454" text-anchor="middle" class="heading">
+<tspan x="1045.0" dy="0">Environment</tspan>
+</text>
+<text x="1045.0" y="483" text-anchor="middle" class="detail">
+<tspan x="1045.0" dy="0">Coordinates scene, managers,</tspan>
+<tspan x="1045.0" dy="23">stepping, and episode resets</tspan>
+</text>
+<rect x="900" y="140" width="290" height="115" rx="14" class="box"/>
+<text x="1045.0" y="172" text-anchor="middle" class="heading">
+<tspan x="1045.0" dy="0">Policy</tspan>
+</text>
+<text x="1045.0" y="201" text-anchor="middle" class="detail">
+<tspan x="1045.0" dy="0">or teleoperator /</tspan>
+<tspan x="1045.0" dy="23">scripted controller</tspan>
+</text>
+<text x="948" y="332" text-anchor="middle" class="label">
+<tspan x="948" dy="0">Actions</tspan>
+</text>
+<text x="1045" y="332" text-anchor="middle" class="label">
+<tspan x="1045" dy="0">Observations</tspan>
+</text>
+<text x="1310" y="454" text-anchor="middle" class="heading">
+<tspan x="1310" dy="0">Simulation</tspan>
+</text>
+<text x="1310" y="483" text-anchor="middle" class="detail">
+<tspan x="1310" dy="0">Stepping physics</tspan>
+<tspan x="1310" dy="23">and sensors</tspan>
+</text>
+</svg>

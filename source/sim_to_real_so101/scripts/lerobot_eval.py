@@ -12,243 +12,319 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""LeRobot policy-server sim-eval client (Newton physics).
+
+Drives the vials-to-rack eval env from a LeRobot async-inference policy server
+(``lerobot.async_inference.policy_server``) over gRPC and reports a success
+rate. Mirrors the Newton launch path (``add_launcher_args`` +
+``resolve_task_config`` + ``launch_simulation``).
+
+The server is policy-agnostic: this client sends the checkpoint id + feature
+spec, and the server loads the policy and runs its own pre/post-processor
+pipeline (modality packing, normalization, image resize, relative-action
+decoding).
+
+See ``E2E_Workflow.md`` for server startup and evaluation commands.
+"""
+
 import argparse
 import json
-import random
+import math
+import sys
+
+import grpc
+import gymnasium as gym
+import sim_to_real_so101.tasks  # noqa: F401
+import torch
+from isaaclab.app import add_launcher_args, launch_simulation
+from isaaclab_tasks.utils import resolve_task_config
+from sim_to_real_so101.utils.camera_cfg import (
+    add_browser_display_args,
+    add_camera_args,
+    apply_camera_selection,
+    build_sensor_display,
+)
+from sim_to_real_so101.utils.dataset_start_pose import dataset_start_pose
+from sim_to_real_so101.utils.gripper_calibration import (
+    WORKSHOP_GRIPPER_CALIBRATION,
+    GripperCalibration,
+)
+from sim_to_real_so101.utils.lerobot_interface import (
+    LeRobotPolicyServerClient,
+    LeRobotSO101Interface,
+)
 from tqdm import tqdm
 
-from isaaclab.app import AppLauncher
-
-# add argparse arguments
-parser = argparse.ArgumentParser(description="Isaac Lab SO-101 Eval Client (remote GR00T inference server).")
-parser.add_argument(
-    "--disable_fabric",
-    action="store_true",
-    default=False,
-    help="Disable fabric and use USD I/O operations.",
-)
-parser.add_argument(
-    "--num_envs", type=int, default=None, help="Number of environments to simulate."
-)
+parser = argparse.ArgumentParser(description="SO-101 LeRobot policy-server eval client (Newton).")
+parser.add_argument("--start_pose_dataset", default=None, help="Training dataset user/dataset for the mean starting pose; defaults to the state-machine pose.")
+parser.add_argument("--num_envs", type=int, default=None, help="Number of environments.")
 parser.add_argument("--task", type=str, default=None, help="Name of the task.")
-parser.add_argument("--seed", type=int, default=1984, help="Environment seed")
-parser.add_argument("--num_episodes", type=int, default=10, help="Number of episodes to evaluate")
+parser.add_argument("--seed", type=int, default=None, help="Override the environment seed.")
+parser.add_argument("--num_episodes", type=int, default=10, help="Number of episodes to evaluate.")
 parser.add_argument(
     "--rename_map",
     type=str,
-    required=False,
     default=None,
     help=(
-        'JSON mapping for renaming camera keys to match policy/feature config: key is simulation feature name, value is policy feature name '
-        'e.g. \'{"sim_name1": "policy_name1", "sim_name2": "policy_name2"}\'. '
+        "JSON map from sim camera names to checkpoint camera names, applied "
+        "before sending observations. observation.images.<name> keys are also accepted. "
+        "For Johnny42, use "
+        "'{\"external\":\"front\"}'."
     ),
 )
-parser.add_argument("--policy_host", type=str, default="localhost", help="GR00T policy server host")
-parser.add_argument("--policy_port", type=int, default=5555, help="GR00T policy server port")
-parser.add_argument("--action_horizon", type=int, default=16, help="Number of action steps to execute per server query")
+parser.add_argument(
+    "--server_address",
+    type=str,
+    default="localhost:8080",
+    help="LeRobot async policy server address (host:port).",
+)
+parser.add_argument(
+    "--pretrained_name_or_path",
+    type=str,
+    default="liorbenhorin-nv/GR17-Teleop-Vials-To-Rack-DR-v0-sim",
+    help="Checkpoint repo id or path the server should load.",
+)
+parser.add_argument(
+    "--policy_type", type=str, default="groot", help="LeRobot policy type to load on the server."
+)
+parser.add_argument(
+    "--policy_device", type=str, default="cuda", help="Device the server loads the policy on."
+)
+parser.add_argument(
+    "--action_horizon",
+    type=int,
+    default=16,
+    help="Actions per chunk requested from the server (<= checkpoint chunk_size).",
+)
 parser.add_argument(
     "--lang_instruction",
     type=str,
     default="Pick up the vial and place it in the rack",
-    help="Language instruction for the policy",
+    help="Language instruction for the policy.",
 )
-parser.add_argument("--rerun", action="store_true", default=False, help="Enable Rerun visualization")
-
-# append AppLauncher cli args
-AppLauncher.add_app_launcher_args(parser)
-# parse the arguments
-args_cli = parser.parse_args()
-
-# always enable cameras to record video
-args_cli.enable_cameras = True
-
-
-# launch omniverse app
-app_launcher = AppLauncher(args_cli)
-simulation_app = app_launcher.app
-
-"""Rest everything follows."""
-
-
-import gymnasium as gym
-import numpy as np
-import torch
-
-import isaaclab_tasks  # noqa: F401
-from isaaclab_tasks.utils import parse_env_cfg
-
-import sim_to_real_so101.tasks  # noqa: F401
-from sim_to_real_so101.utils.keyboard import KeyboardControl
-from sim_to_real_so101.utils.lerobot_interface import (
-    LeRobotSO101Interface,
-    GR00TRemotePolicy,
+parser.add_argument(
+    "--gripper_span_ticks", type=float, default=WORKSHOP_GRIPPER_CALIBRATION.span_ticks,
+    help="Gripper encoder span used by the model's training data (default: workshop mapping).",
 )
+add_camera_args(parser)
+add_browser_display_args(parser)
+add_launcher_args(parser)
+args_cli, hydra_args = parser.parse_known_args()
+if args_cli.headless_render:
+    args_cli.browser_display = False
+sys.argv = [sys.argv[0]] + hydra_args
+
+_SUCCESS_TERM = "success"
+
+
+def _require_single_environment(num_envs: int) -> None:
+    if num_envs != 1:
+        raise ValueError(
+            "lerobot_eval supports exactly one environment because policy "
+            "observations and episode accounting use environment 0."
+        )
+
+
+def _episode_outcome(
+    terminated: torch.Tensor,
+    truncated: torch.Tensor,
+    success: torch.Tensor,
+) -> tuple[bool, bool]:
+    is_terminated = bool(terminated[0].item())
+    is_truncated = bool(truncated[0].item())
+    is_finished = is_terminated or is_truncated
+    is_success = is_finished and bool(success[0].item()) and not is_truncated
+    return is_finished, is_success
+
+
+def check_policy_server(address: str, timeout: float = 5.0):
+    """Exit with a clear message if no policy server answers at ``address`` (host:port)."""
+    channel = grpc.insecure_channel(address)
+    try:
+        grpc.channel_ready_future(channel).result(timeout=timeout)
+    except grpc.FutureTimeoutError:
+        sys.exit(
+            f"[ERROR]: No LeRobot policy server reachable at {address}. Start it first "
+            "(see E2E_Workflow.md): python -m lerobot.async_inference.policy_server "
+            "--host=0.0.0.0 --port=8080 --fps=30"
+        )
+    finally:
+        channel.close()
 
 
 def main():
-    keyboard_control = KeyboardControl()
+    check_policy_server(args_cli.server_address)
 
-    # parse configuration
-    env_cfg = parse_env_cfg(
-        args_cli.task,
-        device=args_cli.device,
-        num_envs=args_cli.num_envs,
-        use_fabric=not args_cli.disable_fabric
-    )
-    env_cfg.seed = args_cli.seed
+    env_cfg, _ = resolve_task_config(args_cli.task, "")
+    if args_cli.seed is not None:
+        env_cfg.seed = args_cli.seed
 
-    # Seed all RNGs for reproducible episode resets
-    random.seed(args_cli.seed)
-    np.random.seed(args_cli.seed)
-    torch.manual_seed(args_cli.seed)
-    torch.cuda.manual_seed_all(args_cli.seed)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
+    calibration = GripperCalibration(span_ticks=args_cli.gripper_span_ticks)
+    pose = dataset_start_pose(args_cli.start_pose_dataset, calibration)
+    env_cfg.scene.robot.init_state.joint_pos = {
+        name.removesuffix(".pos"): math.radians(
+            float(calibration.percent_to_degrees(value)) if name == "gripper.pos" else value
+        )
+        for name, value in pose.items()
+    }
 
-    # create environment
-    env = gym.make(args_cli.task, cfg=env_cfg)
+    active_cameras = apply_camera_selection(env_cfg, args_cli.cameras)
+    env_cfg.scene.num_envs = args_cli.num_envs or env_cfg.scene.num_envs
+    _require_single_environment(env_cfg.scene.num_envs)
 
-    # print info (this is vectorized environment)
-    print(f"[INFO]: Gym observation space: {env.observation_space}")
-    print(f"[INFO]: Gym action space: {env.action_space}")
-    print(f"[INFO]: Click 'R' to reset the world")
+    with launch_simulation(env_cfg, args_cli):
+        if args_cli.device:
+            env_cfg.sim.device = args_cli.device
 
-    # cameras
-    cameras = {}
-    for obj in env.unwrapped.scene.keys():
-        if obj.startswith("camera_"):
-            camera_cfg = getattr(env.unwrapped.scene.cfg, obj)
-            cameras[obj.replace("camera_", "")] = {
-                "height": camera_cfg.height,
-                "width": camera_cfg.width,
-            }
-            print(f"[INFO]: Found Camera: {obj.replace('camera_', '')}")
-    if len(cameras) == 0:
-        print(f"[Info]: No cameras found - videos will not be recorded")
+        env = gym.make(args_cli.task, cfg=env_cfg)
+        sim_device = env.unwrapped.device
+        if _SUCCESS_TERM not in env.unwrapped.termination_manager.active_terms:
+            raise ValueError(
+                f"{args_cli.task} needs a '{_SUCCESS_TERM}' termination term "
+                "for evaluation."
+            )
 
-    # lerobot interface (provides sim↔real coordinate transforms)
-    rename_map = json.loads(args_cli.rename_map) if args_cli.rename_map else None
-    robot_iface = LeRobotSO101Interface(
-        device=env.unwrapped.device,
-        port=None,
-        id="leader_arm_1",
-        cameras=cameras,
-        fps=30,
-        kind="follower",
-        rename_map=rename_map,
-    )
-    print(f"[INFO]: Initializing device with Rerun visualization: {args_cli.rerun}")
-    robot_iface.init_device(visualize=args_cli.rerun)
+        print(f"[INFO]: Gym observation space: {env.observation_space}")
+        print(f"[INFO]: Gym action space: {env.action_space}")
+        print(f"[INFO]: Active cameras: {sorted(active_cameras) or 'none'}")
 
-    # remote GR00T policy
-    policy = GR00TRemotePolicy(
-        robot_iface=robot_iface,
-        host=args_cli.policy_host,
-        port=args_cli.policy_port,
-        action_horizon=args_cli.action_horizon,
-        lang_instruction=args_cli.lang_instruction,
-    )
-    policy.connect()
+        camera_names = sorted(name.replace("camera_", "") for name in active_cameras)
+        if not camera_names:
+            print("[WARN]: No active cameras — the policy will receive no video frames.")
 
-    # reset environment
-    obs, _ = env.reset()
-    policy.reset()
+        rename_map = json.loads(args_cli.rename_map) if args_cli.rename_map else None
 
-    # simulate environment
-    actions = torch.zeros(env.action_space.shape, device=env.unwrapped.device)
-    initial_action = torch.tensor(
-        [-0.2736, -0.6109, -0.0745, 1.5148, -1.6034, -0.1465],
-        device=env.unwrapped.device,
-    )
+        robot_iface = LeRobotSO101Interface(
+            port=None,
+            robot_id="eval",
+            sim_device=sim_device,
+            calibration=calibration,
+        )
 
-    step = 0
-    num_episodes = 0
-    num_successes = 0
-    success_rate = 0.0
+        policy = LeRobotPolicyServerClient(
+            robot_iface=robot_iface,
+            camera_names=camera_names,
+            pretrained_name_or_path=args_cli.pretrained_name_or_path,
+            policy_type=args_cli.policy_type,
+            server_address=args_cli.server_address,
+            policy_device=args_cli.policy_device,
+            actions_per_chunk=args_cli.action_horizon,
+            lang_instruction=args_cli.lang_instruction,
+            rename_map=rename_map,
+        )
+        policy.connect()
 
-    pbar = None
+        sensor_display = build_sensor_display(
+            active_cameras,
+            args_cli,
+            sim_device,
+            control_actions={"reset_world"},
+        )
+        if sensor_display is not None:
+            print("[INFO]: Browser control: R resets while the browser has focus")
 
-    while simulation_app.is_running():
-        # run everything in inference mode
-        with torch.inference_mode():
+        obs, _ = env.reset()
+        policy.reset()
 
-            if step == 0:
-                pbar = tqdm(
-                    total=env.unwrapped.max_episode_length,
-                    desc=f"Rollout (ep {num_episodes + 1}, success: {success_rate:.1f}%)",
-                    unit="step",
-                    bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]'
+        actions = torch.zeros(env.action_space.shape, device=sim_device)
+
+        scene = env.unwrapped.scene
+        sim = env.unwrapped.sim
+        step = 0
+        num_episodes = 0
+        num_successes = 0
+        success_rate = 0.0
+        pbar = None
+
+        def _close_pbar():
+            nonlocal pbar
+            if pbar is not None:
+                pbar.close()
+                pbar = None
+
+        try:
+            while True:
+                if sim.visualizers and not any(
+                    v.is_running() and not v.is_closed for v in sim.visualizers
+                ):
+                    break
+
+                if sensor_display is not None:
+                    actions_requested = sensor_display.drain_control_actions()
+                    if "reset_world" in actions_requested:
+                        _close_pbar()
+                        print(f"[MANUAL RESET] Episode interrupted at step {step}")
+                        obs, _ = env.reset()
+                        policy.reset()
+                        step = 0
+                        continue
+
+                with torch.inference_mode():
+                    if step == 0:
+                        pbar = tqdm(
+                            total=env.unwrapped.max_episode_length,
+                            desc=f"Rollout (ep {num_episodes + 1}, success: {success_rate:5.1f}%)",
+                            unit="step",
+                            bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]",
+                        )
+
+
+                    joint_positions = obs["policy"]["joint_pos_obs"][0].clone()
+                    actions[:] = policy.get_action(joint_positions, obs["visual"])
+
+                    obs, _, terminated, truncated, _ = env.step(actions)
+                    step += 1
+                    if pbar is not None:
+                        pbar.update(1)
+
+                if sensor_display is not None:
+                    if "camera_wrist" in active_cameras:
+                        sensor_display.update(
+                            "wrist", scene["camera_wrist"].data.output["rgb"][0]
+                        )
+                    if "camera_external" in active_cameras:
+                        sensor_display.update(
+                            "external", scene["camera_external"].data.output["rgb"][0]
+                        )
+                    joint_pos_obs = obs.get("policy", {}).get("joint_pos_obs")
+                    if joint_pos_obs is not None:
+                        sensor_display.push_telemetry(joint_pos_obs[0], actions[0])
+                    sensor_display.flush()
+
+                success = env.unwrapped.termination_manager.get_term(_SUCCESS_TERM)
+                is_finished, is_success = _episode_outcome(
+                    terminated, truncated, success
                 )
 
-            if step < 10:  # warmup, not critical but helps
-                actions[:] = initial_action
+                if is_finished:
+                    _close_pbar()
+                    num_episodes += 1
+                    if is_success:
+                        num_successes += 1
+                    success_rate = (num_successes / num_episodes) * 100
 
-            else:
-                joint_positions = obs["policy"]["joint_pos_obs"][0].clone()
-                actions[:] = policy.get_action(joint_positions, obs["visual"], log=True)
+                    if num_episodes >= args_cli.num_episodes:
+                        print(f"[INFO]: Evaluated {args_cli.num_episodes} episodes")
+                        print(
+                            f"[INFO]: Success Rate: {num_successes}/{args_cli.num_episodes} "
+                            f"({success_rate:.1f}%)"
+                        )
+                        break
 
-            obs, rewards, terminated, truncated, info = env.step(actions)
+                    obs, _ = env.reset()
+                    policy.reset()
+                    step = 0
+                    continue
 
-            step += 1
-
-            # Update progress bar
-            if pbar is not None:
-                pbar.update(1)
-
-            # Check for episode termination
-            is_terminated = terminated.item() if terminated.numel() == 1 else terminated.any().item()
-            is_truncated = truncated.item() if truncated.numel() == 1 else truncated.any().item()
-
-            if is_terminated or is_truncated:
-                if pbar is not None:
-                    pbar.close()
-                    pbar = None
-
-                num_episodes += 1
-
-                if is_terminated and not is_truncated:
-                    num_successes += 1
-
-                success_rate = (num_successes / num_episodes) * 100
-
-                # Reset for next episode
-                obs, _ = env.reset()
-                policy.reset()
-                step = 0
-
-                continue
-
-            # Manual reset with 'R' key
-            if keyboard_control.reset_world:
-                keyboard_control.reset_world = False
-                if pbar is not None:
-                    pbar.close()
-                    pbar = None
-
-                print(f"[MANUAL RESET] Episode interrupted at step {step}")
-                obs, _ = env.reset()
-                policy.reset()
-                step = 0
-                continue
-
-            if num_episodes >= args_cli.num_episodes:
-                # Close progress bar if still open
-                if pbar is not None:
-                    pbar.close()
-                    pbar = None
-                print(f"[INFO]: Evaluated {args_cli.num_episodes} episodes")
-                print(f"[INFO]: Success Rate: {num_successes}/{args_cli.num_episodes} ({success_rate:.1f}%)")
-                env.close()
-                simulation_app.close()
-
-    env.close()
+        except KeyboardInterrupt:
+            print("\n[INFO]: Interrupted by user.")
+        finally:
+            _close_pbar()
+            if sensor_display is not None:
+                sensor_display.close()
+            policy.close()
+            env.close()
 
 
 if __name__ == "__main__":
-
     main()
-
-    while True:
-        simulation_app.update()
-
-    simulation_app.close()

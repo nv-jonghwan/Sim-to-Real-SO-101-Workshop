@@ -1,0 +1,521 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 19:04+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: docs/seoul-workshop-schedule.md:1
+msgid "Today's Schedule"
+msgstr "오늘의 일정"
+
+#: docs/seoul-workshop-schedule.md:3
+msgid ""
+"We will follow the schedule below for the **AI Day Seoul 2026 DLI workshop**. All times are "
+"**Seoul local time (KST)**."
+msgstr "**AI Day Seoul 2026 DLI workshop**은 아래 일정으로 진행할 예정입니다. 모든 시간은 **한국 표준시(KST)** 기준입니다."
+
+#: docs/seoul-workshop-schedule.md:5
+msgid ""
+"**Teaching starts at 09:00.** The period **08:30–09:00** is reserved for arrival and settling in."
+" Lunch is **12:45–13:45**, and the workshop finishes at **17:15**."
+msgstr ""
+"**수업은 09:00에 시작합니다.** **08:30–09:00**은 입장과 착석 시간입니다. 점심은 **12:45–13:45**이며, workshop은 **17:15**에 "
+"마칩니다."
+
+#: docs/seoul-workshop-schedule.md:7
+msgid "Instructors"
+msgstr "진행자"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Instructor"
+msgstr "진행자"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Sessions"
+msgstr "담당 세션"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "**Jonghwan Lee**"
+msgstr "**Jonghwan Lee**"
+
+#: docs/seoul-workshop-schedule.md
+msgid "**09:00–12:45** · Morning sessions and Q&A"
+msgstr "**09:00–12:45** · 오전 세션 및 Q&A"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "**Hogun Kee**"
+msgstr "**Hogun Kee**"
+
+#: docs/seoul-workshop-schedule.md
+msgid "**13:55–15:40** · Sim-to-Real Gap through HG-DAgger"
+msgstr "**13:55–15:40** · Sim-to-Real Gap부터 HG-DAgger까지"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "**Jihyeon Ryu**"
+msgstr "**Jihyeon Ryu**"
+
+#: docs/seoul-workshop-schedule.md
+msgid "**13:45–17:15** · Cosmos through Conclusion"
+msgstr "**13:45–17:15** · Cosmos부터 마무리까지"
+
+#: docs/seoul-workshop-schedule.md:15
+msgid "Morning · 09:00–12:45"
+msgstr "오전 · 09:00–12:45"
+
+#: docs/seoul-workshop-schedule.md:17
+msgid "Select a topic to open its course materials."
+msgstr "주제를 선택하면 해당 교재로 이동합니다."
+
+#: docs/seoul-workshop-schedule.md
+msgid "Session"
+msgstr "세션"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Time"
+msgstr "시간"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Topic"
+msgstr "주제"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Duration"
+msgstr "소요 시간"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Type"
+msgstr "진행 방식"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Notes"
+msgstr "비고"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "AM 1"
+msgstr "AM 1"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "09:00–09:10"
+msgstr "09:00–09:10"
+
+#: docs/seoul-workshop-schedule.md
+msgid "[**Physical AI & today’s task**](01-overview.md)"
+msgstr "[**Physical AI와 오늘의 task**](01-overview.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "10 min"
+msgstr "10 min"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Lecture"
+msgstr "Lecture"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Jonghwan Lee"
+msgstr "Jonghwan Lee"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "—"
+msgstr "—"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "AM 2"
+msgstr "AM 2"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "09:10–09:30"
+msgstr "09:10–09:30"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**LeRobot**](04-lerobot.md)"
+msgstr "[**LeRobot**](04-lerobot.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "20 min"
+msgstr "20 min"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "AM 3"
+msgstr "AM 3"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "09:30–10:40"
+msgstr "09:30–10:40"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid ""
+"[**Robot setup**](07-using-workspace.md), [**calibration**](07-calibrating-so101.md) & [**real "
+"teleop**](08-operating-so101.md)"
+msgstr ""
+"[**Robot setup**](07-using-workspace.md), [**calibration**](07-calibrating-so101.md) & [**real "
+"teleop**](08-operating-so101.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "70 min"
+msgstr "70 min"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Hands-on + lecture"
+msgstr "Hands-on + lecture"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "AM 4"
+msgstr "AM 4"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "10:40–11:05"
+msgstr "10:40–11:05"
+
+#: docs/seoul-workshop-schedule.md
+msgid "[**Understanding GR00T**](10-groot.md)"
+msgstr "[**GR00T 이해하기**](10-groot.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "25 min"
+msgstr "25 min"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "AM 5"
+msgstr "AM 5"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "11:05–11:25"
+msgstr "11:05–11:25"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid ""
+"[**Sim Teleop**](08-simulation-teleoperation.md) and [**Domain Randomization**](10-domain-"
+"randomization.md)"
+msgstr ""
+"[**Sim Teleop**](08-simulation-teleoperation.md) and [**Domain Randomization**](10-domain-"
+"randomization.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Lecture + hands-on"
+msgstr "Lecture + hands-on"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "AM 6"
+msgstr "AM 6"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "11:25–11:50"
+msgstr "11:25–11:50"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**Software stack, architecture**](09-code-tour.md)"
+msgstr "[**Software stack, architecture**](09-code-tour.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "11:50–12:00"
+msgstr "11:50–12:00"
+
+#: docs/seoul-workshop-schedule.md
+msgid "**Break**"
+msgstr "**휴식**"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Break"
+msgstr "휴식"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "AM 7"
+msgstr "AM 7"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "12:00–12:15"
+msgstr "12:00–12:15"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**State Machine**](09-state-machine-learning.md)"
+msgstr "[**State Machine**](09-state-machine-learning.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "15 min"
+msgstr "15 min"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Lecture + demo"
+msgstr "Lecture + demo"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "AM 8"
+msgstr "AM 8"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "12:15–12:35"
+msgstr "12:15–12:35"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**Sim Evaluation**](11-sim-evaluation.md)"
+msgstr "[**Sim Evaluation**](11-sim-evaluation.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Demo + hands-on"
+msgstr "Demo + hands-on"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Explore different visualizers and models; evaluate headless and with display."
+msgstr "다양한 visualizer와 model을 살펴보고, headless와 화면 표시 방식으로 각각 평가합니다."
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "12:35–12:45"
+msgstr "12:35–12:45"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "**Q&A**"
+msgstr "**Q&A**"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Q&A"
+msgstr "Q&A"
+
+#: docs/seoul-workshop-schedule.md:32
+msgid "Lunch · 12:45–13:45"
+msgstr "점심 · 12:45–13:45"
+
+#: docs/seoul-workshop-schedule.md:34
+msgid "**Lunch: 60 min.** Please be back for the recap at **13:45**."
+msgstr "**점심시간은 60분입니다.** **13:45**까지 돌아와 오전 내용을 함께 정리합니다."
+
+#: docs/seoul-workshop-schedule.md:36
+msgid "Afternoon · 13:45–17:15"
+msgstr "오후 · 13:45–17:15"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Return"
+msgstr "Return"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "13:45–13:55"
+msgstr "13:45–13:55"
+
+#: docs/seoul-workshop-schedule.md
+msgid "**Welcome back, recap & Q&A**"
+msgstr "**오후 시작, 오전 내용 정리 및 Q&A**"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Recap + Q&A"
+msgstr "Recap + Q&A"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Jihyeon Ryu"
+msgstr "Jihyeon Ryu"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "PM 1"
+msgstr "PM 1"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "13:55–14:10"
+msgstr "13:55–14:10"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**Sim2Real and The Reality Gap**](03-sim-to-real.md)"
+msgstr "[**Sim2Real and The Reality Gap**](03-sim-to-real.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Hogun Kee"
+msgstr "Hogun Kee"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "PM 2"
+msgstr "PM 2"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "14:10–14:40"
+msgstr "14:10–14:40"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**Real Robot Rollouts with sim-only data**](12-real-evaluation.md)"
+msgstr "[**Real Robot Rollouts with sim-only data**](12-real-evaluation.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "30 min"
+msgstr "30 min"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "PM 3"
+msgstr "PM 3"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "14:40–15:10"
+msgstr "14:40–15:10"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**Co-Training theory**](13-strategy2-cotraining.md) and [**practice**](13-cotraining-practice.md)"
+msgstr "[**Co-Training theory**](13-strategy2-cotraining.md) and [**practice**](13-cotraining-practice.md)"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Includes a Real → Real model."
+msgstr "Real → Real model을 함께 다룹니다."
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "PM 4"
+msgstr "PM 4"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "15:10–15:40"
+msgstr "15:10–15:40"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**HG-DAgger**](14-hg-dagger.md) · [Hands-on](14-hg-dagger-practice.md)"
+msgstr "[**HG-DAgger**](14-hg-dagger.md) · [Hands-on](14-hg-dagger-practice.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "15:40–15:50"
+msgstr "15:40–15:50"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "PM 5"
+msgstr "PM 5"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "15:50–16:10"
+msgstr "15:50–16:10"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**Cosmos**](14-strategy3-cosmos.md)"
+msgstr "[**Cosmos**](14-strategy3-cosmos.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Instructor demo"
+msgstr "Instructor demo"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "PM 6"
+msgstr "PM 6"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "16:10–16:20"
+msgstr "16:10–16:20"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**SysID / AnchorBench**](15-strategy4-sysid.md)"
+msgstr "[**SysID / AnchorBench**](15-strategy4-sysid.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "PM 7"
+msgstr "PM 7"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "16:20–17:05"
+msgstr "16:20–17:05"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "[**Explore, experiment & wrap up**](15-explore.md)"
+msgstr "[**Explore, experiment & wrap up**](15-explore.md)"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "45 min"
+msgstr "45 min"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "Work time / Q&A"
+msgstr "Work time / Q&A"
+
+#: docs/seoul-workshop-schedule.md
+msgid "Astra-enabled experiments, discussion with instructors and TA, and time for certification."
+msgstr "Astra를 활용한 실험, 강사·TA와의 토론 및 certification 시간을 포함합니다."
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "PM 8"
+msgstr "PM 8"
+
+#. Retain supplied technical/session labels and instructor names.
+#: docs/seoul-workshop-schedule.md
+msgid "17:05–17:15"
+msgstr "17:05–17:15"
+
+#: docs/seoul-workshop-schedule.md
+msgid "[**Conclusion**](16-conclusion.md)"
+msgstr "[**마무리**](16-conclusion.md)"
+

@@ -12,43 +12,34 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import torch
-
-
-import isaaclab.utils.math as math_utils
-from isaaclab.assets import Articulation
-from isaaclab.envs import ManagerBasedEnv, ManagerBasedRLEnv
+import warp as wp
 from isaaclab.managers import SceneEntityCfg
-from isaaclab.sensors import FrameTransformer
+from sim_to_real_so101.utils.warp_bridge import manager_stream
+from sim_to_real_so101.utils.warp_math import frame_in_root
 
 
 def ee_frame_state(
-    env: ManagerBasedRLEnv,
+    env,
     ee_frame_cfg: SceneEntityCfg = SceneEntityCfg("ee_frame"),
     robot_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
-) -> torch.Tensor:
-    """
-    Return the state of the end effector frame in the robot coordinate system.
-    """
-    robot = env.scene[robot_cfg.name]
-    robot_root_pos, robot_root_quat = robot.data.root_pos_w, robot.data.root_quat_w
-    ee_frame: FrameTransformer = env.scene[ee_frame_cfg.name]
-    ee_frame_pos, ee_frame_quat = ee_frame.data.target_pos_w[:, 0, :], ee_frame.data.target_quat_w[:, 0, :]
-    ee_frame_pos_robot, ee_frame_quat_robot = math_utils.subtract_frame_transforms(
-        robot_root_pos, robot_root_quat, ee_frame_pos, ee_frame_quat
-    )
-    ee_frame_state = torch.cat([ee_frame_pos_robot, ee_frame_quat_robot], dim=1)
-
-    return ee_frame_state
-
-
-def image_raw(
-    env: ManagerBasedEnv,
-    sensor_cfg: SceneEntityCfg = SceneEntityCfg("tiled_camera"),
-    data_type: str = "rgb",
-) -> torch.Tensor:
-
-    sensor = env.scene[sensor_cfg.name]
-    images = sensor.data.output[data_type]
-
-    return images.clone()
+):
+    """Return an XYZW end-effector pose in the root frame to the observation manager."""
+    robot = env.scene[robot_cfg.name].data
+    frame = env.scene[ee_frame_cfg.name].data
+    root = robot.root_pos_w.warp
+    with manager_stream(root.device):
+        pose = wp.empty(root.shape[0], dtype=wp.transform, device=root.device)
+        wp.launch(
+            frame_in_root,
+            root.shape[0],
+            [
+                root,
+                robot.root_quat_w.warp,
+                frame.target_pos_w.warp,
+                frame.target_quat_w.warp,
+                0,
+                pose,
+            ],
+            device=root.device,
+        )
+    return wp.to_torch(pose)

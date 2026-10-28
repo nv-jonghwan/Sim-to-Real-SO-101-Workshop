@@ -1,0 +1,410 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Sim-to-Real Strategy 1: Domain Randomization"
+msgstr "Sim-to-Real 전략 1: Domain Randomization"
+
+msgid "Simulation resets showing varied lighting, materials, and object placement."
+msgstr "Reset마다 조명, material, object 배치가 달라지는 simulation입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid "Lecture. No robot or running container required."
+msgstr "이론 수업입니다. Robot이나 실행 중인 container가 필요하지 않습니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "By the end of this session, you'll be able to:"
+msgstr "이 session을 마치면 다음을 수행할 수 있습니다."
+
+msgid "**Explain** domain randomization and why it improves sim-to-real transfer"
+msgstr "Domain Randomization과 Sim-to-Real transfer를 개선하는 이유 **설명**"
+
+msgid "**Apply** domain randomization to augment demonstrations"
+msgstr "Demonstration 증강에 Domain Randomization **적용**"
+
+msgid "What Is Domain Randomization?"
+msgstr "Domain Randomization이란?"
+
+msgid ""
+"Domain randomization (DR) is a sim-to-real strategy based on this idea: instead of making "
+"simulation perfectly match reality, randomize simulation parameters during training so the policy"
+" becomes robust to any value in the range, including real-world values."
+msgstr ""
+"Domain Randomization (DR)은 simulation을 실제 환경과 완벽하게 일치시키는 대신, 학습 중 simulation parameter를 변화시켜 실제 "
+"값을 포함한 range 전체에서 policy가 견고하게 동작하도록 하는 Sim-to-Real 전략입니다."
+
+msgid "Put in simple terms: think about how you might learn to catch a ball."
+msgstr "공 잡기를 배우는 상황을 생각해 보세요."
+
+msgid ""
+"If you always catch it in the same pose, you might not learn to _reach_ and catch the ball, or "
+"hold the glove in different orientations. By varying where the ball is thrown to you when you "
+"practice, you will likely learn a better \"policy\" for catching the ball."
+msgstr ""
+"항상 같은 pose에서 공을 잡으면 팔을 _뻗어_ 잡거나 glove 방향을 바꾸는 법을 배우지 못할 수 있습니다. 연습할 때 공이 날아오는 위치를 다양하게 하면 더 좋은 공 "
+"잡기 “policy”를 배울 수 있습니다."
+
+msgid ""
+"Vary simulation conditions, record successful demonstrations, post-train GR00T, and evaluate in "
+"simulation and reality."
+msgstr "Simulation 조건을 바꾸고 성공한 demonstration을 기록한 뒤 GR00T를 post-train하고, simulation과 실제 환경에서 평가합니다."
+
+msgid ""
+"Randomization contributes learning examples through collection and post-training; evaluation "
+"checks transfer."
+msgstr "Randomization은 수집과 post-training을 통해 학습 예시를 제공하고, 평가는 transfer 결과를 확인합니다."
+
+msgid "What should we randomize?"
+msgstr "무엇을 Randomize할까?"
+
+msgid ""
+"A useful rule of thumb: **consider what you expect to change in your scene, then vary those "
+"parameters**. Think about object mass and scale, positions, and orientations."
+msgstr ""
+"유용한 기준은 **scene에서 바뀔 것으로 예상되는 요소의 parameter를 변화시키는 것**입니다. Object mass와 scale, position, "
+"orientation을 고려하세요."
+
+msgid ""
+"For example, we noticed that clamping the robot to the foamcore could tilt its base. To account "
+"for this, we randomize base tilt from **−3° to +6°**. We also vary the external camera's tilt by "
+"**±5° from its nominal angle** to account for differences in mounting."
+msgstr ""
+"Robot을 foamcore에 고정하면 base가 기울어질 수 있어 base tilt를 **−3°에서 +6°**까지 randomize합니다. Mount 차이를 반영하기 위해 "
+"external camera tilt도 **기준 각도에서 ±5°** 변화시킵니다."
+
+msgid ""
+"The following are possible randomization categories. The code tour below identifies which are "
+"enabled for the current SO-101 task."
+msgstr "아래는 가능한 randomization 범주입니다. 현재 SO-101 task에서 실제로 켜진 항목은 아래 code tour에서 구분합니다."
+
+msgid "Domain Randomization Example"
+msgstr "Domain Randomization 예시"
+
+msgid ""
+"Domain Randomization Example. Each time the scene is reset, a number of parameters are randomized"
+" within given ranges."
+msgstr "Scene을 reset할 때마다 여러 parameter가 지정된 range 안에서 randomize됩니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Visual Domain Randomization:**"
+msgstr "**Visual Domain Randomization:**"
+
+msgid "Object colors, textures, materials"
+msgstr "Object color, texture, material"
+
+msgid "Lighting intensity, direction, color temperature"
+msgstr "조명의 intensity, direction, color temperature"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Camera position, orientation, field of view"
+msgstr "Camera position, orientation, field of view"
+
+msgid "Background appearance"
+msgstr "Background 외관"
+
+msgid "Physics and actuation can also be randomized:"
+msgstr "Physics와 actuation도 randomize할 수 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Physics Domain Randomization:**"
+msgstr "**Physics Domain Randomization:**"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Object mass, friction, restitution"
+msgstr "Object mass, friction, restitution"
+
+msgid "Joint damping, friction, limits"
+msgstr "Joint damping, friction, limit"
+
+msgid "Actuator delays, noise, offsets"
+msgstr "Actuator delay, noise, offset"
+
+msgid "Sensor noise characteristics"
+msgstr "Sensor noise 특성"
+
+msgid "Strengths and Limitations"
+msgstr "장점과 한계"
+
+msgid "**Strengths:**"
+msgstr "**장점:**"
+
+msgid "No real-world data required for augmentation"
+msgstr "증강에 실제 data가 필요하지 않습니다."
+
+msgid "Handles unknown parameters"
+msgstr "알 수 없는 parameter에 대응합니다."
+
+msgid "Scales to many parameters"
+msgstr "많은 parameter로 확장할 수 있습니다."
+
+msgid "Simple to implement"
+msgstr "구현이 간단합니다."
+
+msgid "**Limitations:**"
+msgstr "**한계:**"
+
+msgid "More art than science (tuning ranges)"
+msgstr "Range 조정에 경험적 판단이 많이 필요합니다."
+
+msgid "Trades optimality for robustness"
+msgstr "최적 성능과 robustness 사이의 절충이 있습니다."
+
+msgid "May produce conservative, slow motions"
+msgstr "보수적이고 느린 motion을 만들 수 있습니다."
+
+msgid "Doesn't work well for highly dynamic tasks"
+msgstr "매우 dynamic한 task에는 잘 맞지 않을 수 있습니다."
+
+msgid "Domain Randomization in Simulation"
+msgstr "Simulation의 Domain Randomization"
+
+msgid ""
+"Randomization runs on environment reset. Saving a take alone does not request a reset; press "
+"**R** for a fresh setup."
+msgstr "Randomization은 environment reset 시 실행됩니다. Take 저장만으로는 reset되지 않습니다. 새로운 배치를 만들려면 **R**을 누르세요."
+
+msgid "Test Domain Randomization"
+msgstr "Domain Randomization 확인"
+
+msgid "These captures predate the DR consolidation and retain their original task labels."
+msgstr "이 capture는 DR 통합 이전에 만들어져 당시 task label을 유지하고 있습니다."
+
+msgid ""
+"Switch between **External camera** and **Wrist camera** to compare the standard environment, DR, "
+"Perception-DR, and real camera images. The DR and Perception-DR GIFs cycle through eight "
+"environment resets, showing changes in lighting, materials, and scene placement. The standard "
+"environment and real images are still references; their poses and layouts differ from the "
+"randomized scenes."
+msgstr ""
+"**External camera**와 **Wrist camera**를 전환해 standard environment, DR, Perception-DR, 실제 camera "
+"image를 비교하세요. DR과 Perception-DR GIF는 8번의 environment reset에 따른 조명, material, scene 배치 변화를 보여줍니다. "
+"Standard environment와 실제 image는 정적인 참고 자료이며, randomize된 scene과 pose 및 배치가 다릅니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "External camera"
+msgstr "External camera"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Standard environment**"
+msgstr "**Standard environment**"
+
+msgid "Standard environment, external view."
+msgstr "Standard environment의 external view"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Domain Randomization · resets**"
+msgstr "**Domain Randomization · resets**"
+
+msgid "Domain Randomization, external view."
+msgstr "Domain Randomization의 external view"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Perception-DR · resets**"
+msgstr "**Perception-DR · resets**"
+
+msgid "Perception-DR, external view."
+msgstr "Perception-DR의 external view"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Real camera · reference**"
+msgstr "**Real camera · reference**"
+
+msgid "Real camera · reference, external view."
+msgstr "실제 camera 참고 image의 external view"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Wrist camera"
+msgstr "Wrist camera"
+
+msgid "Standard environment, wrist view."
+msgstr "Standard environment의 wrist view"
+
+msgid "Domain Randomization, wrist view."
+msgstr "Domain Randomization의 wrist view"
+
+msgid "Perception-DR, wrist view."
+msgstr "Perception-DR의 wrist view"
+
+msgid "Real camera · reference, wrist view."
+msgstr "실제 camera 참고 image의 wrist view"
+
+msgid "Code Tour: Domain Randomization Implementation"
+msgstr "Code Tour: Domain Randomization 구현"
+
+msgid "Read more about the domain-randomization implementation"
+msgstr "Domain Randomization 구현 자세히 보기"
+
+msgid ""
+"Start with `source/sim_to_real_so101/tasks/vials_to_rack_env_cfg.py`. `VialsToRackEventCfg` "
+"defines object resets; `VialsToRackEventDRCfg` adds DR settings."
+msgstr ""
+"`source/sim_to_real_so101/tasks/vials_to_rack_env_cfg.py`에서 시작합니다. `VialsToRackEventCfg`는 object "
+"reset을 정의하고, `VialsToRackEventDRCfg`는 DR 설정을 추가합니다."
+
+msgid ""
+"These are this checkout's settings. Camera position, robot color, or physics randomization "
+"require deliberate configuration changes; the DR task name does not enable every possible "
+"randomization."
+msgstr ""
+"현재 checkout의 설정입니다. Camera position, robot color, physics randomization을 바꾸려면 명시적으로 설정을 수정해야 합니다."
+" DR task라는 이름만으로 가능한 모든 randomization이 켜지는 것은 아닙니다."
+
+msgid "Reset events use Isaac Lab's `EventTerm` API. For example:"
+msgstr "Reset event는 Isaac Lab의 `EventTerm` API를 사용합니다. 예시:"
+
+msgid ""
+"The implementations live in `source/sim_to_real_so101/mdp/resets.py`. ovrtx loads its scene "
+"separately, so visual changes must reach the renderer through the workshop's attribute or asset-"
+"path write helpers. Editing only the live USD stage will not update rendered images. Global HDRI "
+"changes run on full-scene resets; allow a few warmup frames for texture loading."
+msgstr ""
+"구현은 `source/sim_to_real_so101/mdp/resets.py`에 있습니다. ovrtx는 scene을 따로 로드하므로 시각적 변경을 workshop의 "
+"attribute 또는 asset-path write helper로 renderer에 전달해야 합니다. Live USD stage만 수정하면 rendered image가 "
+"바뀌지 않습니다. 전체 scene reset에서 global HDRI를 바꾸며, texture 로드를 위해 몇 frame의 warmup을 허용하세요."
+
+msgid ""
+"Edit event parameters in the mounted `source/` directory, restart the simulation, and inspect "
+"both camera feeds. Preserve joint ordering, joint normalization, and camera calibration when "
+"using existing datasets and policies."
+msgstr ""
+"Mount된 `source/`에서 event parameter를 수정하고 simulation을 재시작해 두 camera feed를 확인하세요. 기존 dataset과 "
+"policy를 사용할 때는 joint 순서, normalization, camera calibration을 유지합니다."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid "Domain randomization makes policies robust by training on varied conditions"
+msgstr "Domain Randomization은 다양한 조건에서 학습해 policy를 견고하게 만듭니다."
+
+msgid "DR augmentation multiplies your dataset with varied conditions"
+msgstr "DR 증강은 여러 조건의 예시로 dataset을 확장합니다."
+
+msgid "Combined real demonstrations + DR augmentation is a powerful baseline"
+msgstr "실제 demonstration과 DR 증강의 조합은 강력한 baseline입니다."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to [Teleoperating in Sim](08-simulation-teleoperation.md) to explore teleoperated and "
+"state-machine demonstrations."
+msgstr ""
+"[Teleoperating in Sim](08-simulation-teleoperation.md)에서 teleoperation과 state machine 기반 "
+"demonstration을 살펴보세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Parameter"
+msgstr "Parameter"
+
+msgid "Base task"
+msgstr "기본 Task"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "DR task"
+msgstr "DR task"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Vial and rack placement"
+msgstr "Vial and rack placement"
+
+msgid "Sampled by `mdp.reset_vials_rack`"
+msgstr "`mdp.reset_vials_rack`으로 sampling"
+
+msgid "Same placement sampler"
+msgstr "같은 placement sampler 사용"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Robot base tilt"
+msgstr "Robot base tilt"
+
+msgid "Nominal pose"
+msgstr "기준 pose"
+
+msgid "−3° to +6° at reset; positive tilt leans back toward the lightbox opening"
+msgstr "Reset 시 −3°~+6°. 양수는 lightbox 입구 쪽으로 뒤로 기울어짐"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Lightbox exposure"
+msgstr "Lightbox exposure"
+
+msgid "Fixed at 2.0"
+msgstr "2.0으로 고정"
+
+msgid "1.0 to 3.0"
+msgstr "1.0~3.0"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Sky light"
+msgstr "Sky light"
+
+msgid "No DR dome light"
+msgstr "DR dome light 없음"
+
+msgid "HDRI swaps, exposure −1.0 to 1.0, temperature 4500–7000 K"
+msgstr "HDRI 교체, exposure −1.0~1.0, temperature 4500–7000 K"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Mat yaw"
+msgstr "Mat yaw"
+
+msgid "−0.1 to 0.1 radians"
+msgstr "−0.1~0.1 radian"
+
+msgid "−0.3 to 0.3 radians"
+msgstr "−0.3~0.3 radian"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Printed robot material"
+msgstr "Printed robot material"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Orange"
+msgstr "Orange"
+
+msgid "Orange, consistent across printed parts"
+msgstr "출력된 모든 부품에 같은 orange 적용"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "External camera tilt"
+msgstr "External camera tilt"
+
+msgid "±5° around nominal, about the camera's local horizontal axis"
+msgstr "Camera의 local horizontal axis를 기준으로 nominal angle ±5°"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "External camera focal length"
+msgstr "External camera focal length"
+
+msgid "Nominal"
+msgstr "기준값"
+
+#, python-format
+msgid "97–100% of nominal (equal or wider field of view)"
+msgstr "기준값의 97–100%(같거나 더 넓은 field of view)"
+
+msgid "External camera position and wrist camera calibration"
+msgstr "External camera position과 wrist camera calibration"
+
+msgid "Fixed"
+msgstr "고정"
+

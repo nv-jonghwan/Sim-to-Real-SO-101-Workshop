@@ -12,19 +12,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Installation script for the 'lerobot_so101_teleop' python package."""
-
-import os
+"""Installation script for the 'sim_to_real_so101' python package."""
 
 from setuptools import setup, find_packages
 
-# Minimum dependencies required prior to installation
 INSTALL_REQUIRES = [
-    # NOTE: Add dependencies
     "psutil",
 ]
 
-# Installation operation
 setup(
     name="sim_to_real_so101",
     packages=find_packages(where=".."),

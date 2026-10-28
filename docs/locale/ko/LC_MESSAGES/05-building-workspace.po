@@ -1,0 +1,659 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Building the Workspace"
+msgstr "Workspace 구축"
+
+msgid "SO-101 workspace with the lightbox, cameras, vial rack, and work mat."
+msgstr "Lightbox, camera, vial rack, work mat로 구성된 SO-101 workspace입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid "The equipment is listed below - here you will assemble your robot laboratory."
+msgstr "아래 장비를 준비해 robot 실험 공간을 조립합니다."
+
+msgid ""
+"This module is about **constructing and standardizing the real-world task area**. This includes a"
+" lightbox enclosure, lighting, cameras, mat, vials, and rack—so it matches the Isaac Lab scene "
+"used for training and evaluation."
+msgstr ""
+"이 module에서는 **실제 task 공간을 구성하고 표준화**합니다. Lightbox enclosure, 조명, camera, mat, vial, rack을 학습 및 "
+"평가에 사용하는 Isaac Lab scene과 일치하도록 준비합니다."
+
+msgid ""
+"Building the lightbox this way gives you a consistent environment, so you can use our models and "
+"datasets."
+msgstr "이 방식으로 lightbox를 구성하면 환경을 일관되게 유지하면서 제공된 model과 dataset을 사용할 수 있습니다."
+
+msgid "You can also keep using it after this learning path, to do more of your own robot experiments!"
+msgstr "과정을 마친 뒤에도 자신만의 robot 실험에 계속 활용할 수 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Video Tutorial"
+msgstr "Video Tutorial"
+
+msgid "Read more about setting up the physical workspace first"
+msgstr "실제 workspace부터 준비하는 이유 자세히 보기"
+
+msgid "Why are we starting with the physical workspace?"
+msgstr "실제 workspace부터 시작하는 이유"
+
+msgid ""
+"When you do Physical AI work in the real world, you might not have a **physical** workspace "
+"available to you when you start out. We often start in sim, for all the reasons we discussed "
+"earlier (ease of testing, cost, safety, ease of iteration)."
+msgstr ""
+"실제 환경의 Physical AI 작업을 시작할 때 **실물** workspace가 아직 없을 수도 있습니다. 앞서 설명한 시험의 편의성, 비용, 안전, 반복의 용이성 때문에"
+" simulation부터 시작하는 경우가 많습니다."
+
+msgid "For this workshop, we will set up the physical space first for three reasons:"
+msgstr "이 workshop에서는 세 가지 이유로 실제 공간부터 준비합니다."
+
+msgid ""
+"We give you this info early on, so you can order parts or build your workspace in prep for "
+"finishing the learning path"
+msgstr "과정을 마치는 데 필요한 부품을 미리 주문하거나 workspace를 준비할 수 있도록 합니다."
+
+msgid "To give you experience with the physical robot and teleoperation. It's fun!"
+msgstr "실제 robot과 teleoperation을 직접 경험합니다. 재미있는 과정입니다!"
+
+msgid ""
+"To give you a sense of how \"hard\" the task is, when using the same inputs the AI model will "
+"have (two cameras, joint positions)"
+msgstr "AI model과 같은 입력(camera 두 대와 joint position)만 사용할 때 task가 얼마나 어려운지 체감합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "The Lightbox Environment"
+msgstr "The Lightbox Environment"
+
+msgid "Let's start by building a **white lightbox enclosure** that includes:"
+msgstr "먼저 다음을 갖춘 **white lightbox enclosure**를 만듭니다."
+
+msgid "**Cameras** — one wrist camera on the robot and one external camera fixed in the workspace"
+msgstr "**Cameras** — robot의 wrist camera 한 대와 workspace에 고정한 external camera 한 대"
+
+msgid "**Lights** — diffuse light with controllable brightness"
+msgstr "**Lights** — 밝기를 조절할 수 있는 diffuse light"
+
+msgid "**Props** — centrifuge vials, yellow rack, foam mat."
+msgstr "**Props** — centrifuge vial, yellow rack, foam mat"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "![Vial Rack](images/vial_rack.jpg)"
+msgstr "![Vial Rack](images/vial_rack.jpg)"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Vial Rack"
+msgstr "Vial Rack"
+
+msgid "Why we use a lightbox"
+msgstr "Lightbox를 사용하는 이유"
+
+msgid ""
+"**Limits variables for learning and debugging** A plain, bright enclosure reduces visual noise so"
+" the policy can focus on the task-relevant features—gripper, vials, and rack."
+msgstr ""
+"**학습과 debugging의 변수 제한**: 밝고 단순한 enclosure는 시각적 잡음을 줄여 policy가 gripper, vial, rack 등 task에 필요한 "
+"특징에 집중하도록 돕습니다."
+
+msgid ""
+"**Matches the digital twin** The Isaac Lab scene replicates this enclosure's dimensions, color, "
+"camera placements, and object geometry. Matching the real bench to that design shrinks the visual"
+" domain gap—one of the main sources of sim-to-real failure."
+msgstr ""
+"**Digital twin과 일치**: Isaac Lab scene은 enclosure의 치수, 색상, camera 위치, object geometry를 재현합니다. 실제 "
+"공간을 같은 설계로 구성하면 Sim-to-Real 실패의 주요 원인인 visual domain gap을 줄일 수 있습니다."
+
+msgid ""
+"**Accommodates low-performance cameras** Consumer webcams have auto-exposure and limited dynamic "
+"range. Bright, diffuse lighting inside the box keeps images clean and consistent."
+msgstr ""
+"**성능이 낮은 camera도 활용 가능**: 일반 webcam에는 auto-exposure와 제한된 dynamic range가 있습니다. Box 내부의 밝고 확산된 조명은 "
+"깨끗하고 일관된 image를 제공합니다."
+
+msgid ""
+"**Enables transferable models** Controlling the environment makes it easier to prepare models "
+"that transfer across robots and setups. Debugging focuses on policy and calibration, not "
+"uncontrolled scene drift."
+msgstr ""
+"**Transfer 가능한 model 준비**: 환경을 통제하면 여러 robot과 setup에 적용할 model을 준비하기 쉽습니다. 통제되지 않은 scene 변화보다 "
+"policy와 calibration에 집중해 debugging할 수 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Bill of Materials"
+msgstr "Bill of Materials"
+
+msgid ""
+"The complete robot + workspace setup should cost less than $500 USD, estimated based on the "
+"options below."
+msgstr "아래 선택지를 기준으로 추산한 전체 robot + workspace 구성 비용은 $500 USD 미만입니다."
+
+msgid ""
+"We recommend getting the SO-101 pre-assembled, as it comes with a leader arm and is easier to "
+"assemble. You can also build it yourself, but it's a bit more work."
+msgstr "Leader arm이 포함되어 있고 준비가 쉬운 사전 조립 SO-101을 권장합니다. 직접 조립할 수도 있지만 작업이 더 필요합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Robot"
+msgstr "Robot"
+
+msgid "Approximate cost: $300 USD"
+msgstr "예상 비용: $300 USD"
+
+msgid "Item"
+msgstr "항목"
+
+msgid "Description"
+msgstr "설명"
+
+msgid "Model/Specs"
+msgstr "Model/사양"
+
+msgid "Quantity"
+msgstr "수량"
+
+msgid "Details"
+msgstr "상세 내용"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**SO-101 Follower and Leader Arms**"
+msgstr "**SO-101 Follower and Leader Arms**"
+
+msgid "6-DoF collaborative robot arm (SO-101 or similar)"
+msgstr "Manipulation용 6-DoF robot arm(SO-101 또는 유사 제품)"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid ""
+"[SO-101](https://shop.wowrobo.com/products/so-arm101-diy-kit-assembled-"
+"version-1?variant=46588641706201) package 3, orange"
+msgstr ""
+"[SO-101](https://shop.wowrobo.com/products/so-arm101-diy-kit-assembled-"
+"version-1?variant=46588641706201) package 3, orange"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "1"
+msgstr "1"
+
+msgid ""
+"Main robot for pick-and-place task; Leader arm optional for demonstration recording. We recommend"
+" this kit because of the included wrist camera, which will match our datasets. Alternatively, you"
+" can [print and build your own SO-101](https://github.com/TheRobotStudio/SO-ARM100)!"
+msgstr ""
+"Pick-and-place task용 robot입니다. Leader arm은 demonstration recording에 선택적으로 사용합니다. Dataset과 일치하는 "
+"wrist camera가 포함되어 있어 이 kit를 권장합니다. [직접 SO-101을 출력하고 조립](https://github.com/TheRobotStudio/SO-"
+"ARM100)할 수도 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Workspace"
+msgstr "Workspace"
+
+msgid "Approximate cost: $130 USD"
+msgstr "예상 비용: $130 USD"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**External camera**"
+msgstr "**External camera**"
+
+msgid "USB webcam, fixed mount, ~78° horizontal FoV"
+msgstr "고정 mount를 사용하는 USB webcam, horizontal FoV 약 78°"
+
+msgid "[Logitech C920](https://www.amazon.com/Logitech-C920x-Pro-HD-Webcam/dp/B085TFF7M1) or equivalent"
+msgstr "[Logitech C920](https://www.amazon.com/Logitech-C920x-Pro-HD-Webcam/dp/B085TFF7M1) 또는 동급 제품"
+
+msgid "Fixed perspective to capture overview of workspace; must be stable and aligned as in simulation."
+msgstr "Workspace 전체를 고정된 시점에서 촬영합니다. Simulation과 같은 방향으로 안정적으로 고정해야 합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Lightbox Enclosure Panels**"
+msgstr "**Lightbox Enclosure Panels**"
+
+msgid "White foam board box, approx. 30\" wide, 20\" tall, 20\" deep."
+msgstr "White foam board box, 폭 약 30\", 높이 20\", 깊이 20\""
+
+msgid ""
+"Assemble from 5 sheets of [20x30\" foam board, 3/16\" "
+"thick](https://www.michaels.com/product/20-x-30-white-foam-board-10110205)"
+msgstr ""
+"[20x30\", 두께 3/16\" foam board](https://www.michaels.com/product/20-x-30-white-foam-"
+"board-10110205) 5장으로 조립"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "5"
+msgstr "5"
+
+msgid ""
+"Provides consistent, diffuse lighting and neutral background for images. Other white lightboxes "
+"can be substituted. Thicker or thinner foam board works."
+msgstr "일관된 diffuse lighting과 단순한 배경을 제공합니다. 다른 흰색 lightbox나 두께가 다른 foam board도 사용할 수 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Light Source**"
+msgstr "**Light Source**"
+
+msgid "LED tube light, diffuse, CRI >90, ~4000K, adjustable"
+msgstr "밝기 조절이 가능한 diffuse LED tube light, CRI >90, 약 4000K"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid ""
+"[Neewer Dimmable LED Bar](https://www.amazon.com/NEEWER-Inflatable-2700K-5600K-Photography-"
+"GC10B/dp/B0DQ7Y8DWX?th=1)"
+msgstr ""
+"[Neewer Dimmable LED Bar](https://www.amazon.com/NEEWER-Inflatable-2700K-5600K-Photography-"
+"GC10B/dp/B0DQ7Y8DWX?th=1)"
+
+msgid "Ensures workspace is brightly and uniformly illuminated."
+msgstr "Workspace를 밝고 균일하게 비춥니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Black Work Mat**"
+msgstr "**Black Work Mat**"
+
+msgid "Foam mat for workspace"
+msgstr "Workspace용 foam mat"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "[Black EVA foam](https://www.michaels.com/product/12-x-18-thick-foam-sheet-by-creatology-10661709)"
+msgstr "[Black EVA foam](https://www.michaels.com/product/12-x-18-thick-foam-sheet-by-creatology-10661709)"
+
+msgid "Non-slip surface for vials and rack; color matches simulation environment."
+msgstr "Vial과 rack이 미끄러지지 않는 표면이며 simulation의 색상과 일치합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Centrifuge Vials**"
+msgstr "**Centrifuge Vials**"
+
+msgid "50ml with screw cap, clear plastic"
+msgstr "Screw cap이 있는 투명 plastic 50ml vial"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid ""
+"[Falcon tube or similar](https://www.amazon.com/Kashi-Scientific-Conical-Centrifuge-"
+"Graduation/dp/B0C35JV95M?th=1)"
+msgstr ""
+"[Falcon tube or similar](https://www.amazon.com/Kashi-Scientific-Conical-Centrifuge-"
+"Graduation/dp/B0C35JV95M?th=1)"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "1-4"
+msgstr "1-4"
+
+msgid "Props manipulated by robot; clear sides allow for visual consistency with simulation."
+msgstr "Robot이 조작할 소품입니다. 투명한 측면으로 simulation과 시각적 일관성을 유지합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Vial Rack**"
+msgstr "**Vial Rack**"
+
+msgid "Yellow, fits 4+ vials, similar to simulation asset"
+msgstr "노란색, vial 4개 이상 수용, simulation asset과 유사한 형태"
+
+msgid ""
+"3D printed in yellow - models available [here](https://www.printables.com/model/1675961-vial-"
+"rack-50ml-centrifuge)"
+msgstr ""
+"노란색으로 3D print — model은 [여기](https://www.printables.com/model/1675961-vial-rack-50ml-"
+"centrifuge)에서 제공"
+
+#, python-format
+msgid ""
+"Holds vials upright, target for pick and place. Yellow color to match digital twin is best, as "
+"low as 5% infill can work."
+msgstr "Vial을 세워 보관하며 pick-and-place의 목표가 됩니다. Digital twin과 같은 노란색이 적합하며, infill 5% 정도로도 사용할 수 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**USB-C Charging Block**"
+msgstr "**USB-C Charging Block**"
+
+msgid "To power the light"
+msgstr "조명 전원 공급용"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "[Anker 25W USB-C Charging Block](https://www.amazon.com/gp/product/B0D72DWLZ1/)"
+msgstr "[Anker 25W USB-C Charging Block](https://www.amazon.com/gp/product/B0D72DWLZ1/)"
+
+msgid "as needed"
+msgstr "필요에 따라"
+
+msgid ""
+"21W or greater. Sufficient power for all lights and accessories; ensure safety and compliance "
+"with device specs."
+msgstr "21W 이상. 조명과 accessory에 충분한 전원을 공급하고 device 사양을 준수하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**USB-C Cable**"
+msgstr "**USB-C Cable**"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid ""
+"[USB-C to USB-C cable, 6ft](https://www.amazon.com/Anker-Charging-MacBook-Galaxy-"
+"Charger/dp/B088NRLMPV)"
+msgstr ""
+"[USB-C to USB-C cable, 6ft](https://www.amazon.com/Anker-Charging-MacBook-Galaxy-"
+"Charger/dp/B088NRLMPV)"
+
+msgid "Suggested light above is battery powered, but this will keep it powered"
+msgstr "위 조명은 battery로 동작하지만, cable을 연결하면 계속 전원을 공급할 수 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**(optional) Foam board joints**"
+msgstr "**(optional) Foam board joints**"
+
+msgid "To assemble lightbox"
+msgstr "Lightbox 조립용"
+
+msgid "3D printed, model [here](https://www.printables.com/model/1652109-foam-board-joints-for-lightbox)"
+msgstr ""
+"3D print, model은 [여기](https://www.printables.com/model/1652109-foam-board-joints-for-lightbox)에서 "
+"제공"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "8"
+msgstr "8"
+
+msgid ""
+"Allows assembly of lightbox without tearing the foam board during disassembly. Alternatively, you"
+" can use tape."
+msgstr "분해할 때 foam board를 손상시키지 않고 조립할 수 있습니다. Tape를 대신 사용할 수도 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Props"
+msgstr "Props"
+
+msgid "Approximate cost: $20 USD."
+msgstr "예상 비용: $20 USD"
+
+msgid "Yellow, fits 4 vials, same model used to create simulation USD asset"
+msgstr "노란색, vial 4개 수용, simulation USD asset을 만드는 데 사용한 동일 model"
+
+msgid "3D printed, model [here](https://www.printables.com/model/1675961-vial-rack-50ml-centrifuge)"
+msgstr "3D print, model은 [여기](https://www.printables.com/model/1675961-vial-rack-50ml-centrifuge)에서 제공"
+
+msgid "Holds vials upright; color/shape should closely match digital asset."
+msgstr "Vial을 세워 보관합니다. 색상과 형태를 digital asset에 가깝게 맞추세요."
+
+msgid "Build the Workspace"
+msgstr "Workspace 조립"
+
+msgid "In short, we'll:"
+msgstr "진행 순서는 다음과 같습니다."
+
+msgid "**Cut** the foam board to size"
+msgstr "Foam board를 치수에 맞게 **자릅니다**."
+
+msgid "**Cut** a hole for the external camera"
+msgstr "External camera용 구멍을 **냅니다**."
+
+msgid "**Mount** the light"
+msgstr "조명을 **장착합니다**."
+
+msgid "**Clamp** and **position** the props and robot."
+msgstr "소품과 robot의 **위치를 맞추고 고정합니다**."
+
+msgid "Assemble the Lightbox"
+msgstr "Lightbox 조립"
+
+msgid ""
+"**Cut** 2 of the 5 foam board panels down to 20\" x 20\" (50.8 cm x 50.8 cm). These will become "
+"the sides."
+msgstr "Foam board 5장 중 2장을 20\" x 20\" (50.8 cm x 50.8 cm)로 **자릅니다**. 양쪽 벽으로 사용합니다."
+
+msgid ""
+"On one of the 20\" x 20\" (50.8 cm x 50.8 cm) panels, **cut** a rectangular hole for the external"
+" camera. The Logitech webcam arm is approximately 5 cm × 1.5 cm — size the hole to slide it "
+"through snugly."
+msgstr ""
+"20\" x 20\" (50.8 cm x 50.8 cm) panel 하나에 external camera용 직사각형 구멍을 **냅니다**. Logitech webcam arm은"
+" 약 5 cm × 1.5 cm이므로, 헐겁지 않게 끼울 수 있도록 크기를 맞추세요."
+
+msgid "Now **assemble** the box - there are two options:"
+msgstr "이제 box를 **조립합니다**. 두 가지 방법이 있습니다."
+
+msgid "Option A — Tape (fast)"
+msgstr "방법 A — Tape(빠른 조립)"
+
+msgid "White duct tape or gaffer tape along the seams."
+msgstr "이음매에 white duct tape 또는 gaffer tape를 붙입니다."
+
+msgid "**Pros**: cheap, fast, no tools required"
+msgstr "**장점**: 저렴하고 빠르며 별도 도구가 필요 없습니다."
+
+msgid "**Cons**: removing the tape later will damage the foam board"
+msgstr "**단점**: 나중에 tape를 떼면 foam board가 손상됩니다."
+
+msgid ""
+"Keep foam board edges flush when taping. Running tape along the full length of each seam produces"
+" the strongest bond; small pieces work but are weaker."
+msgstr "Tape를 붙일 때 foam board의 모서리를 맞추세요. 이음매 전체 길이에 붙이는 것이 가장 튼튼합니다. 작은 조각도 사용할 수 있지만 결합력이 약합니다."
+
+msgid "Option B — 3D-printed corners (reusable)"
+msgstr "방법 B — 3D-printed corner(재사용 가능)"
+
+msgid "Print the corner assemblies from the BOM link above and snap panels in."
+msgstr "위 BOM 링크의 corner assembly를 출력하고 panel을 끼웁니다."
+
+msgid "**Pros**: clean look, easy to disassemble and reassemble"
+msgstr "**장점**: 깔끔하며 분해와 재조립이 쉽습니다."
+
+msgid "**Cons**: requires access to a 3D printer"
+msgstr "**단점**: 3D printer가 필요합니다."
+
+msgid "Camera Placement Measurements"
+msgstr "Camera 배치 치수"
+
+msgid "Camera placement diagram"
+msgstr "Camera 배치도"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Parameter"
+msgstr "Parameter"
+
+msgid "Value"
+msgstr "값"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Height**"
+msgstr "**Height**"
+
+msgid "40 cm from back of lightbox"
+msgstr "Lightbox 뒤쪽에서 40 cm"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Distance from back wall**"
+msgstr "**Distance from back wall**"
+
+msgid "27 cm from back of robot to center of camera lens"
+msgstr "Robot 뒤쪽에서 camera lens 중심까지 27 cm"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Angle**"
+msgstr "**Angle**"
+
+msgid ""
+"Approximately 54° downward from horizontal, matching the nominal simulation view. Use the [phone-"
+"level alignment steps](07-calibrating-so101.md#match-the-external-camera-tilt-to-simulation) and "
+"keep the robot, vials, and rack in view."
+msgstr ""
+"수평에서 아래로 약 54°로, simulation의 기준 view와 맞춥니다. [휴대전화 수평계 정렬 절차](07-calibrating-so101.md#match-the-"
+"external-camera-tilt-to-simulation)에 따라 robot, vial, rack이 화면에 들어오게 하세요."
+
+msgid ""
+"Verify the camera view matches the sample images before finalizing the slot position. A few "
+"centimeters of error is acceptable; large deviations change what the policy sees and degrade "
+"performance."
+msgstr ""
+"구멍 위치를 확정하기 전에 sample image와 camera view가 일치하는지 확인하세요. 몇 cm 정도의 오차는 허용되지만, 크게 벗어나면 policy가 보는 장면이"
+" 달라져 성능이 떨어집니다."
+
+msgid "Set Up the Light"
+msgstr "조명 설정"
+
+msgid ""
+"The light should be **bright, diffuse, and daylight-temperature**. If you use the lights listed "
+"in the BOM, they are already diffuse."
+msgstr "조명은 **밝고 확산되며 daylight 색온도**여야 합니다. BOM에 나온 조명은 이미 diffuse light를 제공합니다."
+
+msgid ""
+"These lights can get warm over extended use. Do not leave them on overnight, and monitor "
+"temperature during long sessions."
+msgstr "오래 사용하면 조명이 뜨거워질 수 있습니다. 밤새 켜 두지 말고 긴 session 중에는 온도를 확인하세요."
+
+msgid "Foam board top — interior mount"
+msgstr "Foam board 천장 — 내부 장착"
+
+msgid ""
+"If you use foam board for the top panel, mount a diffuse panel light inside the lightbox facing "
+"down. Zip ties through small holes in the foam board are the most reliable attachment; tape can "
+"work but may release from heat."
+msgstr ""
+"천장을 foam board로 만들었다면, diffuse panel light를 lightbox 내부에서 아래를 향하도록 장착합니다. 작은 구멍을 뚫고 zip tie로 고정하는"
+" 방법이 가장 안정적입니다. Tape도 가능하지만 열로 떨어질 수 있습니다."
+
+msgid "Open top — external mount"
+msgstr "열린 천장 — 외부 장착"
+
+msgid ""
+"Clamp or position an external diffuse light above the open top, angled to illuminate the "
+"workspace evenly."
+msgstr "열린 상단 위에 external diffuse light를 고정하거나 배치해 workspace를 균일하게 비추도록 각도를 맞춥니다."
+
+msgid "Turning on and adjusting lightbox lighting"
+msgstr "Lightbox 조명 켜기와 밝기 조절"
+
+msgid "*Turn on the light and set brightness before teleoperation or policy runs.*"
+msgstr "*Teleoperation이나 policy 실행 전에 조명을 켜고 밝기를 설정하세요.*"
+
+msgid "**Press** the **power button** on the light."
+msgstr "조명의 **power button**을 누릅니다."
+
+msgid ""
+"**Press and hold** the **power button** again until the travel lock progress bar completes and "
+"the light stays on."
+msgstr "**power button**을 다시 길게 눌러 travel lock progress bar가 끝나고 조명이 계속 켜져 있도록 합니다."
+
+msgid ""
+"**Use** the **brightness controls**; for evaluations and data collection, target roughly **50–100"
+" %**."
+msgstr "**brightness controls**로 조절합니다. 평가와 data 수집 시에는 대략 **50–100 %**를 사용합니다."
+
+msgid "**Plug in** the light if AC power is available; battery-only runs may not last a full session."
+msgstr "AC 전원을 사용할 수 있으면 조명을 **연결하세요**. Battery만으로는 전체 session을 진행하기 어려울 수 있습니다."
+
+msgid "Mount the Robot"
+msgstr "Robot 고정"
+
+msgid ""
+"Clamp the SO-101 to a solid table. Position it so the base sits inside the lightbox at the "
+"position shown in the reference photo below."
+msgstr "SO-101을 단단한 테이블에 clamp로 고정합니다. 아래 참고 사진처럼 base가 lightbox 안쪽에 오도록 배치하세요."
+
+msgid "This gives it good range-of-motion and lets the external camera see the robot well."
+msgstr "Robot의 가동 범위를 확보하고 external camera에서도 잘 보이도록 하는 배치입니다."
+
+msgid ""
+"**Verify** the clamps do **not** restrict the robot's range of motion—test by manually moving "
+"each joint through its range before powering on."
+msgstr "Clamp가 robot의 가동 범위를 **제한하지 않는지 확인**하세요. 전원을 켜기 전에 각 joint를 손으로 움직여 점검합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "![Lightbox](images/so101_workspace.jpg)"
+msgstr "![Lightbox](images/so101_workspace.jpg)"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Lightbox"
+msgstr "Lightbox"
+
+msgid "Arrange the Mat, Vials, and Rack"
+msgstr "Mat, Vial, Rack 배치"
+
+msgid ""
+"Our simulation environment and checkpoint models are overfit to the rack generally being on the "
+"**left** side and vials on the **right**. Use the reference photo above for positioning."
+msgstr ""
+"Simulation environment와 checkpoint model은 rack이 주로 **left**, vial이 **right**에 있는 배치에 맞춰져 있습니다. 위 "
+"참고 사진을 기준으로 배치하세요."
+
+msgid ""
+"If you customize the Isaac Lab environment we'll use later, you could try out other "
+"configurations!"
+msgstr "나중에 Isaac Lab environment를 수정하면 다른 배치도 시도할 수 있습니다."
+
+msgid "Rack Placement Measurements"
+msgstr "Rack 배치 치수"
+
+msgid ""
+"Place the foam mat flat under the vials, and scatter 1–3 vials on the mat in varied poses (same "
+"general layout as in simulation)."
+msgstr "Foam mat를 평평하게 놓고 vial 1–3개를 다양한 pose로 흩어 놓습니다. 전체 배치는 simulation과 비슷하게 유지하세요."
+
+msgid "Physical Layout Checklist"
+msgstr "실물 배치 점검"
+
+msgid "Before you place the robot in the enclosure or run any real-robot software:"
+msgstr "Robot을 enclosure에 넣거나 실제 robot software를 실행하기 전에 확인하세요."
+
+msgid "**Enclosure** — Lightbox panels assembled; interior clear of stray objects."
+msgstr "**Enclosure** — Lightbox panel 조립을 마치고 내부의 불필요한 물체를 치웁니다."
+
+msgid ""
+"**Mat and props** — Foam mat flat; **yellow rack** in its designated spot; **1–3 vials** on the "
+"mat in varied poses (same general layout as in simulation)."
+msgstr ""
+"**Mat and props** — Foam mat를 평평하게 놓고 **yellow rack**을 지정된 위치에 둡니다. Mat 위에 **1–3 vials**를 다양한 "
+"pose로 배치합니다. 전체 배치는 simulation과 같게 유지합니다."
+
+msgid ""
+"**Cameras** — Wrist and external cameras mounted and aimed so both the mat/rack and gripper "
+"workspace are visible; no heavy occlusion or glare."
+msgstr ""
+"**Cameras** — Wrist와 external camera를 설치해 mat/rack과 gripper의 작업 영역이 보이게 합니다. 심한 occlusion이나 "
+"glare가 없어야 합니다."
+
+msgid ""
+"**Cables** — Route camera and robot cables so they do **not** snag or limit joint motion (cables "
+"can create false calibration limits; see [Troubleshooting](troubleshooting.md), *Calibration "
+"Fails*)."
+msgstr ""
+"**Cables** — Camera와 robot cable이 걸리거나 joint 움직임을 제한하지 않도록 정리합니다. Cable 때문에 calibration limit이 잘못"
+" 잡힐 수 있습니다. [Troubleshooting](troubleshooting.md)의 *Calibration Fails*를 참고하세요."
+
+msgid "**Lighting** — Light on and bright enough (previous section)."
+msgstr "**Lighting** — 앞 절의 기준에 따라 조명을 켜고 충분한 밝기를 확보합니다."
+
+msgid ""
+"Re-check this checklist **before** [Real Evaluation](12-real-evaluation.md) and before each [Co-"
+"Training in Practice](13-cotraining-practice.md#workspace-prep) / [Strategy "
+"4](14-strategy3-cosmos.md) deployment if anything was moved."
+msgstr ""
+"배치를 바꿨다면 [Real Evaluation](12-real-evaluation.md)과 [Co-Training in Practice](13-cotraining-"
+"practice.md#workspace-prep) / [Strategy 4](14-strategy3-cosmos.md) 배포 **전에** 이 목록을 다시 확인하세요."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid "Workspace setup is critical for successful training and deployment."
+msgstr "Workspace 설정은 성공적인 학습과 배포에 매우 중요합니다."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid "With the workspace built and staged, continue to [Get the Code](06-get-the-code.md)."
+msgstr "Workspace 조립과 배치를 마쳤다면 [Get the Code](06-get-the-code.md)로 이동하세요."
+

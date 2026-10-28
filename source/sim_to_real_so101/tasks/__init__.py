@@ -15,32 +15,19 @@
 #
 # This file contains code derived from Isaac Lab
 # (https://github.com/isaac-sim/IsaacLab)
-# Copyright (c) 2022-2025, The Isaac Lab Project Developers. All rights reserved.
+# Copyright (c) 2022-2026, The Isaac Lab Project Developers. All rights reserved.
 # Licensed under the BSD-3-Clause License.
 
 """Package containing task implementations for the extension."""
 
-##
-# Register Gym environments.
-##
-
-from isaaclab_tasks.utils import import_packages
-
-# The blacklist is used to prevent importing configs from sub-packages
-_BLACKLIST_PKGS = ["utils", ".mdp"]
-# Import all configs in this package
-import_packages(__name__, _BLACKLIST_PKGS)
-
-
-
 import gymnasium as gym
 
-
 ##
 # Register Gym environments.
 ##
+
 gym.register(
-    id="Lerobot-So101-Teleop-Base",
+    id="Newton-So101-Teleop-Base-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -49,7 +36,7 @@ gym.register(
 )
 
 gym.register(
-    id="Lerobot-So101-Teleop-Task",
+    id="Newton-So101-Teleop-Task-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -58,7 +45,7 @@ gym.register(
 )
 
 gym.register(
-    id="Lerobot-So101-Teleop-Vials-To-Rack",
+    id="Newton-So101-Teleop-Vials-To-Rack-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -67,7 +54,7 @@ gym.register(
 )
 
 gym.register(
-    id="Lerobot-So101-Teleop-Vials-To-Rack-DR",
+    id="Newton-So101-Teleop-Vials-To-Rack-DR-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -75,9 +62,8 @@ gym.register(
     },
 )
 
-
 gym.register(
-    id="Lerobot-So101-Teleop-Vials-To-Rack-Eval",
+    id="Newton-So101-Teleop-Vials-To-Rack-Eval-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -85,9 +71,8 @@ gym.register(
     },
 )
 
-
 gym.register(
-    id="Lerobot-So101-Teleop-Vials-To-Rack-DR-Eval",
+    id="Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -95,3 +80,69 @@ gym.register(
     },
 )
 
+gym.register(
+    id="Newton-So101-Auto-Reach-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": f"{__name__}.auto_reach_env_cfg:AutoReachEnvCfg",
+    },
+)
+
+gym.register(
+    id="Newton-So101-Auto-Vials-State-Machine-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": (
+            f"{__name__}.vials_state_machine_env_cfg:VialsStateMachineEnvCfg"
+        ),
+    },
+)
+
+gym.register(
+    id="Newton-So101-Auto-Vials-State-Machine-DR-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": (
+            f"{__name__}.vials_state_machine_env_cfg:VialsStateMachineDREnvCfg"
+        ),
+    },
+)
+
+
+gym.register(
+    id="Newton-So101-Teleop-Vials-To-Rack-Expanded-DR-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": (
+            f"{__name__}.vials_to_rack_env_cfg:VialsToRackExpandedDREnvCfg"
+        ),
+    },
+)
+
+
+gym.register(
+    id="Newton-So101-Teleop-Vials-To-Rack-Expanded-DR-Eval-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": (
+            f"{__name__}.vials_to_rack_env_cfg:VialsToRackEvalExpandedDREnvCfg"
+        ),
+    },
+)
+
+
+gym.register(
+    id="Newton-So101-Auto-Vials-State-Machine-Expanded-DR-v0",
+    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+    disable_env_checker=True,
+    kwargs={
+        "env_cfg_entry_point": (
+            f"{__name__}.vials_state_machine_env_cfg:VialsStateMachineExpandedDREnvCfg"
+        ),
+    },
+)

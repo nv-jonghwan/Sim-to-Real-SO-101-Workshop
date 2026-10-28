@@ -1,0 +1,54 @@
+.groot-explorers {
+  --groot-surface: var(--pst-color-surface, #f3f4f5);
+  --groot-border: var(--pst-color-border, #b5b5b5);
+  --groot-accent: var(--pst-color-primary, #426800);
+  color: var(--pst-color-text-base, inherit);
+}
+.groot-explorer { margin: 1.8rem 0; padding-block: 1rem; border-block-start: 1px solid var(--groot-border); }
+.groot-explorer h4 { margin-block: 0 .75rem; }
+.groot-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 1rem 1.5rem; margin: 1.25rem 0; }
+.groot-explorers [hidden] { display: none; }
+.groot-controls label { display: flex; flex-direction: column; gap: .3rem; font-weight: 600; max-width: 100%; }
+.groot-controls select, .groot-reset {
+  font: inherit; color: inherit; background: var(--groot-surface); border: 1px solid var(--groot-border);
+  border-radius: .25rem; padding: .45rem .65rem; min-height: 44px; max-width: 100%;
+}
+.groot-controls input { accent-color: var(--groot-accent); }
+.groot-controls .groot-range { display: block; flex: 1; min-width: min(100%, 15rem); }
+.groot-range input { display: block; width: 100%; min-height: 44px; }
+.groot-explorers :is(input, select, button):focus-visible { outline: 3px solid var(--groot-accent); outline-offset: 3px; }
+.groot-flow { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.4rem; padding: 0 !important; margin: 1.5rem 0 1rem !important; }
+.groot-flow li { position: relative; margin: 0; padding: .7rem; background: var(--groot-surface); overflow-wrap: anywhere; }
+.groot-flow li:not(:last-child)::after { content: "→"; position: absolute; right: -1.25rem; top: 35%; }
+.groot-flow :is(strong, span, small) { display: block; }
+.groot-flow span { margin-block: .4rem; }
+.groot-flow small { font-size: .85em; }
+.groot-loop-note, .groot-caption { font-size: .9em; }
+.groot-results { margin-block: 1rem; }
+.groot-results p { margin-block: .35rem; }
+.groot-results strong { font-size: 1.2em; font-variant-numeric: tabular-nums; }
+.groot-equation { display: inline-block; margin-inline-start: .4rem; font-size: .9em; }
+.groot-timeline-title { margin-block: 1.4rem .5rem; font-weight: 600; }
+.groot-timeline-title span { display: block; font-size: .85em; font-weight: 400; }
+.groot-action-window { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: .2rem; }
+.groot-action-window span { padding-block: .6rem; text-align: center; background: var(--groot-surface); font-variant-numeric: tabular-nums; font-size: .85em; }
+.groot-explorers .is-used { background: var(--groot-accent); color: var(--pst-color-background, #fff); }
+.groot-legend { display: flex; flex-wrap: wrap; gap: .5rem 1rem; margin-block: .6rem; font-size: .85em; }
+.groot-legend span { display: inline-flex; align-items: center; gap: .4rem; }
+.groot-legend i { width: 1rem; height: 1rem; background: var(--groot-surface); }
+.groot-reset { cursor: pointer; }
+@media (max-width: 650px) {
+  .groot-flow { grid-template-columns: 1fr; gap: 1.6rem; }
+  .groot-flow li:not(:last-child)::after { content: "↓"; top: auto; bottom: -1.5rem; left: 1rem; right: auto; }
+  .groot-action-window { gap: .1rem; }
+  .groot-action-window span { font-size: .7em; }
+}
+@media print {
+  .groot-controls, .groot-reset { display: none; }
+  .groot-action-window span.is-used { outline: 1px solid currentColor; }
+}
+
+#groot-action-window { grid-template-columns: repeat(32, minmax(0, 1fr)); gap: 1px; }
+#groot-action-window span { font-size: .7rem; padding-block: .8rem; min-width: 0; }
+#groot-action-window .alternate-chunk { opacity: .55; }
+#groot-action-window .prediction-start { border-left: 2px solid currentColor; font-weight: 700; }

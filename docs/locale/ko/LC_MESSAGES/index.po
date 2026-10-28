@@ -1,0 +1,172 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "AI Day Seoul 2026"
+msgstr "AI Day Seoul 2026"
+
+msgid "Overview"
+msgstr "과정 개요"
+
+msgid "Build Your Robot Lab"
+msgstr "Robot Lab 구축"
+
+msgid "Setup Your Robot"
+msgstr "Robot 설정"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Simulation"
+msgstr "Simulation"
+
+msgid "GR00T"
+msgstr "GR00T"
+
+msgid "Sim-to-Real Gap"
+msgstr "Sim-to-Real Gap"
+
+msgid "Working in Real"
+msgstr "실물 Robot 실습"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Cosmos"
+msgstr "Cosmos"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "System Identification"
+msgstr "System Identification"
+
+msgid "Explore and Experiment"
+msgstr "탐색과 실험"
+
+msgid "Conclusion"
+msgstr "마무리"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Workshop Code"
+msgstr "Workshop Code"
+
+msgid "Video Tutorials Playlist"
+msgstr "Video Tutorial 목록"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Physical AI Learning"
+msgstr "Physical AI Learning"
+
+msgid "Reference"
+msgstr "참고 자료"
+
+msgid "Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac"
+msgstr "NVIDIA Isaac으로 SO-101 Robot Sim-to-Real 학습하기"
+
+msgid ""
+"Orbit of the simulated SO-101 workstation, with the rack and vials fading in, transitioning to "
+"the real lightbox workspace."
+msgstr "Simulation의 SO-101 workspace를 둘러보며 rack과 vial이 나타나고, 실제 lightbox workspace로 전환되는 모습입니다."
+
+msgid "See [Get the Code](06-get-the-code.md) for setup."
+msgstr "설정 방법은 [Get the Code](06-get-the-code.md)를 확인하세요."
+
+msgid ""
+"Welcome to this hands-on learning path. The material is organized into **self-paced sections** "
+"you can work through in order. Duration depends on how deeply you run each exercise and whether "
+"you collect your own simulation data."
+msgstr ""
+"실습 중심의 학습 과정에 오신 것을 환영합니다. 자료는 순서대로 진행할 수 있는 **self-paced sections**로 구성되어 있습니다. 소요 시간은 각 실습을 얼마나"
+" 깊이 진행하는지, simulation data를 직접 수집하는지에 따라 달라집니다."
+
+msgid ""
+"Today you'll use a vision-language-action (VLA) model to perform **unstructured pick-and-place of"
+" centrifuge vials** into a rack using an SO-101 robot arm."
+msgstr ""
+"이 과정에서는 vision-language-action (VLA) model과 SO-101 robot arm을 사용해 vial을 rack에 넣는 **unstructured "
+"pick-and-place of centrifuge vials** task를 수행합니다."
+
+msgid "First we start in simulation, where we can iterate quickly and validate behavior, then in reality."
+msgstr "빠르게 반복하고 동작을 검증할 수 있는 simulation에서 시작한 뒤, 실제 환경으로 옮겨갑니다."
+
+msgid ""
+"Through this workflow you'll experience the **sim-to-real gap** firsthand and how to apply "
+"systematic strategies to close it."
+msgstr "이 workflow를 통해 **sim-to-real gap**을 직접 경험하고, 이를 줄이는 체계적인 방법을 적용합니다."
+
+msgid ""
+"This workshop uses **Isaac Lab 3.0**, **Newton physics**, **ovrtx rendering**, **LeRobot**, and "
+"**GR00T 1.7**."
+msgstr ""
+"이 workshop에서는 **Isaac Lab 3.0**, **Newton physics**, **ovrtx rendering**, **LeRobot**, **GR00T "
+"1.7**을 사용합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Robot Calibration"
+msgstr "Robot Calibration"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Domain Randomization"
+msgstr "Domain Randomization"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Sim Teleoperation and Data Capture"
+msgstr "Sim Teleoperation and Data Capture"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Cosmos Augmentation"
+msgstr "Cosmos Augmentation"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Real Robot Autonomous Tests"
+msgstr "Real Robot Autonomous Tests"
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "By the end of this learning path, you'll be able to:"
+msgstr "이 과정을 마치면 다음을 수행할 수 있습니다."
+
+msgid "**Configure** and calibrate an SO-101 robot for sim-to-real experiments"
+msgstr "**Configure**: sim-to-real 실험을 위한 SO-101 robot 설정과 calibration"
+
+msgid ""
+"**Collect** demonstration data using teleoperation or a scripted controller, with domain "
+"randomization"
+msgstr ""
+"**Collect**: domain randomization을 적용한 teleoperation 또는 scripted controller 기반 demonstration data"
+" 수집"
+
+msgid "**Train** vision-language-action (VLA) models using GR00T for robot manipulation"
+msgstr "**Train**: GR00T를 사용한 robot manipulation용 vision-language-action (VLA) model 학습"
+
+msgid "**Evaluate** trained policies in simulation"
+msgstr "**Evaluate**: 학습한 policy를 simulation에서 평가"
+
+msgid "**Deploy** policies to physical robots and observe the sim-to-real gap"
+msgstr "**Deploy**: 실제 robot에 policy를 배포하고 sim-to-real gap 관찰"
+
+msgid ""
+"**Explore** five sim-to-real strategies: Domain Randomization, Co-training, HG-DAgger, Cosmos "
+"Augmentation, and System Identification with AnchorBench"
+msgstr ""
+"**Explore**: Domain Randomization, Co-training, HG-DAgger, Cosmos Augmentation, AnchorBench를 활용한 "
+"System Identification의 다섯 가지 sim-to-real 전략 탐색"
+
+msgid ""
+"Welcome to this hands-on workshop! This content includes theory presentations, and the hands-on "
+"instructions you need to complete this workshop."
+msgstr "실습 중심의 workshop에 오신 것을 환영합니다! 이 자료에는 이론 설명과 workshop을 완료하는 데 필요한 실습 안내가 포함되어 있습니다."
+

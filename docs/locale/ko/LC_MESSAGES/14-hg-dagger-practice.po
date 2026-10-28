@@ -1,0 +1,566 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "HG-DAgger: Collect Corrections"
+msgstr "HG-DAgger: Correction 수집"
+
+msgid "Physical SO-101 holding a vial above the yellow rack."
+msgstr "실제 SO-101이 yellow rack 위에서 vial을 잡고 있습니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"Hands-on. You’ll need the current Newton workshop container, a calibrated leader arm, a policy "
+"checkpoint, and an NVIDIA GPU. For real collection, you also need the calibrated follower and "
+"both cameras."
+msgstr ""
+"실습입니다. 현재 Newton workshop container, calibration된 leader arm, policy checkpoint, NVIDIA GPU가 "
+"필요합니다. 실제 수집에는 calibration된 follower와 camera 두 대도 필요합니다."
+
+msgid ""
+"In this session, you’ll pause the policy, guide it through a correction with the leader arm, and "
+"save that correction for training."
+msgstr "Policy를 pause하고 leader로 correction을 수행한 뒤 학습용으로 저장합니다."
+
+msgid ""
+"The leader arm will move In this lesson, the **physical leader (teleop) arm moves under motor "
+"power** during startup, alignment, resets, and normal exit—even when the follower is simulated. "
+"Keep its path clear. Support the leader before pressing **G** or **L** to release its torque."
+msgstr ""
+"Leader arm이 움직입니다. **실제 leader(teleop) arm은 시작, 정렬, reset, 정상 종료 중 motor 전원으로 움직입니다.** Follower가 "
+"simulation이어도 같습니다. 이동 경로를 비우고 **G** 또는 **L**로 torque를 풀기 전에 leader를 받쳐 주세요."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "**Align** the leader, collect a correction, and return control to the policy."
+msgstr "Leader를 **정렬**하고 correction을 수집한 뒤 policy에 제어권 반환"
+
+msgid "**Compare** assisted collection with autonomous evaluation."
+msgstr "사람이 돕는 수집과 자율 평가 **비교**"
+
+msgid "Prepare the Workshop Container"
+msgstr "Workshop Container 준비"
+
+msgid "Use the instructor-prepared container or the image built in [Get the Code](06-get-the-code.md)."
+msgstr "Instructor가 준비한 container 또는 [Get the Code](06-get-the-code.md)에서 build한 image를 사용합니다."
+
+msgid "**Stop** any teleoperation or evaluation session using the arms or cameras."
+msgstr "Arm이나 camera를 사용하는 teleoperation 및 evaluation session을 **종료**합니다."
+
+msgid "**Continue** in your workshop container terminal; saved settings load when the shell starts."
+msgstr "Workshop container terminal에서 **계속**합니다. 저장된 설정은 shell 시작 시 로드됩니다."
+
+msgid ""
+"Check the saved `TELEOP_PORT` and `TELEOP_ID` for the leader, and `ROBOT_PORT` and `ROBOT_ID` for"
+" the real follower. For real collection, verify `CAMERA_GRIPPER` and `CAMERA_EXTERNAL` as in "
+"[Camera Setup](08-operating-so101.md#camera-setup), then build the camera configuration in this "
+"shell:"
+msgstr ""
+"Leader의 `TELEOP_PORT`, `TELEOP_ID`와 실제 follower의 `ROBOT_PORT`, `ROBOT_ID`를 확인합니다. 실제 수집에서는 "
+"[Camera Setup](08-operating-so101.md#camera-setup)에 따라 `CAMERA_GRIPPER`, `CAMERA_EXTERNAL`을 확인하고 "
+"이 shell에서 camera configuration을 만듭니다."
+
+msgid ""
+"Repeat this export after opening a new shell. It uses the `wrist` and `external` camera keys "
+"expected by the policy below."
+msgstr "새 shell을 열면 export를 반복하세요. 아래 policy가 기대하는 `wrist`, `external` key를 사용합니다."
+
+msgid "**Select** the co-trained checkpoint you want to improve:"
+msgstr "개선하려는 Co-Trained checkpoint를 **선택**합니다."
+
+msgid "What to Expect"
+msgstr "예상되는 동작"
+
+msgid ""
+"This model was trained on 75 simulated teleoperation demonstrations and 10 real demonstrations. "
+"In our real-robot trials, it succeeded in **10 of 20 episodes (50%)**. Watch for a placement that"
+" misses the rack slot; those failures are opportunities to pause and collect a correction."
+msgstr ""
+"Simulation teleoperation 75개와 실제 demonstration 10개로 학습한 model이며 실제 시험에서 **20 episode 중 10개(50%)**"
+" 성공했습니다. Rack slot을 놓치는 placement를 관찰하고, pause한 뒤 correction을 수집하세요."
+
+msgid ""
+"Keep `your_hf_username` for local-only collection, or replace it with your Hugging Face username "
+"if you plan to upload. The correction dataset stays local until you upload it."
+msgstr ""
+"Local 수집만 하면 `your_hf_username`을 유지하고 upload할 계획이면 본인의 username으로 바꿉니다. Correction dataset은 "
+"upload 전까지 local에만 저장됩니다."
+
+msgid "Teach the Rest Poses"
+msgstr "Rest Pose 지정"
+
+msgid "**Support** the leader in its resting position on the bench."
+msgstr "Leader를 bench 위의 rest pose에서 **받쳐 줍니다**."
+
+msgid "**Run** this once per leader calibration:"
+msgstr "Leader calibration마다 한 번 **실행**합니다."
+
+msgid ""
+"For real collection, **leave** the follower sitting folded, for example right after power-on, and"
+" **run** this once per follower calibration:"
+msgstr "실제 수집에서는 follower를 전원 직후처럼 접어 놓은 상태로 **두고**, follower calibration마다 한 번 **실행**합니다."
+
+msgid ""
+"Both commands save the current position without moving the arm or releasing its torque. Normal "
+"exit will return each arm here. Until the follower's rest is taught, exit returns the follower to"
+" its pose at startup."
+msgstr ""
+"두 명령은 arm을 움직이거나 torque를 풀지 않고 현재 위치만 저장합니다. 정상 종료 시 해당 위치로 돌아옵니다. Follower rest를 지정하기 전에는 시작할 때의"
+" pose로 돌아갑니다."
+
+msgid ""
+"The leader moves under power during startup, alignment, resets, and normal exit. Keep its path "
+"clear. Support it before pressing **G** or **L**, which release its torque; there is no gravity "
+"compensation. Follow the [robot safety guidance](08-operating-so101.md#safety)."
+msgstr ""
+"Leader는 시작, 정렬, reset, 정상 종료 중 전원으로 움직입니다. 경로를 비우세요. Torque를 푸는 **G**, **L** 전에 leader를 받쳐 줍니다. "
+"Gravity compensation은 없습니다. [Robot safety 안내](08-operating-so101.md#safety)를 따르세요."
+
+msgid "Start Collection"
+msgstr "수집 시작"
+
+msgid ""
+"For the **real follower**, run `lerobot-rollout-dagger`. It runs the collection session inside "
+"LeRobot's `lerobot-rollout`, which loads the policy in this process, so no policy server is "
+"needed:"
+msgstr ""
+"**실제 follower**에는 `lerobot-rollout-dagger`를 실행합니다. LeRobot의 `lerobot-rollout` 안에서 policy를 직접 "
+"로드하므로 별도 policy server가 필요하지 않습니다."
+
+msgid ""
+"For this exercise, the starting pose comes from the 75 sim-teleoperation demonstrations used in "
+"co-training, rather than averaging the entire merged dataset. Startup moves both arms to the mean"
+" episode-start pose from that sim dataset. Check the printed starting-pose values before "
+"beginning policy execution. Each arm opens its gripper first, then moves its shoulder, elbow, and"
+" wrist before turning its base and wrist roll. Remove any held vial before starting or resetting;"
+" opening the gripper will drop it."
+msgstr ""
+"이 실습의 starting pose는 merged dataset 전체가 아니라 Co-Training의 sim-teleoperation 75개에서 계산합니다. 시작하면 두 "
+"arm이 해당 dataset의 평균 시작 pose로 움직입니다. Policy 실행 전에 출력된 값을 확인하세요. 각 arm은 먼저 gripper를 열고 "
+"shoulder·elbow·wrist를 움직인 뒤 base와 wrist roll을 돌립니다. Gripper가 열리면 vial이 떨어지므로 시작/reset 전에 잡고 있는 "
+"vial을 제거하세요."
+
+msgid "Try collection in simulation instead"
+msgstr "대신 Simulation에서 수집하기"
+
+msgid ""
+"The current `lerobot_dagger` simulation command does not support `--start_pose_dataset`; it uses "
+"the task's default starting pose. This is not a matched-start comparison with the real collection"
+" command above."
+msgstr ""
+"현재 simulation 명령 `lerobot_dagger`는 `--start_pose_dataset`을 지원하지 않고 task 기본 pose를 사용합니다. 따라서 위 실제 "
+"명령과 시작 조건이 일치하는 비교가 아닙니다."
+
+msgid ""
+"Simulation uses `lerobot_dagger` with a policy server. Run these **instead of** the real-follower"
+" command. The leader is still a physical arm, but it controls the simulated follower."
+msgstr ""
+"Simulation은 `lerobot_dagger`와 policy server를 사용합니다. 실제 follower 명령 **대신** 아래를 실행하세요. Leader는 여전히 "
+"실물이며 simulation follower를 제어합니다."
+
+msgid "**Start** a dedicated policy server in the background of this terminal:"
+msgstr "이 terminal의 background에서 전용 policy server를 **시작**합니다."
+
+msgid ""
+"Wait for `Policy server ready`. If it times out, check `tail -n 40 outputs/dagger-policy-"
+"server.log` before continuing. Keep this server dedicated to DAgger: another client connection "
+"resets its state."
+msgstr ""
+"`Policy server ready`를 기다립니다. Timeout이면 진행 전에 `tail -n 40 outputs/dagger-policy-server.log`를 "
+"확인하세요. 다른 client가 연결되면 state가 reset되므로 이 server는 DAgger 전용으로 유지합니다."
+
+msgid "**Start** collection:"
+msgstr "수집을 **시작**합니다."
+
+msgid "When finished, **stop** the policy server from the same shell:"
+msgstr "완료하면 같은 shell에서 policy server를 **종료**합니다."
+
+msgid ""
+"Keep sim and real corrections in separate datasets, and use different seeds for collection and "
+"evaluation."
+msgstr "Simulation과 실제 correction은 별도 dataset에 저장하고 수집과 평가의 seed를 다르게 사용하세요."
+
+msgid ""
+"Open [http://localhost:8090](http://localhost:8090). The session starts **paused** after "
+"alignment to the start pose. Keep the page focused for the keyboard controls. Use only one "
+"browser tab connected to the viewer at a time."
+msgstr ""
+"[http://localhost:8090](http://localhost:8090)을 엽니다. 시작 pose 정렬 후 **paused** 상태로 시작합니다. Keyboard "
+"control을 위해 page에 focus를 두고 viewer에는 tab 하나만 연결하세요."
+
+msgid "Align, Correct, and Hand Back"
+msgstr "정렬, Correction, 제어권 반환"
+
+msgid "**Press Space** to let the policy run. Watch for the failure you want to correct."
+msgstr "**Space**로 policy를 실행하고 수정할 실패를 관찰합니다."
+
+msgid ""
+"**Press Space again** to pause. The follower holds its last command; pausing does not move the "
+"leader."
+msgstr "**Space를 다시 눌러** pause합니다. Follower는 마지막 명령을 유지하며 pause만으로 leader가 움직이지는 않습니다."
+
+msgid ""
+"**Press Tab** while paused. Let the leader move to match the follower, and **wait for "
+"`correction_ready`**. Do not force the powered arm into position."
+msgstr ""
+"Paused 상태에서 **Tab**을 누릅니다. Leader가 follower에 맞춰 움직이도록 두고 **`correction_ready`를 기다리세요**. 전원이 켜진 "
+"arm을 억지로 움직이지 마세요."
+
+msgid "**Support the leader, then press G**. Its torque releases and your correction begins recording."
+msgstr "**Leader를 받친 뒤 G**를 누릅니다. Torque가 풀리고 correction recording이 시작됩니다."
+
+msgid ""
+"**Guide the leader** through a useful correction—for example, finish the grasp and lift the vial "
+"clear of the mat."
+msgstr "**Leader를 움직여** 유용한 correction을 수행합니다. 예를 들어 grasp를 마치고 vial을 mat에서 들어 올립니다."
+
+msgid ""
+"**Press Space** to hold the leader, save the correction, and return control to the policy. Look "
+"for `Episode N saved` to confirm the write."
+msgstr "**Space**로 leader를 고정하고 correction을 저장한 뒤 policy에 제어권을 돌려줍니다. `Episode N saved`로 저장을 확인하세요."
+
+msgid "Repeat as needed within the same rollout:"
+msgstr "같은 rollout에서 필요에 따라 반복합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Space → Space → Tab → wait → G → correct → Space**"
+msgstr "**Space → Space → Tab → wait → G → correct → Space**"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Key"
+msgstr "Key"
+
+msgid "What it does"
+msgstr "기능"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Space**"
+msgstr "**Space**"
+
+msgid "Start or pause the policy; while correcting, save and resume the policy."
+msgstr "Policy 시작/일시 정지. Correction 중에는 저장하고 policy 재개."
+
+msgid "**Tab**, while paused"
+msgstr "Paused 상태에서 **Tab**"
+
+msgid "Move the leader to match the follower; wait for `correction_ready`."
+msgstr "Leader를 follower에 맞춰 이동. `correction_ready` 대기."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**G**"
+msgstr "**G**"
+
+msgid "Release leader torque and begin or continue a correction."
+msgstr "Leader torque 해제 후 correction 시작 또는 계속."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**X**"
+msgstr "**X**"
+
+msgid "Freeze and hold, keeping the unfinished correction. **G** continues it; **Space** saves it."
+msgstr "미완료 correction을 유지하며 정지·고정. **G**로 계속, **Space**로 저장."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**C**"
+msgstr "**C**"
+
+msgid "Discard the unfinished correction and pause."
+msgstr "미완료 correction 폐기 후 일시 정지."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**R**"
+msgstr "**R**"
+
+msgid "Discard the unfinished correction and reset the arms to the start pose."
+msgstr "미완료 correction을 폐기하고 arm을 시작 pose로 reset."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Esc / Ctrl+C (terminal)**"
+msgstr "**Esc / Ctrl+C (terminal)**"
+
+msgid "Exit and return the leader to its taught rest, with torque on."
+msgstr "종료 후 torque를 유지한 채 leader를 지정한 rest pose로 복귀."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**L**"
+msgstr "**L**"
+
+msgid "Release leader torque and exit without moving it. Support the leader first."
+msgstr "Leader torque를 풀고 이동 없이 종료. 먼저 leader를 받쳐 주세요."
+
+msgid ""
+"On the **real robot**, use **R** to end a rollout, then reset the objects by hand while paused. "
+"Record the outcome yourself: there is no automatic success, timeout, or safety reset. In "
+"**simulation**, success, timeout, or an unsafe scene also resets the environment and pauses for "
+"the next rollout."
+msgstr ""
+"**실제 robot**은 **R**로 rollout을 끝내고 paused 상태에서 물체를 손으로 reset합니다. 자동 성공·timeout·safety reset이 없으므로 "
+"결과를 직접 기록하세요. **Simulation**에서는 성공, timeout, unsafe scene도 environment reset과 pause를 유발합니다."
+
+msgid "Keep the leader near the follower during policy control"
+msgstr "Policy 제어 중 Leader를 Follower 가까이에 유지"
+
+msgid ""
+"Add `--strategy.leader_follows=true` to the real collection command, or `--leader_follows` in "
+"simulation. The powered leader tracks the follower during policy motion, which can help when you "
+"need frequent corrections. Still pause, press **Tab**, and wait for `correction_ready` before "
+"**G**. Tracking is speed-limited, so the leader may lag behind."
+msgstr ""
+"실제 명령에 `--strategy.leader_follows=true`, simulation에는 `--leader_follows`를 추가합니다. 전원이 켜진 leader가 "
+"follower를 따라가 잦은 correction에 도움이 됩니다. 그래도 **G** 전에 pause하고 **Tab**을 누른 뒤 `correction_ready`를 기다려야"
+" 합니다. 추적 속도가 제한되어 leader가 늦을 수 있습니다."
+
+msgid "Review and Finish"
+msgstr "검토와 종료"
+
+msgid ""
+"Save a useful correction with **Space**, or discard it with **C**, before exiting. Normal exit "
+"returns the leader to its taught rest. On real hardware, both arms move together through the "
+"start pose, each to its own taught rest; both keep torque on. Support them before switching off "
+"power."
+msgstr ""
+"종료 전에 **Space**로 유용한 correction을 저장하거나 **C**로 폐기하세요. 정상 종료 시 leader가 지정된 rest로 복귀합니다. 실제 "
+"hardware에서는 두 arm이 함께 시작 pose를 거쳐 각자의 rest로 이동하며 torque를 유지합니다. 전원을 끄기 전에 받쳐 주세요."
+
+msgid "At the container prompt, **inspect** a saved correction:"
+msgstr "Container prompt에서 저장한 correction을 **확인**합니다."
+
+msgid ""
+"Add `--resume=true` to the real collection command, or `--resume` in simulation, to append more "
+"corrections to the same dataset. To start another round separately, change `CORRECTION_ID`."
+msgstr ""
+"같은 dataset에 추가하려면 실제 명령에 `--resume=true`, simulation에 `--resume`을 추가합니다. 새 round는 "
+"`CORRECTION_ID`를 바꾸세요."
+
+msgid "What Gets Recorded?"
+msgstr "무엇이 기록될까?"
+
+msgid "Part of the session"
+msgstr "Session 구간"
+
+msgid "Recorded?"
+msgstr "기록 여부"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Policy rollout"
+msgstr "Policy rollout"
+
+msgid "No"
+msgstr "아니요"
+
+msgid "Pause, alignment, or reset"
+msgstr "Pause, alignment, reset"
+
+msgid "Human correction with the leader"
+msgstr "Leader로 수행한 human correction"
+
+msgid "Yes, when you save it"
+msgstr "저장하면 기록됨"
+
+msgid ""
+"Each saved correction becomes one LeRobot episode. A short grasp, lift, or placement is enough; "
+"you do not need to repeat the whole task. Review the episodes before training, and keep "
+"simulation and real corrections in separate datasets."
+msgstr ""
+"저장한 correction 하나가 LeRobot episode 하나가 됩니다. 짧은 grasp, lift, placement도 충분하며 전체 task를 반복할 필요는 "
+"없습니다. 학습 전에 검토하고 simulation과 실제 correction은 별도 dataset으로 유지하세요."
+
+msgid "Evaluate the Updated Policy"
+msgstr "갱신된 Policy 평가"
+
+msgid ""
+"Use this provided checkpoint to try a policy trained with corrections. It was trained from GR00T "
+"1.7 base weights on 75 sim demonstrations, 10 real demonstrations, and 29 correction segments. "
+"Your newly collected corrections are not included in this checkpoint."
+msgstr ""
+"제공된 checkpoint로 correction 학습 효과를 시험합니다. GR00T 1.7 base에서 simulation demonstration 75개, 실제 10개, "
+"correction segment 29개로 학습했습니다. 방금 직접 수집한 correction은 이 checkpoint에 포함되지 않습니다."
+
+msgid "**Exit** the correction session and wait for both arms to finish returning to rest."
+msgstr "Correction session을 **종료**하고 두 arm이 rest로 돌아올 때까지 기다립니다."
+
+msgid "**Select** the corrected model. Keep your verified camera configuration:"
+msgstr "Correction을 학습한 model을 **선택**하고 검증한 camera 설정을 유지합니다."
+
+msgid ""
+"This model was trained on 75 simulated teleoperation demonstrations, 10 real demonstrations, and "
+"29 human correction segments. In our real-robot trials, it succeeded in **14 of 20 episodes "
+"(70%)**. Look for changes in slot alignment and placement, and check that grasping and lifting "
+"still work."
+msgstr ""
+"Simulation teleoperation 75개, 실제 demonstration 10개, human correction segment 29개로 학습했습니다. 실제 시험은 "
+"**20 episode 중 14개(70%)** 성공했습니다. Slot 정렬과 placement의 변화를 보고 grasp와 lift도 여전히 잘 되는지 확인하세요."
+
+msgid ""
+"Use the sim-teleoperation demonstrations for the starting pose, as in the collection command "
+"above. Correction segments begin partway through the task, so their initial frames are not full-"
+"task starting poses. Before starting policy actions, verify the achieved pose against the sim "
+"demonstrations."
+msgstr ""
+"위 수집 명령처럼 starting pose는 sim-teleoperation demonstration을 사용합니다. Correction은 task 중간부터 시작하므로 초기 "
+"frame을 전체 task 시작 pose로 쓸 수 없습니다. Policy action 전에 실제 pose를 simulation demonstration과 비교하세요."
+
+msgid "Optional: Try This Policy in Simulation First"
+msgstr "선택 사항: 먼저 Simulation에서 시험"
+
+msgid ""
+"**Stop** the real rollout and continue in the same container terminal. Keep the selected "
+"`MODEL_ID` and task instruction."
+msgstr "실제 rollout을 **종료**한 뒤 같은 container terminal을 사용합니다. `MODEL_ID`와 task instruction은 유지합니다."
+
+msgid "**Start** the simulation policy server below, or reuse it if it is already running."
+msgstr "아래 simulation policy server를 **시작**하거나 이미 실행 중이면 재사용합니다."
+
+msgid "**Wait** for `Policy server ready`, then **run** the evaluation:"
+msgstr "`Policy server ready`를 **기다린 뒤** 평가를 **실행**합니다."
+
+msgid ""
+"**Open** [http://localhost:8090](http://localhost:8090). Use only one browser tab connected to "
+"the viewer at a time."
+msgstr "[http://localhost:8090](http://localhost:8090)을 **엽니다**. Viewer에는 browser tab 하나만 연결하세요."
+
+msgid ""
+"**Stop** the background server before running the real policy. If evaluation is still running, "
+"press **Ctrl+C** first:"
+msgstr "실제 policy를 실행하기 전에 background server를 **종료**합니다. 평가가 실행 중이면 먼저 **Ctrl+C**를 누르세요."
+
+msgid "Or **stop all policy servers** in the container:"
+msgstr "또는 container의 **모든 policy server를 종료**합니다."
+
+msgid ""
+"If reusing a server from another terminal, stop it there instead. Continue with the real rollout "
+"below; it loads the policy directly."
+msgstr "다른 terminal의 server를 재사용했다면 해당 terminal에서 종료합니다. 아래 실제 rollout은 policy를 직접 로드합니다."
+
+msgid "**Run** the corrected policy on the real robot without intervening:"
+msgstr "개입 없이 실제 robot에서 correction 학습 policy를 **실행**합니다."
+
+msgid "Rollout controls"
+msgstr "Rollout Control"
+
+msgid ""
+"The arm moves to the workshop start pose on startup, then waits for **P**. Keep the rollout "
+"terminal focused. Keys are case-insensitive."
+msgstr ""
+"시작 시 arm이 workshop 시작 pose로 움직인 뒤 **P**를 기다립니다. Rollout terminal에 focus를 두세요. Key는 대소문자를 구분하지 "
+"않습니다."
+
+msgid ""
+"Wait for `Paused` before rearranging props. On exit, wait for cleanup and any return motion to "
+"finish before touching the arm."
+msgstr "소품을 옮기기 전에 `Paused`를 기다리세요. 종료할 때도 cleanup과 복귀 동작이 끝난 뒤 arm을 만집니다."
+
+msgid ""
+"When comparing models, record the first-action delay shown in the terminal and the number of "
+"successes out of scored trials."
+msgstr "Model 비교 시 terminal에 표시되는 첫 action 지연과 평가한 trial 중 성공 수를 기록하세요."
+
+msgid ""
+"**Compare** with the original co-trained policy under the same starting conditions. Does the vial"
+" still miss the slot? Check that any improvement in placement also preserves grasping, lifting, "
+"and the return motion. Record your successes and failures, and compare them with the workshop "
+"results above."
+msgstr ""
+"같은 시작 조건에서 원래 Co-Trained policy와 **비교**하세요. Vial이 여전히 slot을 놓치나요? Placement 개선과 함께 grasp, lift, "
+"복귀도 유지되는지 확인합니다. 성공과 실패를 기록하고 위 workshop 결과와 비교하세요."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid "Collect corrections where the policy needs help."
+msgstr "Policy에 도움이 필요한 곳에서 correction을 수집합니다."
+
+msgid "Mix corrections with compatible demonstrations before fine-tuning."
+msgstr "Fine-tuning 전에 correction과 호환되는 demonstration을 혼합합니다."
+
+msgid "Test the updated policy without human assistance."
+msgstr "갱신된 policy는 사람의 도움 없이 시험합니다."
+
+msgid "Resources"
+msgstr "참고 자료"
+
+msgid ""
+"[HG-DAgger: Interactive Imitation Learning with Human Experts](https://arxiv.org/abs/1810.02890) "
+"— the original method. This workshop prototype demonstrates manual takeovers, however the paper "
+"also explores an uncertainty-based risk measure for deciding when the expert should take over."
+msgstr ""
+"[HG-DAgger: Interactive Imitation Learning with Human Experts](https://arxiv.org/abs/1810.02890) "
+"— 원래 방법을 소개한 paper입니다. 이 workshop prototype은 수동 개입을 보여주며, paper에서는 expert 개입 시점을 정하는 uncertainty "
+"기반 risk measure도 다룹니다."
+
+msgid ""
+"[Reviewing collected demonstrations](08-simulation-teleoperation.md#review-and-upload-collected-"
+"data)"
+msgstr "[수집 Demonstration 검토](08-simulation-teleoperation.md#review-and-upload-collected-data)"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "[GR00T Post-Training](10-groot.md)"
+msgstr "[GR00T Post-Training](10-groot.md)"
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to [Strategy 4: Augmenting Datasets With Cosmos](14-strategy3-cosmos.md) to explore "
+"synthetic video augmentation for robot training."
+msgstr ""
+"[Strategy 4: Augmenting Datasets With Cosmos](14-strategy3-cosmos.md)에서 robot 학습을 위한 synthetic "
+"video augmentation을 살펴보세요."
+
+msgid "Action"
+msgstr "동작"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**P**"
+msgstr "**P**"
+
+msgid "**P for policy:** Start the first or next trial."
+msgstr "**P for policy:** 첫 trial 또는 다음 trial을 시작합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**S / F**"
+msgstr "**S / F**"
+
+msgid "Score success/failure, return to the start pose, and pause."
+msgstr "성공/실패를 기록하고 시작 pose로 복귀한 뒤 일시 정지합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**N / →**"
+msgstr "**N / →**"
+
+msgid "**N for next:** Discard the trial, return to the start pose, and pause."
+msgstr "**N for next:** Trial을 폐기하고 시작 pose로 복귀한 뒤 일시 정지합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Q / Esc**"
+msgstr "**Q / Esc**"
+
+msgid "**Q for Quit:** Exit and discard any unfinished trial."
+msgstr "**Q for Quit:** 종료하며 미완료 trial은 폐기합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Ctrl+C**"
+msgstr "**Ctrl+C**"
+
+msgid "Stop the rollout and run cleanup."
+msgstr "Rollout을 중단하고 cleanup을 실행합니다."
+

@@ -1,0 +1,469 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "What Is Sim-to-Real?"
+msgstr "Sim-to-Real이란?"
+
+msgid "Unitree H1 in simulation and in the real world."
+msgstr "Simulation과 실제 환경의 Unitree H1입니다."
+
+msgid "Sim-to-Real with Unitree H1"
+msgstr "Unitree H1의 Sim-to-Real"
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid "Nothing — this module is theory-only."
+msgstr "없습니다. 이 module은 이론만 다룹니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "By the end of this session, you'll be able to:"
+msgstr "이 session을 마치면 다음을 수행할 수 있습니다."
+
+msgid "**Define** sim-to-real transfer and its goals"
+msgstr "**Define**: sim-to-real transfer와 그 목표 정의"
+
+msgid "**Identify** the four major categories of sim-to-real gaps"
+msgstr "**Identify**: sim-to-real gap의 네 가지 주요 범주 구분"
+
+msgid "**Explain** why transfer is difficult even with high-fidelity simulation"
+msgstr "**Explain**: 정밀한 simulation에서도 transfer가 어려운 이유 설명"
+
+msgid "Sim-to-Real Defined"
+msgstr "Sim-to-Real의 정의"
+
+msgid ""
+"**Sim-to-real** refers to the process of training a policy in simulation and deploying it on real"
+" hardware. The goal is a policy that performs well in the real world despite being trained "
+"entirely (or primarily) in simulation."
+msgstr ""
+"**Sim-to-real**은 simulation에서 policy를 학습하고 실제 hardware에 배포하는 과정입니다. 전부 또는 대부분을 simulation에서 "
+"학습하더라도 실제 환경에서 잘 동작하는 policy를 만드는 것이 목표입니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Simulation Evaluation in Action"
+msgstr "Simulation Evaluation in Action"
+
+msgid ""
+"Watch this policy attempt the vial-to-rack task across different simulated scenes. The external "
+"camera is on the left and the wrist camera is on the right. Notice both the successful placements"
+" and the failures."
+msgstr ""
+"서로 다른 simulation scene에서 policy가 vial-to-rack task를 시도하는 모습을 확인하세요. 왼쪽은 external camera, 오른쪽은 "
+"wrist camera입니다. 성공한 배치와 실패를 모두 관찰하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "The Sim-to-Real Gap"
+msgstr "The Sim-to-Real Gap"
+
+msgid ""
+"The **sim-to-real gap** is the performance difference between simulation and reality. A policy "
+"achieving high success rates in simulation may perform significantly worse on real hardware."
+msgstr ""
+"**sim-to-real gap**은 simulation과 실제 환경 사이의 성능 차이입니다. Simulation에서 높은 성공률을 보인 policy도 실제 "
+"hardware에서는 성능이 크게 떨어질 수 있습니다."
+
+msgid "The sim-to-real gap is often larger than expected."
+msgstr "Sim-to-real gap은 예상보다 큰 경우가 많습니다."
+
+msgid ""
+"And while colloquially we may discuss “the gap” as if it’s a single entity, the gap is a complex "
+"combination of gaps in sensing, actuation, physics, and modeling."
+msgstr "흔히 하나의 “gap”처럼 이야기하지만, 실제로는 sensing, actuation, physics, modeling의 차이가 복합적으로 작용합니다."
+
+msgid ""
+"Zero-shot transfer is difficult, so avoid assuming a policy will “just work” on real hardware "
+"without systematic testing and iteration."
+msgstr "Zero-shot transfer는 어렵습니다. 체계적인 시험과 반복 없이 policy가 실제 hardware에서도 바로 동작할 것이라고 가정하지 마세요."
+
+msgid ""
+"Overlapping circles represent the source domain in simulation and the target domain in reality. "
+"Greater coverage of real conditions supports transfer."
+msgstr "겹친 원은 simulation의 source domain과 실제 환경의 target domain을 나타냅니다. 실제 조건을 더 넓게 포함할수록 transfer에 유리합니다."
+
+msgid "The source domain is where we train; the target domain is where we want the policy to work."
+msgstr "Source domain은 학습하는 환경이고, target domain은 policy가 동작하기를 원하는 환경입니다."
+
+msgid "Sources of the Gap"
+msgstr "Gap의 발생 원인"
+
+msgid ""
+"You can **teach the policy to handle variation**, **make simulation closer to the real setup**, "
+"or combine both. Choose a change that addresses an observed failure, then compare under the same "
+"test conditions."
+msgstr ""
+"**teach the policy to handle variation**, **make simulation closer to the real setup** 또는 두 방법의 "
+"조합을 사용할 수 있습니다. 관찰된 실패를 해결하는 변경을 선택하고, 같은 시험 조건에서 비교하세요."
+
+msgid "Select a gap in the diagram to explore its examples."
+msgstr "그림에서 gap을 선택해 예시를 살펴보세요."
+
+msgid "Connect sensing, actuation, physics, and modeling gaps to transfer strategies"
+msgstr "Sensing, actuation, physics, modeling gap과 transfer 전략의 관계"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Sensing Gaps**"
+msgstr "**Sensing Gaps**"
+
+msgid "Camera models lack real sensor noise, blur, and distortion"
+msgstr "Camera model에는 실제 sensor noise, blur, distortion이 빠져 있습니다."
+
+msgid "Depth sensors have idealized measurements without artifacts"
+msgstr "Depth sensor의 측정값이 이상적이며 artifact가 없습니다."
+
+msgid "Simulated lighting differs from real lighting conditions"
+msgstr "Simulation의 조명이 실제 조명 조건과 다릅니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Actuation Gaps**"
+msgstr "**Actuation Gaps**"
+
+msgid "Motor models lack friction, backlash, and thermal effects"
+msgstr "Motor model에 friction, backlash, thermal effect가 반영되지 않습니다."
+
+msgid "Joint dynamics are simplified"
+msgstr "Joint dynamics가 단순화되어 있습니다."
+
+msgid "Control loop timing differs between simulation and hardware"
+msgstr "Simulation과 hardware의 control loop timing이 다릅니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Physics Gaps**"
+msgstr "**Physics Gaps**"
+
+msgid "Contact dynamics (friction, restitution) are approximations"
+msgstr "Contact dynamics의 friction과 restitution은 근삿값입니다."
+
+msgid "Deformable objects can be challenging to simulate accurately, especially if they change over time"
+msgstr "Deformable object는 정확한 simulation이 어려울 수 있으며, 시간에 따라 변하는 경우 특히 그렇습니다."
+
+msgid "Fluid dynamics and granular materials are computationally expensive"
+msgstr "Fluid dynamics와 granular material의 simulation에는 많은 연산이 필요합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Modeling Gaps**"
+msgstr "**Modeling Gaps**"
+
+msgid "CAD models differ from as-built hardware"
+msgstr "CAD model과 실제 제작된 hardware가 다릅니다."
+
+msgid "Mass and inertia properties are estimates"
+msgstr "Mass와 inertia는 추정값입니다."
+
+msgid "Joint reference frames and zero positions may differ from the calibrated robot"
+msgstr "Joint reference frame과 zero position이 calibration된 robot과 다를 수 있습니다."
+
+msgid "Modeling Gap Examples"
+msgstr "Modeling Gap 예시"
+
+msgid "Close-up of the simulated SO-101 arm, showing its links, joints, and gripper."
+msgstr "SO-101 simulation의 link, joint, gripper를 확대한 모습입니다."
+
+msgid "**Robot geometry.** Differences in link dimensions or joint placement can change the robot's pose."
+msgstr "**Robot geometry.** Link 치수나 joint 위치의 차이는 robot pose를 바꿀 수 있습니다."
+
+msgid ""
+"Elbow diagram comparing the calibrated LeRobot zero direction in green with the USD joint-frame "
+"zero in orange."
+msgstr "Calibration된 LeRobot의 zero 방향(초록)과 USD joint-frame의 zero(주황)를 비교하는 elbow 그림입니다."
+
+msgid ""
+"**Joint reference frames.** Different definitions of zero can produce different poses for the "
+"same joint angle. The limits shown are an example, not calibration targets."
+msgstr ""
+"**Joint reference frames.** Zero 정의가 다르면 같은 joint angle에서도 pose가 달라질 수 있습니다. 표시된 limit은 예시이며 "
+"calibration 목표값이 아닙니다."
+
+msgid "Select either image to view it at full size."
+msgstr "이미지를 선택하면 원본 크기로 볼 수 있습니다."
+
+msgid "Explore the Perception Gap"
+msgstr "Perception Gap 살펴보기"
+
+msgid ""
+"Appearance differences can contribute to missed grasps or reaches toward empty space. Similar "
+"symptoms can also come from calibration or action execution."
+msgstr "외관 차이로 grasp를 놓치거나 빈 공간으로 손을 뻗을 수 있습니다. 비슷한 증상은 calibration이나 action 실행 문제에서도 발생합니다."
+
+msgid ""
+"Use the comparison below to inspect rack edges, hole shapes, and fixed gripper features. Adjust "
+"**Sim opacity**, switch to **Side by side**, or use **Toggle real / sim** to alternate between "
+"the images. You can also load your own saved image pair; the files stay in your browser. No "
+"camera stream or robot connection is needed."
+msgstr ""
+"아래 비교 도구에서 rack edge, hole shape, gripper의 고정된 특징을 살펴보세요. **Sim opacity**를 조절하거나 **Side by "
+"side**로 전환하고, **Toggle real / sim**으로 두 이미지를 번갈아 볼 수 있습니다. 저장한 image pair도 불러올 수 있으며 파일은 browser "
+"안에만 유지됩니다. Camera stream이나 robot 연결은 필요하지 않습니다."
+
+msgid ""
+"Here’s the real wrist view beside our perception-tuned simulation. Compare the lighting, "
+"textures, and edges."
+msgstr "실제 wrist view와 perception을 조정한 simulation을 나란히 보여줍니다. 조명, texture, edge를 비교하세요."
+
+msgid "How we adjust the ovrtx camera response"
+msgstr "ovrtx camera response 조정 방법"
+
+msgid ""
+"The base vial scene configures grading and tone mapping through "
+"`SO101OVRTXRendererCfg.camera_responses`; DR adds film grain. The profiles live in "
+"`source/sim_to_real_so101/tasks/camera_profiles.py`. The renderer in "
+"`source/sim_to_real_so101/utils/ovrtx/renderer.py` authors response attributes on each camera's "
+"**render product**, so wrist and external views can use different settings. These are appearance "
+"approximations designed to close the perception gap. Consider how you might tune or randomize "
+"parameters like this for other tasks."
+msgstr ""
+"기본 vial scene은 `SO101OVRTXRendererCfg.camera_responses`로 grading과 tone mapping을 설정하고, DR은 film "
+"grain을 추가합니다. Profile은 `source/sim_to_real_so101/tasks/camera_profiles.py`에 있습니다. "
+"`source/sim_to_real_so101/utils/ovrtx/renderer.py`의 renderer가 각 camera의 **render product**에 "
+"response attribute를 작성하므로 wrist와 external view에 서로 다른 설정을 사용할 수 있습니다. 이는 perception gap을 줄이기 위한 "
+"외관 근사입니다. 다른 task에서도 이런 parameter를 어떻게 조정하거나 randomize할지 생각해 보세요."
+
+msgid ""
+"All ovrtx keys in the table have the prefix `omni:rtx:post:`. For example, these entries from the"
+" wrist profile enable grading and a small amount of grain:"
+msgstr ""
+"표의 모든 ovrtx key에는 `omni:rtx:post:` prefix가 붙습니다. 예를 들어 wrist profile의 다음 항목은 grading과 소량의 grain을 "
+"활성화합니다."
+
+msgid ""
+"**Blur is separate from those ovrtx attributes.** The workshop applies Gaussian blur to the wrist"
+" camera after rendering, through the Isaac Lab API. Its reset event in "
+"`source/sim_to_real_so101/tasks/vials_to_rack_env_cfg.py` uses:"
+msgstr ""
+"**Blur is separate from those ovrtx attributes.** 이 workshop에서는 rendering 후 Isaac Lab API를 통해 "
+"wrist camera에 Gaussian blur를 적용합니다. `source/sim_to_real_so101/tasks/vials_to_rack_env_cfg.py`의 "
+"reset event는 다음과 같습니다."
+
+msgid ""
+"The sampled blur stays fixed until that environment resets. The processed RGB feeds **display, "
+"recording, and policy observations**. When doing this in practice, check parameters "
+"likehighlights and texture as well as overall brightness, then evaluate the policy to determine "
+"whether the adjustment helps transfer."
+msgstr ""
+"추출된 blur 값은 해당 environment가 reset될 때까지 고정됩니다. 처리된 RGB는 **display, recording, and policy "
+"observations**에 사용됩니다. 실제 조정 시에는 전체 밝기뿐 아니라 highlight와 texture도 확인하고, policy를 평가해 transfer에 도움이 "
+"되는지 판단하세요."
+
+msgid ""
+"For an alternate image pair, see the [wrist-image comparison in the troubleshooting guide](wrist-"
+"image-alignment)."
+msgstr "다른 image pair는 [troubleshooting guide의 wrist-image 비교](wrist-image-alignment)를 확인하세요."
+
+msgid "What Makes Transfer Hard?"
+msgstr "Transfer가 어려운 이유"
+
+msgid ""
+"The sim-to-real gap isn't just about simulation fidelity. Even with perfect simulation, transfer "
+"is challenging because:"
+msgstr "Sim-to-real gap은 simulation fidelity만의 문제가 아닙니다. Simulation이 완벽하더라도 다음 이유로 transfer는 어렵습니다."
+
+msgid "**Distribution shift**: Real-world conditions vary from training"
+msgstr "**Distribution shift**: 실제 조건이 학습 조건과 다릅니다."
+
+msgid "**Compounding errors**: Small perception errors lead to large action errors"
+msgstr "**Compounding errors**: 작은 perception error가 큰 action error로 이어집니다."
+
+msgid ""
+"**Unmodeled dynamics**: Real physics has effects that may not be represented in simulation. For "
+"example, bearings or linear slides can wear, grease can dry out, and screws can loosen over time,"
+" changing friction or alignment."
+msgstr ""
+"**Unmodeled dynamics**: 실제 physics에는 simulation에 반영되지 않은 효과가 있습니다. 예를 들어 bearing이나 linear slide가 "
+"마모되고, grease가 마르거나 screw가 느슨해지면서 friction과 alignment가 바뀔 수 있습니다."
+
+msgid "**Temporal differences**: Real-time constraints affect behavior"
+msgstr "**Temporal differences**: 실시간 제약이 동작에 영향을 줍니다."
+
+msgid ""
+"Before attributing a failure to the policy, check camera assignments, joint order and units, "
+"calibration, action conventions, and starting pose. A policy needs compatible inputs and commands"
+" as well as a plausible scene."
+msgstr ""
+"실패 원인을 policy로 판단하기 전에 camera 할당, joint 순서와 단위, calibration, action 규약, starting pose를 확인하세요. "
+"Policy에는 그럴듯한 scene뿐 아니라 호환되는 입력과 명령도 필요합니다."
+
+msgid "Summary"
+msgstr "정리"
+
+msgid "Gap Category"
+msgstr "Gap 범주"
+
+msgid "Examples"
+msgstr "예시"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Sensing"
+msgstr "Sensing"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Camera noise, lighting, depth artifacts"
+msgstr "Camera noise, lighting, depth artifacts"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Actuation"
+msgstr "Actuation"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Friction, backlash, thermal effects"
+msgstr "Friction, backlash, thermal effects"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Physics"
+msgstr "Physics"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Contact dynamics, deformables"
+msgstr "Contact dynamics, deformables"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Modeling"
+msgstr "Modeling"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "CAD errors, mass/inertia estimates"
+msgstr "CAD errors, mass/inertia estimates"
+
+msgid ""
+"Understanding these gaps is essential—throughout this learning path, you'll learn strategies to "
+"address each category."
+msgstr "이러한 gap을 이해하는 것이 중요합니다. 이 과정에서 각 범주에 대응하는 전략을 배웁니다."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to [Debugging Sim-to-Real Issues](12-debugging-sim-to-real.md) to explore common causes "
+"of the gap."
+msgstr "[Debugging Sim-to-Real Issues](12-debugging-sim-to-real.md)에서 gap의 흔한 원인을 살펴보세요."
+
+msgid "Setting"
+msgstr "설정"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Wrist camera"
+msgstr "Wrist camera"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "External camera"
+msgstr "External camera"
+
+msgid "What it controls"
+msgstr "제어 대상"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`grade:gain`"
+msgstr "`grade:gain`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`(1.18, 1.18, 1.182)`"
+msgstr "`(1.18, 1.18, 1.182)`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`(1.07, 1.07, 1.07)`"
+msgstr "`(1.07, 1.07, 1.07)`"
+
+msgid "Per-channel image gain."
+msgstr "Channel별 image gain"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`grade:gamma`"
+msgstr "`grade:gamma`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`(1.12, 1.12, 1.12)`"
+msgstr "`(1.12, 1.12, 1.12)`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`(1.4, 1.4, 1.4)`"
+msgstr "`(1.4, 1.4, 1.4)`"
+
+msgid "Midtone response."
+msgstr "Midtone response"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`grade:saturation`"
+msgstr "`grade:saturation`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`(1.0, 1.0, 1.0)`"
+msgstr "`(1.0, 1.0, 1.0)`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`(1.2, 1.2, 1.2)`"
+msgstr "`(1.2, 1.2, 1.2)`"
+
+msgid "Color intensity; the external profile also enables `colorcorr:enabled`."
+msgstr "Color intensity. External profile은 `colorcorr:enabled`도 활성화합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`grade:whitePoint`"
+msgstr "`grade:whitePoint`"
+
+msgid "No override"
+msgstr "Override 없음"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`(0.95, 0.95, 0.95)`"
+msgstr "`(0.95, 0.95, 0.95)`"
+
+msgid "White-point adjustment for the external view."
+msgstr "External view의 white-point 조정"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`tvNoise:filmGrain:amount` / `size`"
+msgstr "`tvNoise:filmGrain:amount` / `size`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`0.015` / `0.25`"
+msgstr "`0.015` / `0.25`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`0.003` / `1.0`"
+msgstr "`0.003` / `1.0`"
+
+msgid "Grain strength and scale."
+msgstr "Grain의 강도와 크기"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`tonemap:operator`"
+msgstr "`tonemap:operator`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`\"none\"`"
+msgstr "`\"none\"`"
+
+msgid "Bypasses the default `acesApproximation` renderer operator and hands tone mapping to OCIO."
+msgstr "기본 renderer operator인 `acesApproximation`을 우회하고 OCIO에 tone mapping을 맡깁니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Gaussian blur sigma"
+msgstr "Gaussian blur sigma"
+
+msgid "`0.9` pixels in this example; task default `0.7–1.1`"
+msgstr "이 예시는 `0.9` pixel, task 기본값은 `0.7–1.1`"
+
+msgid "No added blur"
+msgstr "추가 blur 없음"
+
+msgid "Wrist softness, sampled independently per environment at reset."
+msgstr "Wrist image의 부드러움. Reset 시 environment마다 독립적으로 sampling합니다."
+

@@ -1,0 +1,338 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Teleoperating"
+msgstr "Teleoperation"
+
+msgid "Camera views and joint signals from SO-101 teleoperation in Rerun."
+msgstr "Rerun에서 보는 SO-101 teleoperation의 camera view와 joint signal입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"Hands-on. You'll need the calibrated SO-101 robot, leader arm, both cameras, and the Docker "
+"container running from [Calibrating the SO-101](07-calibrating-so101.md)."
+msgstr ""
+"실습입니다. Calibration된 SO-101 robot과 leader arm, camera 두 대, [Calibrating the SO-101](07"
+"-calibrating-so101.md)에서 실행한 Docker container가 필요합니다."
+
+msgid "In this session, you'll teleoperate the SO-101 using the leader arm."
+msgstr "이 session에서는 leader arm으로 SO-101을 teleoperate합니다."
+
+msgid ""
+"This will give you a sense of the task difficulty by doing it yourself, and also understand how "
+"demonstrations can be collected by operators."
+msgstr "직접 task를 수행하며 난이도를 체감하고, operator가 demonstration을 수집하는 방법을 이해합니다."
+
+msgid "We'll also configure cameras, and run teleoperation with live camera views in Rerun."
+msgstr "Camera를 설정하고 Rerun의 live camera view를 보며 teleoperation도 진행합니다."
+
+msgid ""
+"Make sure you have completed [Calibrating the SO-101](07-calibrating-so101.md) first. You'll need"
+" a calibrated robot and the Docker container running with environment variables set."
+msgstr ""
+"먼저 [Calibrating the SO-101](07-calibrating-so101.md)을 완료하세요. Robot calibration을 마치고 environment "
+"variable을 설정한 Docker container가 실행 중이어야 합니다."
+
+msgid ""
+"If you encounter hardware issues during this session, see the [Troubleshooting "
+"Guide](troubleshooting.md) for solutions to common problems."
+msgstr "Hardware 문제가 발생하면 [Troubleshooting Guide](troubleshooting.md)를 확인하세요."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "By the end of this session, you'll be able to:"
+msgstr "이 session을 마치면 다음을 수행할 수 있습니다."
+
+msgid "**Teleoperate** the robot using the leader arm"
+msgstr "Leader arm을 사용한 robot **teleoperation**"
+
+msgid ""
+"**Configure** cameras so you can teleoperate using the same camera views our AI models will use, "
+"and Rerun for debugging"
+msgstr "AI model과 같은 camera view로 teleoperate하도록 camera를 **설정**하고 Rerun으로 debugging"
+
+msgid "Safety"
+msgstr "안전"
+
+msgid "Before powering on or running policies:"
+msgstr "전원을 켜거나 policy를 실행하기 전에:"
+
+msgid ""
+"**Pinch hazard:** The gripper and moving joints can trap fingers. Keep hands clear of the "
+"follower arm while motors are enabled, and keep fingers away from the leader arm’s joints as you "
+"guide it."
+msgstr ""
+"**Pinch hazard:** Gripper와 움직이는 joint에 손가락이 끼일 수 있습니다. Motor가 활성화된 동안 follower arm에 손을 가까이하지 말고, "
+"leader를 움직일 때도 joint에서 손가락을 멀리 두세요."
+
+msgid "Verify cables are routed to avoid snagging during motion."
+msgstr "움직일 때 cable이 걸리지 않도록 배선을 확인합니다."
+
+msgid "Be ready to stop execution with **CTRL+C** or unplug power cables if needed."
+msgstr "필요하면 **CTRL+C**로 실행을 중단하거나 전원 cable을 뽑을 수 있도록 준비합니다."
+
+msgid "Re-check workspace placement after moving any equipment."
+msgstr "장비를 옮긴 뒤에는 workspace 배치를 다시 확인합니다."
+
+msgid "Teleoperation (no cameras)"
+msgstr "Camera 없는 Teleoperation"
+
+msgid "Now that both arms are calibrated, we're ready to begin teleoperating!"
+msgstr "두 arm의 calibration을 마쳤으므로 teleoperation을 시작할 수 있습니다!"
+
+msgid "First, let's just use our eyes - no cameras."
+msgstr "먼저 camera 없이 눈으로 직접 보며 진행합니다."
+
+msgid ""
+"**Position both arms in similar poses before starting teleoperation.** The follower will move to "
+"match the leader arm."
+msgstr "**Teleoperation을 시작하기 전에 두 arm의 pose를 비슷하게 맞추세요.** Follower가 leader와 같은 pose로 이동합니다."
+
+msgid "**Begin** the teleoperation process."
+msgstr "Teleoperation을 **시작**합니다."
+
+msgid "**Move** the leader arm and watch how the follower arm moves to match."
+msgstr "Leader arm을 **움직여** follower가 따라 움직이는지 확인합니다."
+
+msgid "**Try** to pick up a vial and place it in the rack!"
+msgstr "Vial을 집어 rack에 넣어 **보세요**!"
+
+msgid "**Press Ctrl+C** in the terminal to stop the teleoperation."
+msgstr "Terminal에서 **Ctrl+C를 눌러** teleoperation을 중단합니다."
+
+msgid "Camera Setup"
+msgstr "Camera 설정"
+
+msgid "The teleoperation you just did used an incredible vision system: your human perception system."
+msgstr "방금 teleoperation에서는 사람의 시각 인지 능력을 사용했습니다."
+
+msgid ""
+"Our AI model will not have this information, so we need to use the cameras instead when we "
+"collect demonstrations."
+msgstr "AI model에는 이 정보가 없으므로 demonstration 수집 시에는 camera를 사용해야 합니다."
+
+msgid "Each robot workspace today is equipped with **two cameras**:"
+msgstr "각 robot workspace에는 **camera 두 대**가 있습니다."
+
+msgid "**Gripper camera**: Mounted on the robot's wrist, just before the gripper"
+msgstr "**Gripper camera**: Gripper 바로 앞, robot wrist에 장착"
+
+msgid "**External camera**: Stationary camera viewing the workspace from the side"
+msgstr "**External camera**: Workspace를 측면에서 바라보는 고정 camera"
+
+msgid ""
+"Because the policy works off of these visual images, camera assignment is critical to policy "
+"performance. If they are swapped, the policy will fail."
+msgstr "Policy는 이 image를 기반으로 동작하므로 camera 할당이 성능에 매우 중요합니다. 둘이 바뀌면 policy가 실패합니다."
+
+msgid "Why Two Cameras?"
+msgstr "Camera 두 대가 필요한 이유"
+
+msgid "The gripper camera becomes partially occluded after the robot grasps an object like a vial."
+msgstr "Robot이 vial 같은 물체를 잡으면 gripper camera가 일부 가려집니다."
+
+msgid ""
+"And to place the vial vertically into the rack, the camera is pointed more at the walls of the "
+"lightbox than the target rack."
+msgstr "Vial을 rack에 세워 넣을 때는 camera가 목표 rack보다 lightbox 벽 쪽을 더 많이 향합니다."
+
+msgid ""
+"The external camera provides continuous visibility of the workspace throughout the entire "
+"manipulation sequence, ensuring the policy always has usable visual input even when the gripper "
+"camera is blocked."
+msgstr ""
+"External camera는 전체 manipulation 과정에서 workspace를 계속 보여줍니다. Gripper camera가 가려져도 policy가 사용할 수 있는 "
+"시각 입력을 제공합니다."
+
+msgid "Finding Available Cameras"
+msgstr "사용 가능한 Camera 찾기"
+
+msgid "Similar to the port finder, LeRobot has a tool for identifying available cameras."
+msgstr "Port finder와 마찬가지로 LeRobot에는 사용 가능한 camera를 찾는 도구가 있습니다."
+
+msgid "We need to determine the id of both the camera on the robot, and the external stationary camera."
+msgstr "Robot의 camera와 고정 external camera의 ID를 각각 확인해야 합니다."
+
+msgid "**Make sure** the two cameras' USB cables are plugged into your computer."
+msgstr "두 camera의 USB cable이 computer에 연결되어 있는지 **확인**합니다."
+
+msgid "**Run** the command:"
+msgstr "다음 명령을 **실행**합니다."
+
+msgid ""
+"This command captures an image from each available camera, allowing you to determine the index of"
+" each camera."
+msgstr "각 camera에서 image를 capture하므로 어떤 index가 어느 camera인지 확인할 수 있습니다."
+
+msgid ""
+"The command reports camera indices and saves preview images under `outputs/captured_images`. Use "
+"the printed paths to inspect the images."
+msgstr "명령은 camera index를 출력하고 `outputs/captured_images`에 preview image를 저장합니다. 출력된 경로에서 image를 확인하세요."
+
+msgid ""
+"**Open the captured images** by running this command **outside the container**, in a host "
+"terminal at the repository directory:"
+msgstr "**Container 밖**의 host terminal에서 repository directory로 이동해 다음 명령으로 **capture image를 엽니다**."
+
+msgid "The container's `outputs/` directory is mounted there, so these are the images you just captured."
+msgstr "Container의 `outputs/`가 여기에 mount되어 있으므로, 방금 capture한 image가 표시됩니다."
+
+msgid ""
+"**Open** each image and **note** which index corresponds to the wrist and stationary camera. For "
+"instance, `opencv__dev_video0.png` indicates an index of `0`."
+msgstr ""
+"각 image를 **열어** wrist와 stationary camera에 해당하는 index를 **기록**하세요. 예를 들어 `opencv__dev_video0.png`의 "
+"index는 `0`입니다."
+
+msgid ""
+"Camera preview windows with index 0 circled in the wrist image filename and index 4 circled in "
+"the external image filename."
+msgstr "Wrist image filename의 index 0과 external image filename의 index 4를 표시한 camera preview입니다."
+
+msgid ""
+"In this example, camera **0** is the wrist view and camera **4** is the external view. Use the "
+"indices from your own captured images."
+msgstr "이 예시에서는 **0**이 wrist, **4**가 external camera입니다. 반드시 본인의 capture image에서 확인한 index를 사용하세요."
+
+msgid ""
+"At the same container prompt, **assign** these environment variables using the indices you "
+"verified:"
+msgstr "같은 container prompt에서 확인한 index로 environment variable을 **설정**합니다."
+
+msgid "**Camera Index Warning**"
+msgstr "**Camera Index 주의사항**"
+
+msgid ""
+"Camera indices may change any time cameras are unplugged or replugged into your computer, "
+"typically when more than one is unplugged at a time."
+msgstr "Camera를 분리하거나 다시 연결하면 index가 바뀔 수 있습니다. 특히 여러 camera를 동시에 분리했을 때 자주 발생합니다."
+
+msgid ""
+"If you see unexpected behavior during policy execution, camera index reassignment is a common "
+"cause."
+msgstr "Policy 실행 중 예상과 다른 동작이 나타나면 camera index 변경이 흔한 원인입니다."
+
+msgid ""
+"Having camera or hardware issues?  See the [Troubleshooting Guide](troubleshooting.md), also "
+"available on the sidebar, for common solutions and detailed diagnostic steps."
+msgstr ""
+"Camera나 hardware 문제는 sidebar의 [Troubleshooting Guide](troubleshooting.md)에서 해결 방법과 자세한 진단 절차를 "
+"확인하세요."
+
+msgid "See the [Quick Reference](quick_reference.md) for common commands."
+msgstr "자주 사용하는 명령은 [Quick Reference](quick_reference.md)에 있습니다."
+
+msgid "Teleoperation With Cameras"
+msgstr "Camera를 사용하는 Teleoperation"
+
+msgid ""
+"Now that we have the camera indices, we can run teleoperation with the real cameras in your "
+"workspace."
+msgstr "Camera index를 확인했으므로 workspace의 실제 camera와 함께 teleoperation을 실행합니다."
+
+msgid ""
+"**Put both arms in similar positions before starting.** The follower arm will move to match the "
+"leader when teleoperation starts, so keep clear of its path."
+msgstr "**시작 전에 두 arm의 위치를 비슷하게 맞추세요.** Teleoperation이 시작되면 follower가 leader에 맞춰 이동하므로 경로를 비워 두세요."
+
+msgid "Rerun Viewer Teleop Example"
+msgstr "Rerun Viewer Teleoperation 예시"
+
+msgid ""
+"This will launch the teleoperation interface. You should see two cameras, one on the wrist and "
+"one externally mounted on the lightbox. Make sure your camera views and props roughly match this "
+"setup."
+msgstr ""
+"Teleoperation interface가 열립니다. Wrist camera와 lightbox에 고정된 external camera가 보여야 합니다. Camera view와"
+" 소품 배치를 이 예시와 비슷하게 맞추세요."
+
+msgid "This is a valuable tool for both teleoperation and debugging."
+msgstr "Teleoperation과 debugging에 모두 유용한 도구입니다."
+
+msgid ""
+"Now using the **Rerun** viewer that opened, **try** picking up vials and placing them in the rack"
+" **only using the camera views**, not your eyes. See if you can perform the task a few times."
+msgstr ""
+"열린 **Rerun** viewer에서 **camera view만 사용해** vial을 집어 rack에 넣어 보세요. Workspace를 직접 보지 말고 몇 차례 성공할 수 "
+"있는지 확인합니다."
+
+msgid ""
+"We'll spend some time here - try to do several picks. Emphasize smooth, direct movements. Don't "
+"hesitate, move with intention."
+msgstr "여기서 시간을 들여 여러 번 시도하세요. 부드럽고 직접적인 움직임에 집중하고, 주저하기보다 목적을 분명히 하며 움직입니다."
+
+msgid "Notice what makes this task challenging:"
+msgstr "Task를 어렵게 만드는 요인을 관찰하세요."
+
+msgid "the gripper camera becomes partially occluded after grasp"
+msgstr "Grasp 후 gripper camera가 일부 가려집니다."
+
+msgid "the rack requires precise placement"
+msgstr "Rack에 정밀하게 배치해야 합니다."
+
+msgid "lack of depth data makes rack alignment difficult"
+msgstr "Depth data가 없어 rack 정렬이 어렵습니다."
+
+msgid "**Press Ctrl+C** to stop the teleoperation."
+msgstr "**Ctrl+C를 눌러** teleoperation을 중단합니다."
+
+msgid "**Close** the Rerun viewer if it's still open."
+msgstr "Rerun viewer가 남아 있으면 **닫습니다**."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid "Camera assignment directly affects policy performance"
+msgstr "Camera 할당은 policy 성능에 직접 영향을 줍니다."
+
+msgid ""
+"Task difficulty - gripper camera becomes occluded after grasp, external camera provides "
+"continuous visibility"
+msgstr "Grasp 후 gripper camera가 가려지는 반면, external camera는 계속 workspace를 보여줍니다."
+
+msgid "The Rerun viewer is a valuable debugging tool for verifying camera views and robot state"
+msgstr "Rerun viewer는 camera view와 robot state를 검증하는 유용한 debugging 도구입니다."
+
+msgid "Resources"
+msgstr "참고 자료"
+
+msgid ""
+"[SO-101 Getting Started Guide](https://huggingface.co/docs/lerobot/en/so101) — Full assembly, "
+"motor setup, and calibration instructions"
+msgstr ""
+"[SO-101 Getting Started Guide](https://huggingface.co/docs/lerobot/en/so101) — 전체 조립, motor 설정, "
+"calibration 안내"
+
+msgid "[Rerun](https://rerun.io/) — A tool for visualizing camera views and robot actions"
+msgstr "[Rerun](https://rerun.io/) — Camera view와 robot action visualization 도구"
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to [Domain Randomization](10-domain-randomization.md) to see how we vary the simulated "
+"scene before practicing and collecting demonstrations."
+msgstr ""
+"[Domain Randomization](10-domain-randomization.md)에서 실습과 demonstration 수집 전에 simulation scene을 "
+"변화시키는 방법을 살펴보세요."
+

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Isaac Lab · LeRobot teleoperation and recording</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* User-requested variation: explanations only, with no term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+html {scrollbar-gutter: stable;}
+.diagram {overflow-x:auto;}
+.diagram svg {min-width:680px;}
+.is-enhanced .explanations {display:grid;}
+.is-enhanced .definition, .is-enhanced #empty-prompt {grid-area:1/1;}
+.is-enhanced .definition[hidden], .is-enhanced #empty-prompt[hidden] {display:block;visibility:hidden;pointer-events:none;}
+</style>
+</head>
+<body>
+<main id="interactive-learning-diagram">
+
+<div class="layout">
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="1560" height="760" viewBox="0 0 1560 760" role="group" aria-labelledby="title description">
+<title id="title">Isaac Lab · LeRobot teleoperation and recording</title>
+<desc id="description">The loop is paced at 30 Hz, recording 30 frames per second. The real leader arm supplies motor positions through lerobot_interface to lerobot_agent, which drives the simulated environment. Simulated joint state and camera images return to the agent. The recorder pairs each current observation with the next leader action and saves episodes as a LeRobot dataset.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-accent-text,#004831)"/></marker>
+<symbol id="hugging-face-logo" viewBox="0 0 95 88"><title>Hugging Face</title>
+	<path fill="#FFD21E" d="M47.21 76.5a34.75 34.75 0 1 0 0-69.5 34.75 34.75 0 0 0 0 69.5Z" />
+	<path
+		fill="#FF9D0B"
+		d="M81.96 41.75a34.75 34.75 0 1 0-69.5 0 34.75 34.75 0 0 0 69.5 0Zm-73.5 0a38.75 38.75 0 1 1 77.5 0 38.75 38.75 0 0 1-77.5 0Z"
+	/>
+	<path
+		fill="#3A3B45"
+		d="M58.5 32.3c1.28.44 1.78 3.06 3.07 2.38a5 5 0 1 0-6.76-2.07c.61 1.15 2.55-.72 3.7-.32ZM34.95 32.3c-1.28.44-1.79 3.06-3.07 2.38a5 5 0 1 1 6.76-2.07c-.61 1.15-2.56-.72-3.7-.32Z"
+	/>
+	<path
+		fill="#FF323D"
+		d="M46.96 56.29c9.83 0 13-8.76 13-13.26 0-2.34-1.57-1.6-4.09-.36-2.33 1.15-5.46 2.74-8.9 2.74-7.19 0-13-6.88-13-2.38s3.16 13.26 13 13.26Z"
+	/>
+	<path
+		fill="#3A3B45"
+		fill-rule="evenodd"
+		d="M39.43 54a8.7 8.7 0 0 1 5.3-4.49c.4-.12.81.57 1.24 1.28.4.68.82 1.37 1.24 1.37.45 0 .9-.68 1.33-1.35.45-.7.89-1.38 1.32-1.25a8.61 8.61 0 0 1 5 4.17c3.73-2.94 5.1-7.74 5.1-10.7 0-2.34-1.57-1.6-4.09-.36l-.14.07c-2.31 1.15-5.39 2.67-8.77 2.67s-6.45-1.52-8.77-2.67c-2.6-1.29-4.23-2.1-4.23.29 0 3.05 1.46 8.06 5.47 10.97Z"
+		clip-rule="evenodd"
+	/>
+	<path
+		fill="#FF9D0B"
+		d="M70.71 37a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5ZM24.21 37a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5ZM17.52 48c-1.62 0-3.06.66-4.07 1.87a5.97 5.97 0 0 0-1.33 3.76 7.1 7.1 0 0 0-1.94-.3c-1.55 0-2.95.59-3.94 1.66a5.8 5.8 0 0 0-.8 7 5.3 5.3 0 0 0-1.79 2.82c-.24.9-.48 2.8.8 4.74a5.22 5.22 0 0 0-.37 5.02c1.02 2.32 3.57 4.14 8.52 6.1 3.07 1.22 5.89 2 5.91 2.01a44.33 44.33 0 0 0 10.93 1.6c5.86 0 10.05-1.8 12.46-5.34 3.88-5.69 3.33-10.9-1.7-15.92-2.77-2.78-4.62-6.87-5-7.77-.78-2.66-2.84-5.62-6.25-5.62a5.7 5.7 0 0 0-4.6 2.46c-1-1.26-1.98-2.25-2.86-2.82A7.4 7.4 0 0 0 17.52 48Zm0 4c.51 0 1.14.22 1.82.65 2.14 1.36 6.25 8.43 7.76 11.18.5.92 1.37 1.31 2.14 1.31 1.55 0 2.75-1.53.15-3.48-3.92-2.93-2.55-7.72-.68-8.01.08-.02.17-.02.24-.02 1.7 0 2.45 2.93 2.45 2.93s2.2 5.52 5.98 9.3c3.77 3.77 3.97 6.8 1.22 10.83-1.88 2.75-5.47 3.58-9.16 3.58-3.81 0-7.73-.9-9.92-1.46-.11-.03-13.45-3.8-11.76-7 .28-.54.75-.76 1.34-.76 2.38 0 6.7 3.54 8.57 3.54.41 0 .7-.17.83-.6.79-2.85-12.06-4.05-10.98-8.17.2-.73.71-1.02 1.44-1.02 3.14 0 10.2 5.53 11.68 5.53.11 0 .2-.03.24-.1.74-1.2.33-2.04-4.9-5.2-5.21-3.16-8.88-5.06-6.8-7.33.24-.26.58-.38 1-.38 3.17 0 10.66 6.82 10.66 6.82s2.02 2.1 3.25 2.1c.28 0 .52-.1.68-.38.86-1.46-8.06-8.22-8.56-11.01-.34-1.9.24-2.85 1.31-2.85Z"
+	/>
+	<path
+		fill="#FFD21E"
+		d="M38.6 76.69c2.75-4.04 2.55-7.07-1.22-10.84-3.78-3.77-5.98-9.3-5.98-9.3s-.82-3.2-2.69-2.9c-1.87.3-3.24 5.08.68 8.01 3.91 2.93-.78 4.92-2.29 2.17-1.5-2.75-5.62-9.82-7.76-11.18-2.13-1.35-3.63-.6-3.13 2.2.5 2.79 9.43 9.55 8.56 11-.87 1.47-3.93-1.71-3.93-1.71s-9.57-8.71-11.66-6.44c-2.08 2.27 1.59 4.17 6.8 7.33 5.23 3.16 5.64 4 4.9 5.2-.75 1.2-12.28-8.53-13.36-4.4-1.08 4.11 11.77 5.3 10.98 8.15-.8 2.85-9.06-5.38-10.74-2.18-1.7 3.21 11.65 6.98 11.76 7.01 4.3 1.12 15.25 3.49 19.08-2.12Z"
+	/>
+	<path
+		fill="#FF9D0B"
+		d="M77.4 48c1.62 0 3.07.66 4.07 1.87a5.97 5.97 0 0 1 1.33 3.76 7.1 7.1 0 0 1 1.95-.3c1.55 0 2.95.59 3.94 1.66a5.8 5.8 0 0 1 .8 7 5.3 5.3 0 0 1 1.78 2.82c.24.9.48 2.8-.8 4.74a5.22 5.22 0 0 1 .37 5.02c-1.02 2.32-3.57 4.14-8.51 6.1-3.08 1.22-5.9 2-5.92 2.01a44.33 44.33 0 0 1-10.93 1.6c-5.86 0-10.05-1.8-12.46-5.34-3.88-5.69-3.33-10.9 1.7-15.92 2.78-2.78 4.63-6.87 5.01-7.77.78-2.66 2.83-5.62 6.24-5.62a5.7 5.7 0 0 1 4.6 2.46c1-1.26 1.98-2.25 2.87-2.82A7.4 7.4 0 0 1 77.4 48Zm0 4c-.51 0-1.13.22-1.82.65-2.13 1.36-6.25 8.43-7.76 11.18a2.43 2.43 0 0 1-2.14 1.31c-1.54 0-2.75-1.53-.14-3.48 3.91-2.93 2.54-7.72.67-8.01a1.54 1.54 0 0 0-.24-.02c-1.7 0-2.45 2.93-2.45 2.93s-2.2 5.52-5.97 9.3c-3.78 3.77-3.98 6.8-1.22 10.83 1.87 2.75 5.47 3.58 9.15 3.58 3.82 0 7.73-.9 9.93-1.46.1-.03 13.45-3.8 11.76-7-.29-.54-.75-.76-1.34-.76-2.38 0-6.71 3.54-8.57 3.54-.42 0-.71-.17-.83-.6-.8-2.85 12.05-4.05 10.97-8.17-.19-.73-.7-1.02-1.44-1.02-3.14 0-10.2 5.53-11.68 5.53-.1 0-.19-.03-.23-.1-.74-1.2-.34-2.04 4.88-5.2 5.23-3.16 8.9-5.06 6.8-7.33-.23-.26-.57-.38-.98-.38-3.18 0-10.67 6.82-10.67 6.82s-2.02 2.1-3.24 2.1a.74.74 0 0 1-.68-.38c-.87-1.46 8.05-8.22 8.55-11.01.34-1.9-.24-2.85-1.31-2.85Z"
+	/>
+	<path
+		fill="#FFD21E"
+		d="M56.33 76.69c-2.75-4.04-2.56-7.07 1.22-10.84 3.77-3.77 5.97-9.3 5.97-9.3s.82-3.2 2.7-2.9c1.86.3 3.23 5.08-.68 8.01-3.92 2.93.78 4.92 2.28 2.17 1.51-2.75 5.63-9.82 7.76-11.18 2.13-1.35 3.64-.6 3.13 2.2-.5 2.79-9.42 9.55-8.55 11 .86 1.47 3.92-1.71 3.92-1.71s9.58-8.71 11.66-6.44c2.08 2.27-1.58 4.17-6.8 7.33-5.23 3.16-5.63 4-4.9 5.2.75 1.2 12.28-8.53 13.36-4.4 1.08 4.11-11.76 5.3-10.97 8.15.8 2.85 9.05-5.38 10.74-2.18 1.69 3.21-11.65 6.98-11.76 7.01-4.31 1.12-15.26 3.49-19.08-2.12Z"
+	/>
+</symbol>
+</defs>
+<style>
+text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#1a1a1a);}
+.box {fill:var(--diagram-surface,#f7f7f7);stroke:var(--diagram-accent-text,#004831);stroke-width:2;}
+.heading {font-size:24px;font-weight:700;}
+.detail {font-size:19px;fill:var(--diagram-muted,#666);}
+.edge {fill:none;stroke:var(--diagram-accent-text,#004831);stroke-width:2;marker-end:url(#arrow);}
+.config {stroke:var(--diagram-muted,#666);stroke-dasharray:5 6;stroke-width:1.5;}
+.label {font-size:19px;paint-order:stroke;stroke:var(--diagram-bg,#fff);stroke-width:9px;stroke-linejoin:round;}
+</style>
+<rect width="1560" height="760" fill="var(--diagram-bg,#fff)"/>
+
+<path d="M 290 260 H 400" class="edge"/>
+<path d="M 690 260 H 820" class="edge"/>
+<path d="M 1070 260 H 1230" class="edge"/>
+<path d="M 1375 310 V 400 Q 1375 420 1355 420 H 965 Q 945 420 945 400 V 310" class="edge"/>
+<path d="M 880 310 V 530" class="edge"/>
+<path d="M 1090 590 H 1230" class="edge"/>
+<rect x="40" y="210" width="250" height="100" rx="14" class="box"/>
+<text x="165.0" y="267.0" text-anchor="middle" class="heading">
+<tspan x="165.0" dy="0">Real leader arm</tspan>
+</text>
+<rect x="400" y="210" width="290" height="100" rx="14" class="box"/>
+<use href="#hugging-face-logo" x="412" y="224" width="36" height="34"/>
+<text x="460" y="248" text-anchor="start" class="heading">
+<tspan x="460" dy="0">lerobot_interface</tspan>
+</text>
+<text x="545.0" y="279" text-anchor="middle" class="detail">
+<tspan x="545.0" dy="0">Reads motor positions</tspan>
+</text>
+<rect x="820" y="210" width="250" height="100" rx="14" class="box"/>
+<text x="945.0" y="248" text-anchor="middle" class="heading">
+<tspan x="945.0" dy="0">lerobot_agent</tspan>
+</text>
+<text x="945.0" y="279" text-anchor="middle" class="detail">
+<tspan x="945.0" dy="0">30 Hz control loop</tspan>
+</text>
+<rect x="1230" y="210" width="290" height="100" rx="14" class="box"/>
+<text x="1375.0" y="248" text-anchor="middle" class="heading">
+<tspan x="1375.0" dy="0">Environment</tspan>
+</text>
+<text x="1375.0" y="279" text-anchor="middle" class="detail">
+<tspan x="1375.0" dy="0">Simulated robot + cameras</tspan>
+</text>
+<rect x="800" y="530" width="290" height="120" rx="14" class="box"/>
+<text x="945.0" y="568" text-anchor="middle" class="heading">
+<tspan x="945.0" dy="0">LeRobot recorder</tspan>
+</text>
+<text x="945.0" y="599" text-anchor="middle" class="detail">
+<tspan x="945.0" dy="0">Observation + action</tspan>
+<tspan x="945.0" dy="23">30 frames/s</tspan>
+</text>
+<rect x="1230" y="530" width="290" height="120" rx="14" class="box"/>
+<use href="#hugging-face-logo" x="1242" y="544" width="36" height="34"/>
+<text x="1290" y="568" text-anchor="start" class="heading">
+<tspan x="1290" dy="0">LeRobot dataset</tspan>
+</text>
+<text x="1375.0" y="599" text-anchor="middle" class="detail">
+<tspan x="1375.0" dy="0">Joint states, camera images,</tspan>
+<tspan x="1375.0" dy="23">and actions</tspan>
+</text>
+<text x="345" y="224" text-anchor="middle" class="label">
+<tspan x="345" dy="0">Motor</tspan>
+<tspan x="345" dy="23">positions</tspan>
+</text>
+<text x="755" y="246" text-anchor="middle" class="label">
+<tspan x="755" dy="0">Actions</tspan>
+</text>
+<text x="1150" y="246" text-anchor="middle" class="label">
+<tspan x="1150" dy="0">Actions</tspan>
+</text>
+<text x="1160" y="406" text-anchor="middle" class="label">
+<tspan x="1160" dy="0">Joint state + camera images</tspan>
+</text>
+<text x="780" y="378" text-anchor="middle" class="label">
+<tspan x="780" dy="0">Observation</tspan>
+<tspan x="780" dy="23">+ action</tspan>
+</text>
+<text x="1160" y="576" text-anchor="middle" class="label">
+<tspan x="1160" dy="0">Save episode</tspan>
+</text>
+<text x="40" y="710" class="detail">Record the current simulated observation with the leader action applied next.</text>
+<a class="hotspot" data-term="node-0" href="#definition-node-0" tabindex="0" role="button" aria-label="Real leader arm" aria-controls="definition-node-0" aria-expanded="false"><rect class="hit-area" x="40" y="210" width="250" height="100" rx="10"/></a><a class="hotspot" data-term="node-1" href="#definition-node-1" tabindex="0" role="button" aria-label="lerobot_interface" aria-controls="definition-node-1" aria-expanded="false"><rect class="hit-area" x="400" y="210" width="290" height="100" rx="10"/></a><a class="hotspot" data-term="node-2" href="#definition-node-2" tabindex="0" role="button" aria-label="lerobot_agent" aria-controls="definition-node-2" aria-expanded="false"><rect class="hit-area" x="820" y="210" width="250" height="100" rx="10"/></a><a class="hotspot" data-term="node-3" href="#definition-node-3" tabindex="0" role="button" aria-label="Environment" aria-controls="definition-node-3" aria-expanded="false"><rect class="hit-area" x="1230" y="210" width="290" height="100" rx="10"/></a><a class="hotspot" data-term="node-4" href="#definition-node-4" tabindex="0" role="button" aria-label="LeRobot recorder" aria-controls="definition-node-4" aria-expanded="false"><rect class="hit-area" x="800" y="530" width="290" height="120" rx="10"/></a><a class="hotspot" data-term="node-5" href="#definition-node-5" tabindex="0" role="button" aria-label="LeRobot dataset" aria-controls="definition-node-5" aria-expanded="false"><rect class="hit-area" x="1230" y="530" width="290" height="120" rx="10"/></a></svg>
+</div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt"></p>
+<article class="definition" id="definition-node-0" data-definition="node-0" aria-labelledby="heading-node-0"><h2 id="heading-node-0">Real leader arm</h2><p>.</p></article>
+<article class="definition" id="definition-node-1" data-definition="node-1" aria-labelledby="heading-node-1"><h2 id="heading-node-1">lerobot_interface</h2><p>Read the leader arm and bridge its joint values to the simulated action representation.</p></article>
+<article class="definition" id="definition-node-2" data-definition="node-2" aria-labelledby="heading-node-2"><h2 id="heading-node-2">lerobot_agent</h2><p>Read the action, record it with the current observation, then advance simulation. The rate limiter paces the next iteration.</p></article>
+<article class="definition" id="definition-node-3" data-definition="node-3" aria-labelledby="heading-node-3"><h2 id="heading-node-3">Environment</h2><p>Simulated robot + cameras.</p></article>
+<article class="definition" id="definition-node-4" data-definition="node-4" aria-labelledby="heading-node-4"><h2 id="heading-node-4">LeRobot recorder</h2><p>Record the current joint state and camera images together with the action applied next, before advancing simulation.</p></article>
+<article class="definition" id="definition-node-5" data-definition="node-5" aria-labelledby="heading-node-5"><h2 id="heading-node-5">LeRobot dataset</h2><p>Save synchronized observations and actions as an episode for later review and training.</p></article>
+</section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+</body>
+</html>

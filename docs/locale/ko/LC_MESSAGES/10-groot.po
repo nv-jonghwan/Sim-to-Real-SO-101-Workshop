@@ -1,0 +1,1296 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Isaac GR00T: Vision-Language-Action Models"
+msgstr "Isaac GR00T: Vision-Language-Action Models"
+
+msgid "GR00T architecture connecting image and language inputs to robot actions."
+msgstr "Image와 language 입력을 robot action에 연결하는 GR00T architecture입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"Mostly theory with code examples. No additional hardware is required beyond a computer with the "
+"`so101-workshop` container built."
+msgstr ""
+"Code 예시가 포함된 이론 중심 module입니다. `so101-workshop` container를 build한 computer 외에 추가 hardware는 필요하지 "
+"않습니다."
+
+msgid ""
+"In this session, we'll explore the VLA model called NVIDIA Isaac GR00T, how it works, and see "
+"examples of it in action."
+msgstr "NVIDIA Isaac GR00T라는 VLA model의 원리와 실제 동작 예시를 살펴봅니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "By the end of this session, you'll be able to:"
+msgstr "이 session을 마치면 다음을 수행할 수 있습니다."
+
+msgid "**Explain** what vision-language-action models are and why they're powerful"
+msgstr "Vision-Language-Action model의 개념과 강점 **설명**"
+
+msgid "**Describe** the GR00T architecture and its components"
+msgstr "GR00T architecture와 구성 요소 **설명**"
+
+msgid "**Understand** how VLAs differ from traditional robot learning approaches"
+msgstr "VLA와 기존 robot learning 접근의 차이 **이해**"
+
+msgid "**Explain** how batch size, training steps, and action horizons affect the workflow"
+msgstr "Batch size, training step, action horizon이 workflow에 미치는 영향 **설명**"
+
+msgid ""
+"**Design** a checkpoint-continuation experiment, separating optimizer state, learning-rate "
+"schedules, and data sampling"
+msgstr "Optimizer state, learning-rate schedule, data sampling을 구분한 checkpoint continuation 실험 **설계**"
+
+msgid "What Is GR00T?"
+msgstr "GR00T란?"
+
+msgid ""
+"[NVIDIA Isaac GR00T](https://developer.nvidia.com/isaac/gr00t) (Generalist Robot 00 Technology) "
+"is a research initiative and development platform for developing general-purpose robot foundation"
+" models and data pipelines to accelerate humanoid robotics research and development."
+msgstr ""
+"[NVIDIA Isaac GR00T](https://developer.nvidia.com/isaac/gr00t)(Generalist Robot 00 Technology)는 "
+"범용 robot foundation model과 data pipeline을 개발해 humanoid robotics 연구·개발을 가속하는 연구 initiative이자 개발 "
+"플랫폼입니다."
+
+msgid "It provides:"
+msgstr "다음 기능을 제공합니다."
+
+msgid "**Pre-trained visual understanding** from large-scale data"
+msgstr "대규모 data로 학습한 **Pre-trained visual understanding**"
+
+msgid "**Language-conditioned behavior** for flexible task specification"
+msgstr "유연한 task 지정을 위한 **Language-conditioned behavior**"
+
+msgid "**Action generation** suitable for real-time robot control"
+msgstr "실시간 robot 제어에 적합한 **Action generation**"
+
+msgid "In this course, we'll use GR00T 1.7 models post-trained for the SO-101 robot."
+msgstr "이 과정에서는 SO-101용으로 post-train한 GR00T 1.7 model을 사용합니다."
+
+msgid "**Training time in this course**"
+msgstr "**이 과정의 학습 시간**"
+
+msgid ""
+"Training time depends on hardware and run settings. Train your own policy or use a compatible "
+"LeRobot GR00T 1.7 checkpoint supplied for your workshop. See [Datasets and Models](datasets-and-"
+"models.md) for compatibility guidance."
+msgstr ""
+"학습 시간은 hardware와 실행 설정에 따라 달라집니다. 직접 policy를 학습하거나 workshop에 제공된 호환 가능한 LeRobot GR00T 1.7 "
+"checkpoint를 사용하세요. 호환성은 [Datasets and Models](datasets-and-models.md)를 확인하세요."
+
+msgid "What Is a Vision-Language-Action Model?"
+msgstr "Vision-Language-Action Model이란?"
+
+msgid ""
+"**Vision-Language-Action (VLA) models** take visual input, robot state, and language instructions"
+" and output low-level or mid-level actions for an embodied agent, such as a robot."
+msgstr ""
+"**Vision-Language-Action (VLA) models**는 시각 입력, robot state, language instruction을 받아 robot 같은 "
+"embodied agent의 low-level 또는 mid-level action을 출력합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Modular Pipelines and Learned Policies"
+msgstr "Modular Pipelines and Learned Policies"
+
+msgid ""
+"A modular robot pipeline might estimate an object's pose, plan a motion, and send that plan to a "
+"controller. A VLA learns a mapping from images, task text, and robot state to action targets. For"
+" vial placement, the policy learns from examples of what the robot saw and did instead of "
+"requiring a hand-written grasp-and-place plan for each observation."
+msgstr ""
+"Modular robot pipeline은 object pose 추정, motion planning, controller로 plan 전달을 순서대로 수행할 수 있습니다. "
+"VLA는 image, task text, robot state에서 action target으로의 mapping을 학습합니다. Vial placement에서는 "
+"observation마다 grasp-and-place plan을 직접 작성하는 대신, robot이 보고 수행한 예시로 policy를 학습합니다."
+
+msgid ""
+"Both approaches still depend on sensing, calibration, and reliable control. A learned policy also"
+" depends on demonstration coverage: the instruction alone does not teach it how to recover from "
+"an unfamiliar grasp."
+msgstr ""
+"두 방식 모두 sensing, calibration, 안정적인 control이 필요합니다. 학습 기반 policy에는 demonstration coverage도 중요합니다. "
+"Instruction만으로는 익숙하지 않은 grasp에서 회복하는 방법을 배울 수 없습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "The Data Pyramid"
+msgstr "The Data Pyramid"
+
+msgid ""
+"Data pyramid: human videos and web data at the base, simulated and synthetic data in the middle, "
+"and real-robot data at the top."
+msgstr "Data pyramid: 아래는 human video와 web data, 중간은 simulation 및 synthetic data, 위는 실제 robot data입니다."
+
+msgid ""
+"The pyramid shows complementary data sources, not prescribed proportions. Our workshop focuses on"
+" simulation and real-robot demonstrations for post-training."
+msgstr ""
+"Pyramid는 상호 보완적인 data source를 보여주며 고정 비율을 정하지 않습니다. 이 workshop은 post-training을 위한 simulation 및 실제"
+" robot demonstration에 집중합니다."
+
+msgid "Defining Terminology"
+msgstr "용어 정리"
+
+msgid "Read more about model weights, pre-training, post-training, fine-tuning, and inference"
+msgstr "Model weight, pre-training, post-training, fine-tuning, inference 자세히 보기"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Model Weights and Parameters"
+msgstr "Model Weights and Parameters"
+
+msgid ""
+"**Model weights**, also called **parameters**, are the learned numbers inside a neural network. "
+"This course uses the two terms interchangeably. Training adjusts the weights; inference only "
+"reads them. **Hyperparameters**, such as batch size and learning rate, are different: you choose "
+"them before training, and they control how the weights are updated."
+msgstr ""
+"**Model weights** 또는 **parameters**는 neural network 안에서 학습되는 수치입니다. 이 과정에서는 두 표현을 같은 의미로 사용합니다. "
+"Training은 weight를 조정하고 inference는 읽기만 합니다. Batch size나 learning rate 같은 **Hyperparameters**는 학습 "
+"전에 선택하며 weight update 방식을 제어합니다."
+
+msgid "Understanding VLA Training Stages"
+msgstr "VLA 학습 단계 이해"
+
+msgid ""
+"VLA models are not trained in a single step. They go through distinct phases, each building on "
+"the previous one."
+msgstr "VLA는 한 단계로 학습되지 않습니다. 앞 단계의 결과를 기반으로 여러 단계를 거칩니다."
+
+msgid ""
+"Understanding these stages helps explain how a model progresses from broad world knowledge to "
+"task-specific robot behavior, and why each phase matters for sim-to-real transfer."
+msgstr ""
+"이 단계를 이해하면 model이 폭넓은 세계 지식에서 특정 task의 robot 행동으로 발전하는 과정과 각 단계가 Sim-to-Real transfer에 중요한 이유를 알 "
+"수 있습니다."
+
+msgid ""
+"**Pre-training** is the first and largest training phase. The model learns general "
+"representations from internet-scale data, including images, text, video, and increasingly, robot "
+"demonstrations."
+msgstr ""
+"**Pre-training**은 첫 번째이자 가장 큰 학습 단계입니다. Image, text, video와 점차 늘어나는 robot demonstration 등 "
+"internet 규모 data에서 일반적인 representation을 학습합니다."
+
+msgid ""
+"The model develops reusable visual, language, and action representations before adaptation to "
+"your specific robot task. Broad images, language, and human video contribute visual and language "
+"knowledge; robot experience connects observations with actions. SO-101 demonstrations then supply"
+" the details of this arm, camera setup, and vial-placement task. These are data roles, not fixed "
+"dataset proportions or a universal training order."
+msgstr ""
+"특정 robot task에 적응하기 전에 재사용 가능한 visual, language, action representation을 만듭니다. 다양한 "
+"image·language·human video는 시각과 언어 지식을 제공하고, robot 경험은 observation과 action을 연결합니다. SO-101 "
+"demonstration은 arm, camera setup, vial-placement task의 세부 사항을 제공합니다. 이는 data의 역할을 설명하며 고정된 비율이나 "
+"보편적인 학습 순서를 뜻하지 않습니다."
+
+msgid ""
+"**Post-training** is the umbrella term for everything that happens after pre-training to make a "
+"general model useful for a specific robot, task, or environment."
+msgstr "**Post-training**은 pre-training 이후 일반 model을 특정 robot, task, environment에 유용하게 만드는 과정을 통칭합니다."
+
+msgid ""
+"This is where a pretrained foundation model is adapted to a specific embodiment and task using "
+"demonstrations that map observations and language instructions to robot actions. Post-training is"
+" computationally intensive and typically requires several hours on GPU hardware."
+msgstr ""
+"Observation과 language instruction을 robot action에 대응시키는 demonstration으로 pretrained foundation "
+"model을 특정 embodiment와 task에 맞춥니다. 연산량이 크며 일반적으로 GPU에서 수 시간이 필요합니다."
+
+msgid ""
+"This is the stage you run in this course: taking the pretrained GR00T 1.7 foundation model and "
+"adapting it to SO-101 data collected in simulation."
+msgstr "이 과정에서 수행하는 단계입니다. Pretrained GR00T 1.7 foundation model을 simulation에서 수집한 SO-101 data에 맞게 조정합니다."
+
+msgid ""
+"**Fine-tuning** is a specific form of post-training where you continue training on a smaller, "
+"targeted dataset to improve performance in a specific setting."
+msgstr "**Fine-tuning**은 더 작고 목적이 명확한 dataset으로 학습을 이어가 특정 조건의 성능을 개선하는 post-training 방식입니다."
+
+msgid ""
+"For example, after post-training on simulation data, you might fine-tune on a small set of real-"
+"robot demonstrations to reduce the sim-to-real gap. Fine-tuning aims to preserve general "
+"capabilities while adapting behavior to new conditions."
+msgstr ""
+"예를 들어 simulation data로 post-train한 뒤 소량의 실제 robot demonstration으로 fine-tune해 Sim-to-Real gap을 줄일 "
+"수 있습니다. 일반 능력을 유지하면서 새로운 조건에 동작을 맞추는 것이 목표입니다."
+
+msgid ""
+"**Inference** is when the trained model runs in real time. It receives camera frames and a "
+"language instruction, then outputs joint position commands."
+msgstr ""
+"**Inference**는 학습된 model을 실시간으로 실행하는 단계입니다. Camera frame과 language instruction을 받아 joint position"
+" command를 출력합니다."
+
+msgid ""
+"No learning happens during inference because model weights are frozen. Speed matters here. "
+"Techniques such as action chunking, where the model predicts multiple timesteps at once, reduce "
+"forward passes and produce smoother motion. On modern GPU hardware, this supports real-time "
+"closed-loop control."
+msgstr ""
+"Inference에서는 model weight가 고정되어 학습이 일어나지 않습니다. 한 번에 여러 timestep을 예측하는 action chunking은 forward "
+"pass 수를 줄이고 motion을 부드럽게 합니다. 현대 GPU에서는 실시간 closed-loop control을 지원합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Training and Inference"
+msgstr "Training and Inference"
+
+msgid ""
+"Training changes selected model weights; inference uses the saved weights with new observations. "
+"A **frozen** component still computes features, but its weights do not receive optimizer updates."
+" The base recipe freezes vision and language; the optional vision-unfreezing experiment lets "
+"visual features adapt to task images. More trainable parameters require more memory and can "
+"overfit a small dataset, so judge the change through matched rollouts."
+msgstr ""
+"Training은 선택된 model weight를 바꾸고 inference는 새 observation에 저장된 weight를 사용합니다. **Frozen** "
+"component도 feature를 계산하지만 optimizer update는 받지 않습니다. 기본 recipe는 vision과 language를 freeze하며, 선택적인 "
+"vision-unfreezing 실험에서는 visual feature를 task image에 맞게 학습합니다. Trainable parameter가 늘면 memory가 더 "
+"필요하고 작은 dataset에 overfit될 수 있으므로 같은 조건의 rollout으로 판단하세요."
+
+msgid ""
+"Pretrained weights initialize post-training, where demonstration targets and an optimizer update "
+"selected components; inference uses the saved policy with fixed weights."
+msgstr ""
+"Pretrained weight로 post-training을 초기화하고 demonstration target과 optimizer로 선택한 component를 "
+"update합니다. Inference는 저장된 policy의 고정 weight를 사용합니다."
+
+msgid ""
+"Post-training adapts selected weights to SO-101 demonstrations. Inference uses the resulting "
+"checkpoint without updating its weights."
+msgstr ""
+"Post-training은 선택된 weight를 SO-101 demonstration에 맞춥니다. Inference는 결과 checkpoint를 weight update 없이"
+" 사용합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Architecture Overview"
+msgstr "Architecture Overview"
+
+msgid ""
+"GR00T 1.7 conditions action generation on images, language, and robot state. Its vision-language "
+"backbone is Cosmos-Reason2-2B, and its action head uses flow matching to generate action chunks. "
+"See the [GR00T 1.7 model card](https://huggingface.co/nvidia/GR00T-N1.7-3B)."
+msgstr ""
+"GR00T 1.7은 image, language, robot state를 조건으로 action을 생성합니다. Vision-language backbone은 Cosmos-"
+"Reason2-2B이며 action head는 flow matching으로 action chunk를 생성합니다. [GR00T 1.7 model "
+"card](https://huggingface.co/nvidia/GR00T-N1.7-3B)를 확인하세요."
+
+msgid ""
+"The conceptual **System 2** role interprets images and language; the **System 1** role generates "
+"actions from those features and the robot state. This terminology comes from the [GR00T dual-"
+"system architecture](https://arxiv.org/abs/2503.14734). The controller applies returned actions, "
+"then fresh observations close the loop. This schematic describes data flow; it does not imply "
+"that the policy returns a human-readable plan."
+msgstr ""
+"개념적으로 **System 2**는 image와 language를 해석하고 **System 1**은 그 feature와 robot state로 action을 생성합니다. 이 "
+"용어는 [GR00T dual-system architecture](https://arxiv.org/abs/2503.14734)에서 유래합니다. Controller가 "
+"action을 적용하고 새 observation으로 loop를 닫습니다. 이 그림은 data flow를 설명하며 사람이 읽을 수 있는 plan을 반환한다는 뜻은 아닙니다."
+
+msgid ""
+"Images and language enter the GR00T vision-language backbone; its features and robot state "
+"condition the action head, which returns action chunks for control and observation feedback."
+msgstr ""
+"Image와 language가 GR00T vision-language backbone으로 입력되고, 그 feature와 robot state를 조건으로 action head가"
+" control 및 observation feedback용 action chunk를 반환합니다."
+
+msgid ""
+"Images, language, and joint state condition the next action chunk; new observations provide "
+"feedback without changing model weights."
+msgstr ""
+"Image, language, joint state가 다음 action chunk의 조건이 됩니다. 새 observation은 model weight를 바꾸지 않고 "
+"feedback을 제공합니다."
+
+msgid ""
+"The Cosmos-Reason2-2B backbone inside GR00T is different from the separate [Cosmos 3 video "
+"augmentation demo](14-strategy3-cosmos.md). Here it supplies features for action prediction; the "
+"later demo generates visual variations of recorded clips."
+msgstr ""
+"GR00T 내부의 Cosmos-Reason2-2B backbone은 별도의 [Cosmos 3 video augmentation "
+"demo](14-strategy3-cosmos.md)와 다릅니다. 여기서는 action prediction용 feature를 제공하며, 뒤의 demo에서는 기록된 clip의 "
+"시각적 variation을 생성합니다."
+
+msgid "Key Components"
+msgstr "주요 구성 요소"
+
+msgid "Read more about the vision, language, and action components"
+msgstr "Vision, language, action 구성 요소 자세히 보기"
+
+msgid "**Vision Encoder**: Processes camera images into feature representations"
+msgstr "**Vision Encoder**: Camera image를 feature representation으로 처리"
+
+msgid "Supplies visual evidence about objects and their spatial relationships"
+msgstr "Object와 공간적 관계에 관한 시각적 근거 제공"
+
+msgid "May remain frozen or be trained in the workshop's optional experiment"
+msgstr "Freeze하거나 workshop의 선택적 실험에서 학습 가능"
+
+msgid "**Language Encoder**: Processes task instructions"
+msgstr "**Language Encoder**: Task instruction 처리"
+
+msgid "Maps natural language to task embeddings"
+msgstr "자연어를 task embedding으로 mapping"
+
+msgid "Conditions behavior on the instruction alongside visual observations"
+msgstr "Visual observation과 함께 instruction으로 행동 조건 설정"
+
+msgid "**Cross-Modal Fusion**: Combines vision and language"
+msgstr "**Cross-Modal Fusion**: Vision과 language 결합"
+
+msgid "Attention mechanisms to relate visual features to language"
+msgstr "Attention으로 visual feature와 language 연결"
+
+msgid "Grounds language concepts in visual observations"
+msgstr "Language concept을 visual observation에 grounding"
+
+msgid "**Action Decoder**: Generates robot actions"
+msgstr "**Action Decoder**: Robot action 생성"
+
+msgid "Conditioned on fused visual-language features"
+msgstr "융합된 visual-language feature를 조건으로 사용"
+
+msgid "Outputs appropriate action representation (joint positions, velocities, etc.)"
+msgstr "Joint position, velocity 등 적절한 action representation 출력"
+
+msgid "What Happens in One Step of GR00T Training?"
+msgstr "GR00T Training 한 Step에서 일어나는 일"
+
+msgid ""
+"One **training step** is an optimizer update, not an episode or a robot movement. A batch "
+"supplies observation/action windows; GR00T computes a loss and uses it to adjust trainable "
+"weights."
+msgstr ""
+"**Training step**은 episode나 robot 움직임이 아니라 optimizer update 한 번입니다. Batch가 observation/action "
+"window를 제공하고 GR00T가 loss를 계산해 trainable weight를 조정합니다."
+
+msgid ""
+"Sample windows, prepare action and noise targets, compute loss and gradients, then update "
+"trainable weights."
+msgstr "Window sampling, action 및 noise target 준비, loss와 gradient 계산, trainable weight update 순서로 진행합니다."
+
+msgid ""
+"Batch size counts windows; the training horizon sets targets per window; learning rate scales "
+"optimizer updates. Frozen weights do not change."
+msgstr ""
+"Batch size는 window 수, training horizon은 window별 target 길이, learning rate는 optimizer update의 크기를 "
+"정합니다. Frozen weight는 변하지 않습니다."
+
+msgid ""
+"The action head uses [flow "
+"matching](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/policies/groot/groot_n1_7.py):"
+" it learns a flow from noise toward demonstrated action chunks. The **training horizon** sets the"
+" target window, starting at the sampled frame; the rollout horizon controls how many actions are "
+"used during evaluation."
+msgstr ""
+"Action head는 [flow "
+"matching](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/policies/groot/groot_n1_7.py)으로"
+" noise에서 demonstration action chunk로 향하는 flow를 학습합니다. **Training horizon**은 sampled frame에서 시작하는 "
+"target window를 정하고, rollout horizon은 평가에 사용할 action 수를 정합니다."
+
+msgid ""
+"Our verified sim-only and mixed HG-DAgger 20,000-step runs took about **12½ and 13½ hours**, "
+"respectively, on a **single H100 GPU**. These times include checkpoint saving, but exclude "
+"dataset preparation, upload, and evaluation. Training time varies with the recipe and "
+"implementation."
+msgstr ""
+"검증한 sim-only 및 mixed HG-DAgger 20,000-step run은 **H100 GPU 한 대**에서 각각 약 **12½시간과 13½시간**이 걸렸습니다. "
+"Checkpoint 저장 시간은 포함하지만 dataset 준비, upload, 평가는 제외합니다. 시간은 recipe와 구현에 따라 달라집니다."
+
+msgid "Reference: Post-Train Your Own Model"
+msgstr "참고: 직접 Model Post-Training"
+
+msgid ""
+"Run in the same `so101-workshop` container used for recording. The commands below load a LeRobot "
+"dataset by its Hugging Face repository ID. Stop the collection process before starting training."
+msgstr ""
+"Recording에 사용한 같은 `so101-workshop` container에서 실행합니다. 아래 명령은 Hugging Face repository ID로 LeRobot "
+"dataset을 읽습니다. 학습 전에 수집 process를 종료하세요."
+
+msgid ""
+"**Upload** and **inspect** your dataset as described in [Teleoperating in Sim](08-simulation-"
+"teleoperation.md#review-and-upload-collected-data)."
+msgstr ""
+"[Teleoperating in Sim](08-simulation-teleoperation.md#review-and-upload-collected-data)에 따라 "
+"dataset을 **upload하고 검토**합니다."
+
+msgid "Inside the container, **authenticate** and **set** the run variables:"
+msgstr "Container 안에서 **인증**하고 run variable을 **설정**합니다."
+
+msgid ""
+"Use your actual username and dataset. For [automated collection](08-simulation-teleoperation.md"
+"#optional-automated-data-collection), set `DATASET_NAME=so101_auto_vials_newton` before defining "
+"`DATASET`, `REPO_ID`, and `OUTPUT_DIR`. `REPO_ID` names the model repository; `OUTPUT_DIR` is "
+"under the host-mounted `outputs/` directory. A dataset saved only under `datasets/` must be "
+"uploaded before using the Hub-based command below."
+msgstr ""
+"실제 username과 dataset을 사용하세요. [자동 수집](08-simulation-teleoperation.md#optional-automated-data-"
+"collection) data라면 `DATASET`, `REPO_ID`, `OUTPUT_DIR`을 정의하기 전에 "
+"`DATASET_NAME=so101_auto_vials_newton`으로 설정합니다. `REPO_ID`는 model repository 이름이고 `OUTPUT_DIR`은 "
+"host-mounted `outputs/` 아래입니다. `datasets/`에만 저장된 dataset은 아래 Hub 기반 명령 전에 upload해야 합니다."
+
+msgid "**Run** single-GPU post-training with the suggested settings above:"
+msgstr "위 권장 설정으로 single-GPU post-training을 **실행**합니다."
+
+msgid ""
+"This configuration uses 20,000 steps, checkpoints every 5,000 steps, image augmentation, BF16, "
+"and Hub upload. Reduce batch size if GPU memory is insufficient. For local artifacts only, use "
+"`--policy.push_to_hub=false`; for training without Weights & Biases, use `--wandb.enable=false`."
+msgstr ""
+"20,000 step, 5,000 step마다 checkpoint 저장, image augmentation, BF16, Hub upload를 사용합니다. GPU memory가"
+" 부족하면 batch size를 줄이세요. Local artifact만 원하면 `--policy.push_to_hub=false`, Weights & Biases 없이 "
+"학습하려면 `--wandb.enable=false`를 사용합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Multi-GPU Training"
+msgstr "Multi-GPU Training"
+
+msgid "Show the alternative multi-GPU training command"
+msgstr "대안인 Multi-GPU 학습 명령 보기"
+
+msgid ""
+"As an alternative for **step 3** on a machine with multiple visible GPUs, **run** Accelerate with"
+" the same training settings. Choose either the single-GPU command or this command for a run. Use "
+"a new `OUTPUT_DIR` for a separate training experiment."
+msgstr ""
+"여러 GPU가 보이는 machine에서는 **3단계** 대신 같은 설정으로 Accelerate를 **실행**할 수 있습니다. 한 run에서는 single-GPU 또는 이 명령"
+" 중 하나를 선택하세요. 별도 실험에는 새 `OUTPUT_DIR`을 사용합니다."
+
+msgid "Select the Trained Policy"
+msgstr "학습한 Policy 선택"
+
+msgid "After training finishes, **select** the uploaded model repository:"
+msgstr "학습이 끝나면 upload한 model repository를 **선택**합니다."
+
+msgid ""
+"Alternatively, select a local `pretrained_model` directory under "
+"`outputs/train/<user>/<model>/checkpoints/`. Use the directory containing the saved policy "
+"configuration, weights, and processors, rather than the enclosing training run directory. This "
+"local path also works when training with `--policy.push_to_hub=false`."
+msgstr ""
+"또는 `outputs/train/<user>/<model>/checkpoints/` 아래의 local `pretrained_model` directory를 선택합니다. 전체 "
+"training run directory가 아니라 policy configuration, weight, processor가 들어 있는 directory를 사용하세요. "
+"`--policy.push_to_hub=false`로 학습한 경우에도 사용할 수 있습니다."
+
+msgid ""
+"Local checkpoints must include configuration and processor artifacts, not just weights. See "
+"[Checkpoint Compatibility](datasets-and-models.md#checkpoint-compatibility). Continue evaluation "
+"in the same container terminal after training finishes. If you reopen the shell, set `MODEL_ID` "
+"again; ordinary exported variables do not persist across shells."
+msgstr ""
+"Local checkpoint에는 weight뿐 아니라 configuration과 processor artifact도 필요합니다. [Checkpoint "
+"Compatibility](datasets-and-models.md#checkpoint-compatibility)를 확인하세요. 학습 완료 후 같은 container "
+"terminal에서 평가를 계속합니다. Shell을 다시 열었다면 일반 export 변수는 유지되지 않으므로 `MODEL_ID`를 다시 설정하세요."
+
+msgid "Optional: Unfreeze the Vision Encoder"
+msgstr "선택 사항: Vision Encoder Unfreeze"
+
+msgid ""
+"Use `--policy.tune_visual=true` to train the vision encoder, and `--policy.tune_llm=false` to "
+"keep the language backbone frozen. Use `--policy.tune_visual=false` for a frozen-vision training "
+"run. These flags control which model parameters training updates; they do not change inference "
+"settings."
+msgstr ""
+"`--policy.tune_visual=true`로 vision encoder를 학습하고 `--policy.tune_llm=false`로 language backbone을 "
+"freeze합니다. Frozen-vision run은 `--policy.tune_visual=false`를 사용합니다. 이 flag는 학습 중 update할 "
+"parameter를 정하며 inference 설정을 바꾸지 않습니다."
+
+#, python-format
+msgid ""
+"The selected [94% simulation policy](datasets-and-models.md#vision-trainable-20k-sim-only-"
+"reference) used vision trainable, language frozen, batch size 32, and a 32-step action window. "
+"The example below starts a new run from the GR00T base using those choices. Consult the model "
+"card for the full recorded recipe and benchmark conditions."
+msgstr ""
+"선택된 [94% simulation policy](datasets-and-models.md#vision-trainable-20k-sim-only-reference)는 "
+"vision trainable, language frozen, batch size 32, 32-step action window를 사용했습니다. 아래 예시는 이 선택으로 "
+"GR00T base에서 새 run을 시작합니다. 전체 recipe와 benchmark 조건은 model card를 확인하세요."
+
+msgid "Show a vision-unfrozen training example"
+msgstr "Vision-Unfrozen 학습 예시 보기"
+
+msgid ""
+"After setting `DATASET`, `DATASET_NAME`, and authenticating above, run this alternative single-"
+"GPU experiment. Its separate model name and output directory let you keep the frozen-vision run "
+"for comparison."
+msgstr ""
+"위에서 `DATASET`, `DATASET_NAME`을 설정하고 인증한 뒤 대안 single-GPU 실험을 실행합니다. 별도 model 이름과 output directory를"
+" 사용해 frozen-vision run을 비교용으로 보존합니다."
+
+msgid ""
+"After training, select this model for evaluation with `export MODEL_ID=\"$VISION_REPO_ID\"`. Use "
+"the evaluation lessons' 16-action rollout settings even though this example trains with a 32-step"
+" window."
+msgstr ""
+"학습 후 `export MODEL_ID=\"$VISION_REPO_ID\"`로 평가할 model을 선택합니다. 이 예시의 학습 window는 32-step이지만 평가는 과정의"
+" 16-action rollout 설정을 사용하세요."
+
+msgid ""
+"This example changes batch size and action window as well as vision training. To isolate the "
+"effect of unfreezing, use batch size 32 and a 32-step window for both runs, keeping the dataset, "
+"optimizer settings, update budget, and evaluation conditions the same. Unfreezing requires more "
+"memory and is not guaranteed to improve performance."
+msgstr ""
+"이 예시는 vision 학습뿐 아니라 batch size와 action window도 바꿉니다. Unfreezing의 효과만 보려면 두 run 모두 batch size 32와"
+" 32-step window를 사용하고 dataset, optimizer 설정, update 수, 평가 조건을 동일하게 유지하세요. Unfreezing에는 더 많은 "
+"memory가 필요하며 성능 향상을 보장하지 않습니다."
+
+msgid "Experiment Technique: Continue Training a Checkpoint"
+msgstr "실험 방법: Checkpoint 학습 이어가기"
+
+msgid ""
+"You can train an existing policy further without repeating its earlier updates. For example, "
+"start from a 50,000-step checkpoint and add 20,000 updates to explore what more training does. "
+"Preserve the original checkpoint and compare both policies using the same evaluation conditions. "
+"More training can improve behavior, leave it unchanged, or overfit the demonstrations."
+msgstr ""
+"기존 update를 반복하지 않고 policy를 더 학습할 수 있습니다. 예를 들어 50,000-step checkpoint에서 20,000 update를 추가해 효과를 "
+"살펴봅니다. 원본 checkpoint를 보존하고 같은 평가 조건으로 비교하세요. 추가 학습은 개선, 변화 없음, overfitting 중 어느 결과로도 이어질 수 있습니다."
+
+msgid "Read more about continuing a checkpoint, optimizer state, and data mixtures"
+msgstr "Checkpoint continuation, Optimizer State, Data Mixture 자세히 보기"
+
+msgid "Choose What to Restore"
+msgstr "복원할 상태 선택"
+
+msgid ""
+"**Resume the training run:** restore weights, optimizer state, scheduler state, and the update "
+"counter. This is useful for an interrupted run. It requires the full training checkpoint, "
+"including training state, rather than only an exported policy. In this mode, `--steps=70000` is "
+"the total target, so resuming at 50,000 leaves 20,000 updates. Inspect the restored learning-rate"
+" schedule before extending a completed run; a rate that has decayed near zero may produce little "
+"further learning."
+msgstr ""
+"**Training run resume:** Weight, optimizer state, scheduler state, update counter를 복원합니다. 중단된 "
+"run에 적합하며 exported policy만이 아니라 training state를 포함한 전체 checkpoint가 필요합니다. `--steps=70000`은 전체 "
+"목표이므로 50,000에서 재개하면 20,000 update가 남습니다. 완료된 run을 연장할 때는 learning-rate schedule을 확인하세요. 이미 0에 가깝게"
+" 감소했다면 추가 학습 효과가 작을 수 있습니다."
+
+msgid ""
+"**Start a new fine-tuning run from saved weights:** load the policy and its saved processors, "
+"then create a fresh optimizer and schedule. With `--resume=false`, `--steps=20000` means 20,000 "
+"additional updates, counted from zero in the new run. This is useful for testing a new recipe or "
+"introducing real demonstrations."
+msgstr ""
+"**저장 Weight로 새 Fine-Tuning run 시작:** Policy와 저장된 processor를 읽고 새 optimizer와 schedule을 만듭니다. "
+"`--resume=false`에서 `--steps=20000`은 새 run의 0부터 세는 추가 update 20,000회를 뜻합니다. 새 recipe나 실제 "
+"demonstration을 도입할 때 유용합니다."
+
+msgid ""
+"In LeRobot, `--policy.path` selects the trained policy and loads its configuration; the resolved "
+"configuration records that location as `pretrained_path`. GR00T's `base_model_path` still "
+"identifies the underlying foundation-model assets. Preserve the checkpoint's compatible base-"
+"model revision, camera keys, joint order, action representation, horizons, and processors."
+msgstr ""
+"LeRobot에서 `--policy.path`는 학습된 policy와 configuration을 선택하며, resolved configuration에는 "
+"`pretrained_path`로 기록됩니다. GR00T의 `base_model_path`는 기반 foundation-model asset을 지정합니다. 호환되는 base-"
+"model revision, camera key, joint 순서, action representation, horizon, processor를 유지하세요."
+
+msgid "Example: Add 20,000 Updates"
+msgstr "예시: Update 20,000회 추가"
+
+msgid ""
+"Run inside the workshop container. Set `CHECKPOINT` to your actual LeRobot `pretrained_model` "
+"directory, containing the weights, policy configuration, processors, and saved "
+"`train_config.json`. The example reuses that training configuration and dataset, with a new "
+"output directory and a fresh optimizer. Check that its dataset and base-model paths are "
+"accessible in this container."
+msgstr ""
+"Workshop container에서 실행합니다. `CHECKPOINT`에 weight, policy configuration, processor, "
+"`train_config.json`이 있는 실제 LeRobot `pretrained_model` directory를 지정하세요. 기존 training "
+"configuration과 dataset을 재사용하되 output directory와 optimizer는 새로 만듭니다. Dataset과 base-model 경로가 "
+"container에서 접근 가능한지 확인하세요."
+
+msgid ""
+"The example's `1e-5` peak learning rate and 5% warmup are experiment settings, not a proven "
+"optimum. With this preset, `policy.max_steps` supplies the warmup calculation; the outer `steps` "
+"sets the update budget. The new `020000` checkpoint represents 50,000 earlier updates plus 20,000"
+" additional updates. Batch size, augmentation, and which model components are frozen come from "
+"the saved configuration; review the resolved settings before training."
+msgstr ""
+"Peak learning rate `1e-5`와 warmup 5%는 실험 설정이며 검증된 최적값이 아닙니다. 이 preset에서는 `policy.max_steps`가 "
+"warmup 계산에, 바깥쪽 `steps`가 update 수에 사용됩니다. 새 `020000` checkpoint는 이전 50,000회와 추가 20,000회 update를 "
+"거친 결과입니다. Batch size, augmentation, frozen component는 저장된 configuration에서 가져오므로 실행 전에 resolved "
+"setting을 확인하세요."
+
+msgid "Example: Match the Gripper Mapping"
+msgstr "예시: Gripper Mapping 맞추기"
+
+msgid ""
+"A gripper percentage can mean a different physical opening when its encoder calibration differs. "
+"Collection and simulation inference share `utils/gripper_calibration.py`, with 1485 ticks as the "
+"default. For a model known to have used the older 1531-tick span, add `--gripper_span_ticks 1531`"
+" to the usual `lerobot_eval` command. Both observation and action conversions use that span; the "
+"five arm coordinates stay unchanged. This override assumes the same jaw-angle zero."
+msgstr ""
+"Encoder calibration이 다르면 같은 gripper percent가 다른 실제 opening을 뜻할 수 있습니다. 수집과 simulation inference는 "
+"기본 1485-tick의 `utils/gripper_calibration.py`를 공유합니다. 이전 1531-tick span으로 학습한 model임이 확인되면 일반 "
+"`lerobot_eval` 명령에 `--gripper_span_ticks 1531`을 추가하세요. Observation과 action 변환 모두 이 span을 사용하고 5개 "
+"arm 좌표는 그대로입니다. 같은 jaw-angle zero를 가정한 override입니다."
+
+msgid ""
+"A measured robot mapping can similarly translate gripper values without changing model weights. "
+"Here is the calculation only; it does not move or connect a robot:"
+msgstr "측정한 robot mapping으로도 weight를 바꾸지 않고 gripper 값을 변환할 수 있습니다. 아래는 계산만 수행하며 robot에 연결하거나 움직이지 않습니다."
+
+msgid ""
+"For deployment, this calculation belongs before policy state normalization and after action "
+"decoding. The example is not automatically installed into `lerobot-rollout`. Measure the robot's "
+"encoder span **and** physical jaw-angle zero in the same frame; retain the robot driver's limits."
+" Matching gripper coordinates does not correct other arm offsets or establish real-task success."
+msgstr ""
+"배포에서는 policy state normalization 전과 action decoding 후에 이 계산을 적용합니다. 예시가 `lerobot-rollout`에 자동 "
+"설치되지는 않습니다. 같은 frame에서 encoder span**과** 실제 jaw-angle zero를 측정하고 driver limit을 유지하세요. Gripper 좌표를"
+" 맞추는 것으로 다른 arm offset이나 실제 task 성공까지 해결·입증되지는 않습니다."
+
+msgid "Is a Fresh Optimizer Better?"
+msgstr "새 Optimizer가 더 좋을까?"
+
+msgid ""
+"The model weights store learned behavior. Adam's optimizer state stores running estimates of "
+"gradient direction and magnitude that guide future updates. Resetting those estimates preserves "
+"the weights."
+msgstr ""
+"Model weight는 학습된 행동을 저장합니다. Adam optimizer state는 이후 update 방향을 정하는 gradient 방향과 크기의 이동 추정값을 "
+"저장합니다. 이를 초기화해도 weight는 보존됩니다."
+
+msgid ""
+"A reset may help when moving from simulation-only data to a sim/real mixture because the gradient"
+" distribution changes. It also discards potentially useful history and can make early updates "
+"less stable. Keeping optimizer state can be useful when continuing the same objective and data. "
+"Neither choice guarantees better performance."
+msgstr ""
+"Simulation-only에서 sim/real mixture로 바꾸면 gradient distribution이 달라져 reset이 도움이 될 수 있습니다. 반면 유용한 "
+"이력을 잃고 초기 update가 불안정해질 수도 있습니다. 같은 objective와 data로 계속 학습할 때는 state 유지가 유용할 수 있습니다. 어느 쪽도 성능 향상을"
+" 보장하지 않습니다."
+
+msgid ""
+"**An optimizer reset and a learning-rate restart are separate choices.** Continuing with a useful"
+" learning rate after a schedule has decayed can matter even without resetting Adam. To test the "
+"reset itself, start from identical weights and keep the sampled batches, trainable parameters, "
+"update budget, and learning-rate schedule identical; change only whether optimizer state is "
+"restored. Extra training plus a reset plus a different schedule tests the whole recipe, not the "
+"reset alone."
+msgstr ""
+"**Optimizer reset과 learning-rate restart는 별개의 선택입니다.** Adam을 reset하지 않아도 감소한 learning rate를 다시 "
+"유효한 값으로 쓰는 것이 중요할 수 있습니다. Reset 자체를 비교하려면 동일 weight에서 시작하고 batch, trainable parameter, update 수, "
+"learning-rate schedule을 맞춘 뒤 optimizer state 복원 여부만 바꾸세요. 추가 학습·reset·schedule 변경을 함께 하면 recipe "
+"전체를 평가하는 실험입니다."
+
+msgid "Adding Real Data: Control the Sampling Ratio"
+msgstr "실제 Data 추가: Sampling Ratio 제어"
+
+msgid ""
+"Two useful experiments are starting from the simulation-trained checkpoint and continuing on "
+"mixed sim/real data, or starting from pretrained GR00T and using that mixture from the beginning."
+" The first reuses task-specific learning; the second exposes the policy to real examples earlier."
+" Account for the first stage's training cost and data exposure when comparing them. Continuing on"
+" real data alone is a separate experiment and may overfit a small collection."
+msgstr ""
+"Simulation checkpoint에서 mixed sim/real data로 이어 학습하거나, pretrained GR00T에서 처음부터 mixture를 사용할 수 "
+"있습니다. 전자는 task 학습을 재사용하고 후자는 실제 예시를 일찍 접합니다. 비교 시 첫 단계의 비용과 data 노출도 고려하세요. 실제 data만으로 이어 학습하는 것은"
+" 별도 실험이며 작은 dataset에 overfit될 수 있습니다."
+
+#, python-format
+msgid ""
+"The sampling ratio controls how often training selects each source, independently of how many "
+"demonstrations you store. At batch size 32, a 50% real / 50% sim ratio gives about 16 examples "
+"from each source on average; 25% real gives about 8. A weighted sampler produces those "
+"proportions over many draws, while a fixed batch composition can enforce exact counts."
+msgstr ""
+"Sampling ratio는 저장한 demonstration 수와 별개로 각 source를 뽑는 빈도를 정합니다. Batch size 32에서 real/sim 50%씩이면 "
+"평균 약 16개씩, real 25%면 약 8개입니다. Weighted sampler는 많은 추출에 걸쳐 비율을 맞추고, 고정 batch 구성은 정확한 수를 강제할 수 "
+"있습니다."
+
+msgid ""
+"For uniform sampling within each source, assign each eligible real training frame weight `p_real "
+"/ N_real` and each eligible simulated frame weight `(1 - p_real) / N_sim`. Here, `N_real` and "
+"`N_sim` count eligible training frames, not episodes. More real-data sampling revisits the "
+"limited real demonstrations more often; it does not create new diversity. Log the observed "
+"sampling proportions and monitor overfitting."
+msgstr ""
+"Source 내부 uniform sampling에서는 eligible real frame마다 `p_real / N_real`, simulation frame마다 `(1 - "
+"p_real) / N_sim`의 weight를 줍니다. `N_real`과 `N_sim`은 episode가 아니라 학습 가능한 frame 수입니다. Real sampling을 "
+"늘리면 제한된 실제 예시를 더 자주 보지만 새로운 다양성이 생기지는 않습니다. 실제 sampling 비율과 overfitting을 기록하세요."
+
+msgid ""
+"**Check the trainer before setting a ratio.** The LeRobot `v0.6.0` training path used by this "
+"lesson shuffles eligible frames and does not expose a sim/real mixture-ratio flag. Its GR00T "
+"`balance_dataset_weights` and `balance_trajectory_weights` fields are unused by this path. "
+"Merging datasets alone therefore does not enforce a chosen ratio: longer episodes contribute more"
+" frames. Explicit ratios require a trainer or sampler that supports source weighting and retains "
+"each frame's source identity. The weights above describe that experiment design, not an "
+"additional command-line option for the example."
+msgstr ""
+"**비율 설정 전에 Trainer를 확인하세요.** 이 실습의 LeRobot `v0.6.0` training path는 eligible frame을 shuffle하며 "
+"sim/real mixture-ratio flag가 없습니다. GR00T의 `balance_dataset_weights`, "
+"`balance_trajectory_weights`도 이 경로에서는 쓰지 않습니다. Dataset merge만으로 선택한 비율이 강제되지 않으며 긴 episode가 더 많은 "
+"frame을 제공합니다. 명시적 비율에는 source별 weighting과 frame source identity를 지원하는 trainer 또는 sampler가 필요합니다. "
+"위 weight는 실험 설계이며 예시의 추가 CLI 옵션이 아닙니다."
+
+msgid "Make the Comparison Informative"
+msgstr "의미 있는 비교 만들기"
+
+msgid ""
+"Keep some demonstrations aside for testing: never use them to train the model or calculate the "
+"normalization statistics that scale its inputs and actions. Checking predictions against those "
+"unseen demonstrations is called **held-out validation**. A **rollout test** instead lets the "
+"model control the arm and measures whether it completes the task. These checks measure different "
+"things; prediction error can improve while task success worsens, or vice versa."
+msgstr ""
+"일부 demonstration을 test용으로 남기고, 학습이나 입력·action normalization 통계 계산에도 사용하지 마세요. 보지 못한 "
+"demonstration과 예측을 비교하는 것이 **held-out validation**입니다. **Rollout test**는 model이 arm을 제어해 task를 "
+"완료하는지 측정합니다. 두 검사는 다른 것을 측정하므로 prediction error가 줄어도 task 성공은 나빠질 수 있으며 그 반대도 가능합니다."
+
+msgid ""
+"Compare the original checkpoint, a continuation with the same data and trainable components, and "
+"the proposed change using the same test conditions. This control helps distinguish gains from "
+"extra updates from gains due to unfreezing or adding real data. Change one factor at a time, "
+"record total updates and sampled examples per source, and test sim-to-real claims on the real "
+"task as well as in simulation."
+msgstr ""
+"원본 checkpoint, 같은 data와 trainable component로 이어 학습한 대조군, 제안 변경을 동일 조건으로 비교하세요. 추가 update의 효과와 "
+"unfreezing 또는 real data의 효과를 구분하는 데 도움이 됩니다. 한 번에 한 요인을 바꾸고 전체 update 및 source별 sampled example "
+"수를 기록하며, Sim-to-Real 주장은 실제 task에서도 검증하세요."
+
+msgid ""
+"For implementation details, see [LeRobot's training "
+"configuration](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/configs/train.py) "
+"and [frame "
+"sampler](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/datasets/sampler.py). The"
+" [Adam paper](https://arxiv.org/abs/1412.6980) explains optimizer state, and [Sim-and-Real Co-"
+"Training](https://arxiv.org/abs/2503.24361) studies data-mixture choices. Continue with [Co-"
+"Training in Practice](13-cotraining-practice.md#optional-collecting-real-demonstrations-with-"
+"lerobot) for the workshop's data workflow."
+msgstr ""
+"구현은 [LeRobot training "
+"configuration](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/configs/train.py)과 "
+"[frame "
+"sampler](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/datasets/sampler.py)를 "
+"참고하세요. [Adam paper](https://arxiv.org/abs/1412.6980)는 optimizer state를, [Sim-and-Real Co-"
+"Training](https://arxiv.org/abs/2503.24361)은 data-mixture 선택을 다룹니다. Workshop data workflow는 [Co-"
+"Training in Practice](13-cotraining-practice.md#optional-collecting-real-demonstrations-with-"
+"lerobot)로 이어집니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Overfitting"
+msgstr "Overfitting"
+
+msgid ""
+"More training is not always better. If training loss keeps falling but performance on held-out "
+"demonstrations or new rollout conditions gets worse, that can signal overfitting. Evaluate "
+"checkpoints along the way rather than choosing by training loss alone. If gains stall, inspect "
+"the failures and improve demonstration coverage before simply adding more steps."
+msgstr ""
+"학습을 많이 한다고 항상 좋아지는 것은 아닙니다. Training loss가 줄어도 held-out demonstration이나 새 rollout 조건의 성능이 나빠지면 "
+"overfitting일 수 있습니다. Loss만으로 선택하지 말고 중간 checkpoint를 평가하세요. 개선이 멈추면 step을 늘리기 전에 실패를 분석하고 "
+"demonstration coverage를 보완합니다."
+
+msgid ""
+"Watch how the policy stalls until the vial is moved into just the right position in the gripper. "
+"Too little **domain randomization (DR) around the grasp** can leave a model relying on a narrow "
+"set of familiar views."
+msgstr ""
+"Vial을 gripper의 정확히 익숙한 위치로 옮기기 전까지 policy가 멈추는 모습을 보세요. **Grasp 주변의 Domain Randomization (DR)**이 "
+"부족하면 model이 좁은 범위의 익숙한 view에 의존할 수 있습니다."
+
+msgid ""
+"**Vary** vial positions and grasp angles in your demonstrations, then **test** positions you did "
+"not train on. More episodes of the same grasp will not provide that missing variety."
+msgstr ""
+"Demonstration의 vial 위치와 grasp angle을 **다양하게** 하고 학습하지 않은 위치를 **시험**하세요. 같은 grasp의 episode만 늘려서는 "
+"부족한 다양성을 채울 수 없습니다."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid ""
+"**Start in distribution.** For best results, use a robot starting pose represented in the "
+"checkpoint’s training dataset, including gripper opening. Check the actual demonstrations rather "
+"than assuming the default home pose matches. An unfamiliar start changes the camera views and "
+"robot state, and can cause failures even with a well-trained policy."
+msgstr ""
+"**Distribution 안에서 시작하세요.** Gripper opening을 포함해 checkpoint의 training dataset에 나타나는 starting "
+"pose를 사용합니다. 기본 home pose가 맞다고 가정하지 말고 실제 demonstration을 확인하세요. 익숙하지 않은 시작은 camera view와 robot "
+"state를 바꾸므로 잘 학습된 policy도 실패할 수 있습니다."
+
+msgid ""
+"GR00T uses a **System 2** vision-language backbone to interpret images and instructions, and a "
+"**System 1** action head to generate action chunks conditioned on those features and the robot "
+"state."
+msgstr ""
+"GR00T는 **System 2** vision-language backbone으로 image와 instruction을 해석하고, **System 1** action "
+"head로 그 feature와 robot state를 조건으로 action chunk를 생성합니다."
+
+msgid "VLA models combine vision, language, and action in a unified architecture"
+msgstr "VLA는 하나의 architecture에서 vision, language, action을 결합합니다."
+
+msgid "GR00T provides pre-trained components for accelerated learning"
+msgstr "GR00T는 학습을 가속하는 pretrained component를 제공합니다."
+
+msgid "Action chunking provides smooth, temporally consistent control"
+msgstr "Action chunking은 부드럽고 시간적으로 일관된 control을 제공합니다."
+
+msgid "Pre-trained vision encoders enable visual generalization"
+msgstr "Pretrained vision encoder는 visual generalization을 지원합니다."
+
+msgid "Suggested Training Hyperparameters"
+msgstr "권장 Training Hyperparameters"
+
+msgid ""
+"The values below are used in this lesson's commands. **Treat them as suggested starting points**,"
+" not an optimized configuration or a guarantee of success. Dataset quality, task variation, and "
+"GPU capacity can require different settings. The older AnchorBench comparison has its own "
+"training recipe; do not mix its settings with this GR00T 1.7 example."
+msgstr ""
+"아래 값은 이 실습 명령에 사용됩니다. **권장 시작점으로 사용하세요.** 최적값이나 성공 보장은 아닙니다. Data 품질, task variation, GPU 용량에 따라 "
+"달라질 수 있습니다. 이전 AnchorBench 비교는 별도 recipe이므로 GR00T 1.7 예시와 섞지 마세요."
+
+msgid "Training parameter reference"
+msgstr "Training Parameter 참고"
+
+msgid ""
+"The preset defaults and horizon limits above are checked against [LeRobot's GR00T "
+"configuration](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/policies/groot/configuration_groot.py)"
+" and [policy "
+"implementation](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/policies/groot/modeling_groot.py)."
+" Effective batch size follows the [pinned training "
+"loop](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/scripts/lerobot_train.py). "
+"Record the resolved optimizer and scheduler settings rather than inferring every default from the"
+" command line."
+msgstr ""
+"Preset 기본값과 horizon limit은 [LeRobot GR00T "
+"configuration](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/policies/groot/configuration_groot.py)과"
+" [policy "
+"implementation](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/policies/groot/modeling_groot.py)을"
+" 확인했습니다. Effective batch size는 [고정된 training "
+"loop](https://github.com/huggingface/lerobot/blob/v0.6.0/src/lerobot/scripts/lerobot_train.py)를 "
+"따릅니다. CLI만으로 모든 기본값을 추정하지 말고 resolved optimizer와 scheduler 설정을 기록하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Action Space and Control"
+msgstr "Action Space and Control"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Action Representations"
+msgstr "Action Representations"
+
+msgid "Compare joint actions, end-effector actions, and action chunking"
+msgstr "Joint action, End-Effector action, Action Chunking 비교"
+
+msgid "GR00T supports several action representations:"
+msgstr "GR00T는 여러 action representation을 지원합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Joint Position Actions**"
+msgstr "**Joint Position Actions**"
+
+msgid "Direct control over robot configuration"
+msgstr "Robot configuration 직접 제어"
+
+msgid "Requires learning full arm coordination"
+msgstr "전체 arm의 협응 학습 필요"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**End-Effector Actions**"
+msgstr "**End-Effector Actions**"
+
+msgid "Inverse kinematics computes joint commands"
+msgstr "Inverse kinematics로 joint command 계산"
+
+msgid "Abstracts away arm configuration"
+msgstr "Arm configuration을 추상화"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Action Chunking**"
+msgstr "**Action Chunking**"
+
+msgid "Predict multiple future actions at once"
+msgstr "여러 미래 action을 한 번에 예측"
+
+msgid "Smoother execution, temporal consistency"
+msgstr "더 부드러운 실행과 시간적 일관성"
+
+msgid ""
+"In this course, we use **joint position actions with action chunking**. Arm actions are "
+"**relative** to the observed joint positions."
+msgstr ""
+"이 과정은 **joint position actions with action chunking**을 사용합니다. Arm action은 관측된 joint position에 대한 "
+"**relative** 값입니다."
+
+msgid "Prediction and Execution Lengths"
+msgstr "Prediction과 Execution 길이"
+
+msgid ""
+"The **training chunk** describes the future action targets associated with an observation. The "
+"**rollout horizon** describes how much of a predicted sequence is used before requesting another "
+"chunk."
+msgstr ""
+"**Training chunk**는 observation에 대응하는 미래 action target을, **rollout horizon**은 다음 chunk 요청 전에 사용하는"
+" 예측 sequence 길이를 나타냅니다."
+
+msgid ""
+"**Real-time chunking (RTC)** helps join consecutive action chunks while accounting for prediction"
+" delay."
+msgstr "**Real-time chunking (RTC)**은 prediction delay를 고려해 연속 action chunk를 연결하도록 돕습니다."
+
+msgid ""
+"Use a **16-action rollout horizon** throughout this workshop, including for the [selected "
+"policies](datasets-and-models.md#current-model-selection) and the optional vision-unfrozen "
+"training example."
+msgstr ""
+"[선택된 policy](datasets-and-models.md#current-model-selection)와 선택적 vision-unfrozen 예시를 포함해 "
+"workshop 전체에서 **16-action rollout horizon**을 사용하세요."
+
+msgid "Explore the Training and Inference Loops"
+msgstr "Training과 Inference Loop 살펴보기"
+
+msgid ""
+"Adjust these diagrams to see the relationships. They are teaching illustrations, not a training "
+"run or robot controller. The calculations assume the example's 16-step training window and no "
+"gradient accumulation. The rollout timeline uses the workshop's nominal 30 Hz control rate and "
+"excludes inference and network delays."
+msgstr ""
+"그림을 조절해 관계를 살펴보세요. 실제 training run이나 robot controller가 아닌 교육용 illustration입니다. 계산은 예시의 16-step "
+"training window와 gradient accumulation 없음에 기반합니다. Rollout timeline은 기준 30 Hz를 사용하며 inference 및 "
+"network delay는 제외합니다."
+
+msgid "Resources"
+msgstr "참고 자료"
+
+msgid ""
+"[NVIDIA Isaac GR00T GitHub](https://github.com/NVIDIA/Isaac-GR00T) — Source code, model weights, "
+"and documentation"
+msgstr "[NVIDIA Isaac GR00T GitHub](https://github.com/NVIDIA/Isaac-GR00T) — Source code, model weight, 문서"
+
+msgid ""
+"[Isaac-GR00T FAQ: Improving Policies](https://github.com/NVIDIA/Isaac-GR00T/blob/main/FAQ.md) — "
+"Policy-improvement and troubleshooting guidance from the GR00T repository"
+msgstr ""
+"[Isaac-GR00T FAQ: Improving Policies](https://github.com/NVIDIA/Isaac-GR00T/blob/main/FAQ.md) — "
+"GR00T repository의 policy 개선 및 troubleshooting 안내"
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Confirm the physical setup matches [Building the Workspace](05-building-workspace.md), then "
+"continue to [Real Evaluation](12-real-evaluation.md)."
+msgstr ""
+"실물 구성이 [Building the Workspace](05-building-workspace.md)와 맞는지 확인하고 [Real Evaluation](12-real-"
+"evaluation.md)로 이동하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Parameter"
+msgstr "Parameter"
+
+msgid "Workshop example"
+msgstr "Workshop 예시"
+
+msgid "What it controls and how it interacts"
+msgstr "제어 대상과 상호 관계"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--batch_size`"
+msgstr "`--batch_size`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`32`"
+msgstr "`32`"
+
+msgid ""
+"Number of sampled observation/action windows per GPU process in an update. Larger batches usually"
+" need more memory. With the shown distributed launch, effective batch is this value multiplied by"
+" the number of GPU processes."
+msgstr ""
+"Update 한 번에서 GPU process마다 sampling하는 observation/action window 수입니다. Batch가 크면 보통 memory가 더 "
+"필요합니다. 제시한 distributed 실행의 effective batch는 이 값에 GPU process 수를 곱한 값입니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--steps`"
+msgstr "`--steps`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`20000`"
+msgstr "`20000`"
+
+msgid ""
+"Number of optimizer updates, not episodes or robot control steps. Batch size and updates together"
+" determine how many training windows are sampled, including repeats. More updates can also "
+"overfit a small dataset."
+msgstr ""
+"Episode나 robot control step이 아닌 optimizer update 수입니다. Batch size와 함께 반복을 포함한 sampled training "
+"window 수를 결정하며, 작은 dataset에서는 과도한 update가 overfitting을 유발할 수 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--use_policy_training_preset`"
+msgstr "`--use_policy_training_preset`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`true`"
+msgstr "`true`"
+
+msgid ""
+"Selects the GR00T optimizer and learning-rate schedule. The command leaves these to the pinned "
+"implementation; inspect the saved run configuration when reproducing a result."
+msgstr ""
+"GR00T optimizer와 learning-rate schedule을 선택합니다. 고정된 구현의 preset을 사용하므로 재현 시 저장된 run configuration을"
+" 확인하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--policy.optimizer_lr`"
+msgstr "`--policy.optimizer_lr`"
+
+msgid "Not overridden; preset default `1e-4` in LeRobot `v0.6.0`"
+msgstr "Override 없음. LeRobot `v0.6.0` preset 기본값 `1e-4`"
+
+msgid ""
+"Sets the peak learning rate used by the preset optimizer. It controls update scale together with "
+"the optimizer and schedule. It is not a robot speed setting."
+msgstr "Preset optimizer의 peak learning rate입니다. Optimizer와 schedule과 함께 update 크기를 정하며 robot 속도 설정이 아닙니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--policy.tune_visual`"
+msgstr "`--policy.tune_visual`"
+
+msgid "`false` in the base example; `true` in the vision-unfreezing example"
+msgstr "기본 예시 `false`, vision-unfreezing 예시 `true`"
+
+msgid ""
+"Controls whether training updates the vision encoder. Unfreezing adds trainable parameters and "
+"GPU memory use; test whether it improves rollout performance on your data."
+msgstr ""
+"Vision encoder를 학습할지 결정합니다. Unfreezing은 trainable parameter와 GPU memory 사용을 늘립니다. 본인 data의 "
+"rollout 성능이 좋아지는지 시험하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--policy.tune_llm`"
+msgstr "`--policy.tune_llm`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`false`"
+msgstr "`false`"
+
+msgid "Keeps the language backbone frozen. This is independent of the vision encoder setting."
+msgstr "Language backbone을 frozen 상태로 유지합니다. Vision encoder 설정과는 독립적입니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--dataset.image_transforms.enable`"
+msgstr "`--dataset.image_transforms.enable`"
+
+msgid ""
+"Applies training-time image augmentation to vary visual inputs. It complements simulation domain "
+"randomization; it does not create additional motion demonstrations."
+msgstr ""
+"학습 중 image augmentation으로 시각 입력을 변화시킵니다. Simulation Domain Randomization을 보완하지만 motion "
+"demonstration이 새로 생기지는 않습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--policy.chunk_size` / `--policy.n_action_steps`"
+msgstr "`--policy.chunk_size` / `--policy.n_action_steps`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`16` / `16`"
+msgstr "`16` / `16`"
+
+msgid ""
+"Configures the action window and policy return limit. Longer temporal targets change the learning"
+" problem; keep training and deployment configuration compatible."
+msgstr ""
+"Action window와 policy 반환 길이의 한계를 설정합니다. 긴 temporal target은 학습 문제를 바꾸므로 training과 deployment 설정의 "
+"호환성을 유지하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--policy.use_relative_actions` / `--policy.relative_exclude_joints`"
+msgstr "`--policy.use_relative_actions` / `--policy.relative_exclude_joints`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`true` / `'[\"gripper\"]'`"
+msgstr "`true` / `'[\"gripper\"]'`"
+
+msgid ""
+"Expresses arm targets relative to the observation state while retaining absolute gripper targets."
+" Deployment must use the matching saved processors."
+msgstr ""
+"Arm target은 observation state에 상대적으로 표현하고 gripper target은 absolute로 유지합니다. 배포 시 같은 저장 processor를 "
+"사용해야 합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--policy.embodiment_tag`"
+msgstr "`--policy.embodiment_tag`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`new_embodiment`"
+msgstr "`new_embodiment`"
+
+msgid ""
+"Selects the embodiment configuration for this adaptation. This is a model/data configuration "
+"choice, not a performance tuning knob."
+msgstr "적응할 embodiment configuration을 선택합니다. Model/data 구성 선택이며 성능 조정용 knob가 아닙니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--policy.use_bf16`"
+msgstr "`--policy.use_bf16`"
+
+msgid ""
+"Enables BF16 autocast for supported computation. It can reduce compute memory and improve "
+"throughput; it does not imply every model or optimizer tensor is stored in BF16."
+msgstr ""
+"지원되는 연산에 BF16 autocast를 사용합니다. 연산 memory를 줄이고 throughput을 높일 수 있지만 모든 model·optimizer tensor가 "
+"BF16으로 저장된다는 뜻은 아닙니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--seed`"
+msgstr "`--seed`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`42`"
+msgstr "`42`"
+
+msgid ""
+"Controls seeded randomness for repeatable comparisons. A fixed seed does not guarantee identical "
+"results across GPU counts or software versions."
+msgstr "반복 비교를 위한 seeded randomness를 제어합니다. 고정 seed라도 GPU 수나 software 버전이 달라지면 동일 결과를 보장하지 않습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--save_checkpoint` / `--save_freq`"
+msgstr "`--save_checkpoint` / `--save_freq`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`true` / `5000`"
+msgstr "`true` / `5000`"
+
+msgid ""
+"Saves intermediate models for later comparison. Saving more often uses more storage; it does not "
+"add learning updates."
+msgstr "비교용 중간 model을 저장합니다. 자주 저장하면 storage를 더 쓰지만 learning update 수는 늘지 않습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--env_eval_freq` / `--eval_steps`"
+msgstr "`--env_eval_freq` / `--eval_steps`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`0` / `0`"
+msgstr "`0` / `0`"
+
+msgid ""
+"Disables periodic environment evaluation and held-out loss evaluation in this command. Training "
+"loss alone does not establish grasp or placement success; run the evaluation lessons separately."
+msgstr ""
+"이 명령에서 주기적 environment 평가와 held-out loss 평가를 끕니다. Training loss만으로 grasp나 placement 성공을 판단할 수 "
+"없으므로 별도로 평가 실습을 실행하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--log_freq` / `--wandb.enable`"
+msgstr "`--log_freq` / `--wandb.enable`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`10` / `true`"
+msgstr "`10` / `true`"
+
+msgid ""
+"Controls reporting cadence and experiment tracking. These make runs easier to compare; they do "
+"not change the training objective."
+msgstr "Report 주기와 experiment tracking을 정합니다. Run 비교를 돕지만 training objective는 바꾸지 않습니다."
+
+msgid "Suggested example"
+msgstr "권장 예시"
+
+msgid "What it controls"
+msgstr "제어 대상"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--policy.chunk_size`"
+msgstr "`--policy.chunk_size`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`16`"
+msgstr "`16`"
+
+msgid ""
+"Length of the future action target window used for training, within the base model's supported "
+"horizon. Changing the training window calls for a new training experiment."
+msgstr "Base model이 지원하는 horizon 안에서 미래 action target window의 길이를 정합니다. Window를 바꾸려면 새 학습 실험이 필요합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--policy.n_action_steps`"
+msgstr "`--policy.n_action_steps`"
+
+msgid "`16` in the base training example and all real rollouts"
+msgstr "기본 학습 예시와 모든 실제 rollout에서 `16`"
+
+msgid ""
+"Caps the action sequence returned by this LeRobot policy. It must not exceed `chunk_size`; the "
+"base checkpoint can impose a further limit."
+msgstr ""
+"LeRobot policy가 반환하는 action sequence 길이를 제한합니다. `chunk_size`를 넘을 수 없고 base checkpoint가 추가 제한을 둘 수"
+" 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`lerobot_eval --action_horizon`"
+msgstr "`lerobot_eval --action_horizon`"
+
+msgid ""
+"Number of returned actions the simulation server supplies to the client. The synchronous client "
+"drains its queue before requesting a fresh prediction. It cannot obtain more actions than the "
+"policy returns."
+msgstr ""
+"Simulation server가 client에 제공하는 반환 action 수입니다. Synchronous client는 queue를 비운 뒤 새 예측을 요청하며, "
+"policy 반환 수보다 많은 action을 받을 수 없습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--inference.type` / `--inference.rtc.enabled`"
+msgstr "`--inference.type` / `--inference.rtc.enabled`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`rtc` / `false`"
+msgstr "`rtc` / `false`"
+
+msgid ""
+"Uses the real rollout's background chunk-inference engine with RTC compensation disabled. "
+"Selecting this engine does not enable compensation by itself."
+msgstr ""
+"RTC compensation을 끈 채 실제 rollout의 background chunk-inference engine을 사용합니다. Engine 선택만으로 "
+"compensation이 켜지지는 않습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`--inference.rtc.execution_horizon` / `--inference.queue_threshold`"
+msgstr "`--inference.rtc.execution_horizon` / `--inference.queue_threshold`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`16` / `0`"
+msgstr "`16` / `0`"
+
+msgid ""
+"RTC overlap-prefix setting and queue refill trigger, matching the current real-rollout recipe. "
+"The RTC value does not set the number of actions executed; `policy.n_action_steps=16` sets the "
+"policy return limit. RTC compensation is disabled in this recipe."
+msgstr ""
+"현재 real-rollout recipe의 RTC overlap-prefix와 queue refill trigger 설정입니다. RTC 값은 실행 action 수를 정하지 "
+"않습니다. `policy.n_action_steps=16`이 policy 반환 길이를 정합니다. 이 recipe에서는 RTC compensation이 꺼져 있습니다."
+
+msgid ""
+"We won't have time to train during the workshop, so we'll use prepared checkpoints. These "
+"instructions are for trying post-training afterward."
+msgstr "Workshop 중에는 학습 시간이 부족하므로 준비된 checkpoint를 사용합니다. 이 안내는 이후 post-training을 직접 진행할 때 사용하세요."
+
+msgid "Training instructions for later"
+msgstr "추후 실습용 학습 안내"
+

@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Choose a strategy for the reality gap</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* Show the selected explanation without a term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition ul { margin: 0 0 12px; padding-left: 24px; font-size: 15px; line-height: 1.6; }
+.definition li { margin-bottom: 4px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+.diagram { overflow-x: auto; padding: 3px; }
+.diagram svg { min-width: 640px; }
+.diagram-label { fill: var(--diagram-text); font: 600 23px var(--diagram-font); }
+.diagram-small { fill: var(--diagram-muted); font: 18px var(--diagram-font); }
+.diagram-key { fill: var(--diagram-accent-text); font: 600 18px var(--diagram-font); }
+.art { fill: var(--diagram-surface); stroke: var(--diagram-line); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ink { fill: none; stroke: var(--diagram-text); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.signal { fill: none; stroke: var(--diagram-accent-text); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.flow { fill: none; stroke: var(--diagram-line); stroke-width: 2; marker-end: url(#arrow); }
+.return { stroke-dasharray: 7 5; }
+.purple { fill: color-mix(in srgb, #a16cda 13%, var(--diagram-bg)); stroke: #a16cda; stroke-width: 2; }
+.orange { fill: color-mix(in srgb, #e99040 18%, var(--diagram-bg)); stroke: #b06e2e; stroke-width: 2; }
+.stage { fill: var(--diagram-tint); stroke: var(--diagram-accent-text); stroke-width: 2; }
+@media(max-width: 660px) { .instructions::after { content: ' Swipe the diagram sideways to see the whole flow.'; } }
+
+</style>
+<link rel="stylesheet" href="diagram-layout.css">
+</head>
+<body>
+<main id="interactive-learning-diagram">
+<div class="layout">
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 548" role="group" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">Choose a strategy for the reality gap</title><desc id="diagram-desc">Sensing, actuation, physics and modeling can differ. Broaden policy experience or reduce measured mismatches, then compare outcomes.</desc><defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--diagram-line)" stroke-width="1.5"/></marker>
+<g id="arm"><path class="orange" d="M16 92H93V105H16Z M40 90 31 56 43 51 55 87Z M33 51 70 20 79 30 44 59Z M78 23 111 49 104 59 68 32Z"/><circle class="art" cx="40" cy="55" r="10"/><circle class="art" cx="74" cy="27" r="10"/><path class="ink" d="m108 53 17 1 10 17m-26-18 6 20 12 5"/></g>
+<g id="rack"><path class="orange" d="M10 20 104 8 139 39 45 56Z M10 20V70L45 100V56 M45 100 139 83V39"/><g fill="var(--diagram-bg)" stroke="#b06e2e" stroke-width="2"><ellipse cx="45" cy="27" rx="12" ry="7"/><ellipse cx="92" cy="21" rx="12" ry="7"/><ellipse cx="64" cy="43" rx="12" ry="7"/><ellipse cx="111" cy="36" rx="12" ry="7"/></g></g>
+<g id="vial"><path class="art" d="M12 13H43V70Q27 98 12 70Z"/><rect x="9" y="5" width="37" height="17" rx="4" fill="#4994c8" stroke="#276f9f" stroke-width="2"/></g>
+<g id="camera"><rect class="art" x="0" y="15" width="80" height="53" rx="8"/><path class="ink" d="M15 15 22 4H52L60 15"/><circle class="signal" cx="40" cy="40" r="17"/><circle class="signal" cx="40" cy="40" r="7"/></g>
+<g id="model"><path class="purple" d="M14 15H91V91H14Z"/><path class="ink" d="M26 5V15M44 5V15M62 5V15M80 5V15M26 91V101M44 91V101M62 91V101M80 91V101M4 29H14M4 51H14M4 73H14M91 29H101M91 51H101M91 73H101"/><path class="signal" d="M31 33 71 34 52 71 31 33 M31 33 73 70M71 34 73 70M52 71 73 70"/><g class="stage"><circle cx="31" cy="33" r="6"/><circle cx="71" cy="34" r="6"/><circle cx="52" cy="71" r="6"/><circle cx="73" cy="70" r="6"/></g></g>
+<g id="data"><path class="art" d="M5 17V91C5 111 100 111 100 91V17"/><ellipse class="stage" cx="52.5" cy="17" rx="47.5" ry="15"/><path class="signal" d="M5 45C5 65 100 65 100 45M5 70C5 90 100 90 100 70"/></g>
+<g id="film"><rect class="art" x="0" y="0" width="145" height="100" rx="8"/><path class="ink" d="M0 16H145M0 84H145M20 0V16M45 0V16M70 0V16M95 0V16M120 0V16M20 84V100M45 84V100M70 84V100M95 84V100M120 84V100"/><use href="#vial" transform="translate(20 22) scale(.6)"/><path class="signal" d="M75 37 95 50 75 63Z"/></g>
+<g id="chart"><path class="ink" d="M3 4V94H145"/><path class="signal" d="M8 50C20 10 32 10 44 50S68 90 80 50S104 10 116 50S134 90 143 50"/><path d="M8 65C20 30 32 30 44 65S68 100 80 65S104 30 116 65S134 100 143 65" fill="none" stroke="#a16cda" stroke-width="3" stroke-dasharray="6 4"/></g>
+</defs><use href="#arm" transform="translate(71 25) scale(0.9)"/><use href="#rack" transform="translate(214 70) scale(0.68)"/><text x="199" y="171" class="diagram-label" text-anchor="middle">Simulation</text><use href="#arm" transform="translate(627 25) scale(0.9)"/><use href="#rack" transform="translate(769 70) scale(0.68)"/><text x="755" y="171" class="diagram-label" text-anchor="middle">Real robot</text><path class="flow " d="M330 94H565"/><text x="450" y="60" class="diagram-key" text-anchor="middle">Same policy</text><text x="450" y="132" class="diagram-small" text-anchor="middle">Different observations</text><text x="450" y="157" class="diagram-small" text-anchor="middle">and motion</text><use href="#camera" transform="translate(64 211) scale(0.7)"/><text x="107" y="298" class="diagram-label" text-anchor="middle">Sensing</text><use href="#chart" transform="translate(271 211) scale(0.7)"/><text x="324" y="298" class="diagram-label" text-anchor="middle">Actuation</text><use href="#vial" transform="translate(539 213) scale(0.7)"/><text x="555" y="298" class="diagram-label" text-anchor="middle">Physics</text><use href="#arm" transform="translate(723 201) scale(0.7)"/><text x="771" y="298" class="diagram-label" text-anchor="middle">Modeling</text><path class="art" d="M40 336H860"/><path class="signal" d="M450 357V383H234V406M450 383H672V406"/><text x="231" y="437" class="diagram-label" text-anchor="middle">Handle more variation</text><text x="231" y="467" class="diagram-small" text-anchor="middle">DR · mixed data · corrections</text><text x="669" y="437" class="diagram-label" text-anchor="middle">Reduce the mismatch</text><text x="669" y="467" class="diagram-small" text-anchor="middle">Camera calibration · SysID</text><text x="450" y="523" class="diagram-small" text-anchor="middle">Use an observed failure to choose one controlled comparison.</text><a class="hotspot" data-term="sensing" href="#definition-sensing" tabindex="0" role="button" aria-label="Sensing gap" aria-controls="definition-sensing" aria-expanded="false"><rect class="hit-area" x="28" y="195" width="163" height="123" rx="12"/></a><a class="hotspot" data-term="actuation" href="#definition-actuation" tabindex="0" role="button" aria-label="Actuation gap" aria-controls="definition-actuation" aria-expanded="false"><rect class="hit-area" x="240" y="195" width="178" height="123" rx="12"/></a><a class="hotspot" data-term="physics" href="#definition-physics" tabindex="0" role="button" aria-label="Physics gap" aria-controls="definition-physics" aria-expanded="false"><rect class="hit-area" x="456" y="195" width="196" height="123" rx="12"/></a><a class="hotspot" data-term="modeling" href="#definition-modeling" tabindex="0" role="button" aria-label="Modeling gap" aria-controls="definition-modeling" aria-expanded="false"><rect class="hit-area" x="675" y="195" width="196" height="123" rx="12"/></a><a class="hotspot" data-term="overcome" href="#definition-overcome" tabindex="0" role="button" aria-label="Teach a policy to handle variation" aria-controls="definition-overcome" aria-expanded="false"><rect class="hit-area" x="34" y="404" width="393" height="83" rx="12"/></a><a class="hotspot" data-term="close" href="#definition-close" tabindex="0" role="button" aria-label="Reduce a measured mismatch" aria-controls="definition-close" aria-expanded="false"><rect class="hit-area" x="474" y="404" width="392" height="83" rx="12"/></a></svg></div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt">Select a step or object for its explanation.</p>
+<article class="definition" id="definition-sensing" data-definition="sensing" aria-labelledby="heading-sensing"><h2 id="heading-sensing">Sensing: what the policy sees</h2><p>Lighting, lens geometry, blur, and camera mounting change the observation. Similar-looking failures can have different causes.</p>
+<ul>
+  <li>Camera models lack real sensor noise, blur, and distortion</li>
+  <li>Depth sensors have idealized measurements without artifacts</li>
+  <li>Simulated lighting differs from real lighting conditions</li>
+</ul>
+<h3>In this workshop</h3><p>Compare the rack edge and gripper holes in the real and simulated wrist views before adjusting camera parameters.</p></article>
+<article class="definition" id="definition-actuation" data-definition="actuation" aria-labelledby="heading-actuation"><h2 id="heading-actuation">Actuation: how commands become motion</h2><p>Friction, backlash, actuator limits and timing affect how a joint follows its command. They can change with wear.</p>
+<ul>
+  <li>Motor models lack friction, backlash, and thermal effects</li>
+  <li>Joint dynamics are simplified</li>
+  <li>Control loop timing differs between simulation and hardware</li>
+</ul>
+<h3>In this workshop</h3><p>A commanded position reached in simulation may be approached more slowly on the physical arm. Compare measured motion before attributing that difference to the policy.</p></article>
+<article class="definition" id="definition-physics" data-definition="physics" aria-labelledby="heading-physics"><h2 id="heading-physics">Physics: how objects interact</h2><p>Contact and friction affect grasping and placement. A visually aligned scene can still respond differently when the gripper touches a vial.</p>
+<ul>
+  <li>Contact dynamics (friction, restitution) are approximations</li>
+  <li>Deformable objects can be challenging to simulate accurately, especially if they change over time</li>
+  <li>Fluid dynamics and granular materials are computationally expensive</li>
+</ul>
+<h3>In this workshop</h3><p>Watch whether the vial slips, catches on the rack, or moves after release. These observations tell you what to test next, but they don’t identify the cause on their own.</p></article>
+<article class="definition" id="definition-modeling" data-definition="modeling" aria-labelledby="heading-modeling"><h2 id="heading-modeling">Modeling: how the scene is built</h2><p>Link dimensions, joint frames and camera mounts determine the geometry of the simulated setup.</p>
+<ul>
+  <li>CAD models differ from as-built hardware</li>
+  <li>Mass and inertia properties are estimates</li>
+  <li>Joint reference frames and zero positions may differ from the calibrated robot</li>
+</ul>
+<h3>In this workshop</h3><p>The same joint angles can produce a different camera view if the joint reference frame or camera mount is wrong.</p></article>
+<article class="definition" id="definition-overcome" data-definition="overcome" aria-labelledby="heading-overcome"><h2 id="heading-overcome">Teach the policy to handle variation</h2><p>Broaden the useful examples the policy learns from. Domain randomization varies conditions; co-training adds real examples; HG-DAgger adds corrections at states the policy reaches. Cosmos supplies visual variants that still need review.</p><h3>In this workshop</h3><p>Choose new data around an observed failure, such as a grasp angle absent from the demonstrations.</p></article>
+<article class="definition" id="definition-close" data-definition="close" aria-labelledby="heading-close"><h2 id="heading-close">Reduce the measured mismatch</h2><p>Measure a specific difference and adjust the simulation model. Camera calibration addresses camera geometry; system identification addresses physical response.</p><h3>In this workshop</h3><p>Improved alignment or motion tracking is useful evidence, but test the resulting policy on the complete task too.</p></article>
+</section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+</body>
+</html>

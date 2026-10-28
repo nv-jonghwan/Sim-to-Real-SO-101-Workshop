@@ -1,0 +1,171 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Sim-to-Real Strategy 2: Co-Training With Real Data"
+msgstr "Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training"
+
+msgid "Simulated SO-101 and vial rack shown as a wireframe scene."
+msgstr "Wireframe scene으로 표현한 simulation의 SO-101과 vial rack입니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Simulation"
+msgstr "Simulation"
+
+msgid "Physical SO-101 holding a vial above the yellow rack."
+msgstr "실제 SO-101이 yellow rack 위에서 vial을 잡고 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Real robot"
+msgstr "Real robot"
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid "Lecture. No robot or running container required."
+msgstr "이론 수업입니다. Robot이나 실행 중인 container는 필요하지 않습니다."
+
+msgid "In this session, you'll learn how simulated and real demonstrations contribute to co-training."
+msgstr "Simulation과 실제 demonstration이 Co-Training에 어떻게 기여하는지 배웁니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "By the end of this session, you'll be able to:"
+msgstr "이 session을 마치면 다음을 수행할 수 있습니다."
+
+msgid "**Explain** co-training strategies for mixing sim and real data"
+msgstr "Simulation과 실제 data를 혼합하는 Co-Training 전략 **설명**"
+
+msgid "What Is Co-Training?"
+msgstr "Co-Training이란?"
+
+msgid "Co-training combines data from multiple sources—simulation and real-world—during policy training."
+msgstr "Co-Training은 policy 학습 중 simulation과 실제 환경 등 여러 source의 data를 결합하는 방식입니다."
+
+msgid ""
+"Review simulation and real demonstrations, check sampling exposure, post-train one policy, and "
+"evaluate each domain separately."
+msgstr ""
+"Simulation과 실제 demonstration을 검토하고 sampling 노출 비율을 확인한 뒤 하나의 policy를 post-train하고 각 domain을 별도로 "
+"평가합니다."
+
+msgid ""
+"Simulation and real demonstrations contribute complementary examples. The training sampler "
+"controls their exposure."
+msgstr "두 source는 상호 보완적인 예시를 제공하며, training sampler가 각 source를 얼마나 사용할지 결정합니다."
+
+msgid ""
+"The selected course checkpoint combines 10 real demonstrations with 75 simulated teleoperation "
+"demonstrations. You'll evaluate it in [Co-Training in Practice](13-cotraining-practice.md)."
+msgstr ""
+"이 과정의 checkpoint는 실제 demonstration 10개와 simulation teleoperation demonstration 75개를 결합합니다. [Co-"
+"Training in Practice](13-cotraining-practice.md)에서 평가합니다."
+
+msgid "You'll have a chance to experience policies trained with various mixes of data."
+msgstr "다양한 data 조합으로 학습한 policy를 경험할 수 있습니다."
+
+msgid "Physical demonstration"
+msgstr "실제 Demonstration"
+
+msgid "Physical demonstration of the task with teleoperation."
+msgstr "Teleoperation으로 수행한 실제 task demonstration입니다."
+
+#, python-format
+msgid ""
+"View a dataset of real-only demonstrations using the Hugging Face Dataset Visualizer "
+"[here](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fsreetz-"
+"nv%2Fso101_teleop_vials_rack_left_real_50%2Fepisode_0)."
+msgstr ""
+"Hugging Face Dataset Visualizer에서 real-only demonstration dataset을 "
+"[확인하세요](https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fsreetz-"
+"nv%2Fso101_teleop_vials_rack_left_real_50%2Fepisode_0)."
+
+msgid "The Data Challenge"
+msgstr "Data 확보의 과제"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Data Source"
+msgstr "Data Source"
+
+msgid "Quantity"
+msgstr "수량"
+
+msgid "Quality"
+msgstr "품질"
+
+msgid "Reality Match"
+msgstr "실제 환경과의 일치"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Simulation**"
+msgstr "**Simulation**"
+
+msgid "Abundant"
+msgstr "풍부함"
+
+msgid "Consistent"
+msgstr "일관됨"
+
+msgid "Approximate"
+msgstr "근사"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Real teleop**"
+msgstr "**Real teleop**"
+
+msgid "Limited"
+msgstr "제한적"
+
+msgid "Variable"
+msgstr "가변적"
+
+msgid "Exact"
+msgstr "정확함"
+
+msgid "Neither source alone is ideal:"
+msgstr "어느 source도 단독으로는 이상적이지 않습니다."
+
+msgid "**Sim-only**: Abundant but doesn't match real-world distribution"
+msgstr "**Sim-only**: 풍부하지만 실제 distribution과 다릅니다."
+
+msgid "**Real-only**: Matches reality but quantity is limited"
+msgstr "**Real-only**: 실제와 같지만 수량이 제한됩니다."
+
+msgid "**Co-training** leverages both."
+msgstr "**Co-Training**은 두 source를 함께 활용합니다."
+
+msgid ""
+"There isn't one co-training recipe that works for every task. The useful sim/real mix depends on "
+"data quality, coverage, and how closely simulation matches your setup. Test on your robot, then "
+"adjust the mix and collect examples around its failures."
+msgstr ""
+"모든 task에 맞는 하나의 recipe는 없습니다. 유용한 sim/real 조합은 data 품질, coverage, simulation과 실제 setup의 일치 정도에 달려"
+" 있습니다. 본인의 robot에서 시험하고 실패 양상에 맞춰 비율과 수집 예시를 조정하세요."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to [Co-Training in Practice](13-cotraining-practice.md) to watch example results and "
+"compare a co-trained policy with your sim-only baseline."
+msgstr ""
+"[Co-Training in Practice](13-cotraining-practice.md)에서 예시 결과를 보고 Co-Trained policy를 sim-only "
+"baseline과 비교하세요."
+

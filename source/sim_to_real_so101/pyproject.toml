@@ -5,19 +5,55 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sim_to_real_so101"
 version = "0.1.0"
-description = "How to Simulate, Train, Validate, and Deploy an End-to-End Robotics Workflow With NVIDIA Isaac - Workshop codebase"
+description = "Sim-to-Real SO-101 Workshop port to Isaac Lab develop (Kit-less, Newton physics)"
 authors = [
     { name="Lior Ben Horin", email="liorbenhorin@gmail.com" },
-    { name="Shane Reetz", email="sreetz@nvidia.com" },
-    { name="Maximilian Ofir", email="maxofir@nvidia.com" },
-    { name="Zhijin Li", email="zhijinl@nvidia.com" }
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
+
+dependencies = [
+    "grpcio>=1.60.0",
+    "protobuf>=4.25.0",
+    "ovstream>=0.3,<0.4",
+    "Pillow>=10",
+    "pynput>=1.7.8",
+    "lerobot[viz,feetech,dataset]==0.6.0",
+    # Pins reconciling lerobot 0.6.0 with the Isaac Lab env.
+    "transformers>=5.4,<5.6",
+    "numpy>=2.0,<2.3",
+    "torchcodec>=0.11.1,<0.12; platform_machine in 'x86_64 AMD64'",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "vulture",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+markers = [
+    "unit: isolated workshop logic without launching simulation",
+    "integration: workshop scene running in Newton with OVRtx cameras",
+]
+
+[tool.vulture]
+# Names that look unused but are required by an external interface signature
+# (callback contract or base-class override). Listed here instead of touched in
+# code so the original signatures match upstream verbatim.
+ignore_names = [
+    "event",         # PhysicsEvent callback signature (MODEL_INIT hooks)
+    "intrinsics",    # OVRTXRenderer.update_camera override — pose-only here
+]
 
 [project.scripts]
 list_envs = "sim_to_real_so101.scripts.list_envs:main"
 zero_agent = "sim_to_real_so101.scripts.zero_agent:main"
+vials_state_machine = "sim_to_real_so101.scripts.vials_state_machine:main"
 random_agent = "sim_to_real_so101.scripts.random_agent:main"
 lerobot_agent = "sim_to_real_so101.scripts.lerobot_agent:main"
 lerobot_eval = "sim_to_real_so101.scripts.lerobot_eval:main"
-lerobot_push_dataset = "sim_to_real_so101.scripts.lerobot_push_dataset:main"
+lerobot_dagger = "sim_to_real_so101.scripts.lerobot_dagger:main"
+lerobot-rollout = "sim_to_real_so101.scripts.lerobot_rollout:main"
+lerobot-rollout-dagger = "sim_to_real_so101.scripts.lerobot_rollout_dagger:main"

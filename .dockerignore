@@ -18,6 +18,10 @@ docker/cluster/exports/
 docker/.container.cfg
 # ignore recordings
 recordings/
+# ignore runtime-mounted directories
+datasets/
+outputs/
+models/
 # ignore __pycache__
 **/__pycache__/
 **/*.egg-info/

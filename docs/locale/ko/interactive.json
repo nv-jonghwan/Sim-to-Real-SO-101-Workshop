@@ -1,0 +1,2096 @@
+{
+  "version": 1,
+  "description": "Korean explanatory prose for raw HTML and interactive assets; preserve diagram labels, code and technical terms.",
+  "files": {
+    "_includes/groot-hyperparameters.html": [
+      {
+        "source": "Training: many examples, one weight update",
+        "translation": "Training: 여러 예시로 한 번의 weight update 수행",
+        "mode": "html"
+      },
+      {
+        "source": "Each sampled example pairs images, an instruction, and robot state with a future action window. The loss guides updates to the trainable weights.",
+        "translation": "Sampling한 각 예시는 이미지, instruction, robot state를 이후 action window와 짝짓습니다. Loss를 기반으로 학습 대상 weight를 갱신합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Image augmentation is optional",
+        "translation": "Image augmentation은 선택 사항",
+        "mode": "html"
+      },
+      {
+        "source": "Learn from noisy action targets",
+        "translation": "Noise가 포함된 action target으로 학습",
+        "mode": "html"
+      },
+      {
+        "source": "Repeat for 20,000 updates",
+        "translation": "20,000번 update 반복",
+        "mode": "html"
+      },
+      {
+        "source": "Next update: sample another batch → repeat the loop.",
+        "translation": "다음 update: 새 batch sampling → loop 반복",
+        "mode": "html"
+      },
+      {
+        "source": " windows per update ",
+        "translation": " windows / update ",
+        "mode": "html"
+      },
+      {
+        "source": " sampled windows over the run ",
+        "translation": " sampled windows를 전체 run에서 사용 ",
+        "mode": "html"
+      },
+      {
+        "source": "Windows can overlap and repeat. This is not a count of unique demonstrations or a prediction of training time. More GPUs at the same batch setting change data exposure, not just speed.",
+        "translation": "Window는 겹치거나 반복될 수 있습니다. 이 값은 고유 demonstration 수나 training 시간의 예측값이 아닙니다. 같은 batch 설정에서 GPU 수를 늘리면 속도뿐 아니라 학습에 사용되는 data의 양도 달라집니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Reset training example",
+        "translation": "Training 예시 초기화",
+        "mode": "html"
+      },
+      {
+        "source": "Inference: observe, predict, execute, observe again",
+        "translation": "Inference: 관찰 → 예측 → 실행 → 다시 관찰",
+        "mode": "html"
+      },
+      {
+        "source": "Assume the robot executes one action every 33 ms (30 Hz). Use fewer actions from each prediction, and it needs a new prediction more often. The control rate stays the same.",
+        "translation": "로봇이 33 ms마다(30 Hz) action 하나를 실행한다고 가정합니다. 각 예측에서 사용하는 action 수를 줄이면 새 예측이 더 자주 필요합니다. Control rate는 그대로 유지됩니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Keep the task instruction",
+        "translation": "Task instruction 유지",
+        "mode": "html"
+      },
+      {
+        "source": "Execute 16 actions",
+        "translation": "16 actions 실행",
+        "mode": "html"
+      },
+      {
+        "source": "Refill with a new prediction",
+        "translation": "새 예측으로 보충",
+        "mode": "html"
+      },
+      {
+        "source": "After the selected actions finish",
+        "translation": "선택한 action을 모두 실행한 뒤",
+        "mode": "html"
+      },
+      {
+        "source": "Same time span, same 32 actions <span>0 → 1.07 seconds at 30 Hz</span>",
+        "translation": "동일한 시간에 같은 32 actions 실행 <span>30 Hz에서 0 → 1.07초</span>",
+        "mode": "html"
+      },
+      {
+        "source": "▼ New prediction · Each cell is one executed action",
+        "translation": "▼ 새 prediction · 각 cell은 실행한 action 하나를 표시",
+        "mode": "html"
+      },
+      {
+        "source": " between predictions ",
+        "translation": " 간격으로 prediction 수행 ",
+        "mode": "html"
+      },
+      {
+        "source": "1.88 predictions per second. Using 8 actions doubles that to 3.75.",
+        "translation": "초당 1.88 predictions입니다. 8 actions를 사용하면 두 배인 3.75가 됩니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Timing illustration: assumes prediction is instantaneous and requests a new chunk when the previous actions finish. Actual inference delays can add pauses. Keep workshop rollout commands at 16 actions.",
+        "translation": "Timing 설명을 위한 예시입니다. 예측이 즉시 완료되고 이전 action을 모두 실행하면 새 chunk를 요청한다고 가정합니다. 실제 inference 지연으로 멈추는 구간이 생길 수 있습니다. Workshop rollout command는 16 actions로 유지하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "Reset inference example",
+        "translation": "Inference 예시 초기화",
+        "mode": "html"
+      },
+      {
+        "source": "The diagrams show the workshop defaults. Enable JavaScript to adjust the examples; the parameter tables above provide the same explanations without scripting.",
+        "translation": "Diagram은 workshop 기본값을 보여 줍니다. 예시를 조정하려면 JavaScript를 활성화하세요. 위 parameter 표에서도 같은 설명을 확인할 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Actions used per cycle: ",
+        "translation": "Cycle마다 사용할 action 수: ",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"32 actions at 30 Hz, with a prediction before actions 1 and 17\"",
+        "translation": "aria-label=\"30 Hz에서 32 actions 실행; action 1과 17 전에 prediction 수행\"",
+        "mode": "literal"
+      }
+    ],
+    "_includes/wrist-image-comparison-level.html": [
+      {
+        "source": "Toggle real / sim",
+        "translation": "Real / sim 전환",
+        "mode": "html"
+      },
+      {
+        "source": "Reset example",
+        "translation": "예시 초기화",
+        "mode": "html"
+      },
+      {
+        "source": "Real image on the left; simulation on the right. Both are 640 × 480.",
+        "translation": "왼쪽은 real 이미지, 오른쪽은 simulation입니다. 두 이미지 모두 640 × 480입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "This example shows perceptual differences between simulation and reality for our vial-to-rack task. <strong>What do you notice is different?</strong>",
+        "translation": "이 예시는 vial-to-rack task에서 simulation과 실제 환경 사이의 perceptual difference를 보여 줍니다. <strong>어떤 차이가 보이나요?</strong>",
+        "mode": "html"
+      },
+      {
+        "source": "Enable JavaScript for the opacity slider and local image selection. The two saved example images remain visible without it.",
+        "translation": "Opacity slider와 로컬 이미지 선택을 사용하려면 JavaScript를 활성화하세요. JavaScript 없이도 저장된 예시 이미지 두 장은 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Alternate pair: robot confirmed level",
+        "translation": "다른 이미지 쌍: 로봇의 수평 확인 완료",
+        "mode": "html"
+      }
+    ],
+    "_includes/wrist-image-comparison.html": [
+      {
+        "source": "Toggle real / sim",
+        "translation": "Real / sim 전환",
+        "mode": "html"
+      },
+      {
+        "source": "Reset example",
+        "translation": "예시 초기화",
+        "mode": "html"
+      },
+      {
+        "source": "Real image on the left; simulation on the right. Both are 640 × 480.",
+        "translation": "왼쪽은 real 이미지, 오른쪽은 simulation입니다. 두 이미지 모두 640 × 480입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "This example shows perceptual differences between simulation and reality for our vial-to-rack task. <strong>What do you notice is different?</strong>",
+        "translation": "이 예시는 vial-to-rack task에서 simulation과 실제 환경 사이의 perceptual difference를 보여 줍니다. <strong>어떤 차이가 보이나요?</strong>",
+        "mode": "html"
+      },
+      {
+        "source": "Enable JavaScript for the opacity slider and local image selection. The two saved example images remain visible without it.",
+        "translation": "Opacity slider와 로컬 이미지 선택을 사용하려면 JavaScript를 활성화하세요. JavaScript 없이도 저장된 예시 이미지 두 장은 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Saved wrist images: real and simulated",
+        "translation": "저장된 wrist 이미지: real과 simulation",
+        "mode": "html"
+      }
+    ],
+    "_static/groot-hyperparameters.js": [
+      {
+        "source": "`Repeat for ${format(steps)} updates`",
+        "translation": "`${format(steps)}번 update 반복`",
+        "mode": "literal"
+      },
+      {
+        "source": "`Execute ${horizon} action${horizon === 1 ? \"\" : \"s\"}`",
+        "translation": "`${horizon} action${horizon === 1 ? \"\" : \"s\"} 실행`",
+        "mode": "literal"
+      },
+      {
+        "source": "`${(30 / horizon).toFixed(2)} predictions per second. The robot still executes 30 actions per second.`",
+        "translation": "`초당 ${(30 / horizon).toFixed(2)} predictions입니다. 로봇은 계속 초당 30 actions를 실행합니다.`",
+        "mode": "literal"
+      },
+      {
+        "source": "`32 actions at 30 Hz. New prediction every ${horizon} actions, or ${coverage} milliseconds; ${(30/horizon).toFixed(2)} predictions per second.`",
+        "translation": "`30 Hz에서 32 actions를 실행합니다. ${horizon} actions마다, 즉 ${coverage} ms마다 새 prediction을 수행하며, 초당 ${(30 / horizon).toFixed(2)} predictions입니다.`",
+        "mode": "literal"
+      },
+      {
+        "source": "`Action ${index+1} at ${(index/30).toFixed(2)} s${start ? \": new prediction\" : \"\"}`",
+        "translation": "`Action ${index + 1}: ${(index / 30).toFixed(2)} s${start ? \": 새 prediction\" : \"\"}`",
+        "mode": "literal"
+      }
+    ],
+    "_static/image-comparison.js": [
+      {
+        "source": "\"An image is unavailable. Load two saved images to compare.\"",
+        "translation": "\"이미지를 불러올 수 없습니다. 비교할 이미지 두 장을 불러오세요.\"",
+        "mode": "literal"
+      },
+      {
+        "source": "\"Overlay: real underneath, simulation on top\"",
+        "translation": "\"Overlay: 아래는 real, 위는 simulation\"",
+        "mode": "literal"
+      },
+      {
+        "source": "\"Real left; simulation right\"",
+        "translation": "\"왼쪽은 real, 오른쪽은 simulation\"",
+        "mode": "literal"
+      },
+      {
+        "source": "\"Real only\"",
+        "translation": "\"Real만 표시\"",
+        "mode": "literal"
+      },
+      {
+        "source": "\"Simulation only\"",
+        "translation": "\"Simulation만 표시\"",
+        "mode": "literal"
+      },
+      {
+        "source": "\" Overlay disabled: use images with matching pixel dimensions; do not stretch them to align.\"",
+        "translation": "\" Overlay를 사용할 수 없습니다. Pixel 크기가 같은 이미지를 사용하세요. 정렬을 위해 이미지를 늘리지 마세요.\"",
+        "mode": "literal"
+      },
+      {
+        "source": "`Selected ${name} image: ${file.name}`",
+        "translation": "`선택한 ${name} 이미지: ${file.name}`",
+        "mode": "literal"
+      },
+      {
+        "source": "`Could not read the selected ${name} image. Choose a PNG, JPEG, or WebP file.`",
+        "translation": "`선택한 ${name} 이미지를 읽을 수 없습니다. PNG, JPEG 또는 WebP 파일을 선택하세요.`",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/agent-policy-loop.html": [
+      {
+        "source": "Each control cycle the simulation pauses, the harness builds a prompt from the current observation, a demonstration, and the previous decision, the agent returns joint targets, the adapter validates and converts them, and the robot executes a short chunk before observing again.",
+        "translation": "각 control cycle에서 simulation을 일시 정지합니다. Harness가 현재 observation, demonstration, 이전 decision으로 prompt를 구성하면 agent가 joint target을 반환합니다. Adapter가 이를 검증하고 변환한 뒤, 로봇이 짧은 chunk를 실행하고 다시 관찰합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "At each decision the simulation stops and the harness reads the current scene: the external and wrist camera images and the six joint values (five arm angles plus the gripper). These are the same inputs a recorded SO-101 episode contains.",
+        "translation": "매 decision마다 simulation을 멈추고 harness가 현재 scene을 읽습니다. 입력은 external·wrist camera 이미지와 6개의 joint 값(arm 각도 5개와 gripper)입니다. 기록된 SO-101 episode에도 같은 입력이 포함됩니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The agent works from camera images and joints alone. The evaluator's success or timeout result is never one of its inputs.",
+        "translation": "Agent는 camera 이미지와 joint 값만 사용합니다. Evaluator의 성공 또는 timeout 결과는 agent 입력에 포함되지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The harness packs three things next to the current observation. The first is the task text, \"Pick up the vial and place it in the rack\". The second is a recorded demonstration with its camera frames, joints, and example action targets. The third is the previous decision: the observation the agent saw last time, the actions or waypoints it chose, and a short plan note.",
+        "translation": "Harness는 현재 observation과 함께 세 가지 정보를 넣습니다. 첫째는 task 문구인 \"Pick up the vial and place it in the rack\"입니다. 둘째는 camera frame, joint 값, action target 예시를 포함한 demonstration 기록입니다. 셋째는 이전 decision으로, agent가 직전에 본 observation, 선택한 action이나 waypoint, 짧은 계획 메모입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The demonstration is how we hand the agent an example of the motion we want. It arrives in the prompt rather than through training.",
+        "translation": "Demonstration으로 agent에게 원하는 동작의 예시를 전달합니다. 이 예시는 training이 아니라 prompt를 통해 제공됩니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The prompt goes to a remote model service as a single request. The simulator stays paused until the answer comes back, so slow inference never turns into extra motion in the scene. Only the model runs remotely. The simulator, the harness, and the evaluator stay on the local machine.",
+        "translation": "Prompt는 하나의 request로 원격 model service에 전달됩니다. 응답이 올 때까지 simulator를 일시 정지하므로 inference가 느려져도 scene에서 추가 동작이 발생하지 않습니다. 원격에서 실행하는 것은 model뿐이며, simulator, harness, evaluator는 로컬에서 실행합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The agent replies with absolute joint targets, either as a dense list or as waypoints.",
+        "translation": "Agent는 absolute joint target을 촘촘한 목록 또는 waypoint 형태로 반환합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Before anything moves, the local runtime parses the reply and validates it. The action adapter then interpolates the targets and converts them into simulator units.",
+        "translation": "로봇이 움직이기 전에 로컬 runtime이 응답을 parsing하고 검증합니다. 이후 action adapter가 target을 보간하고 simulator 단위로 변환합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The result is one joint target for each control step of the simulation.",
+        "translation": "그 결과 simulation의 각 control step에 해당하는 joint target이 하나씩 만들어집니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The robot follows up to H of those targets before the harness observes again. The chunk length is a setting you choose. Wall-clock time per decision is set by inference, which can take several seconds, and the simulation waits for it. A shorter chunk corrects course more often but pays for more inference. A longer chunk spends more of each wait on motion.",
+        "translation": "로봇이 target을 최대 H개 실행한 뒤 harness가 다시 관찰합니다. Chunk 길이는 사용자가 설정합니다. 각 decision의 실제 소요 시간은 수 초가 걸릴 수 있는 inference에 따라 결정되며, simulation은 그동안 기다립니다. Chunk가 짧으면 더 자주 동작을 수정할 수 있지만 inference 횟수가 늘어납니다. Chunk가 길면 한 번 기다린 뒤 더 많은 동작을 실행합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A native evaluator checks for success or timeout and records the outcome to the logs. Its result is never shown to the policy.",
+        "translation": "Native evaluator가 성공 또는 timeout을 확인하고 결과를 log에 기록합니다. 이 결과는 policy에 전달하지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/cosmos-video-transfer.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A source video, prompt and structural guidance produce a candidate clip. Compare it with the original state, action and timing before accepting.",
+        "translation": "Source video, prompt, structural guidance로 후보 clip을 생성합니다. 채택하기 전에 원본의 state, action, timing과 비교합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The source clip shows the robot, objects and motion whose visual appearance you want to vary.",
+        "translation": "Source clip에는 외관을 바꾸려는 로봇, 객체, 동작이 담겨 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "In this workshop",
+        "translation": "이 workshop에서의 적용",
+        "mode": "html"
+      },
+      {
+        "source": "Choose a clip where you can inspect the grasp and placement in the original video.",
+        "translation": "원본 video에서 grasp와 placement를 확인할 수 있는 clip을 선택합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../14-strategy3-cosmos.html#discussion-assess-video-augmentation\" target=\"_top\">Review the augmentation examples</a>",
+        "translation": "<a href=\"../../14-strategy3-cosmos.html#discussion-assess-video-augmentation\" target=\"_top\">Augmentation 예시 살펴보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "The prompt requests a variation. It does not guarantee that only the requested property will change.",
+        "translation": "Prompt는 원하는 변화를 요청합니다. 요청한 속성만 바뀐다는 보장은 없습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Try different lighting while retaining the same robot task. Inspect whether the rack or vial changed too.",
+        "translation": "같은 로봇 task를 유지하면서 lighting을 바꿔 봅니다. Rack이나 vial도 함께 바뀌었는지 확인합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../14-strategy3-cosmos.html#how-cosmos-works\" target=\"_top\">See the video augmentation workflow</a>",
+        "translation": "<a href=\"../../14-strategy3-cosmos.html#how-cosmos-works\" target=\"_top\">Video augmentation 과정 보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Control signals such as edges, depth or segmentation help guide generation. They do not guarantee identical geometry or contact timing.",
+        "translation": "Edge, depth, segmentation 등의 control signal은 생성을 유도합니다. Geometry나 contact timing이 완전히 같게 유지된다는 보장은 없습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "An edge-control video can retain some outlines while the generated clip still changes a grasp.",
+        "translation": "Edge-control video가 일부 윤곽을 유지하더라도 생성된 clip에서 grasp가 달라질 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../14-strategy3-cosmos.html#how-cosmos-works\" target=\"_top\">Explore structural guidance</a>",
+        "translation": "<a href=\"../../14-strategy3-cosmos.html#how-cosmos-works\" target=\"_top\">Structural guidance 살펴보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "This application of Cosmos 3 produces a visual variation for review. GR00T 1.7 remains the policy that predicts robot actions in this workshop.",
+        "translation": "여기서는 Cosmos 3로 검토할 시각적 변형을 생성합니다. 이 workshop에서 로봇 action을 예측하는 policy는 계속 GR00T 1.7입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The instructor demonstrates generation in a separate environment; it is not a step in the robot’s live control loop.",
+        "translation": "강사는 별도 환경에서 생성을 시연합니다. 로봇의 실시간 control loop에 포함되는 단계는 아닙니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../14-strategy3-cosmos.html#what-is-cosmos\" target=\"_top\">Learn about Cosmos</a>",
+        "translation": "<a href=\"../../14-strategy3-cosmos.html#what-is-cosmos\" target=\"_top\">Cosmos 알아보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Compare arm geometry, vial motion, contact and timing against the source. Carry the original state/action sequences and timestamps only when the generated camera views remain consistent with them.",
+        "translation": "Arm geometry, vial 동작, contact, timing을 source와 비교합니다. 생성된 camera view가 원본과 일관될 때만 원본 state/action sequence와 timestamp를 함께 사용합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Reject a clip that moves the vial or changes the grasp while keeping the old action labels. Any accepted training mix still needs policy evaluation.",
+        "translation": "기존 action label을 유지하면서 vial 위치나 grasp를 바꾼 clip은 제외합니다. 검토를 통과한 data 조합도 policy evaluation이 필요합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../14-strategy3-cosmos.html#what-to-look-for-in-augmented-data\" target=\"_top\">Review generated data</a>",
+        "translation": "<a href=\"../../14-strategy3-cosmos.html#what-to-look-for-in-augmented-data\" target=\"_top\">생성된 data 검토하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      },
+      {
+        "source": "content: ' Swipe the diagram sideways to see the whole flow.'",
+        "translation": "content: ' Diagram을 좌우로 밀어 전체 흐름을 확인하세요.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/cotraining.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Simulation and real demonstrations are reviewed, sampled into training windows, used to adapt one policy, and evaluated separately in simulation and reality.",
+        "translation": "Simulation과 real demonstration을 검토하고 training window로 sampling하여 하나의 policy를 조정한 뒤, simulation과 실제 환경에서 각각 평가합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Simulation makes repeated collection and controlled variation easier. Real demonstrations show the cameras and robot response at a deployment station. Check the task instruction, episode starts, purposeful motion, and successful outcomes in both collections. Each source has limits; neither guarantees coverage of every future condition.",
+        "translation": "Simulation에서는 반복 수집과 통제된 조건 변경이 쉽습니다. Real demonstration은 실제 운용 장소의 camera view와 로봇 응답을 보여 줍니다. 두 data 모두 task instruction, episode 시작 상태, 목적에 맞는 동작, 성공 여부를 확인합니다. 각 source에는 한계가 있으며, 어느 쪽도 앞으로 마주칠 모든 조건을 다룬다고 보장하지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../13-strategy2-cotraining.html#the-data-challenge\" target=\"_top\">Compare the two data sources</a>",
+        "translation": "<a href=\"../../13-strategy2-cotraining.html#the-data-challenge\" target=\"_top\">두 data source 비교하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Training samples individual frames or short windows, not whole episodes, so each data source’s share depends on how many frames it contributes. Longer episodes contribute more samples. Setting an exact ratio between sources requires a sampler that supports source weights, and repeating real samples doesn’t add new real-world variety.",
+        "translation": "Training에서는 episode 전체가 아니라 개별 frame이나 짧은 window를 sampling하므로, 각 data source의 비중은 제공하는 frame 수에 따라 달라집니다. 긴 episode일수록 더 많은 sample을 제공합니다. Source 사이의 비율을 정확히 설정하려면 source weight를 지원하는 sampler가 필요합니다. Real sample을 반복 사용해도 실제 환경의 다양성이 늘어나지는 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#adding-real-data-control-the-sampling-ratio\" target=\"_top\">Understand source sampling</a>",
+        "translation": "<a href=\"../../10-groot.html#adding-real-data-control-the-sampling-ratio\" target=\"_top\">Source sampling 이해하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "One GR00T 1.7 policy learns from both sources. Match joint order, units, action convention, gripper calibration, camera geometry and names, frame rate, and instruction. Keep the original datasets and their revisions traceable. The workshop provides a prepared co-trained checkpoint; the optional training workflow is a separate activity.",
+        "translation": "하나의 GR00T 1.7 policy가 두 source에서 학습합니다. Joint 순서, 단위, action 표현 규칙, gripper calibration, camera geometry와 이름, frame rate, instruction을 맞춰야 합니다. 원본 dataset과 revision을 추적할 수 있도록 유지합니다. Workshop에서는 준비된 Co-Training checkpoint를 제공하며, 선택 사항인 training workflow는 별도 활동입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../13-cotraining-practice.html#optional-collecting-real-demonstrations-with-lerobot\" target=\"_top\">Review dataset compatibility</a>",
+        "translation": "<a href=\"../../13-cotraining-practice.html#optional-collecting-real-demonstrations-with-lerobot\" target=\"_top\">Dataset 호환성 검토하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Compare the co-trained checkpoint with the simulation-only baseline under matched evaluation conditions. Record simulation outcomes separately from autonomous physical trials. Match the actual training-data starting distribution, including any continuation data, and verify the achieved pose under supervision. Improvement from co-training is something to measure.",
+        "translation": "같은 evaluation 조건에서 Co-Training checkpoint를 simulation-only baseline과 비교합니다. Simulation 결과와 자율 physical trial 결과는 따로 기록합니다. Continuation data를 포함한 실제 training data의 시작 상태 분포에 맞추고, 감독하에 로봇이 실제로 도달한 pose를 확인합니다. Co-Training의 개선 효과는 측정으로 확인해야 합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../13-cotraining-practice.html#run-and-compare\" target=\"_top\">Compare the prepared policies</a>",
+        "translation": "<a href=\"../../13-cotraining-practice.html#run-and-compare\" target=\"_top\">준비된 policy 비교하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/domain-randomization.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Four steps connect varied simulation conditions to recorded demonstrations, GR00T post-training, and separate simulation and real evaluation.",
+        "translation": "다양한 simulation 조건에서 demonstration을 기록하고, GR00T post-training을 거쳐, simulation과 실제 환경에서 각각 평가하는 네 단계를 보여 줍니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Choose conditions that may vary in deployment, such as vial placement or lighting. A reset samples new conditions within the configured ranges. Wider ranges can create implausible scenes or make collection harder; inspect both camera views and keep the task feasible.",
+        "translation": "실제 운용 시 달라질 수 있는 vial 배치나 lighting 등의 조건을 선택합니다. Reset할 때 설정 범위 안에서 새 조건을 sampling합니다. 범위를 지나치게 넓히면 비현실적인 scene이 생기거나 data 수집이 어려워질 수 있습니다. 두 camera view를 모두 확인하고 task를 수행할 수 있는 조건을 유지합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-domain-randomization.html#code-tour-domain-randomization-implementation\" target=\"_top\">Inspect the enabled reset parameters</a>",
+        "translation": "<a href=\"../../10-domain-randomization.html#code-tour-domain-randomization-implementation\" target=\"_top\">활성화된 reset parameter 확인하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Collect successful demonstrations across those resets. The recorded images, joint states, and actions become learning examples. A visual change reaches training only when it appears in the data or a training-time transform. Saving a take does not reset the scene; the lesson uses R for a fresh setup.",
+        "translation": "여러 reset 조건에서 성공적인 demonstration을 수집합니다. 기록된 이미지, joint state, action이 학습 예시가 됩니다. 시각적 변화가 training에 반영되려면 수집 data 또는 training 시 적용하는 transform에 포함되어야 합니다. Take를 저장해도 scene은 reset되지 않습니다. 이 과정에서는 R로 새 scene을 구성합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../08-simulation-teleoperation.html#record-demonstrations\" target=\"_top\">Collect and review demonstrations</a>",
+        "translation": "<a href=\"../../08-simulation-teleoperation.html#record-demonstrations\" target=\"_top\">Demonstration 수집 및 검토하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Post-training adapts GR00T 1.7 using windows from the reviewed demonstrations. Simulation randomization changes the environment in which examples are collected. Image transforms vary training images but do not create new motion demonstrations. More repeated examples cannot supply a missing approach or recovery.",
+        "translation": "Post-training은 검토한 demonstration의 window를 사용해 GR00T 1.7을 조정합니다. Simulation randomization은 예시를 수집하는 환경을 바꿉니다. Image transform은 training 이미지를 다양하게 만들지만 새로운 동작 demonstration을 생성하지는 않습니다. 같은 예시를 더 많이 반복해도 누락된 approach나 recovery를 보완할 수는 없습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#suggested-training-hyperparameters\" target=\"_top\">Connect the data to post-training</a>",
+        "translation": "<a href=\"../../10-groot.html#suggested-training-hyperparameters\" target=\"_top\">Data와 post-training 연결하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Compare policies under documented evaluation conditions. Keep the checkpoint, instruction, action horizon, and relevant starting conditions traceable. A stronger simulation score does not establish real-robot success. Verify the intended and achieved start against the actual training data before a supervised physical rollout.",
+        "translation": "문서화한 evaluation 조건에서 policy를 비교합니다. Checkpoint, instruction, action horizon, 관련 시작 조건을 추적할 수 있도록 기록합니다. Simulation 점수가 높아졌다는 사실만으로 실제 로봇에서의 성공을 입증할 수는 없습니다. 감독하에 physical rollout을 실행하기 전에 목표 시작 상태와 실제 도달 상태를 training data와 대조합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../11-sim-evaluation.html#watch-and-record-results\" target=\"_top\">Record evaluation outcomes</a>",
+        "translation": "<a href=\"../../11-sim-evaluation.html#watch-and-record-results\" target=\"_top\">Evaluation 결과 기록하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/gr00t-observation-action.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Swipe across the diagram to follow the arrows; select a labeled object for its explanation.",
+        "translation": "Diagram을 좌우로 밀어 화살표 흐름을 따라가고, 이름이 표시된 객체를 선택해 설명을 확인하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "Images and language enter the vision-language backbone, or System 2. Its features and current joint state condition the action head, or System 1. A controller applies the returned actions, then new images and state close the feedback loop. Select each labeled object for details.",
+        "translation": "이미지와 language는 System 2인 vision-language backbone으로 들어갑니다. 여기서 얻은 feature와 현재 joint state가 System 1인 action head의 조건이 됩니다. Controller가 반환된 action을 적용하면 새 이미지와 state가 feedback loop를 완성합니다. 각 항목을 선택해 자세한 내용을 확인하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "Input · Wrist and external RGB images",
+        "translation": "입력 · Wrist 및 external RGB 이미지",
+        "mode": "html"
+      },
+      {
+        "source": "The two views provide complementary evidence about the vial, rack, and gripper. The wrist view changes with the arm, so a different starting pose also changes what the policy sees.",
+        "translation": "두 view는 vial, rack, gripper에 대해 상호 보완적인 정보를 제공합니다. Wrist view는 arm과 함께 변하므로, 시작 pose가 달라지면 policy가 보는 장면도 달라집니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Example",
+        "translation": "예시",
+        "mode": "html"
+      },
+      {
+        "source": "A vial visible in the external image may become partly hidden by the gripper in the wrist image. Keep camera keys and preprocessing compatible with the checkpoint.",
+        "translation": "External 이미지에서 보이는 vial이 wrist 이미지에서는 gripper에 일부 가려질 수 있습니다. Camera key와 preprocessing을 checkpoint와 호환되게 유지합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#architecture-overview\" target=\"_top\">Read the architecture overview →</a>",
+        "translation": "<a href=\"../../10-groot.html#architecture-overview\" target=\"_top\">Architecture 개요 읽기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Input · Instruction text",
+        "translation": "입력 · Instruction 문구",
+        "mode": "html"
+      },
+      {
+        "source": "The task instruction conditions the learned behavior alongside images and state. A language-conditioned model still needs suitable training coverage for the requested robot behavior.",
+        "translation": "Task instruction은 이미지, state와 함께 학습된 동작의 조건이 됩니다. Language-conditioned model도 요청된 로봇 동작을 충분히 다루는 training data가 필요합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "“Pick up the vial and place it in the rack” describes the goal; it does not supply a hand-written sequence of joint angles.",
+        "translation": "“Pick up the vial and place it in the rack”은 목표를 설명하며, 사람이 작성한 joint angle sequence를 제공하는 것은 아닙니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#what-is-a-vision-language-action-model\" target=\"_top\">Read the VLA definition →</a>",
+        "translation": "<a href=\"../../10-groot.html#what-is-a-vision-language-action-model\" target=\"_top\">VLA 정의 읽기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Cosmos-Reason2-2B supplies the vision-language features used by the action head. “System 2” is a conceptual label for this perception and reasoning role, not a separate planner you program in this workshop.",
+        "translation": "Cosmos-Reason2-2B는 action head가 사용하는 vision-language feature를 제공합니다. “System 2”는 이 perception과 reasoning 역할을 나타내는 개념적 명칭입니다. 이 workshop에서 별도로 프로그래밍하는 planner를 뜻하지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Visual features representing the vial and rack are conditioned on the placement instruction before action generation. The diagram does not imply a human-readable plan is returned.",
+        "translation": "Vial과 rack을 나타내는 visual feature는 action 생성 전에 placement instruction의 영향을 받습니다. 이 diagram은 사람이 읽을 수 있는 계획이 반환된다는 뜻이 아닙니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The action head uses vision-language features and robot state to generate a sequence of joint commands. The saved processors convert the model representation into commands compatible with the robot.",
+        "translation": "Action head는 vision-language feature와 robot state를 사용하여 joint command sequence를 생성합니다. 저장된 processor가 model 표현을 로봇과 호환되는 command로 변환합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The workshop uses relative arm targets with an absolute gripper target. Use the documented 16-action rollout setting and the checkpoint’s matching processors.",
+        "translation": "이 workshop에서는 arm에 relative target, gripper에 absolute target을 사용합니다. 문서에 지정된 16-action rollout 설정과 checkpoint에 맞는 processor를 사용하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#action-space-and-control\" target=\"_top\">Explore action representations →</a>",
+        "translation": "<a href=\"../../10-groot.html#action-space-and-control\" target=\"_top\">Action 표현 방식 살펴보기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Inference · Fixed weights, changing observations",
+        "translation": "Inference · Weight는 고정하고 observation은 갱신",
+        "mode": "html"
+      },
+      {
+        "source": "The rollout controller applies returned actions and obtains fresh observations for later predictions. Feedback changes the model’s inputs; ordinary inference does not update its weights.",
+        "translation": "Rollout controller는 반환된 action을 적용하고 다음 예측을 위한 새 observation을 얻습니다. Feedback은 model의 입력을 바꾸며, 일반적인 inference에서는 weight를 갱신하지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "At the nominal 30 Hz rate, 16 actions span about 0.53 seconds of command time, excluding inference and network delay. Verify that the achieved starting pose matches the actual training data before comparing policies.",
+        "translation": "명목상 30 Hz에서 16개 action의 command 실행 시간은 약 0.53초이며, inference와 network 지연은 제외한 값입니다. Policy를 비교하기 전에 실제 도달한 시작 pose가 training data와 맞는지 확인합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#prediction-and-execution-lengths\" target=\"_top\">Compare prediction and execution lengths →</a>",
+        "translation": "<a href=\"../../10-groot.html#prediction-and-execution-lengths\" target=\"_top\">예측 길이와 실행 길이 비교하기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Input · Current joint positions",
+        "translation": "입력 · 현재 joint position",
+        "mode": "html"
+      },
+      {
+        "source": "Robot state conditions the action head together with the visual-language features. Joint order, units, calibration, and processor settings must agree between data collection and rollout.",
+        "translation": "Robot state는 vision-language feature와 함께 action head의 조건이 됩니다. Data 수집과 rollout에서 joint 순서, 단위, calibration, processor 설정이 일치해야 합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A relative arm target is interpreted from the observed pose. Relative actions do not make an unseen starting pose equivalent to one covered by the training data.",
+        "translation": "Relative arm target은 관찰된 pose를 기준으로 해석됩니다. Relative action을 사용한다고 해서 학습에서 보지 못한 시작 pose가 training data에 포함된 pose와 동등해지는 것은 아닙니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#action-representations\" target=\"_top\">Read the action representation contract →</a>",
+        "translation": "<a href=\"../../10-groot.html#action-representations\" target=\"_top\">Action 표현 규칙 읽기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/gr00t-training-stages.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Swipe across the diagram to follow the arrows; select a labeled object for its explanation.",
+        "translation": "Diagram을 좌우로 밀어 화살표 흐름을 따라가고, 이름이 표시된 객체를 선택해 설명을 확인하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "Example",
+        "translation": "예시",
+        "mode": "html"
+      },
+      {
+        "source": "Pretrained weights initialize post-training. SO-101 demonstrations supply targets; loss and an optimizer update the selected trainable components. Vision and language are frozen in the base example; vision can optionally be unfrozen. Inference uses the resulting checkpoint with fixed weights.",
+        "translation": "Pretrained weight로 post-training을 시작합니다. SO-101 demonstration이 target을 제공하고, loss와 optimizer를 통해 선택된 학습 대상 component를 갱신합니다. 기본 예시에서는 vision과 language를 freeze하며, 선택적으로 vision을 unfreeze할 수 있습니다. Inference는 완성된 checkpoint의 weight를 고정한 상태로 사용합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Stage 1 · Broad reusable representations",
+        "translation": "Stage 1 · 폭넓게 재사용할 수 있는 representation",
+        "mode": "html"
+      },
+      {
+        "source": "Pre-training establishes representations that later robot adaptation can reuse. Broad visual and language data and robot experience play different roles; the diagram does not specify dataset proportions or a universal training order.",
+        "translation": "Pre-training은 이후 로봇 적응에 재사용할 수 있는 representation을 형성합니다. 폭넓은 visual·language data와 로봇 경험은 서로 다른 역할을 합니다. 이 diagram은 dataset 비율이나 모든 경우에 적용되는 training 순서를 지정하지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Instead of learning everything from SO-101 demonstrations, the workshop starts from GR00T 1.7 and adapts it to this arm, camera setup, and vial-placement task.",
+        "translation": "이 workshop은 SO-101 demonstration만으로 모든 것을 학습하는 대신, GR00T 1.7에서 시작하여 이 arm, camera 구성, vial placement task에 맞게 조정합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#understanding-vla-training-stages\" target=\"_top\">Read the training-stage definitions →</a>",
+        "translation": "<a href=\"../../10-groot.html#understanding-vla-training-stages\" target=\"_top\">Training 단계별 정의 읽기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Stage 2 · Post-training configuration",
+        "translation": "Stage 2 · Post-training 설정",
+        "mode": "html"
+      },
+      {
+        "source": "Frozen components still compute features, but the optimizer does not update their parameters. The base workshop example keeps vision and language frozen while training the action components. This drawing groups components conceptually; the saved configuration records the precise trainable set.",
+        "translation": "Freeze된 component도 feature를 계산하지만 optimizer는 해당 parameter를 갱신하지 않습니다. 기본 workshop 예시에서는 vision과 language를 freeze하고 action component를 학습합니다. 그림은 component를 개념적으로 묶어 보여 주며, 정확한 학습 대상은 저장된 설정에 기록됩니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The base command uses <code>--policy.tune_visual=false</code> and <code>--policy.tune_llm=false</code>. Those choices affect training, not which inputs are available at inference.",
+        "translation": "기본 command는 <code>--policy.tune_visual=false</code>와 <code>--policy.tune_llm=false</code>를 사용합니다. 이 설정은 training에 영향을 주며, inference에서 사용 가능한 입력을 바꾸지는 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#suggested-training-hyperparameters\" target=\"_top\">Inspect the training settings →</a>",
+        "translation": "<a href=\"../../10-groot.html#suggested-training-hyperparameters\" target=\"_top\">Training 설정 확인하기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Stage 3 · New observations, no optimizer updates",
+        "translation": "Stage 3 · 새 observation을 사용하되 optimizer update는 수행하지 않음",
+        "mode": "html"
+      },
+      {
+        "source": "Inference takes fresh images, instruction text, and robot state and predicts actions using the saved checkpoint and processors. Feedback changes the next observation, not the checkpoint weights.",
+        "translation": "Inference는 새 이미지, instruction 문구, robot state를 받아 저장된 checkpoint와 processor로 action을 예측합니다. Feedback은 다음 observation을 바꾸며 checkpoint weight를 바꾸지는 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A rollout can observe a different vial position after moving the arm. It makes another prediction; it does not fine-tune itself on that trial. Compare checkpoints under the same covered starting conditions.",
+        "translation": "Rollout 중 arm을 움직인 뒤 vial의 다른 위치를 관찰할 수 있습니다. 이때 다시 예측하며, 해당 trial로 스스로 fine-tuning하지는 않습니다. Training data가 다루는 동일한 시작 조건에서 checkpoint를 비교합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#prediction-and-execution-lengths\" target=\"_top\">Explore the inference loop →</a>",
+        "translation": "<a href=\"../../10-groot.html#prediction-and-execution-lengths\" target=\"_top\">Inference loop 살펴보기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Training input · Aligned observations and future action targets",
+        "translation": "Training 입력 · 서로 정렬된 observation과 이후 action target",
+        "mode": "html"
+      },
+      {
+        "source": "Post-training samples windows from demonstration episodes. Images, language, robot state, and future action targets must describe compatible task data. Variation should cover the starting states and behavior expected at rollout.",
+        "translation": "Post-training은 demonstration episode에서 window를 sampling합니다. 이미지, language, robot state, 이후 action target은 서로 호환되는 task data를 나타내야 합니다. Rollout에서 예상되는 시작 상태와 동작을 data의 다양성으로 충분히 다뤄야 합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "For vial placement, include different vial poses and grasp approaches. Repeating one familiar grasp more often cannot supply a missing recovery behavior.",
+        "translation": "Vial placement를 위해 다양한 vial pose와 grasp approach를 포함합니다. 익숙한 grasp 하나를 더 많이 반복해도 누락된 recovery 동작은 학습할 수 없습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#overfitting\" target=\"_top\">Plan the demonstration coverage →</a>",
+        "translation": "<a href=\"../../10-groot.html#overfitting\" target=\"_top\">Demonstration의 범위 계획하기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "The training objective supplies a loss from sampled predictions and targets. The optimizer updates trainable parameters; the learning-rate schedule controls the scale of those updates. Falling loss alone does not measure successful grasping or placement.",
+        "translation": "Training objective는 sampling한 예측과 target으로 loss를 계산합니다. Optimizer는 학습 대상 parameter를 갱신하고, learning-rate schedule은 update의 크기를 조절합니다. Loss가 감소한다는 사실만으로 grasp나 placement의 성공을 측정할 수는 없습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "With 20,000 training steps, the optimizer performs 20,000 updates. Assess saved checkpoints with autonomous rollouts as well as training curves.",
+        "translation": "Training step이 20,000이면 optimizer는 20,000번 update합니다. Training curve와 함께 자율 rollout으로 저장된 checkpoint를 평가합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#suggested-training-hyperparameters\" target=\"_top\">Relate loss to training hyperparameters →</a>",
+        "translation": "<a href=\"../../10-groot.html#suggested-training-hyperparameters\" target=\"_top\">Loss와 training hyperparameter 연결하기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Controlled experiment · Vision trainable, language frozen",
+        "translation": "통제된 실험 · Vision은 학습하고 language는 freeze",
+        "mode": "html"
+      },
+      {
+        "source": "Unfreezing permits the vision encoder to adapt to task images. It adds trainable parameters and memory use, and can increase overfitting risk. Keep the other training and evaluation choices fixed when testing its effect.",
+        "translation": "Unfreeze하면 vision encoder가 task 이미지에 적응할 수 있습니다. 학습 대상 parameter와 memory 사용량이 늘어나며 overfitting 위험도 높아질 수 있습니다. 효과를 확인할 때는 다른 training·evaluation 조건을 고정합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Compare frozen and trainable vision using the same dataset, batch size, action window, update budget, and rollout conditions. The supplied alternative command also changes batch size and window, so it is not itself a one-factor comparison.",
+        "translation": "같은 dataset, batch size, action window, update budget, rollout 조건으로 freeze된 vision과 학습 가능한 vision을 비교합니다. 제공된 대안 command는 batch size와 window도 바꾸므로, 그 자체로는 한 가지 요인만 비교하는 실험이 아닙니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#optional-unfreeze-the-vision-encoder\" target=\"_top\">Read the vision-unfreezing experiment →</a>",
+        "translation": "<a href=\"../../10-groot.html#optional-unfreeze-the-vision-encoder\" target=\"_top\">Vision unfreezing 실험 읽기 →</a>",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/groot-training-step.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Sample a batch of observation and action windows, prepare noisy flow-matching targets, compute loss and gradients, and update trainable weights. Batch size and horizon shape the training data; trainable components and learning rate control the update.",
+        "translation": "Observation과 action window를 batch로 sampling하고, noise를 섞은 flow-matching target을 준비하여 loss와 gradient를 계산한 뒤 학습 대상 weight를 갱신합니다. Batch size와 horizon은 training data의 구성을, 학습 대상 component와 learning rate는 update를 결정합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "One GPU: 32 windows × 16 action targets = 512 target timesteps per optimizer update.",
+        "translation": "GPU 1개: 32 windows × 16 action targets = optimizer update당 512 target timesteps입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Illustrative counts, including repeated samples—not unique episodes. Only valid, unmasked targets contribute to the loss. These controls do not change the workshop recipe. Effective batch = batch size per GPU × GPU processes.",
+        "translation": "중복 sample을 포함한 예시 계산이며 고유 episode 수를 뜻하지 않습니다. Mask 처리되지 않은 유효한 target만 loss에 기여합니다. 이 control을 조작해도 workshop recipe는 바뀌지 않습니다. Effective batch = batch size per GPU × GPU processes입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Batch size counts sampled observation/action windows, not whole episodes. Each window contains camera images, the instruction, joint state, and an action target chunk starting at the sampled frame. In the pinned lesson training loop, batch size × GPU processes gives the effective batch for one optimizer update. Each GPU processes its own batch, gradients are synchronized, and the optimizer updates once. This loop does not accumulate several batches before updating.",
+        "translation": "Batch size는 episode 전체가 아니라 sampling한 observation/action window의 수입니다. 각 window에는 camera 이미지, instruction, joint state와 sampling한 frame부터 시작하는 action target chunk가 포함됩니다. 이 과정의 고정된 training loop에서는 batch size × GPU processes가 optimizer update 한 번의 effective batch입니다. 각 GPU가 자신의 batch를 처리하고 gradient를 동기화한 뒤 optimizer가 한 번 update합니다. 이 loop는 여러 batch를 누적한 뒤 update하는 방식이 아닙니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The training action horizon is the number of action targets paired with an observation. The targets start at that frame: indices 0 through H−1. Sixteen commands at 30 Hz represent about 0.53 seconds of control; their first-to-last timestamps span 0.50 seconds. Longer chunks change the temporal learning problem and increase target size. The loader caps the requested chunk at the base model’s supported horizon. Use a supported training horizon; it is distinct from how many actions a rollout executes. Arm targets are relative to the observation state; the gripper remains absolute. Image augmentation is optional.",
+        "translation": "Training action horizon은 observation 하나에 대응하는 action target 수입니다. Target은 해당 frame부터 시작하며 index는 0부터 H−1까지입니다. 30 Hz에서 16개 command는 약 0.53초의 제어에 해당하며, 첫 target과 마지막 target의 timestamp 차이는 0.50초입니다. Chunk가 길어지면 학습할 시간적 관계가 달라지고 target 크기가 커집니다. Loader는 요청한 chunk를 base model이 지원하는 horizon 이내로 제한합니다. 지원되는 training horizon을 사용하세요. 이는 rollout에서 실행하는 action 수와 별개입니다. Arm target은 observation state에 대한 상대값이고 gripper는 절대값을 유지합니다. Image augmentation은 선택 사항입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Images, instruction, and joint state condition the model. Flow matching mixes the action targets with random noise at a sampled flow time. The action head predicts the target flow (action minus noise); a masked mean-squared error supplies the training loss. Backpropagation computes gradients for trainable weights. Frozen components still provide features, but receive no optimizer updates. Unfreezing vision adds trainable weights and usually increases memory use.",
+        "translation": "이미지, instruction, joint state가 model의 조건이 됩니다. Flow matching은 sampling한 flow time에서 action target과 random noise를 섞습니다. Action head는 target flow(action minus noise)를 예측하고, masked mean-squared error로 training loss를 계산합니다. Backpropagation은 학습 대상 weight의 gradient를 계산합니다. Freeze된 component도 feature를 제공하지만 optimizer update를 받지는 않습니다. Vision을 unfreeze하면 학습 대상 weight가 늘어나며 일반적으로 memory 사용량도 증가합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "After backpropagation, the loop clips the gradient norm when configured, then the optimizer updates trainable weights. Learning rate scales this update together with the optimizer. A schedule changes the learning rate across updates. The loop then clears the gradients and advances the learning-rate schedule. This optimizer update counts as one training step. Repeat for the configured number of steps, then evaluate the saved policy.",
+        "translation": "Backpropagation 후 설정에 따라 gradient norm을 clipping한 뒤, optimizer가 학습 대상 weight를 갱신합니다. Learning rate는 optimizer와 함께 update의 크기를 조절합니다. Schedule에 따라 update가 진행되는 동안 learning rate가 변합니다. 이후 loop는 gradient를 초기화하고 learning-rate schedule을 다음 단계로 진행합니다. 이 optimizer update 한 번이 training step 하나입니다. 설정한 step 수만큼 반복한 뒤 저장된 policy를 평가합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      },
+      {
+        "source": "How much data goes into one update?",
+        "translation": "Update 한 번에 사용하는 data는 얼마나 될까요?",
+        "mode": "html"
+      },
+      {
+        "source": "`${a} GPU process(es): ${b} × ${a} = ${b*a} windows per update; ${b*a} × ${h} = ${b*a*h} target timesteps. Control duration: about ${(h/30).toFixed(2)} seconds at 30 Hz; first-to-last target span: ${((h-1)/30).toFixed(2)} seconds.`",
+        "translation": "`${a} GPU process(es): update당 ${b} × ${a} = ${b*a} windows; ${b*a} × ${h} = ${b*a*h} target timesteps입니다. 30 Hz에서 제어 시간은 약 ${(h/30).toFixed(2)}초이며, 첫 target부터 마지막 target까지의 시간 차이는 ${((h-1)/30).toFixed(2)}초입니다.`",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/hg-dagger-state-map.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Illustrative state map: gray demonstrations connect start to task completion. A policy path leaves the familiar band. The human takes over, adds a green recovery segment, and hands control back. Saved corrections become examples for later training. Paths represent states, not physical robot trajectories.",
+        "translation": "State map 예시입니다. 회색 demonstration은 시작 상태에서 task 완료까지 이어집니다. Policy 경로가 익숙한 영역을 벗어나면 사람이 제어를 맡아 초록색 recovery 구간을 추가한 뒤 제어권을 돌려줍니다. 저장한 correction은 이후 training의 예시가 됩니다. 경로는 실제 로봇 궤적이 아니라 state의 변화를 나타냅니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A demonstration pairs what the robot observes with the human action taken next. Several successful attempts cover a band of familiar states, rather than every situation the robot might encounter.",
+        "translation": "Demonstration은 로봇이 관찰한 정보와 그다음 사람이 수행한 action을 짝지어 기록합니다. 여러 번의 성공적인 시도는 익숙한 state 영역을 다루지만, 로봇이 마주칠 모든 상황을 포함하지는 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A small action error changes the next observation. For example, the vial tip may end up between rack slots—a situation that successful demonstrations rarely show.",
+        "translation": "작은 action 오차도 다음 observation을 바꿉니다. 예를 들어 vial 끝이 rack slot 사이에 놓일 수 있습니다. 성공적인 demonstration에서는 이런 상황이 드물게 나타납니다.",
+        "mode": "html"
+      },
+      {
+        "source": "You choose when the policy needs help. Pause, align the leader with the follower, then take control. The workshop records human actions only during the saved correction.",
+        "translation": "Policy에 도움이 필요한 시점을 사람이 판단합니다. 일시 정지하고 leader를 follower와 정렬한 뒤 제어권을 넘겨받습니다. Workshop에서는 저장한 correction 구간의 human action만 기록합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Demonstrate the recovery with the leader arm: for example, lift the vial, move its tip over an open slot, and lower it into place. Save the useful human-controlled segment.",
+        "translation": "Leader arm으로 recovery를 시연합니다. 예를 들어 vial을 들어 올리고 끝을 빈 slot 위로 옮긴 뒤 내려놓습니다. 사람이 제어한 유용한 구간을 저장합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Guide the robot out of the failure, save the useful correction, then let the policy resume. The green segment is human-controlled recovery; it is not an autonomous policy success.",
+        "translation": "실패 상태에서 벗어나도록 로봇을 유도하고 유용한 correction을 저장한 뒤 policy를 재개합니다. 초록색 구간은 사람이 제어한 recovery이며, 자율 policy의 성공을 뜻하지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Corrections use the normal recording process that pairs observations and joint positions. Repeat at different failures, ideally of the same failure mode. This is the data which we'll use in a later training step.",
+        "translation": "Correction은 observation과 joint position을 짝지어 저장하는 일반 recording 과정을 사용합니다. 가능하면 같은 failure mode에 해당하는 여러 실패 상황에서 반복합니다. 이 data를 이후 training 단계에 사용합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/hg-dagger.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Watch the states reached by the policy, pause and align the leader, record human corrections, post-train offline, then reevaluate without assistance.",
+        "translation": "Policy가 도달하는 state를 관찰하고, 일시 정지한 뒤 leader를 정렬합니다. Human correction을 기록하고 offline post-training을 수행한 후, 사람의 도움 없이 다시 평가합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A policy can reach states that successful demonstrations rarely show: a missed grasp, an awkward approach, or a partial lift. HG-DAgger collects a useful human action at those policy-visited states. Observe the failure before deciding what correction to demonstrate.",
+        "translation": "Policy는 성공적인 demonstration에 드물게 나타나는 state에 도달할 수 있습니다. Grasp 실패, 부자연스러운 approach, 부분적인 lift가 그 예입니다. HG-DAgger는 policy가 방문한 이런 state에서 유용한 human action을 수집합니다. 어떤 correction을 시연할지 결정하기 전에 실패를 관찰합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../14-hg-dagger.html#what-is-hg-dagger\" target=\"_top\">Understand the correction loop</a>",
+        "translation": "<a href=\"../../14-hg-dagger.html#what-is-hg-dagger\" target=\"_top\">Correction loop 이해하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Pause policy control and align the leader with the follower before a correction. The physical leader moves under motor power during startup, alignment, resets, and exit, including with a simulated follower. Keep its path clear and support it before releasing torque. Follow the lesson's alignment controls and wait for correction_ready.",
+        "translation": "Correction 전에 policy 제어를 일시 정지하고 leader를 follower와 정렬합니다. Follower가 simulation에 있더라도 시작, 정렬, reset, 종료 과정에서 실제 leader가 motor 구동으로 움직입니다. 이동 경로를 비우고 torque를 해제하기 전에 arm을 받쳐 주세요. 과정에 안내된 alignment control을 따르고 correction_ready 상태가 될 때까지 기다립니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../14-hg-dagger-practice.html#align-correct-and-hand-back\" target=\"_top\">Follow the safe handoff sequence</a>",
+        "translation": "<a href=\"../../14-hg-dagger-practice.html#align-correct-and-hand-back\" target=\"_top\">안전한 제어권 전환 순서 따르기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Guide a useful grasp, lift, or placement and save the correction. The workshop records saved human correction segments, not the preceding autonomous attempt, pause, or alignment. Return control to the policy when appropriate. The policy weights stay fixed throughout collection.",
+        "translation": "유용한 grasp, lift, placement를 시연하고 correction을 저장합니다. Workshop에서는 저장한 human correction 구간을 기록하며, 그 이전의 자율 시도, 일시 정지, 정렬 구간은 기록하지 않습니다. 적절한 시점에 제어권을 policy로 돌려줍니다. 수집하는 동안 policy weight는 고정됩니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../14-hg-dagger-practice.html#what-gets-recorded\" target=\"_top\">Check what becomes a training episode</a>",
+        "translation": "<a href=\"../../14-hg-dagger-practice.html#what-gets-recorded\" target=\"_top\">Training episode에 포함되는 내용 확인하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Review corrections, combine them with original demonstrations, and run a separate post-training job. Keeping examples of motions that already work helps test whether the updated policy retains those skills. Corrections supply action targets; this collection process does not update weights online or run reinforcement learning.",
+        "translation": "Correction을 검토하고 원래 demonstration과 합쳐 별도의 post-training job을 실행합니다. 이미 잘되는 동작의 예시를 유지하면 갱신된 policy가 기존 skill을 유지하는지 확인하는 데 도움이 됩니다. Correction은 action target을 제공합니다. 이 수집 과정은 online으로 weight를 갱신하거나 reinforcement learning을 실행하지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Evaluate the updated policy without human help. Assisted collection successes are not autonomous evaluation successes. Use compatible inputs and the documented horizon, verify training-data start coverage and the achieved pose, and test new vial positions. Record the full task outcome and whether earlier skills still work.",
+        "translation": "갱신된 policy를 사람의 도움 없이 평가합니다. 도움을 받아 수집 과정에서 성공한 것은 자율 evaluation의 성공이 아닙니다. 호환되는 입력과 문서에 지정된 horizon을 사용하고, training data가 다루는 시작 상태와 실제 도달 pose를 확인하며, 새 vial 위치에서도 시험합니다. 전체 task 결과와 기존 skill의 유지 여부를 기록합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../14-hg-dagger-practice.html#evaluate-the-updated-policy\" target=\"_top\">Evaluate the updated policy</a>",
+        "translation": "<a href=\"../../14-hg-dagger-practice.html#evaluate-the-updated-policy\" target=\"_top\">갱신된 policy 평가하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/isaac-lab-camera-ovrtx.html": [
+      {
+        "source": "The environment sends scene state to ovrtx. Camera configuration supplies the sensor settings. The camera sensor sends its pose and render requests to ovrtx, which renders the scene and returns RGB images. The camera image data feeds environment observations.",
+        "translation": "Environment가 scene state를 ovrtx에 전달하고, camera configuration이 sensor 설정을 제공합니다. Camera sensor는 자신의 pose와 render request를 ovrtx에 보냅니다. ovrtx는 scene을 rendering하여 RGB 이미지를 반환하며, camera image data는 environment observation에 들어갑니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Provides the scene and its current state.",
+        "translation": "Scene과 현재 state를 제공합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The example requests 640 × 480 RGB at a 1/30-second update period. Lens and renderer settings determine the camera view.",
+        "translation": "예시에서는 update period를 1/30초로 설정하여 640 × 480 RGB 이미지를 요청합니다. Lens와 renderer 설정이 camera view를 결정합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "ovrtx renders the current scene from the requested camera pose and returns RGB images.",
+        "translation": "ovrtx는 요청된 camera pose에서 현재 scene을 rendering하고 RGB 이미지를 반환합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The camera sensor connects its configured view and update timing to rendering, then exposes the resulting image data.",
+        "translation": "Camera sensor는 설정된 view와 update timing을 rendering에 연결한 뒤, 결과 image data를 제공합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Camera images available to the policy.",
+        "translation": "Policy가 사용할 수 있는 camera 이미지입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/isaac-lab-lerobot-recording.html": [
+      {
+        "source": "The loop is paced at 30 Hz, recording 30 frames per second. The real leader arm supplies motor positions through lerobot_interface to lerobot_agent, which drives the simulated environment. Simulated joint state and camera images return to the agent. The recorder pairs each current observation with the next leader action and saves episodes as a LeRobot dataset.",
+        "translation": "Loop는 30 Hz로 동작하며 초당 30 frame을 기록합니다. 실제 leader arm의 motor position이 lerobot_interface를 거쳐 lerobot_agent로 전달되고, agent가 simulation environment를 구동합니다. Simulation의 joint state와 camera 이미지가 agent로 돌아옵니다. Recorder는 각 현재 observation과 다음 leader action을 짝지어 episode를 LeRobot dataset으로 저장합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Read the leader arm and bridge its joint values to the simulated action representation.",
+        "translation": "Leader arm을 읽고 joint 값을 simulation의 action 표현으로 연결합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Read the action, record it with the current observation, then advance simulation. The rate limiter paces the next iteration.",
+        "translation": "Action을 읽어 현재 observation과 함께 기록한 뒤 simulation을 진행합니다. Rate limiter가 다음 반복의 timing을 맞춥니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Simulated robot + cameras.",
+        "translation": "Simulation의 로봇과 camera입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Record the current joint state and camera images together with the action applied next, before advancing simulation.",
+        "translation": "Simulation을 진행하기 전에 현재 joint state와 camera 이미지를 다음에 적용할 action과 함께 기록합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Save synchronized observations and actions as an episode for later review and training.",
+        "translation": "동기화된 observation과 action을 episode로 저장하여 이후 검토와 training에 사용합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/isaac-lab-manager-based.html": [
+      {
+        "source": "Robot, other assets, and sensors configure the scene. Scene, actions, simulation settings, events, observations, terminations, and rewards configure the environment. The environment exchanges actions and observations with a policy, teleoperator, or scripted controller. A compact rounded rectangular loop attached to the environment represents stepping physics and sensors.",
+        "translation": "로봇, 다른 asset, sensor가 scene을 구성합니다. Scene, action, simulation 설정, event, observation, termination, reward가 environment를 구성합니다. Environment는 policy, teleoperator 또는 scripted controller와 action·observation을 교환합니다. Environment에 연결된 작은 둥근 사각형 loop는 physics와 sensor의 step 진행을 나타냅니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Joints, actuators, physical properties.",
+        "translation": "Joint, actuator, physical property를 정의합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Static and dynamic objects, lights and materials.",
+        "translation": "정적·동적 객체와 light, material을 정의합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Cameras, contact sensors, etc..",
+        "translation": "Camera, contact sensor 등의 sensor를 구성합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Action terms map controller outputs into commands for the simulated robot.",
+        "translation": "Action term은 controller 출력을 simulation 로봇의 command로 변환합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Asset placement and parallel environments.",
+        "translation": "Asset 배치와 parallel environment를 구성합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "With physics_dt = 1/60 and decimation = 2, each control step advances two physics steps: a 30 Hz control rate.",
+        "translation": "physics_dt = 1/60, decimation = 2이면 control step마다 physics step을 두 번 진행하므로 control rate는 30 Hz입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Startup terms prepare the scene; reset terms vary a new episode; periodic terms run at configured intervals.",
+        "translation": "Startup term은 scene을 준비하고, reset term은 새 episode의 조건을 바꾸며, periodic term은 설정된 간격으로 실행됩니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Build inputs from state and sensor data.",
+        "translation": "State와 sensor data로 입력을 구성합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Success, failure, and time limits determine when an episode ends. An ending alone is not evidence of success.",
+        "translation": "성공, 실패, 시간 제한이 episode의 종료 시점을 결정합니다. Episode가 종료됐다는 사실만으로 성공을 입증할 수는 없습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Reward terms produce task signals. Recording demonstrations does not update a policy from these rewards.",
+        "translation": "Reward term은 task signal을 생성합니다. Demonstration을 기록하는 동안에는 이 reward로 policy를 갱신하지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Coordinates scene, managers, stepping, and episode resets.",
+        "translation": "Scene, manager, step 진행, episode reset을 조정합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "During evaluation the policy predicts actions from observations. During collection a teleoperator or scripted controller can supply actions instead.",
+        "translation": "Evaluation에서는 policy가 observation으로 action을 예측합니다. 수집할 때는 teleoperator 또는 scripted controller가 action을 제공할 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/isaac-lab-rack-vial-randomization.html": [
+      {
+        "source": "The running loop advances environment steps and checks for episode endings. Normal steps continue without randomization. An initial reset or episode ending triggers the reset event; the loop then continues. The event manager calls mdp.reset_vials_rack with the selected environment IDs and configured sampling parameters. The function samples rack and vial poses and resets their velocities.",
+        "translation": "실행 중인 loop는 environment step을 진행하고 episode 종료 여부를 확인합니다. 일반 step에서는 randomization 없이 계속 진행합니다. 최초 reset이나 episode 종료 시 reset event가 발생하고 이후 loop가 이어집니다. Event manager는 선택한 environment ID와 설정된 sampling parameter로 mdp.reset_vials_rack을 호출합니다. 이 함수는 rack과 vial의 pose를 sampling하고 velocity를 초기화합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Initialize the scene before the first control step, including the configured rack and vial placement.",
+        "translation": "첫 control step 전에 설정된 rack·vial 배치를 포함하여 scene을 초기화합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A reset event runs for the environments being reset, not on every ordinary control step.",
+        "translation": "Reset event는 reset 대상 environment에서 실행되며, 일반적인 매 control step에서 실행되지는 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The reset function samples rack placement using configured ranges. Here x and y are in meters and yaw is in radians.",
+        "translation": "Reset 함수는 설정된 범위에서 rack 배치를 sampling합니다. 여기서 x와 y의 단위는 meter, yaw의 단위는 radian입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/isaac-lab-vial-grasp-observation.html": [
+      {
+        "source": "During an environment step, the observation manager computes the configured grasp observation using contact sensor data. The result indicates whether a vial is grasped, shown as vial_grasped with observation-group nesting omitted. The running loop continues to the next step.",
+        "translation": "Environment step 동안 observation manager가 contact sensor data를 사용하여 설정된 grasp observation을 계산합니다. 결과는 vial을 잡았는지를 나타내며, 여기서는 observation group의 중첩 구조를 생략하고 vial_grasped로 표시합니다. 실행 중인 loop는 다음 step으로 이어집니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Contact readings provide evidence for the grasp check. Contact alone is not a successful placement.",
+        "translation": "Contact 측정값은 grasp 확인의 근거를 제공합니다. Contact가 발생했다는 사실만으로 placement 성공을 뜻하지는 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Compute configured observation terms from the updated scene and sensor data.",
+        "translation": "갱신된 scene과 sensor data로 설정된 observation term을 계산합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The workshop uses contact force and vial height to acquire a grasp flag, then keeps it while contact persists. This heuristic is not proof of a stable grasp. Observation-group nesting is simplified here.",
+        "translation": "Workshop에서는 contact force와 vial 높이로 grasp flag를 설정하고, contact가 지속되는 동안 유지합니다. 이 heuristic이 안정적인 grasp를 입증하는 것은 아닙니다. 여기서는 observation group의 중첩 구조를 단순화했습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/learning-from-demonstrations.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "In this workshop",
+        "translation": "이 workshop에서의 적용",
+        "mode": "html"
+      },
+      {
+        "source": "Collect examples, review synchronized episodes, post-train a policy and evaluate in both simulation and reality. Failures inform the next examples.",
+        "translation": "예시를 수집하고 동기화된 episode를 검토한 뒤 policy를 post-training하여 simulation과 실제 환경에서 평가합니다. 실패 결과를 다음 예시 수집에 반영합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Imitation learning uses examples of what the robot saw and what action followed. A person or a scripted controller can supply those examples.",
+        "translation": "Imitation learning은 로봇이 본 정보와 그다음 수행한 action의 예시를 사용합니다. 사람이나 scripted controller가 이런 예시를 제공할 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Teleoperation captures human choices; the state machine can supply repeatable successful simulation episodes.",
+        "translation": "Teleoperation은 사람의 선택을 기록합니다. State machine은 반복 가능하고 성공적인 simulation episode를 제공할 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../08-simulation-teleoperation.html#teleoperation-collecting-human-demonstrations\" target=\"_top\">Collect demonstrations</a>",
+        "translation": "<a href=\"../../08-simulation-teleoperation.html#teleoperation-collecting-human-demonstrations\" target=\"_top\">Demonstration 수집하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Review episodes before training. Check the task, views, starting conditions and actions, including what happens after a grasp or placement.",
+        "translation": "Training 전에 episode를 검토합니다. Task, view, 시작 조건, action을 확인하고 grasp나 placement 이후의 동작도 살펴봅니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A collection full of the same grasp may leave the policy without examples of another vial orientation.",
+        "translation": "같은 grasp만 모은 data로는 다른 vial 방향에 대한 예시가 부족할 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../08-simulation-teleoperation.html#review-and-upload-collected-data\" target=\"_top\">Review collected demonstrations</a>",
+        "translation": "<a href=\"../../08-simulation-teleoperation.html#review-and-upload-collected-data\" target=\"_top\">수집한 demonstration 검토하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Post-training adjusts a pretrained model using demonstrations from the robot and task. It learns an observation-to-action mapping rather than replaying one recorded path.",
+        "translation": "Post-training은 해당 로봇과 task의 demonstration으로 pretrained model을 조정합니다. 기록된 경로 하나를 재생하는 대신 observation에서 action으로의 mapping을 학습합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "We adapt GR00T 1.7 to the SO-101 vial task. The event uses prepared checkpoints so you can evaluate them during the workshop.",
+        "translation": "GR00T 1.7을 SO-101의 vial task에 맞게 조정합니다. 행사에서는 준비된 checkpoint를 사용하므로 workshop 중에 평가할 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html\" target=\"_top\">Understand GR00T</a>",
+        "translation": "<a href=\"../../10-groot.html\" target=\"_top\">GR00T 이해하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Evaluate the learned policy on fresh trials. Simulation and hardware answer different questions, so keep their outcomes separate and use failures to plan the next experiment.",
+        "translation": "새 trial에서 학습된 policy를 평가합니다. Simulation과 hardware는 서로 다른 질문에 답하므로 결과를 구분하고, 실패를 다음 실험 계획에 활용합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A policy that places vials in simulation can still miss on hardware because its views, motion or starting conditions differ.",
+        "translation": "Simulation에서 vial을 배치하는 policy도 hardware에서는 view, 동작, 시작 조건의 차이 때문에 실패할 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../03-sim-to-real.html\" target=\"_top\">Explore the reality gap</a>",
+        "translation": "<a href=\"../../03-sim-to-real.html\" target=\"_top\">Reality gap 살펴보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      },
+      {
+        "source": "content: ' Swipe the diagram sideways to see the whole flow.'",
+        "translation": "content: ' Diagram을 좌우로 밀어 전체 흐름을 확인하세요.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/lerobot-episode.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "In this workshop",
+        "translation": "이 workshop에서의 적용",
+        "mode": "html"
+      },
+      {
+        "source": "An episode stores both camera views, measured joint state, commanded actions, task text and timing.",
+        "translation": "Episode는 두 camera view, 측정된 joint state, 전달된 action, task 문구, timing을 저장합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "An observation contains the wrist and external camera views. Each camera’s name, mount pose, field of view, and frame timing should match between recording and policy use.",
+        "translation": "Observation에는 wrist와 external camera view가 포함됩니다. Recording과 policy 사용 시 각 camera의 이름, mount pose, field of view, frame timing이 일치해야 합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "If the wrist and external views are swapped, the model receives a different observation even though both cameras work.",
+        "translation": "Wrist와 external view가 바뀌면 두 camera가 모두 정상이어도 model은 다른 observation을 받습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../08-operating-so101.html#camera-setup\" target=\"_top\">Set up the cameras</a>",
+        "translation": "<a href=\"../../08-operating-so101.html#camera-setup\" target=\"_top\">Camera 설정하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Joint state records the robot’s measured joint positions. Joint state may differ from the commanded state because motion takes time and real actuators do not track commands perfectly.",
+        "translation": "Joint state는 로봇에서 측정한 joint position을 기록합니다. 동작에 시간이 걸리고 실제 actuator가 command를 완벽히 추종하지는 않으므로, joint state는 command된 state와 다를 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "During a reach, the follower may still be moving toward the command stored in the action.",
+        "translation": "Reach 동작 중 follower는 action에 저장된 command를 향해 아직 이동 중일 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../03-sim-to-real.html#actuation-gaps\" target=\"_top\">Explore actuator response</a>",
+        "translation": "<a href=\"../../03-sim-to-real.html#actuation-gaps\" target=\"_top\">Actuator 응답 살펴보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "An action is the joint command sent after the observation is captured: from the leader arm during recording, and from the policy during evaluation. Its joint order, units and calibration must agree with the robot interface and the training setup.",
+        "translation": "Action은 observation을 얻은 뒤 전달하는 joint command입니다. Recording에서는 leader arm이, evaluation에서는 policy가 제공합니다. Joint 순서, 단위, calibration은 robot interface 및 training 설정과 일치해야 합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A useful episode preserves the relationship between a camera view, the arm’s current pose, and the next movement.",
+        "translation": "유용한 episode는 camera view, arm의 현재 pose, 다음 동작 사이의 관계를 유지합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../08-simulation-teleoperation.html#review-and-upload-collected-data\" target=\"_top\">Review recorded episodes</a>",
+        "translation": "<a href=\"../../08-simulation-teleoperation.html#review-and-upload-collected-data\" target=\"_top\">기록된 episode 검토하기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Timestamps and episode boundaries preserve the sequence of the task. The instruction describes the task performed in that sequence.",
+        "translation": "Timestamp와 episode 경계는 task의 순서를 유지합니다. Instruction은 그 sequence에서 수행한 task를 설명합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Scrub the episode to check the starting pose, approach, grasp, placement and recovery, rather than judging it from one successful frame.",
+        "translation": "성공한 frame 하나만 보고 판단하지 말고 episode를 앞뒤로 탐색하며 시작 pose, approach, grasp, placement, recovery를 확인합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../04-lerobot.html#dataset-visualizer\" target=\"_top\">Open the dataset visualizer</a>",
+        "translation": "<a href=\"../../04-lerobot.html#dataset-visualizer\" target=\"_top\">Dataset visualizer 열기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      },
+      {
+        "source": "content: ' Swipe the diagram sideways to see the whole flow.'",
+        "translation": "content: ' Diagram을 좌우로 밀어 전체 흐름을 확인하세요.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/physical-ai-loop.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "In this workshop",
+        "translation": "이 workshop에서의 적용",
+        "mode": "html"
+      },
+      {
+        "source": "Camera images, joint state and a task instruction feed a policy. Robot motion changes the scene, which is observed again.",
+        "translation": "Camera 이미지, joint state, task instruction이 policy에 입력됩니다. 로봇 동작으로 scene이 바뀌면 다시 관찰합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The policy receives camera images and the robot’s joint positions. New observations help it respond as the scene changes.",
+        "translation": "Policy는 camera 이미지와 로봇의 joint position을 받습니다. 새 observation을 통해 scene 변화에 대응합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The wrist view shows the grasp; the external view can still show the rack when a vial blocks the wrist camera.",
+        "translation": "Wrist view는 grasp를 보여 줍니다. Vial이 wrist camera를 가리더라도 external view에서는 rack을 계속 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../08-operating-so101.html#camera-setup\" target=\"_top\">Explore the two camera views</a>",
+        "translation": "<a href=\"../../08-operating-so101.html#camera-setup\" target=\"_top\">두 camera view 살펴보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "A trained policy maps observations and the task instruction to an action sequence. Inference uses the learned weights; it does not train the model during each move.",
+        "translation": "학습된 policy는 observation과 task instruction을 action sequence로 변환합니다. Inference는 학습된 weight를 사용하며, 동작할 때마다 model을 학습하지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "GR00T 1.7 predicts joint commands for the SO-101 arm and gripper.",
+        "translation": "GR00T 1.7은 SO-101 arm과 gripper의 joint command를 예측합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#what-is-a-vision-language-action-model\" target=\"_top\">Meet the VLA policy</a>",
+        "translation": "<a href=\"../../10-groot.html#what-is-a-vision-language-action-model\" target=\"_top\">VLA policy 알아보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Motors carry out the commanded motion. What the robot actually does becomes part of its next observation. A prediction can miss, so the next view matters.",
+        "translation": "Motor가 command된 동작을 수행합니다. 로봇이 실제로 수행한 동작은 다음 observation의 일부가 됩니다. 예측이 빗나갈 수 있으므로 다음 view가 중요합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "After reaching toward a vial, the policy sees the new gripper position and continues from there.",
+        "translation": "Vial을 향해 arm을 뻗은 뒤 policy는 새 gripper 위치를 보고 그 상태에서 계속 동작합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../12-real-evaluation.html\" target=\"_top\">See real evaluation</a>",
+        "translation": "<a href=\"../../12-real-evaluation.html\" target=\"_top\">Real evaluation 보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "The language instruction describes the intended task. It accompanies the camera views and robot state throughout inference.",
+        "translation": "Language instruction은 의도한 task를 설명합니다. Inference 전 과정에서 camera view와 robot state와 함께 입력됩니다.",
+        "mode": "html"
+      },
+      {
+        "source": "“Pick up the vial and place it in the rack” tells the policy the goal; it does not specify every joint movement.",
+        "translation": "“Pick up the vial and place it in the rack”은 policy에 목표를 알려 주며, 모든 joint 동작을 지정하지는 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../10-groot.html#what-is-a-vision-language-action-model\" target=\"_top\">Explore the policy inputs</a>",
+        "translation": "<a href=\"../../10-groot.html#what-is-a-vision-language-action-model\" target=\"_top\">Policy 입력 살펴보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      },
+      {
+        "source": "content: ' Swipe the diagram sideways to see the whole flow.'",
+        "translation": "content: ' Diagram을 좌우로 밀어 전체 흐름을 확인하세요.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/reality-gap-strategies.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "In this workshop",
+        "translation": "이 workshop에서의 적용",
+        "mode": "html"
+      },
+      {
+        "source": "Sensing, actuation, physics and modeling can differ. Broaden policy experience or reduce measured mismatches, then compare outcomes.",
+        "translation": "Sensing, actuation, physics, modeling에 차이가 있을 수 있습니다. Policy의 경험 범위를 넓히거나 측정된 불일치를 줄인 뒤 결과를 비교합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Lighting, lens geometry, blur, and camera mounting change the observation. Similar-looking failures can have different causes.",
+        "translation": "Lighting, lens geometry, blur, camera mount는 observation을 바꿉니다. 비슷해 보이는 실패도 원인이 다를 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Compare the rack edge and gripper holes in the real and simulated wrist views before adjusting camera parameters.",
+        "translation": "Camera parameter를 조정하기 전에 실제와 simulation의 wrist view에서 rack 모서리와 gripper 구멍을 비교합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Friction, backlash, actuator limits and timing affect how a joint follows its command. They can change with wear.",
+        "translation": "Friction, backlash, actuator 한계, timing은 joint가 command를 추종하는 방식에 영향을 줍니다. 마모에 따라 달라질 수도 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A commanded position reached in simulation may be approached more slowly on the physical arm. Compare measured motion before attributing that difference to the policy.",
+        "translation": "Simulation에서는 command된 위치에 도달하더라도 실제 arm에서는 더 느리게 접근할 수 있습니다. 이 차이를 policy 탓으로 판단하기 전에 측정된 동작을 비교합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Contact and friction affect grasping and placement. A visually aligned scene can still respond differently when the gripper touches a vial.",
+        "translation": "Contact와 friction은 grasp와 placement에 영향을 줍니다. 시각적으로 정렬된 scene이라도 gripper가 vial에 닿을 때 반응이 다를 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Watch whether the vial slips, catches on the rack, or moves after release. These observations tell you what to test next, but they don’t identify the cause on their own.",
+        "translation": "Vial이 미끄러지는지, rack에 걸리는지, 놓은 뒤 움직이는지 관찰합니다. 이 관찰은 다음 시험 대상을 정하는 데 도움이 되지만, 그것만으로 원인을 특정할 수는 없습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Link dimensions, joint frames and camera mounts determine the geometry of the simulated setup.",
+        "translation": "Link 치수, joint frame, camera mount가 simulation 구성의 geometry를 결정합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The same joint angles can produce a different camera view if the joint reference frame or camera mount is wrong.",
+        "translation": "Joint reference frame이나 camera mount가 잘못되면 같은 joint angle에서도 camera view가 달라질 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Broaden the useful examples the policy learns from. Domain randomization varies conditions; co-training adds real examples; HG-DAgger adds corrections at states the policy reaches. Cosmos supplies visual variants that still need review.",
+        "translation": "Policy가 학습하는 유용한 예시의 범위를 넓힙니다. Domain Randomization은 조건을 다양화하고, Co-Training은 real 예시를 추가하며, HG-DAgger는 policy가 도달한 state에서의 correction을 추가합니다. Cosmos는 검토가 필요한 시각적 변형을 제공합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Choose new data around an observed failure, such as a grasp angle absent from the demonstrations.",
+        "translation": "Demonstration에 없던 grasp angle처럼 관찰된 실패를 중심으로 새 data를 선택합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Measure a specific difference and adjust the simulation model. Camera calibration addresses camera geometry; system identification addresses physical response.",
+        "translation": "구체적인 차이를 측정하여 simulation model을 조정합니다. Camera calibration은 camera geometry를, System Identification은 physical response를 다룹니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Improved alignment or motion tracking is useful evidence, but test the resulting policy on the complete task too.",
+        "translation": "정렬이나 motion tracking의 개선은 유용한 근거입니다. 그 결과로 얻은 policy가 전체 task에서도 잘 동작하는지 시험해야 합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      },
+      {
+        "source": "content: ' Swipe the diagram sideways to see the whole flow.'",
+        "translation": "content: ' Diagram을 좌우로 밀어 전체 흐름을 확인하세요.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/system-identification.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "In this workshop",
+        "translation": "이 workshop에서의 적용",
+        "mode": "html"
+      },
+      {
+        "source": "Informative commands produce measured physical response. Fit a model, validate with different motions and separately test task performance.",
+        "translation": "시스템 특성을 드러내는 command를 가하고 실제 응답을 측정합니다. Model을 fitting한 뒤 다른 동작으로 검증하고 task 성능도 별도로 시험합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Moving through a range of speeds reveals response differences that a single held pose cannot.",
+        "translation": "여러 속도로 움직이면 한 pose에 정지한 상태에서는 드러나지 않는 응답 차이를 확인할 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "A chirp sweep changes command frequency. Watch how the measured motion’s lag and amplitude change. The curves here are illustrative, not measured results.",
+        "translation": "Chirp sweep은 command frequency를 바꿉니다. 측정된 동작의 지연과 진폭이 어떻게 변하는지 관찰합니다. 여기에 표시된 curve는 설명을 위한 예시이며 측정 결과가 아닙니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../15-strategy4-sysid.html#example-sysid-motion-chirp-sweep\" target=\"_top\">Watch the chirp sweep</a>",
+        "translation": "<a href=\"../../15-strategy4-sysid.html#example-sysid-motion-chirp-sweep\" target=\"_top\">Chirp sweep 보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Compare commanded motion with time-aligned physical measurements. Units, calibration and initial conditions must agree.",
+        "translation": "Command된 동작을 시간축이 정렬된 실제 측정값과 비교합니다. 단위, calibration, 초기 조건이 일치해야 합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Anchor-Lab includes physical motion measurements. Additional readback delay can affect the teleoperation overlay.",
+        "translation": "Anchor-Lab에는 실제 동작 측정값이 포함됩니다. 추가적인 readback 지연은 teleoperation overlay에 영향을 줄 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../15-strategy4-sysid.html#anchor-lab-and-anchorbench\" target=\"_top\">Explore Anchor-Lab and AnchorBench</a>",
+        "translation": "<a href=\"../../15-strategy4-sysid.html#anchor-lab-and-anchorbench\" target=\"_top\">Anchor-Lab과 AnchorBench 살펴보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Adjust parameters that affect response, such as stiffness, damping and friction, to reduce disagreement with the measurements used for fitting.",
+        "translation": "Fitting에 사용한 측정값과의 차이를 줄이기 위해 stiffness, damping, friction 등 응답에 영향을 주는 parameter를 조정합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The workshop comparison uses an AnchorBench fitted USD layer over the robot asset. This page introduces the process; it is not a fitting exercise.",
+        "translation": "Workshop 비교에서는 robot asset 위에 AnchorBench로 fitting한 USD layer를 적용합니다. 이 페이지는 과정을 소개하며 직접 fitting하는 실습은 아닙니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../15-strategy4-sysid.html#from-measurements-to-a-simulation-model\" target=\"_top\">Read about model fitting</a>",
+        "translation": "<a href=\"../../15-strategy4-sysid.html#from-measurements-to-a-simulation-model\" target=\"_top\">Model fitting 알아보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "A model should explain more than the motions used to tune it. Compare response on held-out recordings before drawing conclusions about the fit.",
+        "translation": "Model은 tuning에 사용한 동작 이외의 동작도 설명할 수 있어야 합니다. Fitting 결과를 판단하기 전에 학습에 사용하지 않은 recording에서 응답을 비교합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Inspect tracking lag, amplitude and settling using matched commands and starting conditions.",
+        "translation": "동일한 command와 시작 조건에서 tracking 지연, 진폭, settling을 확인합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../15-strategy4-sysid.html#teleop-comparison-default-and-sysid-assets\" target=\"_top\">Inspect the motion comparison</a>",
+        "translation": "<a href=\"../../15-strategy4-sysid.html#teleop-comparison-default-and-sysid-assets\" target=\"_top\">동작 비교 살펴보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "Closer actuator tracking does not establish a better policy success rate. Pick-and-place adds sensing, contact and learned behavior to the test.",
+        "translation": "Actuator tracking이 더 정확해졌다는 사실만으로 policy 성공률 향상을 입증할 수는 없습니다. Pick-and-place에서는 sensing, contact, 학습된 동작까지 함께 시험합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The paired policy video shows a policy that was not trained to robust task performance. Use it to inspect approaches to the vial.",
+        "translation": "나란히 비교하는 policy video의 policy는 안정적인 task 성능을 낼 수준으로 학습되지 않았습니다. Vial에 접근하는 방식을 관찰하는 용도로 사용합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<a href=\"../../15-strategy4-sysid.html#workshop-comparison-sysid-and-original-actuators\" target=\"_top\">Watch the policy comparison</a>",
+        "translation": "<a href=\"../../15-strategy4-sysid.html#workshop-comparison-sysid-and-original-actuators\" target=\"_top\">Policy 비교 보기</a>",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      },
+      {
+        "source": "content: ' Swipe the diagram sideways to see the whole flow.'",
+        "translation": "content: ' Diagram을 좌우로 밀어 전체 흐름을 확인하세요.'",
+        "mode": "literal"
+      }
+    ],
+    "_static/interactive/workshop-code-stack.html": [
+      {
+        "source": "Select a step or object for its explanation.",
+        "translation": "단계나 객체를 선택하면 설명을 볼 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Swipe across the diagram to follow the arrows; select a labeled object for its explanation.",
+        "translation": "Diagram을 좌우로 밀어 화살표 흐름을 따라가고, 이름이 표시된 객체를 선택해 설명을 확인하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "Select a library to see its role and jump to the code.",
+        "translation": "Library를 선택하면 역할 설명을 보고 해당 code로 이동할 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Workshop code connects LeRobot controls and datasets to Isaac Lab. Isaac Lab uses Newton for physics and Omniverse libraries for camera rendering, with shared USD assets. Observations return to the controller and recorder.",
+        "translation": "Workshop code는 LeRobot control과 dataset을 Isaac Lab에 연결합니다. Isaac Lab은 physics에 Newton을, camera rendering에 Omniverse library를 사용하며 USD asset을 공유합니다. Observation은 controller와 recorder로 돌아옵니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Combines the task configuration, controller, recording, and evaluation. The bridge converts LeRobot commands into simulation joint commands and converts observations back for recording or inference.",
+        "translation": "Task configuration, controller, recording, evaluation을 결합합니다. Bridge는 LeRobot command를 simulation joint command로 변환하고, observation을 recording 또는 inference용으로 다시 변환합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Provides teleoperator and robot interfaces, the dataset format, and policy tools. During collection the leader supplies actions; during evaluation a policy supplies them. The workshop recorder saves images, joint state, and actions.",
+        "translation": "Teleoperator·robot interface, dataset format, policy tool을 제공합니다. 수집할 때는 leader가, 평가할 때는 policy가 action을 제공합니다. Workshop recorder는 이미지, joint state, action을 저장합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Organizes assets, observations, action terms, resets, and success checks. Its environment step connects the selected physics and rendering backends to the vial-to-rack task.",
+        "translation": "Asset, observation, action term, reset, 성공 판정을 구성합니다. Environment step은 선택한 physics·rendering backend를 vial-to-rack task에 연결합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Describe the workstation geometry, materials, camera properties, and physical properties. Isaac Lab loads these assets for simulation, and the Omniverse libraries manage their rendered scene.",
+        "translation": "Workstation의 geometry, material, camera property, physical property를 정의합니다. Isaac Lab이 simulation용 asset을 불러오고 Omniverse library가 rendering에 사용할 scene을 관리합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Advances robot and object dynamics using the configured MJWarp solver and collision pipeline. Updated poses drive the simulated scene and become joint observations.",
+        "translation": "설정된 MJWarp solver와 collision pipeline으로 로봇과 객체의 dynamics를 진행합니다. 갱신된 pose가 simulation scene에 반영되고 joint observation이 됩니다.",
+        "mode": "html"
+      },
+      {
+        "source": "ovstage manages the USD scene used for rendering. ovrtx renders wrist and external RGB images from the updated scene. ovstream takes GPU renders and stream them to the browser. Isaac Lab exposes those camera results as observations.",
+        "translation": "ovstage는 rendering에 사용하는 USD scene을 관리합니다. ovrtx는 갱신된 scene에서 wrist·external RGB 이미지를 rendering합니다. ovstream은 GPU render 결과를 browser로 streaming합니다. Isaac Lab은 이 camera 결과를 observation으로 제공합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "<html lang=\"en\">",
+        "translation": "<html lang=\"ko\">",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Selected explanation\"",
+        "translation": "aria-label=\"선택한 항목의 설명\"",
+        "mode": "literal"
+      },
+      {
+        "source": "aria-label=\"Close explanation\"",
+        "translation": "aria-label=\"설명 닫기\"",
+        "mode": "literal"
+      },
+      {
+        "source": ">Close ×<",
+        "translation": ">닫기 ×<",
+        "mode": "literal"
+      },
+      {
+        "source": "+ ' selected.'",
+        "translation": "+ ' 선택됨.'",
+        "mode": "literal"
+      }
+    ]
+  }
+}

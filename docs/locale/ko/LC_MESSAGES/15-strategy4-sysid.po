@@ -1,0 +1,318 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Sim-to-Real Strategy 5: System Identification With AnchorBench"
+msgstr "Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification"
+
+msgid ""
+"SO-101 paired trial with SysID actuators on the left and original actuators on the right. Both "
+"trials failed: the SysID trial missed the rack, and the original-actuator trial missed the vial "
+"grasp."
+msgstr ""
+"왼쪽 SysID actuator와 오른쪽 original actuator의 SO-101 paired trial입니다. 둘 다 실패했으며 SysID는 rack을, "
+"original은 vial grasp를 놓쳤습니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"This module uses videos and published comparisons to explain system identification. You do not "
+"need a connected robot or a running workshop container."
+msgstr "Video와 공개된 비교로 System Identification을 설명합니다. 연결된 robot이나 실행 중인 workshop container는 필요하지 않습니다."
+
+msgid ""
+"The same joint command can produce different motion in simulation and on hardware. **System "
+"identification (SysId)** estimates model parameters from measured behavior so that simulation "
+"better represents the physical system. Here, you'll compare SO-101 motion with and without an "
+"[AnchorBench](https://github.com/NVIDIA/anchor-bench) SysID layer and see how model differences "
+"can affect policy behavior."
+msgstr ""
+"같은 joint command라도 simulation과 hardware의 motion이 다를 수 있습니다. **System Identification (SysId)**은 "
+"측정된 동작에서 model parameter를 추정해 simulation이 실제 system을 더 잘 표현하도록 합니다. "
+"[AnchorBench](https://github.com/NVIDIA/anchor-bench) SysID layer 유무에 따른 SO-101 motion과 policy "
+"동작의 차이를 비교합니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "Explain how measured robot motion informs system identification."
+msgstr "측정한 robot motion을 System Identification에 사용하는 방법 설명"
+
+msgid "Recognize differences between baseline, fitted, and measured motion."
+msgstr "Baseline, fitted, measured motion의 차이 파악"
+
+msgid "Explain why matched actions and initial conditions matter in an experiment."
+msgstr "동일한 action과 초기 조건이 중요한 이유 설명"
+
+msgid "Distinguish actuator-model validation from downstream policy evaluation."
+msgstr "Actuator-model 검증과 후속 policy 평가 구분"
+
+msgid "From Measurements to a Simulation Model"
+msgstr "측정에서 Simulation Model로"
+
+msgid ""
+"A position-controlled joint's response depends on more than its target angle. Drive stiffness and"
+" damping, actuator effort limits, armature, and friction affect tracking and settling. A SysId "
+"workflow adjusts these parameters to reduce disagreement between simulated motion and physical "
+"measurements."
+msgstr ""
+"Position-controlled joint의 응답은 target angle만으로 결정되지 않습니다. Drive stiffness, damping, effort limit,"
+" armature, friction이 tracking과 settling에 영향을 줍니다. SysId는 이런 parameter를 조정해 simulation motion과 실제 "
+"측정의 차이를 줄입니다."
+
+msgid ""
+"The basic process is to record informative motions, fit a model on a chosen subset, and test it "
+"on motions excluded from fitting. A good fit should explain behavior beyond the motions used to "
+"tune it. Policy success is a further test: improved motion tracking does not by itself establish "
+"better pick-and-place performance."
+msgstr ""
+"정보가 풍부한 motion을 기록하고 일부로 model을 fitting한 뒤 fitting에 쓰지 않은 motion으로 검증합니다. 좋은 fit은 조정에 쓰지 않은 동작도 "
+"설명해야 합니다. Policy 성공은 추가 시험이며 motion tracking 개선만으로 pick-and-place 성능 향상이 입증되지는 않습니다."
+
+msgid "Measure physical motion, fit a simulation model, then validate motion and policy behavior"
+msgstr "실제 Motion 측정 → Simulation Model Fitting → Motion과 Policy 동작 검증"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Anchor-Lab and AnchorBench"
+msgstr "Anchor-Lab and AnchorBench"
+
+msgid ""
+"[NVIDIA Anchor-Lab](https://huggingface.co/datasets/nvidia/Anchor-Lab) is a collection of "
+"timestamped measurements from physical robot experiments. It covers SO-101 arms and H1/G1 "
+"humanoids. The SO-101 recordings include frequency sweeps, backlash-detection motions, and "
+"workspace sweeps: different motions reveal different aspects of a robot's response. These "
+"measurements provide a reference for calibrating and validating simulation models."
+msgstr ""
+"[NVIDIA Anchor-Lab](https://huggingface.co/datasets/nvidia/Anchor-Lab)은 SO-101 arm과 H1/G1 "
+"humanoid의 실제 실험에서 얻은 timestamp 포함 측정 자료입니다. SO-101에는 frequency sweep, backlash 검출 motion, "
+"workspace sweep이 포함됩니다. 각 motion은 응답의 다른 특성을 드러내며 simulation model의 calibration과 검증 기준을 제공합니다."
+
+msgid ""
+"The [SO-101 AnchorBench comparison](https://huggingface.co/VigneshBhavan/so101-newton-actuator-"
+"ab-paired-checkpoints) shows how fitted actuator parameters can be studied in a policy-learning "
+"workflow. Its Hugging Face page brings together baseline and fitted actuator profiles, paired "
+"policy checkpoints, reproduction notes, and comparison videos. The accompanying [paired "
+"demonstrations](https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-paired-"
+"demos) use matched commands and scenes to help isolate the effect of the actuator model."
+msgstr ""
+"[SO-101 AnchorBench 비교](https://huggingface.co/VigneshBhavan/so101-newton-actuator-ab-paired-"
+"checkpoints)는 fitted actuator parameter를 policy-learning workflow에서 연구하는 예시입니다. Baseline/fitted "
+"profile, paired policy checkpoint, 재현 안내, 비교 video를 제공합니다. [Paired "
+"demonstration](https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-paired-"
+"demos)은 command와 scene을 맞춰 actuator model 효과를 분리합니다."
+
+msgid ""
+"The published bundle supplies a fitted profile and reproduction records, but not a complete "
+"command sequence for fitting a new AnchorBench model from Anchor-Lab telemetry."
+msgstr ""
+"공개 bundle은 fitted profile과 재현 기록을 제공하지만 Anchor-Lab telemetry로 새 AnchorBench model을 fitting하는 전체 "
+"명령 순서는 포함하지 않습니다."
+
+msgid "Teleop Comparison: Default and SysID Assets"
+msgstr "Teleoperation 비교: Default와 SysID Asset"
+
+msgid ""
+"A poorly tuned robot asset can move differently from the physical robot it represents. This "
+"teleoperation comparison overlays the default SO-101 asset, the asset with a fitted SysID layer, "
+"and the measured hardware motion. The separation between them illustrates the actuation gap."
+msgstr ""
+"제대로 조정되지 않은 robot asset은 실제 robot과 다르게 움직일 수 있습니다. Default SO-101, fitted SysID layer 적용 asset, "
+"실제 측정 motion을 겹쳐 차이로 actuation gap을 보여줍니다."
+
+msgid "Color"
+msgstr "색상"
+
+msgid "What it shows"
+msgstr "의미"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Yellow**"
+msgstr "**Yellow**"
+
+msgid "Default USD asset."
+msgstr "Default USD asset"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Red**"
+msgstr "**Red**"
+
+msgid "SysID USD layer applied on top of the default USD asset."
+msgstr "Default USD asset 위에 SysID USD layer 적용"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Light blue**"
+msgstr "**Light blue**"
+
+msgid ""
+"Joint values read back from the physical SO-101 being driven. This readback adds a little more "
+"delay."
+msgstr "실제로 제어 중인 SO-101에서 읽은 joint value. Readback에 약간의 추가 지연이 있습니다."
+
+msgid ""
+"Compare how closely the simulated motion follows the light-blue hardware readback. Account for "
+"the readback delay when interpreting timing differences; not every visible lag comes from the "
+"actuator model."
+msgstr ""
+"Simulation motion이 light-blue hardware readback을 얼마나 잘 따르는지 비교하세요. Timing을 해석할 때 readback delay도 "
+"고려해야 하며, 모든 지연이 actuator model 때문은 아닙니다."
+
+msgid "Example SysID Motion: Chirp Sweep"
+msgstr "SysID Motion 예시: Chirp Sweep"
+
+msgid ""
+"A chirp sweep gradually changes the frequency of an oscillating command. Watch the lag, "
+"amplitude, and settling of the measured motion as the sweep progresses. A single static pose "
+"would not reveal these response differences."
+msgstr ""
+"Chirp sweep은 진동 명령의 frequency를 점차 바꿉니다. 진행에 따른 measured motion의 lag, amplitude, settling을 보세요. "
+"하나의 정적 pose로는 이런 응답 차이를 볼 수 없습니다."
+
+msgid ""
+"Six joint-response plots for the chirp sweep, comparing dashed commanded trajectories with solid "
+"motor encoder measurements as frequency increases. Arm positions are in degrees; gripper opening "
+"is in percent."
+msgstr ""
+"Frequency 증가에 따른 commanded trajectory(점선)와 motor encoder 측정(실선)의 6개 joint-response plot입니다. Arm "
+"position 단위는 degree, gripper opening은 percent입니다."
+
+msgid ""
+"Joint responses from the chirp sweep above. Dashed lines show the commanded motion; solid lines "
+"show motor encoder measurements. Notice where the measured motion lags or has a smaller amplitude"
+" as the oscillations get faster."
+msgstr "위 chirp sweep의 joint 응답입니다. 진동이 빨라질 때 측정 motion이 늦거나 amplitude가 작아지는 구간을 보세요."
+
+msgid "Workshop Comparison: SysId and Original Actuators"
+msgstr "Workshop 비교: SysId와 Original Actuator"
+
+msgid ""
+"Watch these 10 paired trials with SysId actuators on the left and original actuators on the "
+"right. The video plays at 5× speed."
+msgstr "왼쪽 SysId와 오른쪽 original actuator의 paired trial 10개입니다. 5배속으로 재생됩니다."
+
+msgid ""
+"The policy used here was not trained to robust task performance, but the comparison makes "
+"failures while moving toward the vial visible. Focus on the approach: does the gripper reach the "
+"vial in a position where it can grasp it? Use these observations to distinguish approach failures"
+" from problems during grasping or placement."
+msgstr ""
+"이 policy는 task를 견고하게 수행할 정도로 학습되지 않았지만 vial로 접근할 때의 실패를 보여줍니다. Gripper가 grasp 가능한 위치에 도달하는지 집중해서 "
+"보세요. Approach 실패와 grasp 또는 placement 문제를 구분합니다."
+
+msgid "Simulation Evaluation Results"
+msgstr "Simulation 평가 결과"
+
+msgid ""
+"In a separate simulation comparison, we evaluated two policies with both actuator profiles. Each "
+"cell below reports successful placements out of **100 trials**, using the same scene resets, a "
+"16-action execution horizon, and a 30-second trial limit."
+msgstr ""
+"별도의 simulation 비교에서 두 policy를 두 actuator profile로 각각 평가했습니다. 각 셀은 같은 scene reset, 16-action "
+"execution horizon, 30초 trial limit으로 실행한 **100 trial** 중 placement 성공 수입니다."
+
+msgid "Policy training data"
+msgstr "Policy Training Data"
+
+msgid "Evaluated with SysID actuators"
+msgstr "SysID Actuator로 평가"
+
+msgid "Evaluated with original actuators"
+msgstr "Original Actuator로 평가"
+
+msgid "Collected with SysID actuators"
+msgstr "SysID Actuator로 수집"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**96/100 (96%)**"
+msgstr "**96/100 (96%)**"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**86/100 (86%)**"
+msgstr "**86/100 (86%)**"
+
+msgid "Collected with original actuators"
+msgstr "Original Actuator로 수집"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**57/100 (57%)**"
+msgstr "**57/100 (57%)**"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**49/100 (49%)**"
+msgstr "**49/100 (49%)**"
+
+msgid ""
+"The SysID-trained policy performed better with either actuator profile. For that same policy, "
+"switching evaluation from original to SysID actuators improved success by **10 percentage "
+"points**."
+msgstr ""
+"SysID data로 학습한 policy는 두 profile 모두에서 더 좋은 성능을 보였습니다. 같은 policy의 평가 actuator를 original에서 SysID로 "
+"바꾸면 성공률이 **10 percentage points** 높아졌습니다."
+
+msgid ""
+"This isn't always the case with SysID, and likely points to poor tuning with the original model "
+"to have such a delta in simulation."
+msgstr "SysID가 항상 이런 결과를 내는 것은 아닙니다. 이처럼 큰 simulation 차이는 original model의 tuning이 충분하지 않았을 가능성을 시사합니다."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid "SysId uses physical measurements to estimate simulation parameters."
+msgstr "SysId는 실제 측정으로 simulation parameter를 추정합니다."
+
+msgid "Timing, units, and motion coverage determine whether a fit is meaningful."
+msgstr "Timing, 단위, motion coverage가 fit의 의미를 좌우합니다."
+
+msgid "Matched demonstrations help isolate the effect of actuator profiles."
+msgstr "조건을 맞춘 demonstration으로 actuator profile의 효과를 분리합니다."
+
+msgid "Verify both motion-model accuracy and downstream task performance."
+msgstr "Motion model 정확도와 후속 task 성능을 모두 검증하세요."
+
+msgid "Resources"
+msgstr "참고 자료"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "[Anchor-Lab measurements](https://huggingface.co/datasets/nvidia/Anchor-Lab)"
+msgstr "[Anchor-Lab measurements](https://huggingface.co/datasets/nvidia/Anchor-Lab)"
+
+msgid ""
+"[SO-101 profiles and reproduction notes](https://huggingface.co/VigneshBhavan/so101-newton-"
+"actuator-ab-paired-"
+"checkpoints/blob/123b6cbc48f7bb948397cb0ad5b9dac8a4ab38d8/reproduction/README.md)"
+msgstr ""
+"[SO-101 Profile과 재현 안내](https://huggingface.co/VigneshBhavan/so101-newton-actuator-ab-paired-"
+"checkpoints/blob/123b6cbc48f7bb948397cb0ad5b9dac8a4ab38d8/reproduction/README.md)"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid ""
+"[Paired demonstrations](https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-"
+"paired-demos)"
+msgstr ""
+"[Paired demonstrations](https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-"
+"paired-demos)"
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to [Explore and Experiment](15-explore.md) to choose a follow-up experiment and find "
+"further resources."
+msgstr "[Explore and Experiment](15-explore.md)에서 후속 실험과 추가 자료를 확인하세요."
+

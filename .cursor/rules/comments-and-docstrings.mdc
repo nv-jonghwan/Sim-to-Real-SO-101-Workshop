@@ -1,0 +1,12 @@
+---
+description: Keep comments and docstrings timeless and intentional
+alwaysApply: true
+---
+
+# Comments and docstrings
+
+Follow the canonical "Comments and docstrings" policy in `AGENTS.md`.
+
+Before finishing, review every added or modified comment and docstring. Remove
+editing history, commented-out code, and narration that belongs in a commit,
+pull request, `CHANGELOG`, or design document.

@@ -1,0 +1,135 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "How to Take This Course"
+msgstr "과정 진행 방법"
+
+msgid "SO-101 simulation teleoperation through the browser camera display."
+msgstr "Browser camera display를 사용하는 SO-101 simulation teleoperation입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid "Nothing — this module is theory-only."
+msgstr "없습니다. 이 module은 이론만 다룹니다."
+
+msgid "Learning Strategies"
+msgstr "학습 방법 선택"
+
+msgid ""
+"Choose based on the amount of time you want to invest, and how much of a challenge you want to "
+"take on."
+msgstr "투자할 수 있는 시간과 원하는 도전 수준에 맞춰 선택하세요."
+
+msgid ""
+"Think of this workshop as a platform for you to practice and build your skills in sim-to-real "
+"transfer."
+msgstr "이 workshop을 sim-to-real transfer를 연습하고 역량을 쌓는 플랫폼으로 활용하세요."
+
+msgid "Option 1: As-Is"
+msgstr "선택 1: 제공된 구성 그대로 진행"
+
+msgid "If you’re not sure, just take the course as-is!"
+msgstr "어떤 방법이 좋을지 모르겠다면, 제공된 과정을 그대로 따라가세요!"
+
+msgid ""
+"Buy the workspace materials from the Bill of Materials, use our pre-trained checkpoints and pre-"
+"collected datasets, and follow the course as-is."
+msgstr ""
+"Bill of Materials에 있는 workspace 자재를 구입하고, 제공된 pre-trained checkpoint와 사전 수집 dataset을 사용해 순서대로 "
+"진행합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Tip"
+msgstr "Tip"
+
+msgid "This is the fastest way to experience the full sim-to-real workflow end-to-end."
+msgstr "전체 sim-to-real workflow를 처음부터 끝까지 가장 빠르게 경험하는 방법입니다."
+
+msgid "Option 2: Use Your Own Data"
+msgstr "선택 2: 직접 수집한 Data 사용"
+
+msgid ""
+"Same as option 1, except you collect your own data and train your own models on the same vial-to-"
+"rack task. Use leader-arm teleoperation or the optional [automated collection workflow](08"
+"-simulation-teleoperation.md#optional-automated-data-collection), then inspect the dataset and "
+"post-train GR00T 1.7. Scripted collection does not need a leader arm; real-robot evaluation still"
+" needs a calibrated follower and cameras."
+msgstr ""
+"선택 1과 같지만, 동일한 vial-to-rack task에서 data를 직접 수집하고 model을 학습합니다. Leader-arm teleoperation 또는 선택 사항인"
+" [automated collection workflow](08-simulation-teleoperation.md#optional-automated-data-"
+"collection)를 사용한 뒤 dataset을 검토하고 GR00T 1.7을 post-train합니다. Scripted collection에는 leader arm이 필요 "
+"없지만, 실제 robot 평가에는 calibration을 마친 follower와 camera가 필요합니다."
+
+msgid "Option 3: Bring Your Own Task"
+msgstr "선택 3: 직접 정의한 Task 사용"
+
+msgid "Get more creative with this learning path as a base for your own exploration."
+msgstr "이 학습 과정을 기반으로 자신만의 실험을 설계해 보세요."
+
+msgid ""
+"Buy the workspace, but swap out the props and task. Define a new manipulation problem, collect "
+"data for it, and apply the same sim-to-real strategies covered in this course."
+msgstr ""
+"Workspace를 준비하되 소품과 task를 바꿉니다. 새로운 manipulation 문제를 정의하고 data를 수집한 뒤, 이 과정의 sim-to-real 전략을 "
+"적용합니다."
+
+msgid ""
+"This will take some creativity, or maybe you already have a task in mind. But it will ultimately "
+"teach you the most, to build and apply the process to a new task."
+msgstr "창의적인 설계가 필요할 수 있으며, 이미 생각해 둔 task가 있어도 좋습니다. 새로운 task에 과정을 직접 구축하고 적용하면서 가장 많은 것을 배울 수 있습니다."
+
+msgid "Option 4: Going Further"
+msgstr "선택 4: 더 확장하기"
+
+msgid ""
+"Train a robust enough model that you can completely remove the lightbox enclosure and run the "
+"task in an uncontrolled environment."
+msgstr "Lightbox enclosure를 완전히 제거하고 통제되지 않은 환경에서도 task를 수행할 수 있을 만큼 견고한 model을 학습합니다."
+
+msgid "Computer Hardware Prerequisites"
+msgstr "Computer Hardware 사전 요구사항"
+
+msgid "Tested configurations:"
+msgstr "검증된 구성:"
+
+msgid "**OS:** Ubuntu Linux newer than 22.04"
+msgstr "**OS:** Ubuntu Linux 22.04보다 최신 버전"
+
+msgid "**GPU:** NVIDIA RTX 6000 Pro (Blackwell), RTX 5090 (Blackwell), or RTX 6000 (Ada)"
+msgstr "**GPU:** NVIDIA RTX 6000 Pro (Blackwell), RTX 5090 (Blackwell) 또는 RTX 6000 (Ada)"
+
+msgid "**Software:** Git with Git LFS, Docker, the CUDA Toolkit, and the NVIDIA Container Toolkit"
+msgstr "**Software:** Git LFS가 포함된 Git, Docker, CUDA Toolkit, NVIDIA Container Toolkit"
+
+msgid "Install the software before [Get the Code](06-get-the-code.md)."
+msgstr "[Get the Code](06-get-the-code.md)를 진행하기 전에 software를 설치하세요."
+
+msgid ""
+"Details on the robot and workspace requirements can be found in [Building the Workspace](05"
+"-building-workspace.md)."
+msgstr "Robot과 workspace 요구사항은 [Building the Workspace](05-building-workspace.md)에서 확인할 수 있습니다."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid "Continue to [LeRobot and the SO-101](04-lerobot.md)."
+msgstr "[LeRobot and the SO-101](04-lerobot.md)으로 이동하세요."
+

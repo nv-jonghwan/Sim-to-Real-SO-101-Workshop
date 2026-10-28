@@ -1,0 +1,778 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Troubleshooting Guide"
+msgstr "Troubleshooting Guide"
+
+msgid "Rerun camera views and joint plots for inspecting robot behavior."
+msgstr "Robot 동작을 점검하는 Rerun camera view와 joint plot입니다."
+
+msgid "This page consolidates troubleshooting information from across this learning path for easy access."
+msgstr "과정 전체의 troubleshooting 안내를 한곳에 모았습니다."
+
+msgid ""
+"All workshop commands run in the single `so101-workshop` container with its Python environment "
+"active. Keep using the terminal started in [Get the Code](06-get-the-code.md#start-the-workshop-"
+"container), stopping each exercise before starting the next. Extra shells are optional; see "
+"[container shell recovery](container-shell-recovery)."
+msgstr ""
+"모든 명령은 Python environment가 활성화된 하나의 `so101-workshop` container에서 실행합니다. [Get the Code](06-get-"
+"the-code.md#start-the-workshop-container)의 terminal을 계속 사용하고 각 실습을 종료한 뒤 다음을 시작하세요. 추가 shell은 선택 "
+"사항입니다. [Container shell recovery](container-shell-recovery)를 참고하세요."
+
+msgid "Hardware Issues"
+msgstr "Hardware 문제"
+
+msgid "First Thing to Try"
+msgstr "먼저 시도할 방법"
+
+msgid ""
+"Unplug power, and replug the power cable. Do this 2X if the next command doesn't run. If that "
+"doesn't solve, proceed to the next steps."
+msgstr "전원 cable을 분리했다가 다시 연결하세요. 다음 명령이 실행되지 않으면 한 번 더 반복합니다. 해결되지 않으면 아래 절차를 진행하세요."
+
+msgid "Robot Doesn't Respond"
+msgstr "Robot이 응답하지 않음"
+
+msgid "**Check** USB connection"
+msgstr "USB 연결을 **확인**합니다."
+
+msgid "**Verify** power LED is on"
+msgstr "Power LED가 켜졌는지 **확인**합니다."
+
+msgid "**Try** a different USB port"
+msgstr "다른 USB port를 **시험**합니다."
+
+msgid "Inside the `so101-workshop` container, **run** `lerobot-find-port` to confirm the port is correct."
+msgstr "`so101-workshop` container에서 `lerobot-find-port`를 **실행**해 올바른 port인지 확인합니다."
+
+msgid "No Ports Found or Permission Denied on /dev/ttyACM*"
+msgstr "Port를 찾지 못하거나 /dev/ttyACM* 접근 권한 오류"
+
+msgid "If `lerobot-find-port` finds no ports, or you see permission denied when accessing the robot:"
+msgstr "`lerobot-find-port`가 port를 찾지 못하거나 permission denied가 발생하면:"
+
+msgid ""
+"First, check the USB connection and confirm that the workshop container was started with the "
+"documented `/dev` mount and `--privileged` option. Re-run `lerobot-find-port` at the same "
+"container prompt after reconnecting the device."
+msgstr ""
+"먼저 USB 연결과 문서에 나온 `/dev` mount, `--privileged` 옵션으로 container를 시작했는지 확인합니다. Device를 다시 연결한 뒤 같은 "
+"prompt에서 `lerobot-find-port`를 재실행하세요."
+
+msgid "If permissions still fail and a host-side fix is needed:"
+msgstr "계속 권한 오류가 나고 host 수정이 필요하면:"
+
+msgid ""
+"**Stop** the active exercise, then **exit** the main container shell to return to the host "
+"prompt. With the documented `--rm` invocation, this stops and removes the container; mounted "
+"files persist."
+msgstr ""
+"현재 실습을 **중단**하고 main container shell을 **종료**해 host prompt로 돌아갑니다. 문서의 `--rm` 실행 방식에서는 container가 "
+"종료·제거되지만 mount된 파일은 유지됩니다."
+
+msgid ""
+"On the **host**, **grant** read/write access only to the connected serial ports you identified "
+"(the paths below are examples):"
+msgstr "**Host**에서 확인한 연결 serial port에만 read/write 권한을 **부여**합니다. 아래 경로는 예시입니다."
+
+msgid ""
+"Permissions reset when devices are reconnected; re-run these after unplugging/replugging USB if "
+"needed."
+msgstr "Device 재연결 시 권한이 초기화되므로 필요하면 USB를 다시 연결한 뒤 명령을 반복합니다."
+
+msgid ""
+"For persistent **host** access, **add** your host user to the `dialout` group (and `video` for "
+"cameras), then log out and back in:"
+msgstr "지속적인 **host** 접근이 필요하면 사용자를 `dialout` group(camera는 `video`)에 **추가**하고 logout/login합니다."
+
+msgid ""
+"**Restart** the workshop container using [Get the Code](06-get-the-code.md#start-the-workshop-"
+"container), then verify ports and saved settings."
+msgstr ""
+"[Get the Code](06-get-the-code.md#start-the-workshop-container)에 따라 container를 **재시작**하고 port와 저장"
+" 설정을 확인합니다."
+
+msgid "Power Not Connected (All Motors Missing)"
+msgstr "전원 미연결(All Motors Missing)"
+
+msgid "If you see this error showing all motors missing:"
+msgstr "모든 motor가 없다는 다음 오류가 보이면:"
+
+msgid ""
+"This indicates **power is not connected** to the robot. The USB connection allows communication, "
+"but the motors need separate power."
+msgstr "Robot의 **전원이 연결되지 않았다는 뜻**입니다. USB는 통신을 제공하지만 motor에는 별도 전원이 필요합니다."
+
+msgid "**Solution:**"
+msgstr "**해결 방법:**"
+
+msgid "**Connect** the 12V power supply to the robot"
+msgstr "Follower robot에 12V 전원을 **연결**합니다."
+
+msgid "**Verify** the power LED illuminates"
+msgstr "Power LED를 **확인**합니다."
+
+msgid "**Retry** the command"
+msgstr "명령을 **재시도**합니다."
+
+msgid "Single Motor Disconnected"
+msgstr "Motor 하나의 연결 끊김"
+
+msgid "If you see an error showing one motor missing:"
+msgstr "Motor 하나가 없다는 오류가 보이면:"
+
+msgid ""
+"This indicates motor 1 is disconnected or not communicating. Sometimes this will happen "
+"unexpectedly, in which case a simple repower should solve it."
+msgstr "Motor 1이 연결되지 않았거나 통신하지 않는 상태입니다. 갑자기 발생했다면 전원을 다시 켜는 것만으로 해결될 수 있습니다."
+
+msgid "**Power cycle**: Unplug and replug the power cable"
+msgstr "**Power cycle**: 전원 cable을 분리 후 재연결합니다."
+
+msgid "If that doesn't work, **inspect motor cables** for loose connections"
+msgstr "해결되지 않으면 **motor cable**이 느슨한지 확인합니다."
+
+msgid "**Check** the cable connecting to the specific missing motor"
+msgstr "누락된 motor의 cable을 **확인**합니다."
+
+msgid "The motor chain is daisy-chained—a loose connection can affect motors downstream"
+msgstr "Motor는 daisy chain으로 연결되어 한 곳의 느슨한 연결이 뒤쪽 motor에도 영향을 줄 수 있습니다."
+
+msgid "Motor Connection Error"
+msgstr "Motor 연결 오류"
+
+msgid "If you see this error:"
+msgstr "다음 오류가 보이면:"
+
+msgid "This indicates communication failure with a specific motor."
+msgstr "특정 motor와 통신에 실패한 상태입니다."
+
+msgid "**Check power**: Ensure the 12V power supply is connected and LED is on"
+msgstr "**전원 확인**: Follower의 12V 전원이 연결되고 LED가 켜졌는지 확인합니다."
+
+msgid "**Check USB**: Verify the USB cable is securely connected at both ends"
+msgstr "**USB 확인**: Cable 양쪽이 단단히 연결되었는지 확인합니다."
+
+msgid "**Restart motors**: Power cycle the robot (disconnect and reconnect power)"
+msgstr "**Motor 재시작**: 전원을 분리했다가 다시 연결합니다."
+
+msgid "**Check motor ID**: The motor with the specified ID may have a loose connection"
+msgstr "**Motor ID 확인**: 해당 ID motor의 연결이 느슨할 수 있습니다."
+
+msgid "Calibration Fails"
+msgstr "Calibration 실패"
+
+msgid "**Ensure** the robot port matches the robot.id of the real robot"
+msgstr "Robot port가 실제 robot의 robot.id와 대응하는지 **확인**합니다."
+
+msgid "**Ensure** robot is in exact calibration pose"
+msgstr "정확한 calibration pose인지 **확인**합니다."
+
+msgid "**Check** that motors can move freely"
+msgstr "Motor가 자유롭게 움직이는지 **확인**합니다."
+
+msgid "**Verify** no joint is at a limit"
+msgstr "초기 pose에서 joint가 limit에 있지 않은지 **확인**합니다."
+
+msgid ""
+"**True end stops only** — During the range sweep, move each joint **except wrist roll** to its "
+"mechanical end stop, not a cable or obstacle. LeRobot sets the wrist-roll range automatically. A "
+"cable pinched between links (or the robot hitting a cable) creates a false min/max and wrong "
+"calibration. Check cable routing so the arm can reach its real limits."
+msgstr ""
+"**실제 End Stop까지 이동** — Range sweep에서는 **wrist roll을 제외한** 각 joint를 cable이나 장애물이 아닌 mechanical end"
+" stop까지 움직입니다. Wrist-roll range는 LeRobot이 자동 지정합니다. Link 사이에 끼인 cable이나 cable과의 충돌은 잘못된 min/max를 "
+"만들 수 있으므로 실제 limit까지 도달하도록 배선을 확인하세요."
+
+msgid "SO-101 arm segment showing cable routing near a joint"
+msgstr "Joint 근처 cable 배선을 보여주는 SO-101 arm 부분입니다."
+
+msgid "**Re-run** calibration from step 1"
+msgstr "1단계부터 calibration을 **다시 실행**합니다."
+
+msgid "Camera Issues"
+msgstr "Camera 문제"
+
+msgid "Dark or No Image"
+msgstr "Image가 어둡거나 없음"
+
+msgid "If the camera feed is very dark or black:"
+msgstr "Camera feed가 매우 어둡거나 검다면:"
+
+msgid ""
+"**Check the lens cap** — Ensure the lens cap is removed from the camera. This is a common cause "
+"of dark or missing feed."
+msgstr "**Lens cap 확인** — Cap을 제거했는지 확인하세요. 어둡거나 없는 feed의 흔한 원인입니다."
+
+msgid "**Verify** the camera is powered and connected"
+msgstr "Camera 전원과 연결을 **확인**합니다."
+
+msgid ""
+"Inside the `so101-workshop` container, **run** `lerobot-find-cameras opencv` to confirm the "
+"camera is detected"
+msgstr "`so101-workshop`에서 `lerobot-find-cameras opencv`를 **실행**해 인식을 확인합니다."
+
+msgid "Camera Index Changed"
+msgstr "Camera Index 변경"
+
+msgid "Camera indices may change any time cameras are unplugged or replugged into your computer."
+msgstr "Camera를 분리하거나 다시 연결하면 index가 바뀔 수 있습니다."
+
+msgid ""
+"Inside the `so101-workshop` container, **run** `lerobot-find-cameras opencv` to discover current "
+"indices"
+msgstr "`so101-workshop`에서 `lerobot-find-cameras opencv`로 현재 index를 **확인**합니다."
+
+msgid "**Update** your configuration with the new indices"
+msgstr "새 index로 configuration을 **갱신**합니다."
+
+msgid "**Verify** by checking the captured test images"
+msgstr "Capture test image로 **검증**합니다."
+
+msgid "Blurry or Out-of-Focus Image"
+msgstr "Image가 흐리거나 Focus가 맞지 않음"
+
+msgid "If the camera feed is blurry or the policy has trouble with fine visual detail:"
+msgstr "Feed가 흐리거나 policy가 세부 시각 정보를 처리하기 어려워하면:"
+
+msgid "**Check focus** — Ensure the camera lens is in focus."
+msgstr "**Focus 확인** — Camera lens의 초점을 맞춥니다."
+
+msgid "**Clean** the lens if it is smudged or dusty"
+msgstr "얼룩이나 먼지가 있으면 lens를 **닦습니다**."
+
+msgid "**Verify** the camera is fixed in place and not vibrating"
+msgstr "Camera가 고정되어 진동하지 않는지 **확인**합니다."
+
+msgid "Wrong Camera Feed"
+msgstr "잘못된 Camera Feed"
+
+msgid "If the policy receives incorrect visual input:"
+msgstr "Policy가 잘못된 시각 입력을 받으면:"
+
+msgid "**Check** camera assignments match expectations"
+msgstr "Camera 할당이 예상과 같은지 **확인**합니다."
+
+msgid "**Verify** the wrist camera and external camera are correctly identified"
+msgstr "Wrist와 external camera가 올바르게 구분되었는지 **확인**합니다."
+
+msgid "**Re-run** `lerobot-find-cameras opencv` to confirm indices"
+msgstr "`lerobot-find-cameras opencv`를 **다시 실행**해 index를 확인합니다."
+
+msgid "Policy Deployment Issues"
+msgstr "Policy 배포 문제"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "CUDA Out of Memory"
+msgstr "CUDA Out of Memory"
+
+msgid ""
+"The most likely cause during workshop evaluation is an extra policy server still running and "
+"holding GPU memory. Stop the current evaluation with **Ctrl+C**, then run this in the workshop "
+"container to stop all matching LeRobot policy servers:"
+msgstr ""
+"Workshop 평가에서 가장 흔한 원인은 종료하지 않은 추가 policy server의 GPU memory 점유입니다. **Ctrl+C**로 평가를 끝내고 workshop "
+"container 안에서 다음 명령으로 해당 LeRobot policy server를 모두 종료합니다."
+
+msgid ""
+"Wait for the servers to exit and check GPU memory with `nvidia-smi`. Before retrying simulation "
+"evaluation, start just one server using the [startup and readiness commands](11-sim-evaluation.md"
+"#run-policy-evaluation). Always [stop the server](11-sim-evaluation.md#stop-evaluation) after "
+"finishing with a policy and before starting the next one."
+msgstr ""
+"Server 종료 후 `nvidia-smi`로 memory를 확인합니다. [시작 및 readiness 명령](11-sim-evaluation.md#run-policy-"
+"evaluation)으로 server 하나만 시작하세요. Policy 평가를 마치고 다음 것을 시작하기 전에 항상 [server를 종료](11-sim-evaluation.md"
+"#stop-evaluation)합니다."
+
+msgid "Inference Is Slow"
+msgstr "Inference가 느림"
+
+msgid ""
+"If real-robot inference is slow, check that you stopped the simulation policy server. It can "
+"still use GPU resources. In the terminal where you started it, run:"
+msgstr ""
+"실제 inference가 느리면 simulation policy server를 종료했는지 확인하세요. 여전히 GPU를 사용할 수 있습니다. Server를 시작한 "
+"terminal에서 실행합니다."
+
+msgid "Or **stop all policy servers** in the container:"
+msgstr "또는 container의 **모든 policy server를 종료**합니다."
+
+msgid "If you started the server in a different terminal, stop it there instead."
+msgstr "다른 terminal에서 시작한 server라면 그곳에서 종료하세요."
+
+msgid "Compare simulated and real camera images"
+msgstr "Simulation과 실제 Camera Image 비교"
+
+msgid ""
+"These two unedited 640 × 480 frames show the visual differences a policy can encounter when "
+"moving from a simulated dataset to the physical workstation."
+msgstr "편집하지 않은 640 × 480 frame 두 개로 simulation dataset에서 실제 workstation으로 옮길 때 policy가 겪는 시각적 차이를 보여줍니다."
+
+msgid "View an illustrative sim/real camera comparison and its limitations"
+msgstr "Sim/Real Camera 비교 예시와 한계 보기"
+
+msgid ""
+"Simulated wrist camera showing orange gripper fingers, a yellow rack, and smooth white vials on a"
+" dark mat."
+msgstr "Orange gripper finger, yellow rack, 어두운 mat 위의 매끈한 white vial이 보이는 simulation wrist camera입니다."
+
+msgid ""
+"**Simulation.** First wrist-camera frame of episode 0 from [`sreetz-"
+"nv/so101_newton_dr500_20260923`](https://huggingface.co/datasets/sreetz-"
+"nv/so101_newton_dr500_20260923), dataset revision `a08882a61870706727c153beec6ae10ec6747146`."
+msgstr ""
+"**Simulation.** [`sreetz-nv/so101_newton_dr500_20260923`](https://huggingface.co/datasets/sreetz-"
+"nv/so101_newton_dr500_20260923)의 episode 0 첫 wrist frame입니다. Dataset revision은 "
+"`a08882a61870706727c153beec6ae10ec6747146`입니다."
+
+msgid ""
+"Physical wrist camera showing brighter orange gripper fingers, a partly visible yellow rack, a "
+"blue-gray mat, and a textured white vial near the image edge."
+msgstr ""
+"더 밝은 orange gripper, 일부 yellow rack, blue-gray mat, image 가장자리의 표면 질감 있는 white vial이 보이는 실제 wrist"
+" camera입니다."
+
+msgid ""
+"**Real hardware.** SO-101 wrist-camera frame captured on September 24, 2026, at 640 × 480 with "
+"MJPEG capture configured at 30 FPS."
+msgstr "**Real hardware.** 2026년 9월 24일, 640 × 480 및 MJPEG 30 FPS 설정으로 capture한 SO-101 wrist frame입니다."
+
+msgid ""
+"In this pair, the real image has brighter gripper and rack highlights with less visible detail. "
+"The mat appears blue-gray rather than dark gray, and the real vial has surface texture and folds "
+"absent from the smooth simulated vial. These differences suggest checking lighting, camera "
+"exposure, color response, and object materials when investigating transfer failures."
+msgstr ""
+"실제 image는 gripper와 rack highlight가 밝아 세부가 덜 보입니다. Mat는 dark gray보다 blue-gray에 가깝고, 실제 vial에는 "
+"simulation의 매끈한 vial과 달리 질감과 주름이 있습니다. Transfer 실패를 조사할 때 lighting, exposure, color response, "
+"material을 확인할 이유가 됩니다."
+
+msgid ""
+"The arm pose, gripper opening, and vial layout differ between these frames. This is an "
+"illustrative perception-gap comparison, **not a camera calibration test**. It does not establish "
+"a field-of-view error, a sensor dynamic-range measurement, or the cause of a policy failure."
+msgstr ""
+"두 frame의 arm pose, gripper opening, vial 배치는 다릅니다. Perception gap을 보여주는 예시이며 **camera calibration"
+" 시험이 아닙니다**. FoV 오류, sensor dynamic range, policy 실패 원인을 입증하지 않습니다."
+
+msgid ""
+"For a controlled comparison, reproduce the physical arm's measured joint pose in simulation, "
+"match the vial and rack layout, and record the real camera's exposure and white-balance settings."
+" Compare the resulting camera images before changing the simulation. Apply any camera-response "
+"adjustment to the images used for both data collection and policy evaluation, then test its "
+"effect on real-robot performance."
+msgstr ""
+"통제된 비교에는 실제로 측정한 joint pose를 simulation에 재현하고 vial/rack 배치를 맞추며 실제 exposure와 white balance를 "
+"기록합니다. Simulation을 바꾸기 전에 결과 image를 비교하세요. Camera response 조정은 수집과 평가 image에 모두 적용한 뒤 실제 성능에 미치는 "
+"영향을 시험합니다."
+
+msgid "Overlay saved wrist images to inspect alignment"
+msgstr "저장 Wrist Image를 겹쳐 정렬 확인"
+
+msgid ""
+"Use the [interactive perception-gap comparison in What Is Sim-to-Real?](perception-gap-"
+"comparison) to overlay saved wrist images, adjust simulation opacity, or compare the views side "
+"by side. The alternate image pair below provides another comparison."
+msgstr ""
+"[What Is Sim-to-Real?의 interactive 비교](perception-gap-comparison)로 image를 겹치고 simulation opacity를"
+" 조절하거나 나란히 비교할 수 있습니다. 아래는 다른 image pair입니다."
+
+msgid "Alternate pair: robot confirmed level"
+msgstr "다른 Pair: Robot 수평 확인"
+
+msgid "Inspect the alternate image pair and its capture conditions"
+msgstr "Image Pair와 Capture 조건 보기"
+
+msgid ""
+"In this second pair, also captured on September 28, 2026, the operator confirmed that the "
+"physical robot base was level and moved the rack to align it by eye. The simulation uses the "
+"encoder pose captured for this comparison, the elbow asset correction, and measured lens "
+"intrinsics and distortion. It retains the original authored camera mount; no candidate mount "
+"offset is applied. The rack settled under physics before capture. The loose vials were still "
+"moving slightly and are not alignment references."
+msgstr ""
+"2026년 9월 28일 capture한 두 번째 pair에서는 operator가 실제 base의 수평을 확인하고 rack을 눈으로 맞췄습니다. Simulation은 이 "
+"비교에서 capture한 encoder pose, elbow asset correction, 측정 lens intrinsics와 distortion을 사용합니다. 원래 "
+"camera mount를 유지하고 후보 offset은 적용하지 않았습니다. Rack은 physics로 안정된 뒤 capture했지만 loose vial은 조금씩 움직여 정렬 "
+"기준으로 사용할 수 없습니다."
+
+msgid ""
+"The rack corners, hole positions, and gripper outlines align much more closely in this pair. "
+"Brightness, highlights, and surface detail still differ. The real scene also contains a "
+"calibration target absent from simulation. This is a qualitative alignment example: the rack "
+"position was not independently measured, and both the lens parameters and scene alignment differ "
+"from the first pair. It therefore does not isolate the effect of leveling the base or establish "
+"that the camera mount is calibrated."
+msgstr ""
+"Rack corner, hole, gripper 윤곽은 훨씬 잘 맞지만 밝기, highlight, 표면 detail은 여전히 다릅니다. 실제 scene에는 "
+"simulation에 없는 calibration target도 있습니다. Rack 위치를 독립적으로 측정하지 않았고 lens parameter와 scene 정렬이 첫 "
+"pair와 달라 정성적 예시일 뿐입니다. Base 수평 효과만을 분리하거나 camera mount calibration을 입증하지 않습니다."
+
+msgid "The arm reaches where there is no vial"
+msgstr "Arm이 Vial 없는 곳으로 향함"
+
+msgid ""
+"When the arm reaches where there’s no vial, find the **first place the observation, prediction, "
+"and motion disagree**."
+msgstr "**Observation, prediction, motion이 처음 어긋나는 지점**을 찾으세요."
+
+msgid ""
+"**Replay one failed pickup.** Compare the camera image, the image actually sent to GR00T, "
+"predicted actions, and executed motion. Is the vial visible in the model’s input?"
+msgstr ""
+"**실패한 Pickup 하나를 재검토하세요.** Camera image, 실제 GR00T 입력 image, 예측 action, 실행 motion을 비교합니다. Model "
+"입력에 vial이 보이나요?"
+
+msgid ""
+"**Move only the vial in simulation.** Keep the arm and cameras fixed. Does the predicted reach "
+"follow the vial?"
+msgstr "**Simulation에서 Vial만 옮기세요.** Arm과 camera는 고정합니다. 예측된 reach가 vial을 따라가나요?"
+
+msgid "Same reach despite moving the vial: investigate visual conditioning or learned position bias."
+msgstr "Vial을 옮겨도 같은 reach라면 visual conditioning이나 학습된 position bias를 조사합니다."
+
+msgid "Reach follows but consistently misses: check calibration and action conversion."
+msgstr "따라가지만 일정하게 빗나가면 calibration과 action conversion을 확인합니다."
+
+msgid ""
+"**Check the action pipeline.** Verify joint order, units, normalization, and relative-action "
+"decoding. Make sure relative actions aren’t converted twice."
+msgstr ""
+"**Action Pipeline을 확인하세요.** Joint 순서, 단위, normalization, relative-action decoding을 확인하고 상대 "
+"action을 두 번 변환하지 않는지 검증합니다."
+
+msgid ""
+"**Try more frequent replanning.** Compare executing 16, 8, and 4 actions before requesting a "
+"fresh prediction. Keep the model and test scenes unchanged."
+msgstr "**더 자주 Replan해 보세요.** Model과 scene을 유지하고 16, 8, 4개 action 실행 후 새 prediction을 요청하는 경우를 비교합니다."
+
+msgid ""
+"**Improve data where failures occur.** Add successful demonstrations with varied vial positions, "
+"starting poses, and recovery approaches. Test on layouts excluded from training."
+msgstr ""
+"**실패 구간의 Data를 보완하세요.** Vial 위치, 시작 pose, recovery 접근을 다양하게 한 성공 demonstration을 추가하고 학습에 없는 배치로 "
+"시험합니다."
+
+msgid ""
+"**Change one factor at a time.** Repeat the same scenes and record wrong-location reaches as well"
+" as successful pickups. Treat each explanation as a hypothesis until a controlled test supports "
+"it."
+msgstr ""
+"**한 번에 한 요인만 바꾸세요.** 같은 scene을 반복하고 잘못된 위치로 향한 reach와 성공 pickup을 모두 기록합니다. 통제된 시험 전에는 각 설명을 가설로 "
+"다룹니다."
+
+msgid "Test policy inputs with fixed or “dummy” observations"
+msgstr "Fixed 또는 “Dummy” Observation으로 Policy 입력 시험"
+
+msgid ""
+"Run this diagnostic offline, without sending predictions to the physical robot. A useful test "
+"observation starts with a saved, valid observation: both camera images, the measured joint state,"
+" and the task instruction. Retain the checkpoint’s saved preprocessing and action postprocessing "
+"so feature names, image conversion, normalization, and relative-action decoding match deployment."
+msgstr ""
+"실제 robot에 prediction을 보내지 않고 offline으로 진단합니다. 두 camera image, 측정 joint state, task instruction이 "
+"있는 유효한 저장 observation을 사용하세요. 저장 preprocessing/postprocessing을 유지해 feature 이름, image 변환, "
+"normalization, relative-action decoding을 배포와 맞춥니다."
+
+msgid "Show the offline fixed-observation diagnostic procedure"
+msgstr "Offline Fixed-Observation 진단 절차 보기"
+
+msgid ""
+"Save the raw camera frames, the corresponding joint state, and the actual preprocessed input sent"
+" to the model. Check camera assignments, image freshness, color order, resizing, and cropping. A "
+"live viewer alone does not establish what the model received."
+msgstr ""
+"Raw camera frame, 대응 joint state, 실제 preprocessed model input을 저장합니다. Camera 할당, frame 최신성, color"
+" 순서, resize, crop을 확인하세요. Live viewer만으로 실제 model 입력을 알 수는 없습니다."
+
+msgid ""
+"Predict from that fixed observation repeatedly, resetting any queued action chunk between trials."
+" Fix the random seed or repeat enough times to measure prediction variability before comparing "
+"conditions."
+msgstr ""
+"고정 observation으로 반복 예측하되 trial 사이의 queued action chunk를 reset합니다. 비교 전에 seed를 고정하거나 충분히 반복해 "
+"prediction 변동을 측정하세요."
+
+msgid ""
+"Change one input at a time. For a meaningful visual test, render the same simulated arm and "
+"camera pose with the vial in two different positions. Hold the joint state and task text fixed "
+"and compare the decoded action chunks."
+msgstr ""
+"입력 하나씩 바꿉니다. 의미 있는 시각 시험은 같은 arm/camera pose에서 vial 위치만 다른 두 scene을 렌더링하는 것입니다. Joint state와 task"
+" text를 고정하고 decoded action chunk를 비교합니다."
+
+msgid ""
+"As an additional diagnostic, replace one camera image with a constant image of the same shape and"
+" type. Keep the other inputs unchanged. This deliberately unrealistic “dummy” input can reveal "
+"sensitivity to a camera, but a similar prediction does not by itself prove that the model ignores"
+" vision: the other camera, joint state, or a learned action prior may dominate."
+msgstr ""
+"추가 진단으로 camera 하나를 같은 shape/type의 constant image로 바꾸고 나머지 입력은 유지합니다. 비현실적인 “dummy” 입력은 camera "
+"민감도를 드러낼 수 있지만 비슷한 prediction만으로 vision을 무시한다고 단정할 수는 없습니다. 다른 camera, joint state, 학습된 action "
+"prior가 지배적일 수 있습니다."
+
+msgid ""
+"Compare predictions offline first. For any simulated rollout comparison, reset both the "
+"environment and the policy’s queued actions between conditions. See the [perception-gap "
+"example](#so101-wrist-perception-gap) for why matching the arm pose and scene layout matters."
+msgstr ""
+"먼저 offline prediction을 비교합니다. Simulation rollout에서는 조건 사이 environment와 policy queued action을 모두 "
+"reset하세요. Pose와 배치 일치의 중요성은 [perception-gap 예시](#so101-wrist-perception-gap)를 확인하세요."
+
+msgid "Replay a recorded episode on the physical arm"
+msgstr "실제 Arm에서 기록 Episode Replay"
+
+msgid ""
+"Recorded-action replay bypasses policy prediction. It checks whether the stored joint commands "
+"produce a comparable physical trajectory; it does not test the policy’s visual reasoning or "
+"closed-loop recovery."
+msgstr ""
+"Recorded-action replay는 policy prediction을 우회해 저장된 joint command가 유사한 실제 trajectory를 만드는지 확인합니다. "
+"Policy의 visual reasoning이나 closed-loop recovery를 시험하지는 않습니다."
+
+msgid ""
+"Inspect a short episode with the dataset viewer. Confirm the robot, saved calibration, joint "
+"order, units, action convention, and recording FPS. Workshop arm actions use native degrees for "
+"the first five joints and a percentage for the gripper. Use the recorded absolute actions "
+"directly; do not apply the policy’s relative-action decoding to them."
+msgstr ""
+"Dataset viewer에서 짧은 episode를 검토하고 robot, calibration, joint 순서·단위, action 규약, recording FPS를 "
+"확인합니다. Workshop action은 처음 5개 joint가 native degree, gripper가 percent입니다. 기록된 absolute action을 직접 "
+"사용하고 policy의 relative-action decoding을 적용하지 마세요."
+
+msgid ""
+"Compare the episode’s starting joint state with the real arm’s measured state. Prepare the "
+"matching start pose with the supervised positioning procedure; replay does not provide a general "
+"collision-aware move to the start. For an initial motion check, clear the workspace of loose "
+"objects and remain at the stop control."
+msgstr ""
+"Episode 시작 joint state와 실제 측정을 비교하고 감독하에 위치를 맞춥니다. Replay가 collision-aware한 시작점 이동을 제공하지는 않습니다. 첫"
+" motion 검사에서는 loose object를 치우고 정지 control 곁에 있으세요."
+
+msgid ""
+"Inside the workshop container, run the installed LeRobot replay command with your dataset and "
+"calibrated follower identifiers:"
+msgstr "Container에서 dataset과 calibration된 follower ID로 설치된 LeRobot replay 명령을 실행합니다."
+
+msgid ""
+"Stop with **Ctrl+C** if the trajectory deviates. Record the actual joint states and camera views "
+"with a separate logging setup if quantitative comparison is needed; this replay command does not "
+"itself save those comparison observations. Compare against the episode’s **observed joint "
+"states**, as well as its commanded actions: commands and measured positions can differ because of"
+" lag and contact."
+msgstr ""
+"Trajectory가 벗어나면 **Ctrl+C**로 중단하세요. 정량 비교에는 별도 logging으로 실제 joint state와 camera view를 기록해야 하며 "
+"replay 명령 자체는 비교 observation을 저장하지 않습니다. 명령뿐 아니라 episode의 **observed joint states**와 비교하세요. Lag와 "
+"contact 때문에 명령과 측정은 다를 수 있습니다."
+
+msgid ""
+"If the recorded commands reproduce the same motion but a policy rollout does not, investigate "
+"policy inputs, prediction, or action-chunk execution. If replay diverges too, investigate "
+"calibration, joint mapping, gripper mapping, actuator response, mounting, and contacts before "
+"retraining."
+msgstr ""
+"Recorded command는 같은 motion을 재현하지만 policy rollout은 못 한다면 입력, prediction, action-chunk 실행을 조사합니다. "
+"Replay도 다르면 재학습 전에 calibration, joint/gripper mapping, actuator response, mounting, contact를 "
+"확인하세요."
+
+msgid ""
+"A simulation episode also depends on the asset geometry and joint offsets used when it was "
+"collected. Matching numeric joint values alone cannot establish a matching physical pose. For a "
+"stationary camera comparison, read the real arm’s encoders and reproduce that pose in simulation "
+"without moving the real arm."
+msgstr ""
+"Simulation episode도 수집 당시 asset geometry와 joint offset에 의존합니다. 숫자상 joint value가 같다고 실제 pose까지 같다고"
+" 볼 수 없습니다. 정적인 camera 비교에서는 실제 arm을 움직이지 않고 encoder를 읽어 simulation에 pose를 재현하세요."
+
+msgid "\"It worked once but not consistently\""
+msgstr "한 번은 되었지만 일관되지 않음"
+
+msgid "**Likely cause:** Distribution shift"
+msgstr "**가능한 원인:** Distribution shift"
+
+msgid "Check if initial conditions vary between trials"
+msgstr "Trial 사이 초기 조건이 달라지는지 확인"
+
+msgid "Ensure cameras are stable and haven't shifted"
+msgstr "Camera가 안정적으로 고정되고 위치가 바뀌지 않았는지 확인"
+
+msgid "\"Grasp is always off by the same amount\""
+msgstr "Grasp가 항상 같은 양만큼 빗나감"
+
+msgid "**Likely cause:** Calibration or camera positioning"
+msgstr "**가능한 원인:** Calibration 또는 camera 위치"
+
+msgid "Re-run robot calibration"
+msgstr "Robot calibration 재실행"
+
+msgid "Check camera positioning"
+msgstr "Camera 위치 확인"
+
+msgid "Verify workspace setup matches training"
+msgstr "Workspace가 학습 조건과 맞는지 확인"
+
+msgid "Simulation and Display Issues"
+msgstr "Simulation과 Display 문제"
+
+msgid "No Simulated Camera Images"
+msgstr "Simulation Camera Image가 없음"
+
+msgid ""
+"Use explicit `--cameras all presets=newton,ovrtx_renderer`. `--cameras none` intentionally "
+"disables images. The first ovrtx launch can take a few minutes to warm up caches."
+msgstr ""
+"`--cameras all presets=newton,ovrtx_renderer`를 명시하세요. `--cameras none`은 의도적으로 image를 끕니다. ovrtx 첫"
+" 실행은 cache 준비에 몇 분이 걸릴 수 있습니다."
+
+msgid "Browser Is Blank or Controls Do Not Work"
+msgstr "Browser가 비거나 Control이 동작하지 않음"
+
+msgid ""
+"Use `--browser-display` and open `http://localhost:8090` on the host. Focus the browser for "
+"keyboard controls. In recording mode, **Space** starts/saves, **C** discards, and **R** "
+"discards/resets. Use only one browser tab connected to the viewer at a time."
+msgstr ""
+"`--browser-display`로 실행하고 host에서 `http://localhost:8090`을 엽니다. Keyboard control을 위해 browser에 "
+"focus를 두세요. Recording mode의 **Space**는 시작/저장, **C**는 폐기, **R**은 폐기/reset입니다. Viewer에는 tab 하나만 "
+"연결합니다."
+
+msgid ""
+"Use the documented host networking. Browser display uses ports 8090, 49100, and 47998. Stop other"
+" display sessions using those ports. `--browser-display` and `--rerun` are mutually exclusive; "
+"Rerun/headless modes have no recording keyboard controls."
+msgstr ""
+"문서의 host networking을 사용하세요. Display port는 8090, 49100, 47998이며 같은 port의 다른 session을 종료합니다. "
+"`--browser-display`와 `--rerun`은 함께 사용할 수 없고 Rerun/headless에는 recording keyboard control이 없습니다."
+
+msgid "Policy Server or Checkpoint Errors"
+msgstr "Policy Server 또는 Checkpoint 오류"
+
+msgid ""
+"Follow the background-server startup and readiness check in [Sim Evaluation](11-sim-evaluation.md"
+"#run-policy-evaluation) using the same container terminal. The sim client uses `--server_address "
+"localhost:8080`."
+msgstr ""
+"같은 container terminal에서 [Sim Evaluation](11-sim-evaluation.md#run-policy-evaluation)의 background "
+"server 시작과 readiness 검사를 따릅니다. Client는 `--server_address localhost:8080`을 사용합니다."
+
+msgid ""
+"If readiness times out or evaluation cannot connect, run `tail -n 40 outputs/policy-server.log`. "
+"Resolve the reported error before retrying; do not launch duplicate servers on the same port. "
+"After evaluation, use the documented [server cleanup](11-sim-evaluation.md#stop-evaluation)."
+msgstr ""
+"Timeout이나 연결 실패 시 `tail -n 40 outputs/policy-server.log`를 확인하고 오류를 해결한 뒤 재시도하세요. 같은 port에 중복 "
+"server를 띄우지 마세요. 평가 후 [server cleanup](11-sim-evaluation.md#stop-evaluation)을 수행합니다."
+
+msgid ""
+"Verify that `MODEL_ID` identifies a LeRobot GR00T 1.7 policy with saved configuration and "
+"processors, and that the server can access its local path or Hub repository. A rename map handles"
+" feature names only. See [Checkpoint Compatibility](datasets-and-models.md#checkpoint-"
+"compatibility)."
+msgstr ""
+"`MODEL_ID`가 configuration과 processor를 포함한 LeRobot GR00T 1.7 policy인지, server가 해당 local 경로나 Hub "
+"repo에 접근 가능한지 확인합니다. Rename map은 feature 이름만 처리합니다. [Checkpoint Compatibility](datasets-and-"
+"models.md#checkpoint-compatibility)를 참고하세요."
+
+msgid "Dataset and Recording Issues"
+msgstr "Dataset과 Recording 문제"
+
+msgid "Automated Collection Has Not Exported a Dataset"
+msgstr "자동 수집 Dataset이 아직 Export되지 않음"
+
+msgid ""
+"`vials_state_machine --record` stages successful episodes and assembles the LeRobot dataset after"
+" reaching `--num_episodes`. This is a successful-episode target, not an attempt count. Watch the "
+"terminal's collection count and wait for final export before running `lerobot-dataset-viz` or "
+"uploading. An early interruption can leave staged episodes without a completed dataset."
+msgstr ""
+"`vials_state_machine --record`는 성공 episode를 임시 저장하고 `--num_episodes`에 도달하면 LeRobot dataset을 "
+"조립합니다. 목표는 시도 횟수가 아닌 성공 episode 수입니다. Terminal 수집 수를 보고 최종 export를 기다린 뒤 `lerobot-dataset-viz`나 "
+"upload를 실행하세요. 조기 중단 시 완성되지 않은 임시 episode만 남을 수 있습니다."
+
+msgid ""
+"Use both cameras with `--cameras all presets=newton,ovrtx_renderer` and provide `--repo_id` and "
+"`--task_name`. See [Automated Data Collection](08-simulation-teleoperation.md#optional-automated-"
+"data-collection)."
+msgstr ""
+"`--cameras all presets=newton,ovrtx_renderer`로 두 camera를 켜고 `--repo_id`, `--task_name`을 지정합니다. "
+"[Automated Data Collection](08-simulation-teleoperation.md#optional-automated-data-collection)을 "
+"확인하세요."
+
+msgid "Training Cannot Find a Locally Recorded Dataset"
+msgstr "Local Recording Dataset을 학습에서 찾지 못함"
+
+msgid ""
+"The lesson's `lerobot-train` command selects a dataset by its Hub ID. Inspect and upload "
+"`./datasets/<repo_id>` to the same dataset repository before training. In a new shell, set "
+"`HF_USER`, `DATASET_NAME`, and the derived training variables again; ordinary `export` "
+"assignments do not carry across shells."
+msgstr ""
+"실습의 `lerobot-train`은 Hub ID로 dataset을 선택합니다. 학습 전에 `./datasets/<repo_id>`를 검토하고 같은 dataset repo에 "
+"upload하세요. 새 shell에서는 `HF_USER`, `DATASET_NAME`, 파생 training variable을 다시 설정해야 합니다. 일반 `export`는 "
+"shell 간 유지되지 않습니다."
+
+msgid "Dataset Already Exists"
+msgstr "Dataset이 이미 존재함"
+
+msgid ""
+"Simulation recording derives its path as `datasets/<repo_id>`. Add `--resume` to append to that "
+"dataset, or use a different `--repo_id` for a new collection. Real recording uses "
+"`--dataset.repo_id` and `--dataset.root`. Inspect and preserve existing episodes before changing "
+"paths."
+msgstr ""
+"Simulation recording 경로는 `datasets/<repo_id>`입니다. `--resume`으로 추가하거나 다른 `--repo_id`로 새 수집을 시작하세요."
+" 실제 recording은 `--dataset.repo_id`, `--dataset.root`를 사용합니다. 경로 변경 전에 기존 episode를 확인하고 보존합니다."
+
+msgid "Dataset Missing Images or Final Episodes"
+msgstr "Dataset의 Image 또는 마지막 Episode가 없음"
+
+msgid ""
+"Record with both cameras and renderer presets. Wait for the saving indicator to clear and the "
+"terminal to confirm each episode is saved. Let **Ctrl+C** shutdown finish before stopping the "
+"container."
+msgstr ""
+"두 camera와 renderer preset으로 기록합니다. Saving 표시가 사라지고 terminal에 각 episode 저장 완료가 나올 때까지 기다리세요. "
+"Container 종료 전에 **Ctrl+C** shutdown을 끝까지 기다립니다."
+
+msgid ""
+"Use `lerobot-dataset-viz` with the matching repo ID and `--root ./datasets/<repo_id>` to inspect "
+"saved data."
+msgstr "같은 repo ID와 `--root ./datasets/<repo_id>`로 `lerobot-dataset-viz`를 실행해 저장 data를 확인합니다."
+
+msgid "Getting Help"
+msgstr "도움받기"
+
+msgid "If you're stuck:"
+msgstr "문제가 계속되면:"
+
+msgid "**Check this guide** for your specific error message"
+msgstr "**이 안내에서** 해당 error message를 찾아보세요."
+
+msgid "**Power cycle** the robot (fixes many transient issues)"
+msgstr "**Power cycle**로 일시적인 문제를 해결해 보세요."
+
+msgid "**Re-run camera detection** if visual behavior is unexpected"
+msgstr "시각 입력이 이상하면 **camera 탐지를 다시 실행**하세요."
+
+msgid "**Re-run** the diagnostic steps above if the issue persists"
+msgstr "문제가 남으면 위 **진단 절차를 반복**하세요."
+

@@ -12,26 +12,58 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
-import threading
-import queue
-import subprocess
+"""RGB LeRobot dataset recorder for teleop episodes.
 
-import torch
+Records the visual observation group (``rgb_wrist`` / ``rgb_external``) plus
+6-DoF state/action. During recording the sim loop only clones each camera frame
+into a small fixed-size GPU ring on the render stream; a drain thread copies
+those frames off the GPU on a separate CUDA stream into per-episode host lists,
+so the loop never blocks on a device-to-host transfer. On stop the lists are
+handed to a writer thread that writes a :class:`LeRobotDataset`; a discard drops
+them. The agent loop calls :meth:`save_episode` / :meth:`cancel_recording`
+in response to focused browser controls.
+
+With ``isolated_writer=True`` the drain thread instead streams each frame to a
+spawned writer process that encodes video while recording (LeRobot streaming
+encoding). Saving an episode then only finalizes it, so the control loop never
+waits on encoding or shares its interpreter with the writer.
+
+LeRobot lifecycle: ``create`` (or ``resume`` to append to an existing root) ->
+(``add_frame`` + ``save_episode``) per episode -> ``finalize`` once at shutdown.
+Without ``--resume`` the dataset root must not already exist; with ``--resume``
+new episodes are appended via ``LeRobotDataset.resume``.
+"""
+
+import json
+import multiprocessing
+import queue
+import shutil
+import signal
+import threading
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
+from pathlib import Path
+
 import numpy as np
+import torch
+from lerobot.datasets.lerobot_dataset import LeRobotDataset
 from tqdm import tqdm
 
-import omni.kit.app
-from carb.eventdispatcher import get_eventdispatcher, Event
+SO101_FEATURE_NAMES = [
+    "shoulder_pan.pos",
+    "shoulder_lift.pos",
+    "elbow_flex.pos",
+    "wrist_flex.pos",
+    "wrist_roll.pos",
+    "gripper.pos",
+]
 
-
-from lerobot.datasets.lerobot_dataset import LeRobotDataset
+# LeRobot's recommended writer settings for corrections-only DAgger recording.
+_STREAMING_WRITER = {"streaming_encoding": True, "encoder_threads": 2}
 
 
 class LeRobotRecorder:
-
-    STOP_RECORDING_EVENT: str = "lerobot_so101_teleop.stop_recording"
-    CANCEL_RECORDING_EVENT: str = "lerobot_so101_teleop.cancel_recording"
+    """Records teleop episodes to a LeRobot dataset (RGB + 6-DoF state/action)."""
 
     def __init__(
         self,
@@ -39,453 +71,440 @@ class LeRobotRecorder:
         repo_id: str,
         dataset_root: str,
         fps: int,
-        device: str,
         cameras: dict,
-        save_mp4: bool = False,
-        depth: bool = False, # not saved in lerobot dataset
-        instance_id_seg: bool = False, # not saved in lerobot dataset
+        gpu_ring_depth: int = 8,
+        isolated_writer: bool = False,
+        episode_queue_size: int = 0,
     ):
-
+        self._writer_process = (
+            ProcessPoolExecutor(
+                max_workers=1, mp_context=multiprocessing.get_context("spawn"), initializer=_initialize_writer_process,
+            )
+            if isolated_writer else None
+        )
+        self.task_name = task_name
+        self.repo_id = repo_id
+        self.dataset_root = dataset_root
         self.fps = fps
-        self.dt = 1 / self.fps
-        self.save_mp4 = save_mp4
-        self.rgb = True # default to save rgb videos
-        self.depth = depth
-        self.instance_id_seg = instance_id_seg
+        self.cameras = cameras
+        self.gpu_ring_depth = gpu_ring_depth
 
-        self.camera_features_template = {
-            "dtype": "video",
-            "shape": (0, 0, 3),
-            "names": ["height", "width", "channels"],
-        }
-
-        self.FOLLOWER_OBS_FEATURES = {
+        self.dataset_features = {
             "observation.state": {
                 "dtype": "float32",
-                "fps": self.fps,
                 "shape": (6,),
-                "names": [
-                    "shoulder_pan.pos",
-                    "shoulder_lift.pos",
-                    "elbow_flex.pos",
-                    "wrist_flex.pos",
-                    "wrist_roll.pos",
-                    "gripper.pos",
-                ],
-            }
-        }
-
-        self.cameras = cameras
-
-        for camera_name in self.cameras.keys():
-            camera = self.cameras[camera_name]
-
-            features = self.camera_features_template.copy()
-
-            features["shape"] = (camera["height"], camera["width"], 3)
-
-            self.FOLLOWER_OBS_FEATURES.update(
-                {
-                    f"observation.images.{camera_name}": features,
-                }
-            )
-
-        self.LEADER_ACTION_FEATURES = {
+                "names": SO101_FEATURE_NAMES,
+            },
             "action": {
                 "dtype": "float32",
                 "shape": (6,),
-                "fps": self.fps,
-                "names": [
-                    "shoulder_pan.pos",
-                    "shoulder_lift.pos",
-                    "elbow_flex.pos",
-                    "wrist_flex.pos",
-                    "wrist_roll.pos",
-                    "gripper.pos",
-                ],
+                "names": SO101_FEATURE_NAMES,
+            },
+        }
+        for camera_name, spec in self.cameras.items():
+            self.dataset_features[f"observation.images.{camera_name}"] = {
+                "dtype": "video",
+                "shape": (spec["height"], spec["width"], 3),
+                "names": ["height", "width", "channels"],
             }
-        }
 
-        self.SO101_ACTION_NAMES = [
-            "shoulder_pan.pos",
-            "shoulder_lift.pos",
-            "elbow_flex.pos",
-            "wrist_flex.pos",
-            "wrist_roll.pos",
-            "gripper.pos",
-        ]
+        # Per-episode host buffers, written only by the drain thread.
+        self._actions: list[np.ndarray] = []
+        self._observations: list[np.ndarray] = []
+        self._rgb: dict[str, list[np.ndarray]] = {name: [] for name in self.cameras}
+        self._episode_frames = 0
 
-        self.repo_id = repo_id
-        self.dataset_root = dataset_root
-        self.task_name = task_name
-        self.dataset_features = {
-            **self.FOLLOWER_OBS_FEATURES,
-            **self.LEADER_ACTION_FEATURES,
-        }
+        # GPU capture ring + host-copy plumbing, allocated on the first frame
+        # once the camera tensor device/shape is known. The sim loop clones into
+        # a free ring slot; the drain thread copies it to host on _copy_stream.
+        self._ring: dict[str, torch.Tensor] = {}
+        self._pinned: dict[str, torch.Tensor] = {}
+        self._slot_events: list[torch.cuda.Event] = []
+        self._copy_stream: torch.cuda.Stream | None = None
+        self._write_slot = 0
+        self._free_slots = threading.Semaphore(gpu_ring_depth)
+        self._drain_queue: queue.Queue = queue.Queue()
+        self._drain_stop_event = threading.Event()
+        self._drain_thread = threading.Thread(target=self._drain_frames, daemon=True)
+        self._drain_thread.start()
+
+        # Background episode -> disk writer.
         self.num_recorded_episodes = 0
+        self.episode_queue: queue.Queue = queue.Queue(maxsize=episode_queue_size)
 
-        self.device = device
-        self.capcity = 2 * 60 * self.fps
-        self.current_frame = 0
+        # Save-progress state, read by the browser display via saving_status()
+        # so the client can show a "saving — do not close" banner while the
+        # writer thread drains an episode (the tqdm progress, mirrored to the UI).
+        self._save_lock = threading.Lock()
+        self._save_active = False
+        self._save_written = 0
+        self._save_total = 0
+        self._save_error = None
+        self._pending_saves = 0
 
-        self.action_buffers_tensor = None
-        self.observation_buffer_tensor = None
-
-        self.rgb_buffer_tensors = {}
-        self.depth_buffer_tensors = {}
-        self.instance_id_seg_buffers_tensors = {}
-
-        self.episode_queue = queue.Queue()
-        self.episode_processor_stop_event = threading.Event()
-
-        self.stop_recording_sub = get_eventdispatcher().observe_event(
-            observer_name="stop_recording_observer",
-            event_name=self.STOP_RECORDING_EVENT,
-            on_event=self.save_episode,
+        self._stop_event = threading.Event()
+        self._processor_thread = threading.Thread(
+            target=self._async_episode_processor, daemon=True
         )
+        self._processor_thread.start()
 
-        self.cancel_recording_sub = get_eventdispatcher().observe_event(
-            observer_name="cancel_recording_observer",
-            event_name=self.CANCEL_RECORDING_EVENT,
-            on_event=self.cancel_recording,
-        )
+    # ------------------------------------------------------------------
+    # Dataset lifecycle
+    # ------------------------------------------------------------------
 
-        self.episode_processor_thread = threading.Thread(
-            target=self.async_episode_processor,
-            daemon=True,
-        )
-        self.episode_processor_thread.start()
+    def init_dataset(self, resume: bool = False):
+        """Create the dataset, or with ``resume`` append to an existing local one.
 
-    def check_dataset_exists(self):
-        if os.path.exists(self.dataset_root):
-            return True
-        else:
-            return False
-
-    def _init_existing_dataset(self):
-        self.dataset = LeRobotDataset(
-            self.repo_id,
-            root=self.dataset_root,
-        )
-        print(f"[INFO]: Existing dataset initialized - {self.dataset.root}")
-        return
-
-    def init_dataset(self):
-        if self.check_dataset_exists():
-            try:
-                self._init_existing_dataset()
-                return
-            except:
-                raise ValueError(
-                    f"[ERROR]: Dataset folder exists but cannot be initialized at {self.dataset_root}"
-                )
-
-        self.dataset = LeRobotDataset.create(
-            self.repo_id,
-            fps=self.fps,
-            features=self.dataset_features,
-            root=self.dataset_root,
-            robot_type="so101_follower",
-        )
-
-        print(f"[INFO]: New dataset initialized - {self.dataset.root}")
-
-    def allocate_buffers(self):
-        self.action_buffers_tensor = torch.zeros(
-            (self.capcity, 6), dtype=torch.float32, device=self.device
-        )
-        self.observation_buffer_tensor = torch.zeros(
-            (self.capcity, 6), dtype=torch.float32, device=self.device
-        )
-
-        for camera_name in self.cameras.keys():
-            if self.rgb:
-                self.rgb_buffer_tensors[camera_name] = torch.zeros(
-                    (
-                        self.capcity,
-                        self.cameras[camera_name]["height"],
-                        self.cameras[camera_name]["width"],
-                        3,
-                    ),
-                    dtype=torch.uint8,
-                    device=self.device,
-                )
-            if self.depth:
-                self.depth_buffer_tensors[camera_name] = torch.zeros(
-                    (self.capcity, self.cameras[camera_name]["height"], self.cameras[camera_name]["width"], 1),
-                    dtype=torch.float32,
-                    device=self.device,
-                )
-            if self.instance_id_seg:
-                self.instance_id_seg_buffers_tensors[camera_name] = torch.zeros(
-                    (
-                        self.capcity,
-                        self.cameras[camera_name]["height"],
-                        self.cameras[camera_name]["width"],
-                        3, 
-                    ),
-                    dtype=torch.uint8,
-                    device=self.device,
-                )
-
-    def push_frame_to_buffer(self, action, observation, visual_buffers, depth_buffers, instance_id_seg_buffers):
-        if self.current_frame >= self.capcity:
-            # TODO: extand tensors to increase the buffer capacity if reached
-            print(
-                f"[INFO]: Reached the maximum capacity of the buffer. Skipping frame {self.current_frame}"
-            )
+        New episodes must match the existing dataset's fps and features. Without
+        ``resume`` an existing root raises instead of being overwritten.
+        """
+        if self._writer_process is not None:
+            self.num_recorded_episodes = self._writer_process.submit(
+                _process_writer_command, "init", {
+                    "task_name": self.task_name, "repo_id": self.repo_id, "dataset_root": self.dataset_root,
+                    "fps": self.fps, "features": self.dataset_features, "resume": resume,
+                },
+            ).result()
             return
+        self.dataset = _open_dataset(self.repo_id, self.dataset_root, self.fps, self.dataset_features, resume)
+        self.num_recorded_episodes = self.dataset.meta.total_episodes
 
-        if self.observation_buffer_tensor is None:
-            self.allocate_buffers()
+    # ------------------------------------------------------------------
+    # Per-step capture (called from the sim loop, inside inference_mode)
+    # ------------------------------------------------------------------
 
-        self.action_buffers_tensor[self.current_frame] = action.clone()
-        self.observation_buffer_tensor[self.current_frame] = observation.clone()
+    def _alloc_ring(self, rgb_buffers: dict[str, torch.Tensor]) -> None:
+        """Allocate the GPU ring, pinned host staging, events and copy stream."""
+        device = next(iter(rgb_buffers.values())).device
+        self._copy_stream = torch.cuda.Stream(device=device)
+        self._slot_events = [
+            torch.cuda.Event() for _ in range(self.gpu_ring_depth)
+        ]
+        for name, buf in rgb_buffers.items():
+            self._ring[name] = torch.empty(
+                (self.gpu_ring_depth, *buf.shape), dtype=buf.dtype, device=device
+            )
+            self._pinned[name] = torch.empty(
+                buf.shape, dtype=buf.dtype, device="cpu", pin_memory=True
+            )
 
-        for camera_name in self.cameras.keys():
-            if self.rgb:
-                self.rgb_buffer_tensors[camera_name][self.current_frame] = visual_buffers[
-                    camera_name
-                ].clone()
-            if self.depth:
-                self.depth_buffer_tensors[camera_name][self.current_frame] = depth_buffers[
-                    camera_name
-                ].clone()
-            if self.instance_id_seg:
-                self.instance_id_seg_buffers_tensors[camera_name][self.current_frame] = instance_id_seg_buffers[
-                    camera_name
-                ].clone()
+    def push_frame_to_buffer(
+        self,
+        action: np.ndarray,
+        observation: np.ndarray,
+        rgb_buffers: dict[str, torch.Tensor],
+    ):
+        """Capture one frame. ``action`` / ``observation`` are CPU numpy (6,);
+        each ``rgb_buffers`` tensor is a GPU uint8 (H, W, 3) frame.
 
-        self.current_frame += 1
+        Clones the camera frames into a free GPU ring slot on the current
+        (render) stream and hands the slot to the drain thread. Blocks only if
+        the ring is full (drain not keeping up); no device-to-host copy happens
+        here.
+        """
+        if self.cameras and self._copy_stream is None:
+            self._alloc_ring(rgb_buffers)
 
-    def add_dataset_frame(self, action, observation, rgb_buffers, frame_index):
-        frame = {
-            "action": action,
-            "observation.state": observation,
-            "task": self.task_name,
-        }
-        for camera_name in self.cameras.keys():
-            frame[f"observation.images.{camera_name}"] = rgb_buffers[camera_name]
+        slot = None
+        if self.cameras:
+            self._free_slots.acquire()
+            slot = self._write_slot
+            self._write_slot = (self._write_slot + 1) % self.gpu_ring_depth
+            stream = torch.cuda.current_stream()
+            for camera_name in self.cameras:
+                self._ring[camera_name][slot].copy_(rgb_buffers[camera_name])
+            self._slot_events[slot].record(stream)
 
-        self.dataset.add_frame(frame)
+        self._drain_queue.put(
+            (
+                slot,
+                np.asarray(action, dtype=np.float32).copy(),
+                np.asarray(observation, dtype=np.float32).copy(),
+            )
+        )
 
-    def save_episode(self, event: Event):
-        if event.event_name == self.STOP_RECORDING_EVENT:
-
-            # batch copy to cpu
-            print(f"[INFO]: Copy episode to CPU...")
-
-            cpu_action_buffers_tensor = self.action_buffers_tensor.to("cpu").numpy()
-            cpu_obs_buffer_tensor = self.observation_buffer_tensor.to("cpu").numpy()
-
-            cpu_rgb_buffer_tensors = {}
-            
-            for camera_name in self.cameras.keys():
-                cpu_rgb_buffer_tensors[camera_name] = (
-                    self.rgb_buffer_tensors[camera_name].to("cpu").numpy()
-                )
-
-            episode_data = {
-                "action_buffers": cpu_action_buffers_tensor.copy(),
-                "observation_buffer_tensor": cpu_obs_buffer_tensor.copy(),
-                "rgb_buffer_tensors": cpu_rgb_buffer_tensors.copy(),
-                "total_frames": self.current_frame,
-            }
-
-            if self.depth:
-                cpu_depth_buffer_tensors = {}
-                for camera_name in self.cameras.keys():
-                    cpu_depth_buffer_tensors[camera_name] = (
-                        self.depth_buffer_tensors[camera_name].to("cpu").numpy()
-                    )
-                episode_data["depth_buffer_tensors"] = cpu_depth_buffer_tensors.copy()
-
-            if self.instance_id_seg:
-                cpu_instance_id_seg_buffers_tensors = {}
-                for camera_name in self.cameras.keys():
-                    cpu_instance_id_seg_buffers_tensors[camera_name] = (
-                        self.instance_id_seg_buffers_tensors[camera_name].to("cpu").numpy()
-                    )
-                episode_data["instance_id_seg_buffers_tensors"] = cpu_instance_id_seg_buffers_tensors.copy()
-
-            self.episode_queue.put(episode_data)
-
-            print(f"[INFO]: Episode added to queue.")
-
-            self.action_buffers_tensor = None
-            self.observation_buffer_tensor = None
-            self.rgb_buffer_tensor = {}
-            self.depth_buffer_tensors = {}
-            self.instance_id_seg_buffers_tensors = {}
-            self.current_frame = 0
-            print("[INFO]: Cleared buffers")
-
-    def cancel_recording(self, event: Event):
-        if event.event_name == self.CANCEL_RECORDING_EVENT:
-            print(f"[INFO]: Cancelled recording.")
-            self.action_buffers_tensor = None
-            self.observation_buffer_tensor = None
-            self.rgb_buffer_tensor = {}
-            self.current_frame = 0
-            print("[INFO]: Cleared buffers")
-            print(f"[INFO]: Episode cancelled.")
-
-    def async_episode_processor(self):
-        while not self.episode_processor_stop_event.is_set():
+    def _drain_frames(self) -> None:
+        """Copy captured ring slots off the render stream to the episode buffer or writer."""
+        while not self._drain_stop_event.is_set():
             try:
-                episode = self.episode_queue.get(timeout=1)
-                print(f"[INFO]: [ASYNC] received episode from queue...")
-
-                action_buffers = episode["action_buffers"]
-                observation_buffer_tensor = episode["observation_buffer_tensor"]
-                rgb_buffer_tensors = episode["rgb_buffer_tensors"]
-                
-                total_frames = episode["total_frames"]
-
-                for frame_index in tqdm(range(total_frames), desc="Processing frames", unit="frame"):
-                    rgb_buffers = {}
-                    for camera_name in self.cameras.keys():
-                        rgb_buffers[camera_name] = rgb_buffer_tensors[camera_name][frame_index]
-
-                    self.add_dataset_frame(
-                        action_buffers[frame_index],
-                        observation_buffer_tensor[frame_index],
-                        rgb_buffers,
-                        frame_index,
-                    )
-
-                # Save depth and RGB videos for each camera (once per episode, after processing all frames)
-                this_episode_index = self.dataset.meta.total_episodes + 1
-
-                if self.save_mp4:
-                    print(f"[INFO]: Saving mp4videos...")
-                    depth_buffer_tensors = episode["depth_buffer_tensors"]
-                    instance_id_seg_buffers_tensors = episode["instance_id_seg_buffers_tensors"]
-
-                    for camera_name in self.cameras.keys():
-                        depth_frames = depth_buffer_tensors[camera_name][:total_frames]
-                        rgb_frames = rgb_buffer_tensors[camera_name][:total_frames]
-                        instance_id_seg_frames = instance_id_seg_buffers_tensors[camera_name][:total_frames]
-
-                        self.save_depth_video(depth_frames, camera_name, this_episode_index)
-                        self.save_rgb_video(rgb_frames, camera_name, this_episode_index)
-                        self.save_instance_id_segmentation_video(instance_id_seg_frames, camera_name, this_episode_index)
-
-                self.dataset.save_episode()
-                self.dataset.finalize()
-                self._init_existing_dataset()
-                self.episode_queue.task_done()
-
-                self.num_recorded_episodes += 1
-                print(f"[INFO]: Episode {self.num_recorded_episodes} saved.")
-
-                if self.episode_queue.empty():
-                    print(f"[INFO]: No more episodes in queue. Stopping processor thread...")
-                else:
-                    print(f"[INFO]: Additional {self.episode_queue.qsize()} episodes in queue.")
-
+                slot, action, observation = self._drain_queue.get(timeout=1)
             except queue.Empty:
                 continue
-            except Exception as e:
-                print(f"Error in async processing: {e}")
+
+            try:
+                rgb = {}
+                if slot is not None:
+                    # The ring/pinned buffers are captured under the sim loop's
+                    # inference_mode, so mutate them under it here too.
+                    with torch.inference_mode():
+                        with torch.cuda.stream(self._copy_stream):
+                            self._copy_stream.wait_event(self._slot_events[slot])
+                            for camera_name in self.cameras:
+                                self._pinned[camera_name].copy_(
+                                    self._ring[camera_name][slot], non_blocking=True
+                                )
+                        self._copy_stream.synchronize()
+                        rgb = {name: self._pinned[name].numpy().copy() for name in self.cameras}
+                    self._free_slots.release()
+                if self._writer_process is not None:
+                    self._submit("frame", (action, observation, rgb))
+                else:
+                    self._actions.append(action)
+                    self._observations.append(observation)
+                    for camera_name, image in rgb.items():
+                        self._rgb[camera_name].append(image)
+                self._episode_frames += 1
+            finally:
+                self._drain_queue.task_done()
+
+    # ------------------------------------------------------------------
+    # Stop / cancel (called directly from the agent loop)
+    # ------------------------------------------------------------------
+
+    @property
+    def pending_frames(self) -> int:
+        """Number of captured-but-unsaved frames in the in-flight episode."""
+        return self._episode_frames + self._drain_queue.qsize()
+
+    def saving_status(self) -> dict:
+        """Thread-safe snapshot of background episode-writing progress.
+
+        Returns ``active`` (an episode is currently being written to disk),
+        ``written`` / ``total`` frames for that in-progress episode, and
+        ``queued`` episodes still waiting behind it. The display uses this to
+        show a saving banner and warn against closing the tab mid-write.
+        """
+        with self._save_lock:
+            return {
+                "active": self._save_active or self._pending_saves > 0,
+                "written": self._save_written,
+                "total": self._save_total,
+                "queued": self.episode_queue.qsize() + max(self._pending_saves - 1, 0),
+                "error": self._save_error,
+            }
+
+    def save_episode(self):
+        """Queue the captured episode for writing; never waits for encoding."""
+        if self.saving_status()["error"]:
+            raise RuntimeError(f"Dataset writer failed: {self.saving_status()['error']}")
+        self._drain_queue.join()
+        total_frames = self._episode_frames
+        if total_frames == 0:
+            print("[INFO]: No frames captured - nothing to save.")
+            self._reset_buffers()
+            return
+        if self._writer_process is not None:
+            with self._save_lock:
+                self._pending_saves += 1
+            self._submit("save")
+            print(f"[INFO]: Episode queued ({total_frames} frames).")
+            self._reset_buffers()
+            return
+
+        episode_data = {
+            "action": self._actions,
+            "observation.state": self._observations,
+            "rgb": self._rgb,
+            "total_frames": total_frames,
+        }
+        self.episode_queue.put(episode_data)
+        print(f"[INFO]: Episode queued ({total_frames} frames).")
+        self._reset_buffers()
+
+    def cancel_recording(self):
+        """Discard the in-flight episode; saved episodes are unaffected."""
+        self._drain_queue.join()
+        total_frames = self._episode_frames
+        if self._writer_process is not None and total_frames:
+            self._submit("cancel")
+        self._reset_buffers()
+        if total_frames:
+            print(f"[INFO]: Episode discarded ({total_frames} frames).")
+
+    def _reset_buffers(self):
+        self._actions = []
+        self._observations = []
+        self._rgb = {name: [] for name in self.cameras}
+        self._episode_frames = 0
+
+    def _submit(self, command, payload=None):
+        """Queue one command for the writer process, which runs them in order."""
+        future = self._writer_process.submit(_process_writer_command, command, payload)
+        future.add_done_callback(partial(self._writer_done, command))
+
+    def _writer_done(self, command, future):
+        with self._save_lock:
+            if command == "save":
+                self._pending_saves -= 1
+            if future.cancelled():
+                return
+            if future.exception() is not None:
+                self._save_error = self._save_error or str(future.exception())
+            elif command == "save":
+                self.num_recorded_episodes = future.result()
+
+    # ------------------------------------------------------------------
+    # Background writer
+    # ------------------------------------------------------------------
+
+    def _async_episode_processor(self):
+        while not self._stop_event.is_set():
+            try:
+                episode = self.episode_queue.get(timeout=1)
+            except queue.Empty:
                 continue
 
-    def _save_video(self, frames_rgb, camera_name, data_type, episode_index):
-        """
-        Save RGB frames as an MP4 video using ffmpeg.
+            try:
+                total_frames = episode["total_frames"]
+                actions = episode["action"]
+                observations = episode["observation.state"]
+                rgb = episode["rgb"]
 
-        Args:
-            frames_rgb: numpy array of shape (num_frames, height, width, 3), uint8
-            camera_name: name of the camera
-            data_type: type of data for filename (e.g., "depth", "rgb")
-            episode_index: episode number for filename
-        """
-        fps = self.fps
-        root = self.dataset_root
-        filename = f"{camera_name}_{data_type}_{episode_index:03d}.mp4"
-        filepath = os.path.join(root, "mp4", self.repo_id.split("/")[-1],camera_name, filename)
-        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+                with self._save_lock:
+                    self._save_active = True
+                    self._save_written = 0
+                    self._save_total = total_frames
 
-        num_frames, height, width, _ = frames_rgb.shape
-        frames_rgb = np.ascontiguousarray(frames_rgb)
+                for i in tqdm(
+                    range(total_frames), desc="Writing episode", unit="frame"
+                ):
+                    frame = {
+                        "action": actions[i],
+                        "observation.state": observations[i],
+                        "task": self.task_name,
+                    }
+                    for name in self.cameras:
+                        frame[f"observation.images.{name}"] = rgb[name][i]
+                    self.dataset.add_frame(frame)
+                    with self._save_lock:
+                        self._save_written = i + 1
 
-        ffmpeg_cmd = [
-            "ffmpeg",
-            "-y",  # Overwrite output file if exists
-            "-f", "rawvideo",
-            "-vcodec", "rawvideo",
-            "-s", f"{width}x{height}",
-            "-pix_fmt", "rgb24",
-            "-r", str(fps),
-            "-i", "-",  # Read from stdin
-            "-c:v", "libx264",
-            "-preset", "medium",
-            "-crf", "23",
-            "-pix_fmt", "yuv420p",
-            filepath,
-        ]
+                self.dataset.save_episode()
+                # LeRobot buffers episode metadata until finalize(), leaving a
+                # just-saved dataset unreadable by tools such as
+                # lerobot-dataset-viz. Finalize and reopen the writer after
+                # every take so each successful save is immediately complete.
+                self.dataset.finalize()
+                self.dataset = LeRobotDataset.resume(
+                    self.repo_id,
+                    root=self.dataset_root,
+                )
+                self.num_recorded_episodes += 1
+                print(f"[INFO]: Episode {self.num_recorded_episodes} saved.")
+            except Exception as exc:  # noqa: BLE001 - keep the writer thread alive
+                with self._save_lock:
+                    self._save_error = str(exc)
+                print(f"[ERROR]: Failed to write episode: {exc}")
+            finally:
+                with self._save_lock:
+                    self._save_active = False
+                self.episode_queue.task_done()
 
-        try:
-            process = subprocess.Popen(
-                ffmpeg_cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+    # ------------------------------------------------------------------
+    # Shutdown
+    # ------------------------------------------------------------------
+
+    def close(self):
+        """Drain the queues, finalize the dataset, and stop the background threads."""
+        print("[INFO]: Finalizing dataset (draining pending episodes)...")
+        self._drain_queue.join()
+        self._drain_stop_event.set()
+        self._drain_thread.join(timeout=5)
+        self.episode_queue.join()
+        self._stop_event.set()
+        self._processor_thread.join(timeout=5)
+        if self._writer_process is not None:
+            try:
+                self.num_recorded_episodes = self._writer_process.submit(_process_writer_command, "close").result()
+            finally:
+                self._writer_process.shutdown(wait=True, cancel_futures=True)
+                self._writer_process = None
+        if hasattr(self, "dataset"):
+            self.dataset.finalize()
+            print(
+                f"[INFO]: Dataset finalized - {self.num_recorded_episodes} "
+                f"episode(s) at {self.dataset.root}"
             )
 
-            frame_data = b"".join(frame.tobytes() for frame in frames_rgb)
-            stdout, stderr = process.communicate(input=frame_data)
 
-            if process.returncode != 0:
-                print(f"[ERROR]: ffmpeg failed with return code {process.returncode}")
-                print(f"[ERROR]: ffmpeg stderr: {stderr.decode()}")
-            else:
-                print(f"[INFO]: Saved {data_type} video to {filepath}")
+def _open_dataset(repo_id, root, fps, features, resume, **writer_options):
+    """Create a local dataset at ``root``, or with ``resume`` append to it.
 
-        except FileNotFoundError:
-            print("[ERROR]: ffmpeg not found. Please install ffmpeg to save videos.")
-        except Exception as e:
-            print(f"[ERROR]: Failed to save video: {e}")
+    Raises ``ValueError`` for an existing root without ``resume``, or for an
+    incomplete root, which is left untouched.
+    """
+    root = Path(root)
+    if root.exists() and resume and not (root / "meta/tasks.parquet").is_file():
+        # LeRobot writes tasks with the first saved episode, and its resume API
+        # treats missing local metadata as a Hub download. A session that saved
+        # nothing leaves only meta/info.json, which holds no data to keep.
+        info_path = root / "meta/info.json"
+        info = json.loads(info_path.read_text()) if info_path.is_file() else {}
+        files = {p.relative_to(root).as_posix() for p in root.rglob("*") if not p.is_dir() or p.is_symlink()}
+        if info.get("total_episodes") != 0 or info.get("total_frames") != 0 or files != {"meta/info.json"}:
+            raise ValueError(
+                f"Local dataset {root} is incomplete: missing meta/tasks.parquet. "
+                "Files were left untouched. Inspect the dataset or choose a new --repo_id."
+            )
+        shutil.rmtree(root)
+    if root.exists():
+        if not resume:
+            raise ValueError(
+                f"Dataset root already exists: {root}. Pass --resume to append new episodes to it, "
+                "or choose a new --repo_id / remove the existing folder."
+            )
+        dataset = LeRobotDataset.resume(repo_id, root=root, **writer_options)
+        print(f"[INFO]: Resuming dataset - {dataset.root} ({dataset.meta.total_episodes} existing episode(s))")
+        return dataset
+    dataset = LeRobotDataset.create(
+        repo_id, fps=fps, features=features, root=root, robot_type="so101_follower", use_videos=True,
+        **writer_options,
+    )
+    print(f"[INFO]: New dataset initialized - {dataset.root}")
+    return dataset
 
-    def save_depth_video(self, frames, camera_name, episode_index):
-        """Save depth frames (float32) as grayscale MP4."""
-        num_frames, height, width, channels = frames.shape
 
-        if channels == 1:
-            frames = frames.squeeze(-1)  # (num_frames, height, width)
+_writer = {}
 
-        # Normalize depth values to 0-255 using robust percentile normalization
-        valid_mask = np.isfinite(frames)
-        if valid_mask.any():
-            min_val = np.percentile(frames[valid_mask], 1)
-            max_val = np.percentile(frames[valid_mask], 99)
-        else:
-            min_val, max_val = 0.0, 1.0
 
-        if max_val - min_val < 1e-6:
-            max_val = min_val + 1.0
+def _initialize_writer_process():
+    # The parent handles terminal Ctrl+C, parks the leader, and then drains
+    # accepted episodes; the shared foreground-group signal must not stop the writer.
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
-        frames_normalized = np.clip((frames - min_val) / (max_val - min_val), 0, 1)
-        frames_uint8 = (frames_normalized * 255).astype(np.uint8)
 
-        # Convert grayscale to RGB for codec compatibility
-        frames_rgb = np.stack([frames_uint8] * 3, axis=-1)
-
-        self._save_video(frames_rgb, camera_name, "depth", episode_index)
-
-    def save_rgb_video(self, frames, camera_name, episode_index):
-        """Save RGB frames (uint8) as MP4."""
-        frames_rgb = frames.astype(np.uint8) if frames.dtype != np.uint8 else frames
-        self._save_video(frames_rgb, camera_name, "rgb", episode_index)
-
-    def save_instance_id_segmentation_video(self, frames, camera_name, episode_index):
-        """Save instance ID segmentation frames (already colorized RGB) as MP4."""
-        frames_rgb = frames.astype(np.uint8) if frames.dtype != np.uint8 else frames
-        self._save_video(frames_rgb, camera_name, "instance_id_segmentation", episode_index)
-
-    def _del__(self):
-        # stop the episode processor thread
-        self.episode_processor_stop_event.set()
-        self.episode_processor_thread.join(timeout=0.1)
-        self.episode_processor_thread = None
-        print("processor thread joined")
+def _process_writer_command(command, payload=None):
+    """Run one ordered dataset command in the writer process; return the saved-episode count."""
+    if command == "init":
+        _writer.update(payload)
+        _writer["dataset"] = _open_dataset(
+            _writer["repo_id"], _writer["dataset_root"], _writer["fps"], _writer["features"], _writer["resume"],
+            **_STREAMING_WRITER,
+        )
+    elif command == "frame":
+        action, observation, rgb = payload
+        frame = {"action": action, "observation.state": observation, "task": _writer["task_name"]}
+        frame.update({f"observation.images.{name}": image for name, image in rgb.items()})
+        _writer["dataset"].add_frame(frame)
+    elif command == "save":
+        _writer["dataset"].save_episode()
+        # Finalize and reopen so every saved episode is readable immediately.
+        _writer["dataset"].finalize()
+        _writer["dataset"] = LeRobotDataset.resume(
+            _writer["repo_id"], root=_writer["dataset_root"], **_STREAMING_WRITER,
+        )
+        print(f"[INFO]: Episode {_writer['dataset'].meta.total_episodes} saved.", flush=True)
+    elif command == "cancel":
+        _writer["dataset"].clear_episode_buffer()
+    elif command == "close":
+        if "dataset" not in _writer:
+            return 0
+        _writer["dataset"].finalize()
+        print(
+            f"[INFO]: Dataset finalized - {_writer['dataset'].meta.total_episodes} "
+            f"episode(s) at {_writer['dataset'].root}",
+            flush=True,
+        )
+    else:
+        raise ValueError(f"Unknown writer command: {command}")
+    return _writer["dataset"].meta.total_episodes

@@ -1,0 +1,406 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Real Evaluation"
+msgstr "실제 Robot 평가"
+
+msgid "SO-101 performing the vial-to-rack task on physical hardware."
+msgstr "실제 SO-101이 vial-to-rack task를 수행합니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"Hands-on. You'll need the calibrated follower, both cameras, assembled workspace, running "
+"`so101-workshop` container, and the checkpoint evaluated in simulation."
+msgstr ""
+"실습입니다. Calibration된 follower, camera 두 대, 조립한 workspace, 실행 중인 `so101-workshop` container, "
+"simulation에서 평가한 checkpoint가 필요합니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid ""
+"Explore the sim-to-real gap by comparing policies trained on sim-only and real-only data on the "
+"physical robot."
+msgstr "실제 robot에서 sim-only와 real-only data로 학습한 policy를 비교해 Sim-to-Real gap을 살펴봅니다."
+
+msgid ""
+"Compare policies trained on different types of simulation data, including state-machine and "
+"human-teleoperated demonstrations."
+msgstr "State-machine 및 human teleoperation 등 서로 다른 simulation data로 학습한 policy를 비교합니다."
+
+msgid ""
+"Recognize how overfitting to state-machine data can limit a policy's robustness and lead it to "
+"repeat the demonstrations' motion patterns and stopping behavior."
+msgstr ""
+"State-machine data의 overfitting이 robustness를 제한하고 demonstration의 motion pattern과 정지 행동을 반복하게 하는 "
+"방식을 이해합니다."
+
+msgid "Workspace Prep"
+msgstr "Workspace 준비"
+
+msgid "Review the [Safety](08-operating-so101.md#safety) protocol before running the robot."
+msgstr "실행 전에 [Safety](08-operating-so101.md#safety) 절차를 확인하세요."
+
+msgid "**Place** one to three vials on the mat and position the rack in its reference location."
+msgstr "Mat에 vial 1–3개를 **놓고** rack을 기준 위치에 배치합니다."
+
+msgid ""
+"**Match** camera views and [lightbox setup](05-building-workspace.md#set-up-the-light) used for "
+"collection."
+msgstr "수집 시 camera view와 [lightbox 설정](05-building-workspace.md#set-up-the-light)을 **맞춥니다**."
+
+msgid "Run the First Policy: Trained on Sim-Only Data"
+msgstr "첫 번째 Policy: Sim-Only Data로 학습"
+
+msgid ""
+"**Continue** in the same container terminal after [stopping simulation evaluation and its "
+"background server](11-sim-evaluation.md#stop-evaluation)."
+msgstr ""
+"[Simulation 평가와 background server를 종료](11-sim-evaluation.md#stop-evaluation)한 뒤 같은 container "
+"terminal에서 **계속**합니다."
+
+msgid "Reconnect to the Container Shell"
+msgstr "Container Shell 재접속"
+
+msgid ""
+"If you need to reconnect to the running workshop container, open a terminal on the **host** and "
+"run:"
+msgstr "실행 중인 workshop container에 다시 접속하려면 **host** terminal에서 다음을 실행합니다."
+
+msgid ""
+"To check whether the container is running, use `docker ps` and look for `so101-workshop` in the "
+"`NAMES` column. If you are already at the container prompt, skip this step."
+msgstr "`docker ps`의 `NAMES`에서 `so101-workshop`을 찾아 실행 여부를 확인합니다. 이미 container prompt에 있다면 건너뜁니다."
+
+msgid ""
+"Inside the container, **select** the model used in sim. Reuse the camera indices you already "
+"identified:"
+msgstr "Container에서 simulation에 사용한 model을 **선택**합니다. 확인한 camera index를 재사용하세요."
+
+msgid "What to Expect"
+msgstr "예상되는 동작"
+
+msgid ""
+"This model was trained on 500 state-machine demonstrations in simulation, with no teleoperation "
+"or real demonstrations."
+msgstr "Simulation의 state-machine demonstration 500개로 학습했으며 teleoperation이나 실제 demonstration은 포함하지 않았습니다."
+
+msgid ""
+"At the end of an episode, it will simply hover at the vial drop-off location, since it did not "
+"see a \"return to home\" demonstration. It suffers from overfitting, being biased toward some "
+"vial positions and lacking motion diversity."
+msgstr ""
+"“Return to home” demonstration이 없어 episode 끝에서 vial을 놓은 위치에 머뭅니다. 특정 vial 위치에 편향되고 motion 다양성이 "
+"부족한 overfitting이 있습니다."
+
+msgid ""
+"This policy overfit to the particular grasps and vial positions in its state-machine "
+"demonstrations, so expect a low success rate on the real robot."
+msgstr "State-machine demonstration의 특정 grasp와 vial 위치에 overfit되었으므로 실제 robot에서는 낮은 성공률을 예상합니다."
+
+msgid "Optional: Try This Policy in Simulation First"
+msgstr "선택 사항: 먼저 Simulation에서 시험"
+
+msgid ""
+"**Stop** the real rollout and continue in the same container terminal. Keep the selected "
+"`MODEL_ID` and task instruction."
+msgstr "실제 rollout을 **종료**한 뒤 같은 container terminal을 사용합니다. `MODEL_ID`와 task instruction은 유지합니다."
+
+msgid "**Start** the simulation policy server below, or reuse it if it is already running."
+msgstr "아래 simulation policy server를 **시작**하거나 이미 실행 중이면 재사용합니다."
+
+msgid "**Wait** for `Policy server ready`, then **run** the evaluation:"
+msgstr "`Policy server ready`를 **기다린 뒤** 평가를 **실행**합니다."
+
+msgid ""
+"**Open** [http://localhost:8090](http://localhost:8090). Use only one browser tab connected to "
+"the viewer at a time."
+msgstr "[http://localhost:8090](http://localhost:8090)을 **엽니다**. Viewer에는 browser tab 하나만 연결하세요."
+
+msgid ""
+"**Stop** the background server before running the real policy. If evaluation is still running, "
+"press **Ctrl+C** first:"
+msgstr "실제 policy를 실행하기 전에 background server를 **종료**합니다. 평가가 실행 중이면 먼저 **Ctrl+C**를 누르세요."
+
+msgid "Or **stop all policy servers** in the container:"
+msgstr "또는 container의 **모든 policy server를 종료**합니다."
+
+msgid ""
+"If reusing a server from another terminal, stop it there instead. Continue with the real rollout "
+"below; it loads the policy directly."
+msgstr "다른 terminal의 server를 재사용했다면 해당 terminal에서 종료합니다. 아래 실제 rollout은 policy를 직접 로드합니다."
+
+msgid "**Run** an interactive rollout on the real robot:"
+msgstr "실제 robot에서 interactive rollout을 **실행**합니다."
+
+msgid "Rollout controls"
+msgstr "Rollout Control"
+
+msgid ""
+"The arm moves to the workshop start pose on startup, then waits for **P**. Keep the rollout "
+"terminal focused. Keys are case-insensitive."
+msgstr ""
+"시작 시 arm이 workshop 시작 pose로 움직인 뒤 **P**를 기다립니다. Rollout terminal에 focus를 두세요. Key는 대소문자를 구분하지 "
+"않습니다."
+
+msgid ""
+"Wait for `Paused` before rearranging props. On exit, wait for cleanup and any return motion to "
+"finish before touching the arm."
+msgstr "소품을 옮기기 전에 `Paused`를 기다리세요. 종료할 때도 cleanup과 복귀 동작이 끝난 뒤 arm을 만집니다."
+
+msgid ""
+"When comparing models, record the first-action delay shown in the terminal and the number of "
+"successes out of scored trials."
+msgstr "Model 비교 시 terminal에 표시되는 첫 action 지연과 평가한 trial 중 성공 수를 기록하세요."
+
+msgid ""
+"Check camera framing during your first rollouts Before pressing **P**, check the external-camera "
+"preview: it should show **most of the rack and some of the robot**, with the vial pickup area "
+"visible. If you've already set the correct camera angle, move the props into frame while the "
+"robot is paused. The camera has a fairly narrow field of view, so prop positions are important. "
+"If the policy struggles, check this framing before trying another model."
+msgstr ""
+"첫 rollout에서 camera 구도를 확인하세요. **P**를 누르기 전에 external preview에 **rack 대부분과 robot 일부**, vial pickup"
+" area가 보이는지 확인합니다. Camera 각도를 이미 맞췄다면 robot이 paused일 때 소품을 화면 안으로 옮기세요. FoV가 좁아 소품 위치가 중요합니다. "
+"Policy가 잘 동작하지 않으면 model을 바꾸기 전에 구도부터 확인하세요."
+
+msgid "Understand the command flags"
+msgstr "명령 Flag 이해"
+
+msgid ""
+"This command uses `--policy.n_action_steps=16` for the action return limit and the separate real-"
+"time chunking (RTC) setting `--inference.rtc.execution_horizon=16`. Use the instruction "
+"associated with each model's training data. The asynchronous inference engine is selected with "
+"RTC compensation disabled."
+msgstr ""
+"Policy 반환 길이는 `--policy.n_action_steps=16`, 별도의 RTC 설정은 `--inference.rtc.execution_horizon=16`을 "
+"사용합니다. 각 model의 training data에 맞는 instruction을 사용하세요. Async inference engine을 선택하되 RTC "
+"compensation은 끕니다."
+
+msgid ""
+"`--robot.use_degrees=true` keeps the arm joints in degrees, matching the workshop's recorded "
+"states and actions. The gripper uses its percentage convention."
+msgstr ""
+"`--robot.use_degrees=true`는 arm joint를 degree로 유지해 기록된 state/action과 맞춥니다. Gripper는 percent 규약을 "
+"사용합니다."
+
+msgid ""
+"The arm automatically moves toward the mean episode-start pose from `sreetz-"
+"nv/so101_newton_dr500_20260923`, then waits for **P**. Keep clear during startup. The terminal "
+"prints the dataset-derived mean and standard deviation. **Before pressing P**, verify the "
+"achieved pose; computing the mean alone does not establish a matched start."
+msgstr ""
+"Arm은 `sreetz-nv/so101_newton_dr500_20260923`의 평균 episode-start pose로 자동 이동한 뒤 **P**를 기다립니다. 시작 중 "
+"경로를 비우세요. Terminal에 dataset-derived 평균과 표준편차가 표시됩니다. **P를 누르기 전에** 실제 pose를 확인하세요. 평균 계산만으로 시작 조건"
+" 일치가 입증되지는 않습니다."
+
+msgid ""
+"The starting pose matters because it sets the cameras' initial views, the motions the arm can "
+"reach, and the trajectory produced by GR00T's relative actions. A pose outside the training "
+"dataset's starting distribution can make a capable policy fail for reasons unrelated to its "
+"weights. Verify the achieved pose and current gripper calibration before comparing policies. If "
+"the pose requires an offset or does not match the dataset distribution, label the trial as an "
+"out-of-distribution test rather than a matched evaluation."
+msgstr ""
+"Starting pose는 초기 camera view, 도달 가능한 motion, GR00T relative action의 trajectory를 결정합니다. Training-"
+"start distribution 밖이면 weight와 무관하게 유능한 policy도 실패할 수 있습니다. 비교 전에 실제 pose와 현재 gripper "
+"calibration을 확인하세요. Offset이 필요하거나 distribution과 다르다면 matched evaluation이 아닌 out-of-distribution "
+"test로 표시합니다."
+
+msgid ""
+"The log shows `Waiting | first policy action`, followed by `Running | first policy action after "
+"... s` when the first action is sent. The default `workshop` strategy runs until **Q**, **Esc**, "
+"or **Ctrl+C**; `--duration` is ignored."
+msgstr ""
+"첫 action을 보낼 때 `Waiting | first policy action` 다음에 `Running | first policy action after ... s`가 "
+"표시됩니다. 기본 `workshop` strategy는 **Q**, **Esc**, **Ctrl+C**까지 실행하며 `--duration`은 무시합니다."
+
+msgid "Run the Second Policy"
+msgstr "두 번째 Policy 실행"
+
+msgid "**Exit** the first rollout with **Q**, **Esc**, or **Ctrl+C** and wait for cleanup to finish."
+msgstr "**Q**, **Esc**, **Ctrl+C**로 첫 rollout을 **종료**하고 cleanup을 기다립니다."
+
+msgid ""
+"**Select** the policy trained only on simulated teleoperation. Keep your verified wrist and "
+"external camera configuration:"
+msgstr "Simulation teleoperation만으로 학습한 policy를 **선택**합니다. 검증한 wrist 및 external camera 설정은 유지하세요."
+
+msgid ""
+"This model was trained on 75 human teleoperated demonstrations using simulation. These motions "
+"contain enough diversity to train a more robust model, even though there is significantly less "
+"demonstration data compared to the first policy. Quality of data is key."
+msgstr ""
+"Simulation의 human teleoperation demonstration 75개로 학습한 model입니다. 첫 policy보다 data 양은 훨씬 적지만 motion"
+" 다양성이 있어 더 견고한 model을 만들 수 있습니다. Data 품질이 중요합니다."
+
+msgid ""
+"After vial drop-off, the demonstrations return the robot near its start pose. This creates a "
+"looping behavior. Notice how the robot will continue to pick vials in a loop. This won't be seen "
+"in simulation due to an earlier termination condition when the vial is placed. Compare that "
+"behavior with the first policy."
+msgstr ""
+"이 demonstration은 vial을 놓은 뒤 robot을 시작 pose 근처로 돌려보내 반복 동작을 만듭니다. Robot이 vial을 계속 집는지 관찰하세요. "
+"Simulation에서는 placement 시 일찍 종료하므로 이 동작이 보이지 않습니다. 첫 policy와 비교하세요."
+
+msgid ""
+"**Run** the second policy on the real robot. Startup moves the arm toward this dataset's mean "
+"starting pose; keep clear and verify the achieved pose before pressing **P**."
+msgstr ""
+"두 번째 policy를 실제 robot에서 **실행**합니다. 시작 시 이 dataset의 평균 starting pose로 움직이므로 경로를 비우고 **P** 전에 실제 "
+"pose를 확인하세요."
+
+msgid ""
+"**Watch what happens after placement.** Compare the first policy's lack of a return movement with"
+" the second policy's return toward a ready pose and continuation to another vial. Keep clear "
+"while it continues, and score or stop the trial using the controls above."
+msgstr ""
+"**Placement 이후를 관찰하세요.** 복귀하지 않는 첫 policy와 ready pose로 돌아가 다음 vial을 시도하는 두 번째 policy를 비교합니다. 계속 "
+"움직이는 동안 경로를 비우고 위 control로 채점하거나 종료하세요."
+
+msgid "Optional: Try i1: State-Machine-Only Training"
+msgstr "선택 사항: State-Machine-Only i1 시험"
+
+msgid "**Stop** the previous rollout and wait for cleanup, then **select** this model:"
+msgstr "이전 rollout을 **종료**하고 cleanup 후 다음 model을 **선택**합니다."
+
+msgid ""
+"This model was trained on 125 state-machine demonstrations in simulation, with the human-"
+"emulation state machine built from teleoperation demonstrations. In our real-robot trials, it "
+"succeeded in **8 of 20 trials (40%)**. Watch for missed grasps or rack-slot alignment errors, and"
+" notice what it does after placement."
+msgstr ""
+"Teleoperation demonstration을 모방하도록 만든 state machine의 simulation demonstration 125개로 학습했습니다. 실제 "
+"시험에서는 **20회 중 8회(40%)** 성공했습니다. Grasp 누락, rack-slot 정렬 오류, placement 후 동작을 관찰하세요."
+
+msgid ""
+"The command uses the initial poses from this model's state-machine training dataset. Verify the "
+"achieved starting pose before pressing **P**."
+msgstr "이 명령은 해당 model의 state-machine training dataset 초기 pose를 사용합니다. **P** 전에 실제 시작 pose를 확인하세요."
+
+msgid "**Run** the policy on the real robot:"
+msgstr "실제 robot에서 policy를 **실행**합니다."
+
+msgid "Optional: Compare Johnny42, Trained on Real Data"
+msgstr "선택 사항: 실제 Data로 학습한 Johnny42 비교"
+
+msgid ""
+"[Johnny42](datasets-and-models.md#johnny42-real-to-real-reference) was trained on **50 real-robot"
+" demonstrations, not simulation data**. Stop the previous rollout and wait for cleanup, then set "
+"the model, instruction, and camera configuration below. Reuse your verified camera indices:"
+msgstr ""
+"[Johnny42](datasets-and-models.md#johnny42-real-to-real-reference)는 **simulation이 아닌 실제 robot "
+"demonstration 50개**로 학습했습니다. 이전 rollout을 종료하고 cleanup 후 아래 model, instruction, camera 설정을 지정하세요. "
+"검증한 camera index를 재사용합니다."
+
+msgid ""
+"This model was trained on 50 real demonstrations. Use it to compare a real-data policy with the "
+"simulation-trained policies on your station."
+msgstr "실제 demonstration 50개로 학습한 model입니다. 본인의 station에서 simulation 기반 policy와 비교하세요."
+
+msgid ""
+"This model's training data was collected before we standardized camera names, so it uses `front` "
+"for the external camera. Switch back to `external` afterward by running the `ROBOT_CAMERAS` "
+"export included with the other model rollouts."
+msgstr ""
+"Camera 이름 표준화 이전에 수집한 data여서 external camera 이름이 `front`입니다. 이후 다른 model rollout의 `ROBOT_CAMERAS`"
+" export를 실행해 `external`로 되돌리세요."
+
+msgid "**Run the real evaluation** with the same model:"
+msgstr "같은 model로 **실제 평가를 실행**합니다."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid ""
+"Overfitting to particular grasps and vial positions can yield high simulation evaluation success "
+"rates that do not translate to reliable real-world performance."
+msgstr "특정 grasp와 vial 위치에 overfit되면 simulation 성공률은 높아도 실제 성능은 안정적이지 않을 수 있습니다."
+
+msgid ""
+"The first policy's state-machine demonstrations did not include a return after release, so it "
+"does not learn a complete repeating loop."
+msgstr "첫 policy의 state-machine demonstration에는 release 후 복귀가 없어 완전한 반복 loop를 배우지 못했습니다."
+
+msgid ""
+"The second policy's teleoperated demonstrations include continuation after placement. Watch how "
+"this supports returning to a ready pose and attempting another pickup."
+msgstr ""
+"두 번째 policy의 teleoperation demonstration은 placement 후 동작까지 포함합니다. Ready pose 복귀와 다음 pickup으로 "
+"이어지는지 관찰하세요."
+
+msgid ""
+"A learned return is different from the rollout controller's homing after **S/F** or **N**. "
+"Compare what the policy does before you end the trial."
+msgstr "학습된 복귀와 **S/F** 또는 **N** 뒤 rollout controller의 homing은 다릅니다. Trial을 끝내기 전에 policy 자체의 동작을 비교하세요."
+
+msgid "Match the starting pose to each policy's own training data, and record the behavior you observe."
+msgstr "각 policy의 training data에 시작 pose를 맞추고 관찰한 행동을 기록합니다."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid "Continue to [Strategy 2: Co-Training With Real Data](13-strategy2-cotraining.md)."
+msgstr "[Strategy 2: Co-Training With Real Data](13-strategy2-cotraining.md)로 이동하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Key"
+msgstr "Key"
+
+msgid "Action"
+msgstr "동작"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**P**"
+msgstr "**P**"
+
+msgid "**P for policy:** Start the first or next trial."
+msgstr "**P for policy:** 첫 trial 또는 다음 trial을 시작합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**S / F**"
+msgstr "**S / F**"
+
+msgid "Score success/failure, return to the start pose, and pause."
+msgstr "성공/실패를 기록하고 시작 pose로 복귀한 뒤 일시 정지합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**N / →**"
+msgstr "**N / →**"
+
+msgid "**N for next:** Discard the trial, return to the start pose, and pause."
+msgstr "**N for next:** Trial을 폐기하고 시작 pose로 복귀한 뒤 일시 정지합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Q / Esc**"
+msgstr "**Q / Esc**"
+
+msgid "**Q for Quit:** Exit and discard any unfinished trial."
+msgstr "**Q for Quit:** 종료하며 미완료 trial은 폐기합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Ctrl+C**"
+msgstr "**Ctrl+C**"
+
+msgid "Stop the rollout and run cleanup."
+msgstr "Rollout을 중단하고 cleanup을 실행합니다."
+

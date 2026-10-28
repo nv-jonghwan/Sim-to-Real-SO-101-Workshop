@@ -1,0 +1,64 @@
+.course-sidebar-toggle.pst-navbar-icon {
+  display: none;
+}
+
+.course-sidebar-toggle.pst-navbar-icon::before {
+  content: none;
+}
+
+.course-sidebar-toggle.pst-navbar-icon:hover {
+  color: var(--pst-color-link-hover);
+  text-decoration: none;
+}
+
+.course-sidebar-collapse-icon,
+.course-sidebar-expand-icon {
+  display: inline-flex;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.course-sidebar-toggle[aria-expanded="true"] .course-sidebar-expand-icon,
+.course-sidebar-toggle[aria-expanded="false"] .course-sidebar-collapse-icon {
+  display: none;
+}
+
+.course-sidebar-expand-icon {
+  transform: scaleX(-1);
+}
+
+/* Match the theme's desktop navigation breakpoint. */
+@media (min-width: 992px) {
+  .header-article-items__start {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-article-items__start > .header-article-item {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-article-items__start > .header-article-item:first-child {
+    flex-shrink: 0;
+  }
+
+  .header-article-items__start .bd-breadcrumbs {
+    margin-bottom: 0;
+  }
+
+  .header-article-items__start .breadcrumb-home a {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .course-sidebar-toggle.pst-navbar-icon:not([hidden]) {
+    display: inline-flex;
+    width: 2rem;
+    margin-right: 0.5rem;
+  }
+
+  .course-sidebar-collapsed #pst-primary-sidebar {
+    display: none;
+  }
+}

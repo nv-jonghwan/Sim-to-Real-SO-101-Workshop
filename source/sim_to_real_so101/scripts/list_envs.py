@@ -15,65 +15,58 @@
 #
 # This file contains code derived from Isaac Lab
 # (https://github.com/isaac-sim/IsaacLab)
-# Copyright (c) 2022-2025, The Isaac Lab Project Developers. All rights reserved.
+# Copyright (c) 2022-2026, The Isaac Lab Project Developers. All rights reserved.
 # Licensed under the BSD-3-Clause License.
 
-"""
-Script to print all the available environments in Isaac Lab.
+"""Script to print all environments registered by ``sim_to_real_so101``."""
 
-The script iterates over all registered environments and stores the details in a table.
-It prints the name of the environment, the entry point and the config file.
-
-All the environments are registered in the `lerobot_so101_teleop` extension. They start
-with `Isaac` in their name.
-"""
-
-"""Launch Isaac Sim Simulator first."""
-
-from isaaclab.app import AppLauncher
-
-# launch omniverse app
-app_launcher = AppLauncher(headless=False)
-simulation_app = app_launcher.app
-
-
-"""Rest everything follows."""
+import argparse
 
 import gymnasium as gym
 from prettytable import PrettyTable
 
 import sim_to_real_so101.tasks  # noqa: F401
 
+# Prefix of the gym IDs this module registers (all Newton-So101-*).
+MODULE_PREFIXES = ("Newton-",)
+
+parser = argparse.ArgumentParser(description="List sim_to_real_so101 environments.")
+parser.add_argument(
+    "--keyword",
+    type=str,
+    default=None,
+    help="Substring to filter task IDs by. Defaults to this module's own environments.",
+)
+args_cli = parser.parse_args()
+
 
 def main():
-    """Print all environments registered in `lerobot_so101_teleop` extension."""
-    # print all the available environments
+    """Print all environments registered by ``sim_to_real_so101``."""
     table = PrettyTable(["S. No.", "Task Name", "Entry Point", "Config"])
-    table.title = "Available Environments in Isaac Lab"
-    # set alignment of table columns
+    table.title = "Available Environments in sim_to_real_so101"
     table.align["Task Name"] = "l"
     table.align["Entry Point"] = "l"
     table.align["Config"] = "l"
 
-    # count of environments
     index = 0
-    # acquire all Isaac environments names
     for task_spec in gym.registry.values():
-        if "Lerobot-" in task_spec.id:
-            # add details to table
-            table.add_row([index + 1, task_spec.id, task_spec.entry_point, task_spec.kwargs["env_cfg_entry_point"]])
-            # increment count
+        if args_cli.keyword is not None:
+            match = args_cli.keyword in task_spec.id
+        else:
+            match = task_spec.id.startswith(MODULE_PREFIXES)
+        if match:
+            table.add_row(
+                [
+                    index + 1,
+                    task_spec.id,
+                    task_spec.entry_point,
+                    task_spec.kwargs.get("env_cfg_entry_point", ""),
+                ]
+            )
             index += 1
 
     print(table)
 
 
 if __name__ == "__main__":
-    try:
-        # run the main function
-        main()
-    except Exception as e:
-        raise e
-    finally:
-        # close the app
-        simulation_app.close()
+    main()

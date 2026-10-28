@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1270" height="660" viewBox="0 0 1270 660" role="group" aria-labelledby="title description">
+<title id="title">Isaac Lab · Rack and vial randomization</title>
+<desc id="description">The running loop advances environment steps and checks for episode endings. Normal steps continue without randomization. An initial reset or episode ending triggers the reset event; the loop then continues. The event manager calls mdp.reset_vials_rack with the selected environment IDs and configured sampling parameters. The function samples rack and vial poses and resets their velocities.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-accent-text,#004831)"/></marker>
+</defs>
+<style>
+text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#1a1a1a);}
+.box {fill:var(--diagram-surface,#f7f7f7);stroke:var(--diagram-accent-text,#004831);stroke-width:2;}
+.heading {font-size:24px;font-weight:700;}
+.detail {font-size:19px;fill:var(--diagram-muted,#666);}
+.edge {fill:none;stroke:var(--diagram-accent-text,#004831);stroke-width:2;marker-end:url(#arrow);}
+.config {stroke:var(--diagram-muted,#666);stroke-dasharray:5 6;stroke-width:1.5;}
+.label {font-size:19px;paint-order:stroke;stroke:var(--diagram-bg,#fff);stroke-width:9px;stroke-linejoin:round;}
+</style>
+<rect width="1270" height="660" fill="var(--diagram-bg,#fff)"/>
+
+<text x="40" y="80" class="detail">Dashed arrows: configuration · Solid arrows: runtime interaction</text>
+<path d="M 750 220 V 330" class="edge config"/>
+<path d="M 170 220 V 260 Q 170 280 190 280 H 570 Q 590 280 590 300 V 330" class="edge"/>
+<path d="M 300 378 H 345" class="edge"/>
+<path d="M 485 378 H 550" class="edge"/>
+<path d="M 810 378 H 930" class="edge"/>
+<path d="M 415 433 V 490 Q 415 510 395 510 H 170" class="edge" style="marker-end:none"/>
+<path d="M 1080 426 V 580 Q 1080 600 1060 600 H 190 Q 170 600 170 580 V 510" class="edge" style="marker-end:none"/>
+<path d="M 170 510 V 426" class="edge"/>
+<rect x="510" y="140" width="340" height="80" rx="14" class="box"/>
+<text x="680.0" y="187.0" text-anchor="middle" class="heading">
+<tspan x="680.0" dy="0">Reset event configuration</tspan>
+</text>
+<rect x="40" y="140" width="260" height="80" rx="14" class="box"/>
+<text x="170.0" y="187.0" text-anchor="middle" class="heading">
+<tspan x="170.0" dy="0">Initial reset</tspan>
+</text>
+<rect x="40" y="330" width="260" height="96" rx="14" class="box"/>
+<text x="170.0" y="385.0" text-anchor="middle" class="heading">
+<tspan x="170.0" dy="0">Environment step</tspan>
+</text>
+<path d="M 415 323 L 485 378 L 415 433 L 345 378 Z" class="box"/>
+<text x="415" y="372" text-anchor="middle" class="detail">
+<tspan x="415" dy="0">Episode</tspan>
+<tspan x="415" dy="23">ended?</tspan>
+</text>
+<rect x="550" y="330" width="260" height="96" rx="14" class="box"/>
+<text x="680.0" y="385.0" text-anchor="middle" class="heading">
+<tspan x="680.0" dy="0">Event manager</tspan>
+</text>
+<rect x="930" y="330" width="300" height="96" rx="14" class="box"/>
+<text x="1080.0" y="385.0" text-anchor="middle" class="heading">
+<tspan x="1080.0" dy="0">Randomize placement</tspan>
+</text>
+<text x="518" y="364" text-anchor="middle" class="label">
+<tspan x="518" dy="0">Yes</tspan>
+</text>
+<text x="440" y="477" text-anchor="middle" class="label">
+<tspan x="440" dy="0">No</tspan>
+</text>
+<text x="235" y="477" text-anchor="middle" class="label">
+<tspan x="235" dy="0">Next step</tspan>
+</text>
+</svg>

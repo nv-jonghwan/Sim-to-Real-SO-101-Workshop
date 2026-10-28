@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GR00T 1.7 observation-to-action workflow</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* Show one explanation below the workflow, without a term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+main { padding: 8px 2px; }
+.instructions { font-size: 15px; margin-bottom: 10px; }
+.layout { gap: 10px; }
+.diagram { overflow-x: auto; }
+.diagram svg { min-width: 680px; font-family: var(--diagram-font); }
+.ink { stroke: var(--diagram-text); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.outline { stroke: var(--diagram-border); fill: var(--diagram-surface); stroke-width: 2; }
+.soft { fill: var(--diagram-tint); stroke: var(--diagram-accent-text); stroke-width: 2; }
+.flow { fill: none; stroke: var(--diagram-accent-text); stroke-width: 3; stroke-linejoin: round; marker-end: url(#arrow); }
+.feedback { fill: none; stroke: var(--diagram-line); stroke-width: 2.5; stroke-linejoin: round; marker-end: url(#muted-arrow); }
+.label { fill: var(--diagram-text); font-size: 22px; font-weight: 650; }
+.detail { fill: var(--diagram-text); font-size: 19px; }
+.context { fill: var(--diagram-muted); font-size: 16px; }
+.accent { fill: var(--diagram-accent-text); }
+.definition a { color: var(--diagram-accent-text); }
+.definition p { font-size: 16px; }
+.definition .eyebrow { font-size: 14px; }
+.definition h3 { font-size: 16px; }
+.definition h2 { font-size: 23px; }
+main:not(.is-enhanced) #empty-prompt { display: none; }
+main:not(.is-enhanced) .definition + .definition { margin-top: 24px; }
+.mobile-note { display: none; }
+@media (max-width: 679px) { .mobile-note { display: block; } }
+
+</style>
+<link rel="stylesheet" href="diagram-layout.css">
+</head>
+<body>
+<main id="interactive-learning-diagram">
+<div class="layout">
+<p class="instructions mobile-note">Swipe across the diagram to follow the arrows; select a labeled object for its explanation.</p><div class="diagram" tabindex="0" aria-label="Scrollable workflow diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" role="group" aria-labelledby="diagram-title diagram-desc">
+<title id="diagram-title">GR00T 1.7: observations become an action chunk</title>
+<desc id="diagram-desc">Images and language enter the vision-language backbone, or System 2. Its features and current joint state condition the action head, or System 1. A controller applies the returned actions, then new images and state close the feedback loop. Select each labeled object for details.</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="var(--diagram-accent-text)"/></marker>
+  <marker id="muted-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="var(--diagram-line)"/></marker>
+  <g id="padlock" class="ink"><rect x="0" y="12" width="22" height="18" rx="3"/><path d="M5 12V7a6 6 0 0 1 12 0v5"/><circle cx="11" cy="21" r="1.5"/></g>
+  <g id="arm" class="ink"><path d="M0 64H50M25 63V48L8 22 43 0 68 23M65 18l15 6-4 15M67 25l6 17-10 8"/><circle cx="25" cy="48" r="6"/><circle cx="8" cy="22" r="6"/><circle cx="43" cy="0" r="6"/></g>
+</defs>
+<g aria-hidden="true">
+  <text class="context" x="35" y="23">WORKSHOP INPUTS</text>
+  <rect class="outline" x="30" y="40" width="220" height="124" rx="10"/>
+  <g class="ink"><rect x="50" y="56" width="76" height="55" rx="4"/><rect x="144" y="56" width="76" height="55" rx="4"/><path d="M57 101h62M151 101h62M66 95V77h14v18M165 95V79h14v16M96 99V90h19v9M189 99V90h20v9"/><path d="M64 74h18M163 76h18" stroke="var(--diagram-accent-text)"/></g>
+  <text class="label" x="140" y="144" text-anchor="middle">Two camera views</text>
+  <rect class="outline" x="30" y="182" width="220" height="91" rx="10"/>
+  <path class="ink" d="M51 195h25v20H63l-8 7v-7h-4z"/>
+  <text class="label" x="92" y="213">Instruction</text>
+  <text class="detail" x="47" y="250">“Place the vial…”</text>
+  <path class="flow" d="M250 103H327"/>
+  <path class="flow" d="M250 226H287V171H327"/>
+  <rect class="soft" x="330" y="40" width="240" height="209" rx="14"/>
+  <text class="context" x="350" y="66">SYSTEM 2</text>
+  <text class="label" x="450" y="96" text-anchor="middle">Interpret the scene</text>
+  <g class="ink"><path d="M388 134 449 122 512 140M388 134l60 33 64-27M449 122l-1 45"/><circle cx="388" cy="134" r="11" fill="var(--diagram-bg)"/><circle cx="449" cy="122" r="11" fill="var(--diagram-bg)"/><circle cx="512" cy="140" r="11" fill="var(--diagram-bg)"/><circle cx="448" cy="167" r="11" fill="var(--diagram-bg)"/></g>
+  <text class="detail" x="450" y="212" text-anchor="middle">Cosmos-Reason2-2B</text>
+  <text class="context" x="450" y="235" text-anchor="middle">Vision-language backbone</text>
+  <path class="flow" d="M570 141H647"/>
+  <text class="context" x="609" y="121" text-anchor="middle">features</text>
+  <rect class="soft" x="650" y="40" width="220" height="209" rx="14"/>
+  <text class="context" x="670" y="66">SYSTEM 1</text>
+  <text class="label" x="760" y="97" text-anchor="middle">Generate actions</text>
+  <g class="ink"><path d="M677 153l14-13 15 22 15-38 15 24 14-4M772 156l14-8 15-3 15-9 14-1 15-5"/><path d="M753 137h12" marker-end="url(#arrow)"/></g>
+  <text class="detail" x="760" y="212" text-anchor="middle">Flow-matching head</text>
+  <text class="context" x="760" y="235" text-anchor="middle">A chunk of joint commands</text>
+  <path class="flow" d="M760 249V292"/>
+  <rect class="outline" x="650" y="295" width="220" height="106" rx="12"/>
+  <use href="#arm" transform="translate(672 319) scale(.76)"/>
+  <text class="detail" x="768" y="329">Controller</text>
+  <text class="detail" x="768" y="355">+ SO-101</text>
+  <text class="context" x="760" y="385" text-anchor="middle">Apply the returned actions</text>
+  <path class="feedback" d="M650 350H573"/>
+  <rect class="outline" x="330" y="306" width="240" height="84" rx="10"/>
+  <g class="ink"><path d="M348 329h51M348 343h51M348 357h51"/><circle cx="360" cy="329" r="4" fill="var(--diagram-bg)"/><circle cx="387" cy="343" r="4" fill="var(--diagram-bg)"/><circle cx="374" cy="357" r="4" fill="var(--diagram-bg)"/></g>
+  <text class="label" x="417" y="340">Joint state</text>
+  <text class="context" x="417" y="366">Current pose</text>
+  <path class="flow" d="M450 306V279H620V216H647"/>
+  <path class="feedback" d="M760 401V429H14V103H27"/>
+  <rect x="64" y="411" width="235" height="30" fill="var(--diagram-bg)"/>
+  <text class="detail" x="77" y="433">Observe again</text>
+</g>
+<a class="hotspot" data-term="vision" href="#definition-vision" tabindex="0" role="button" aria-label="Two camera views" aria-controls="definition-vision" aria-expanded="false"><rect class="hit-area" x="30" y="40" width="220" height="124" rx="12"/></a>
+<a class="hotspot" data-term="language" href="#definition-language" tabindex="0" role="button" aria-label="Language instruction" aria-controls="definition-language" aria-expanded="false"><rect class="hit-area" x="30" y="182" width="220" height="91" rx="12"/></a>
+<a class="hotspot" data-term="reason" href="#definition-reason" tabindex="0" role="button" aria-label="System 2: vision-language backbone" aria-controls="definition-reason" aria-expanded="false"><rect class="hit-area" x="330" y="40" width="240" height="209" rx="12"/></a>
+<a class="hotspot" data-term="action" href="#definition-action" tabindex="0" role="button" aria-label="System 1: flow-matching action head" aria-controls="definition-action" aria-expanded="false"><rect class="hit-area" x="650" y="40" width="220" height="209" rx="12"/></a>
+<a class="hotspot" data-term="control" href="#definition-control" tabindex="0" role="button" aria-label="Controller and SO-101 feedback" aria-controls="definition-control" aria-expanded="false"><rect class="hit-area" x="650" y="295" width="220" height="106" rx="12"/></a>
+<a class="hotspot" data-term="state" href="#definition-state" tabindex="0" role="button" aria-label="Current robot joint state" aria-controls="definition-state" aria-expanded="false"><rect class="hit-area" x="330" y="306" width="240" height="84" rx="12"/></a></svg></div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt">Select a step or object for its explanation.</p>
+<article class="definition" id="definition-vision" data-definition="vision" aria-labelledby="heading-vision">
+<h2 id="heading-vision">Vision: observe the task</h2><p class="eyebrow">Input · Wrist and external RGB images</p><p>The two views provide complementary evidence about the vial, rack, and gripper. The wrist view changes with the arm, so a different starting pose also changes what the policy sees.</p>
+<h3>Example</h3><p>A vial visible in the external image may become partly hidden by the gripper in the wrist image. Keep camera keys and preprocessing compatible with the checkpoint.</p><p><a href="../../10-groot.html#architecture-overview" target="_top">Read the architecture overview →</a></p></article>
+<article class="definition" id="definition-language" data-definition="language" aria-labelledby="heading-language">
+<h2 id="heading-language">Language: specify the task</h2><p class="eyebrow">Input · Instruction text</p><p>The task instruction conditions the learned behavior alongside images and state. A language-conditioned model still needs suitable training coverage for the requested robot behavior.</p>
+<h3>Example</h3><p>“Pick up the vial and place it in the rack” describes the goal; it does not supply a hand-written sequence of joint angles.</p><p><a href="../../10-groot.html#what-is-a-vision-language-action-model" target="_top">Read the VLA definition →</a></p></article>
+<article class="definition" id="definition-reason" data-definition="reason" aria-labelledby="heading-reason">
+<h2 id="heading-reason">System 2: interpret images and language</h2><p class="eyebrow">GR00T 1.7 · Vision-language backbone</p><p>Cosmos-Reason2-2B supplies the vision-language features used by the action head. “System 2” is a conceptual label for this perception and reasoning role, not a separate planner you program in this workshop.</p>
+<h3>Example</h3><p>Visual features representing the vial and rack are conditioned on the placement instruction before action generation. The diagram does not imply a human-readable plan is returned.</p><p><a href="../../10-groot.html#architecture-overview" target="_top">Read the architecture overview →</a></p></article>
+<article class="definition" id="definition-action" data-definition="action" aria-labelledby="heading-action">
+<h2 id="heading-action">System 1: generate a chunk of actions</h2><p class="eyebrow">GR00T 1.7 · Flow-matching action head</p><p>The action head uses vision-language features and robot state to generate a sequence of joint commands. The saved processors convert the model representation into commands compatible with the robot.</p>
+<h3>Example</h3><p>The workshop uses relative arm targets with an absolute gripper target. Use the documented 16-action rollout setting and the checkpoint’s matching processors.</p><p><a href="../../10-groot.html#action-space-and-control" target="_top">Explore action representations →</a></p></article>
+<article class="definition" id="definition-control" data-definition="control" aria-labelledby="heading-control">
+<h2 id="heading-control">Act, then observe the result</h2><p class="eyebrow">Inference · Fixed weights, changing observations</p><p>The rollout controller applies returned actions and obtains fresh observations for later predictions. Feedback changes the model’s inputs; ordinary inference does not update its weights.</p>
+<h3>Example</h3><p>At the nominal 30 Hz rate, 16 actions span about 0.53 seconds of command time, excluding inference and network delay. Verify that the achieved starting pose matches the actual training data before comparing policies.</p><p><a href="../../10-groot.html#prediction-and-execution-lengths" target="_top">Compare prediction and execution lengths →</a></p></article>
+<article class="definition" id="definition-state" data-definition="state" aria-labelledby="heading-state">
+<h2 id="heading-state">Robot state: where the arm is now</h2><p class="eyebrow">Input · Current joint positions</p><p>Robot state conditions the action head together with the visual-language features. Joint order, units, calibration, and processor settings must agree between data collection and rollout.</p>
+<h3>Example</h3><p>A relative arm target is interpreted from the observed pose. Relative actions do not make an unseen starting pose equivalent to one covered by the training data.</p><p><a href="../../10-groot.html#action-representations" target="_top">Read the action representation contract →</a></p></article>
+</section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Workshop Preparation Reference"
+msgstr "Workshop 준비 참고"
+
+msgid ""
+"For workshop organizers: build the container and download the lesson models on each station "
+"before learners arrive."
+msgstr "운영자는 수강생 도착 전에 각 station의 container를 build하고 실습 model을 download하세요."
+
+msgid "Clone the Repository and Build the Container"
+msgstr "Repository Clone과 Container Build"
+
+msgid "Run these commands **on the host**, with Git LFS and Docker installed:"
+msgstr "Git LFS와 Docker가 설치된 **host에서** 다음을 실행합니다."
+
+msgid "Download the Lesson Models"
+msgstr "실습 Model Download"
+
+msgid ""
+"Run these commands **on the host**, using the Hugging Face CLI (`hf`). They fill the host cache "
+"that the container mounts, so the lesson commands can keep using their published model IDs. You "
+"can download the models before launching the container."
+msgstr ""
+"Hugging Face CLI(`hf`)로 **host에서** 실행합니다. Container가 mount할 host cache를 채우므로 실습 명령에서 공개 model ID를"
+" 그대로 사용할 수 있습니다. Container 시작 전에도 download 가능합니다."
+
+msgid ""
+"If the CLI is only available inside the container, you can run the same commands there with the "
+"cache mount below in place."
+msgstr "CLI가 container에만 있다면 아래 cache mount를 적용한 뒤 내부에서 같은 명령을 실행합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Download"
+msgstr "Download"
+
+msgid "Used for"
+msgstr "용도"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "GR00T 1.7 base"
+msgstr "GR00T 1.7 base"
+
+msgid "Base-model files required by the policy runtime"
+msgstr "Policy runtime에 필요한 base-model 파일"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Sim-only 20k"
+msgstr "Sim-only 20k"
+
+msgid "Simulation and first real evaluations"
+msgstr "Simulation과 첫 실제 평가"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Sim75 + Real10"
+msgstr "Sim75 + Real10"
+
+msgid "Co-training comparisons and the HG-DAgger collection policy"
+msgstr "Co-Training 비교와 HG-DAgger 수집용 policy"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "i1"
+msgstr "i1"
+
+msgid "State-machine-only evaluation"
+msgstr "State-machine-only 평가"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "i5"
+msgstr "i5"
+
+msgid "Co-training plus broader state-machine layouts"
+msgstr "Co-Training에 더 넓은 state-machine 배치 추가"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Johnny42"
+msgstr "Johnny42"
+
+msgid "Optional real-to-real comparison"
+msgstr "선택적 real-to-real 비교"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "HG-DAgger 20k"
+msgstr "HG-DAgger 20k"
+
+msgid "Demonstrations and corrections trained together, for comparison"
+msgstr "Demonstration과 correction을 함께 학습한 비교용 model"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Manual simulation teleoperation 20k"
+msgstr "Manual simulation teleoperation 20k"
+
+msgid "Additional sim-only policy for comparison"
+msgstr "추가 비교용 sim-only policy"
+
+msgid ""
+"Download the complete repositories, including their configuration and processor files. If access "
+"requires authentication, run `hf auth login` and complete any access requirements shown on the "
+"model's Hugging Face page, then retry."
+msgstr ""
+"Configuration과 processor 파일을 포함한 전체 repo를 download하세요. 인증이 필요하면 `hf auth login`과 model page의 접근 "
+"요구사항을 완료한 뒤 다시 시도합니다."
+
+msgid "Configure Model Precision"
+msgstr "Model Precision 설정"
+
+msgid ""
+"After downloading the models, **manually edit `config.json` for each of the seven lesson "
+"policies** and set:"
+msgstr "Download 후 **실습 policy 7개 각각의 `config.json`을 직접 수정**해 다음과 같이 설정합니다."
+
+msgid ""
+"Use the policy configuration in the Hugging Face cache mounted into the container, typically "
+"`~/.cache/huggingface/hub/models--<owner>--<model>/snapshots/<revision>/config.json` on the host."
+" Choose the revision used for evaluation. If using a local model directory instead, edit its "
+"`config.json`."
+msgstr ""
+"Container에 mount되는 Hugging Face cache의 policy configuration을 사용합니다. 보통 host의 "
+"`~/.cache/huggingface/hub/models--<owner>--<model>/snapshots/<revision>/config.json`입니다. 평가할 "
+"revision을 선택하세요. Local model directory라면 그 안의 `config.json`을 수정합니다."
+
+msgid ""
+"Repeat this for every lesson policy listed above, leaving all other settings unchanged. **Do not "
+"edit the `nvidia/GR00T-N1.7-3B` base model.** Check these settings again after downloading a new "
+"model revision, and restart any running policy process after editing."
+msgstr ""
+"다른 설정은 유지하고 위 모든 실습 policy에서 반복합니다. **`nvidia/GR00T-N1.7-3B` base model은 수정하지 마세요.** 새 revision을 "
+"download한 뒤 다시 확인하고, 수정 후에는 실행 중인 policy process를 재시작합니다."
+
+msgid "Download Starting-Pose Data"
+msgstr "Starting-Pose Data Download"
+
+msgid ""
+"Run this from the workshop checkout on the host. It downloads metadata and joint-state data for "
+"every dataset used by `--start_pose_dataset`, without videos. The container's `./datasets` mount "
+"puts these files where the starting-pose loader expects them."
+msgstr ""
+"Host의 workshop checkout에서 실행합니다. `--start_pose_dataset`에 쓰이는 모든 dataset의 metadata와 joint-state "
+"data만 내려받고 video는 제외합니다. Container의 `./datasets` mount로 loader가 기대하는 위치에 파일이 놓입니다."
+
+msgid "HG-DAgger uses the sim-teleoperation dataset for its starting pose, not the correction segments."
+msgstr "HG-DAgger의 starting pose는 correction segment가 아닌 sim-teleoperation dataset을 사용합니다."
+

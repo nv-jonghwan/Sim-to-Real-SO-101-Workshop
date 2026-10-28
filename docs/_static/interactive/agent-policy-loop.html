@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>An agent as a policy: observe, ask, adapt, execute</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* Show the selected explanation without a term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+/* The illustrated workflow uses one column in narrow course articles. */
+main { max-width: 900px; padding: 6px 0; }
+.layout { gap: 10px; }
+svg { font-family: var(--diagram-font); }
+.marker { font-size: 16px; font-weight: 700; fill: var(--diagram-accent-text); letter-spacing: .3px; }
+.label { font-size: 25px; font-weight: 700; fill: var(--diagram-text); }
+.step-number { font-size: 25px; font-weight: 700; fill: var(--diagram-accent-text); }
+.caption { font-size: 20px; fill: var(--diagram-muted); }
+.minor { font-size: 18px; fill: var(--diagram-muted); }
+.line, .accent-line, .arrow { fill: none; stroke: var(--diagram-line); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.accent-line { stroke: var(--diagram-accent-text); }
+.arrow { marker-end: url(#arrow); }
+.paper { fill: var(--diagram-bg); stroke: var(--diagram-line); stroke-width: 2.2; stroke-linejoin: round; }
+.scene-back { fill: var(--diagram-surface); stroke: var(--diagram-border); stroke-width: 1.8; }
+.chip-body { fill: var(--diagram-tint); stroke: var(--diagram-accent-text); stroke-width: 2.6; }
+.accent-fill { fill: var(--diagram-accent-text); }
+.muted-fill { fill: var(--diagram-muted); }
+.mobile-connectors { display: none; }
+.definition + .definition { margin-top: 24px; }
+.is-enhanced .definition { margin-top: 0; }
+.definition a { color: var(--diagram-accent-text); text-underline-offset: 3px; }
+.definition a:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 3px; }
+.compact .stage-1 { transform: translate(20px, 48px); }
+.compact .stage-2 { transform: translate(20px, 310px); }
+.compact .stage-3 { transform: translate(20px, 572px); }
+.compact .stage-4 { transform: translate(20px, 834px); }
+.compact .stage-5 { transform: translate(20px, 1096px); }
+.compact .desktop-connectors { display: none; }
+.compact .mobile-connectors { display: block; }
+
+</style>
+<link rel="stylesheet" href="diagram-layout.css">
+</head>
+<body>
+<main id="interactive-learning-diagram">
+<div class="layout">
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" id="workflow-svg" viewBox="0 0 760 816" width="760" height="816" role="group" aria-labelledby="workflow-title workflow-desc"><title id="workflow-title">An agent as a policy: observe, ask, adapt, execute</title><desc id="workflow-desc">Each control cycle the simulation pauses, the harness builds a prompt from the current observation, a demonstration, and the previous decision, the agent returns joint targets, the adapter validates and converts them, and the robot executes a short chunk before observing again.</desc><defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="var(--diagram-line)" stroke-width="2"/></marker></defs><text class="marker" x="20" y="24" text-anchor="start">AGENT AS POLICY</text><g class="desktop-connectors" aria-hidden="true"><path class="arrow" d="M362 158 H394"/><path class="arrow" d="M570 270 V290 H190 V308"/><path class="arrow" d="M362 420 H394"/><path class="arrow" d="M570 532 V552 H380 V570"/><path class="accent-line arrow" stroke-dasharray="6 6" d="M206 682 H8 V158 H16"/></g><g class="mobile-connectors" aria-hidden="true"><path class="arrow" d="M190 272 V306"/><path class="arrow" d="M190 534 V568"/><path class="arrow" d="M190 796 V830"/><path class="arrow" d="M190 1058 V1092"/><path class="accent-line arrow" stroke-dasharray="6 6" d="M18 1200 H8 V158 H16"/></g><g class="stage stage-1" transform="translate(20 48)"><text class="step-number" x="16" y="28" text-anchor="start">1</text><text class="label" x="48" y="28" text-anchor="start">Pause and observe</text><path class="scene-back" d="M30 56 H190 V176 H30 Z"/><path class="line" d="M38 164 H182"/><g transform="translate(50 76) scale(0.9)"><path class="accent-line" stroke-width="7" d="M20 100 V75 L50 35 L92 54 L115 24"/><circle class="paper" cx="20" cy="75" r="8"/><circle class="paper" cx="50" cy="35" r="8"/><circle class="paper" cx="92" cy="54" r="7"/><path class="line" d="M8 106 H37 M108 18 L121 30 M117 26 L129 18 L135 25 M117 26 L108 38 L114 43"/></g><rect class="muted-fill" x="164" y="64" width="5" height="16"/><rect class="muted-fill" x="173" y="64" width="5" height="16"/><path class="line" d="M192 116 H206"/><rect class="paper" x="208" y="52" width="108" height="38" rx="4"/><text class="minor" x="262" y="77" text-anchor="middle">External</text><rect class="paper" x="208" y="96" width="108" height="38" rx="4"/><text class="minor" x="262" y="121" text-anchor="middle">Wrist</text><rect class="chip-body" x="208" y="140" width="108" height="36" rx="4" stroke-width="2"/><text class="minor" x="262" y="164" text-anchor="middle">q[6] joints</text><text class="caption" x="170" y="205" text-anchor="middle">The simulation pauses here</text><a class="hotspot" data-term="observe" href="#definition-observe" tabindex="0" role="button" aria-label="1. Pause and observe" aria-controls="definition-observe" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="220" rx="12"/></a></g><g class="stage stage-2" transform="translate(400 48)"><text class="step-number" x="16" y="28" text-anchor="start">2</text><text class="label" x="48" y="28" text-anchor="start">Build the prompt</text><rect class="paper" x="30" y="54" width="176" height="34" rx="4"/><text class="minor" x="42" y="78" text-anchor="start">Task</text><rect class="paper" x="30" y="96" width="176" height="34" rx="4"/><text class="minor" x="42" y="120" text-anchor="start">Recorded demo</text><rect class="paper" x="30" y="138" width="176" height="34" rx="4"/><text class="minor" x="42" y="162" text-anchor="start">Previous decision</text><path class="line" d="M208 71 H226 M208 113 H226 M208 155 H226"/><path class="paper" d="M228 52 H300 L316 68 V176 H228 Z"/><path class="line" d="M300 52 V68 H316"/><path class="accent-line" stroke-width="2.2" d="M240 88 H304 M240 106 H304 M240 124 H292 M240 142 H304 M240 160 H284"/><text class="caption" x="170" y="205" text-anchor="middle">Context travels with each request</text><a class="hotspot" data-term="prompt" href="#definition-prompt" tabindex="0" role="button" aria-label="2. Build the prompt" aria-controls="definition-prompt" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="220" rx="12"/></a></g><g class="stage stage-3" transform="translate(20 310)"><text class="step-number" x="16" y="28" text-anchor="start">3</text><text class="label" x="48" y="28" text-anchor="start">Ask the agent</text><rect class="paper" x="24" y="60" width="92" height="104" rx="10"/><text class="minor" x="70" y="118" text-anchor="middle">Local</text><rect class="chip-body" x="214" y="60" width="102" height="104" rx="10"/><text class="label" x="265" y="108" text-anchor="middle">Agent</text><text class="minor" x="265" y="136" text-anchor="middle">Remote</text><path class="arrow" d="M120 88 H208"/><path class="arrow" d="M208 138 H120"/><text class="minor" x="164" y="80" text-anchor="middle">request</text><text class="minor" x="164" y="162" text-anchor="middle">targets</text><text class="caption" x="170" y="205" text-anchor="middle">The simulation waits for inference</text><a class="hotspot" data-term="ask" href="#definition-ask" tabindex="0" role="button" aria-label="3. Ask the agent" aria-controls="definition-ask" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="220" rx="12"/></a></g><g class="stage stage-4" transform="translate(400 310)"><text class="step-number" x="16" y="28" text-anchor="start">4</text><text class="label" x="48" y="28" text-anchor="start">Check and adapt</text><path class="line" stroke-dasharray="5 5" d="M32 160 L62 100 L108 118 L146 70"/><circle class="paper" cx="32" cy="160" r="7"/><circle class="paper" cx="62" cy="100" r="7"/><circle class="paper" cx="108" cy="118" r="7"/><circle class="paper" cx="146" cy="70" r="7"/><path class="arrow" d="M156 120 H184"/><path class="accent-line" stroke-width="2" d="M190 160 C215 80 255 150 316 70"/><circle class="accent-fill" cx="190" cy="160" r="3"/><circle class="accent-fill" cx="197" cy="143" r="3"/><circle class="accent-fill" cx="204" cy="131" r="3"/><circle class="accent-fill" cx="212" cy="123" r="3"/><circle class="accent-fill" cx="220" cy="119" r="3"/><circle class="accent-fill" cx="229" cy="116" r="3"/><circle class="accent-fill" cx="240" cy="115" r="3"/><circle class="accent-fill" cx="250" cy="114" r="3"/><circle class="accent-fill" cx="262" cy="111" r="3"/><circle class="accent-fill" cx="274" cy="107" r="3"/><circle class="accent-fill" cx="287" cy="99" r="3"/><circle class="accent-fill" cx="301" cy="87" r="3"/><circle class="accent-fill" cx="316" cy="70" r="3"/><text class="caption" x="170" y="205" text-anchor="middle">Validate, interpolate, convert</text><a class="hotspot" data-term="adapt" href="#definition-adapt" tabindex="0" role="button" aria-label="4. Check and adapt" aria-controls="definition-adapt" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="220" rx="12"/></a></g><g class="stage stage-5" transform="translate(210 572)"><text class="step-number" x="16" y="28" text-anchor="start">5</text><text class="label" x="48" y="28" text-anchor="start">Execute, then repeat</text><g transform="translate(24 60) scale(0.95)"><path class="accent-line" stroke-width="7" d="M20 100 V75 L50 35 L92 54 L115 24"/><circle class="paper" cx="20" cy="75" r="8"/><circle class="paper" cx="50" cy="35" r="8"/><circle class="paper" cx="92" cy="54" r="7"/><path class="line" d="M8 106 H37 M108 18 L121 30 M117 26 L129 18 L135 25 M117 26 L108 38 L114 43"/></g><path class="line" d="M190 86 H316 M190 78 V94 M211 78 V94 M232 78 V94 M253 78 V94 M274 78 V94 M295 78 V94 M316 78 V94"/><path class="accent-line" d="M190 110 H316 M190 102 V118 M316 102 V118"/><text class="minor" x="253" y="136" text-anchor="middle">H steps</text><text class="minor" x="253" y="66" text-anchor="middle">control steps</text><rect class="paper" x="190" y="148" width="126" height="32" rx="4" stroke-dasharray="5 4"/><text class="minor" x="253" y="171" text-anchor="middle">Evaluator logs</text><text class="caption" x="170" y="205" text-anchor="middle">Then observe again</text><a class="hotspot" data-term="execute" href="#definition-execute" tabindex="0" role="button" aria-label="5. Execute, then repeat" aria-controls="definition-execute" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="220" rx="12"/></a></g></svg></div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt">Select a step or object for its explanation.</p><article class="definition" id="definition-observe" data-definition="observe" aria-labelledby="heading-observe"><h2 id="heading-observe">1. Pause and observe</h2><p>At each decision the simulation stops and the harness reads the current scene: the external and wrist camera images and the six joint values (five arm angles plus the gripper). These are the same inputs a recorded SO-101 episode contains.</p><p>The agent works from camera images and joints alone. The evaluator's success or timeout result is never one of its inputs.</p></article><article class="definition" id="definition-prompt" data-definition="prompt" aria-labelledby="heading-prompt"><h2 id="heading-prompt">2. Build the prompt</h2><p>The harness packs three things next to the current observation. The first is the task text, "Pick up the vial and place it in the rack". The second is a recorded demonstration with its camera frames, joints, and example action targets. The third is the previous decision: the observation the agent saw last time, the actions or waypoints it chose, and a short plan note.</p><p>The demonstration is how we hand the agent an example of the motion we want. It arrives in the prompt rather than through training.</p></article><article class="definition" id="definition-ask" data-definition="ask" aria-labelledby="heading-ask"><h2 id="heading-ask">3. Ask the agent</h2><p>The prompt goes to a remote model service as a single request. The simulator stays paused until the answer comes back, so slow inference never turns into extra motion in the scene. Only the model runs remotely. The simulator, the harness, and the evaluator stay on the local machine.</p><p>The agent replies with absolute joint targets, either as a dense list or as waypoints.</p></article><article class="definition" id="definition-adapt" data-definition="adapt" aria-labelledby="heading-adapt"><h2 id="heading-adapt">4. Check and adapt</h2><p>Before anything moves, the local runtime parses the reply and validates it. The action adapter then interpolates the targets and converts them into simulator units.</p><p>The result is one joint target for each control step of the simulation.</p></article><article class="definition" id="definition-execute" data-definition="execute" aria-labelledby="heading-execute"><h2 id="heading-execute">5. Execute, then repeat</h2><p>The robot follows up to H of those targets before the harness observes again. The chunk length is a setting you choose. Wall-clock time per decision is set by inference, which can take several seconds, and the simulation waits for it. A shorter chunk corrects course more often but pays for more inference. A longer chunk spends more of each wait on motion.</p><p>A native evaluator checks for success or timeout and records the outcome to the logs. Its result is never shown to the policy.</p></article></section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+<script>
+(() => {
+  const svg = document.getElementById('workflow-svg');
+  const narrow = matchMedia('(max-width: 539px)');
+  const fit = () => {
+    svg.classList.toggle('compact', narrow.matches);
+    svg.setAttribute('width', narrow.matches ? '380' : '760');
+    svg.setAttribute('height', narrow.matches ? '1360' : '816');
+    svg.setAttribute('viewBox', narrow.matches ? '0 0 380 1360' : '0 0 760 816');
+  };
+  narrow.addEventListener('change', fit);
+  fit();
+})();
+</script>
+</body>
+</html>

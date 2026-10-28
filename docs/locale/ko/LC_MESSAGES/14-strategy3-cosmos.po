@@ -1,0 +1,431 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos"
+msgstr "Sim-to-Real 전략 4: Cosmos로 Dataset 증강"
+
+msgid ""
+"Cosmos Transfer demo showing an SO-101 input episode beside generated footage in a different "
+"environment."
+msgstr "SO-101 입력 episode와 다른 환경으로 생성한 영상을 나란히 보여주는 Cosmos Transfer demo입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"Lecture. You do not need a connected robot or a running container. Review the source and "
+"generated videos, then discuss which variations would be useful for training."
+msgstr "이론 수업입니다. 연결된 robot이나 실행 중인 container는 필요하지 않습니다. 원본과 생성 video를 검토하고 학습에 유용한 variation을 논의합니다."
+
+msgid ""
+"In this session, you'll explore Cosmos as an omnimodel for physical AI, then focus on one "
+"application: creating diverse synthetic training data for robot policies. Source and generated "
+"video examples illustrate which variations preserve useful training examples."
+msgstr ""
+"Physical AI용 omnimodel인 Cosmos를 살펴보고, robot policy 학습용 synthetic data 생성에 집중합니다. 원본과 생성 video를 통해"
+" 어떤 variation이 유효한 training example을 보존하는지 확인합니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "By the end of this session, you'll be able to:"
+msgstr "이 session을 마치면 다음을 수행할 수 있습니다."
+
+msgid "**Explain** how Cosmos connects reasoning, world generation, and action modeling"
+msgstr "Cosmos의 reasoning, world generation, action modeling 연결 방식 **설명**"
+
+msgid "**Identify** where synthetic video augmentation fits in robot learning"
+msgstr "Robot learning에서 synthetic video augmentation의 역할 **파악**"
+
+msgid "**Assess** whether generated videos preserve the original task and motion"
+msgstr "생성 video가 원래 task와 motion을 유지하는지 **평가**"
+
+msgid "**Explain** how to test whether augmentation helps a policy"
+msgstr "Augmentation이 policy에 도움이 되는지 시험하는 방법 **설명**"
+
+msgid "Beyond Domain Randomization and Co-Training"
+msgstr "Domain Randomization과 Co-Training을 넘어"
+
+msgid ""
+"In Strategy 1, you used domain randomization to vary configured simulation parameters. Generative"
+" augmentation adds another way to vary scene appearance."
+msgstr ""
+"전략 1에서는 설정된 simulation parameter를 Domain Randomization으로 바꿨습니다. Generative augmentation은 scene "
+"외관을 변화시키는 또 다른 방법입니다."
+
+msgid ""
+"For example, Cosmos 3 video transfer can use a source video and structural controls such as depth"
+" or segmentation to generate visual variations. This complements the variations you create in the"
+" simulator. [NVIDIA Cosmos 3 transfer "
+"examples](https://github.com/NVIDIA/cosmos/tree/main/cookbooks/cosmos3/generator/transfer)"
+msgstr ""
+"예를 들어 Cosmos 3 video transfer는 원본 video와 depth, segmentation 같은 structural control로 시각적 "
+"variation을 생성해 simulator의 variation을 보완합니다. [NVIDIA Cosmos 3 transfer "
+"examples](https://github.com/NVIDIA/cosmos/tree/main/cookbooks/cosmos3/generator/transfer)"
+
+msgid "What Is Cosmos?"
+msgstr "Cosmos란?"
+
+msgid ""
+"**NVIDIA Cosmos** is a platform of world foundation models and tools for physical AI. **Cosmos 3 "
+"is an omnimodel** that brings reasoning, world generation, and action generation into one "
+"architecture. [NVIDIA Cosmos overview](https://www.nvidia.com/en-us/ai/cosmos/)"
+msgstr ""
+"**NVIDIA Cosmos**는 Physical AI용 world foundation model과 도구의 플랫폼입니다. **Cosmos 3는 omnimodel**로, "
+"reasoning, world generation, action generation을 하나의 architecture에 결합합니다. [NVIDIA Cosmos "
+"overview](https://www.nvidia.com/en-us/ai/cosmos/)"
+
+msgid ""
+"The Cosmos 3 family works across language, images, video, audio, and action sequences. Its "
+"Mixture-of-Transformers architecture supports both understanding a scene and generating outputs "
+"conditioned on that scene. [NVIDIA Cosmos 3 "
+"documentation](https://docs.nvidia.com/cosmos/latest/cosmos3/index.html)"
+msgstr ""
+"Cosmos 3 family는 language, image, video, audio, action sequence를 다룹니다. Mixture-of-Transformers "
+"architecture는 scene 이해와 해당 scene을 조건으로 한 output 생성을 모두 지원합니다. [NVIDIA Cosmos 3 "
+"documentation](https://docs.nvidia.com/cosmos/latest/cosmos3/index.html)"
+
+msgid ""
+"Cosmos 3 omni-model architecture connecting an autoregressive text branch and a diffusion branch "
+"for vision, audio, and actions through shared multimodal attention."
+msgstr ""
+"Shared multimodal attention으로 autoregressive text branch와 vision·audio·action용 diffusion branch를 "
+"연결하는 Cosmos 3 omni-model architecture입니다."
+
+msgid ""
+"Cosmos 3 omni-model architecture, showing shared multimodal attention across autoregressive and "
+"diffusion branches."
+msgstr "Autoregressive 및 diffusion branch의 shared multimodal attention을 보여주는 Cosmos 3 architecture입니다."
+
+msgid "For robot learning, these capabilities support several uses:"
+msgstr "Robot learning에서는 다음과 같이 활용할 수 있습니다."
+
+msgid "**Understand demonstrations:** reason about objects, interactions, and events in camera footage."
+msgstr "**Understand demonstrations:** Camera 영상의 object, interaction, event를 추론합니다."
+
+msgid ""
+"**Generate training data:** create video variations and plausible future scenes from prompts and "
+"other inputs."
+msgstr "**Generate training data:** Prompt와 다른 입력으로 video variation과 가능한 미래 scene을 생성합니다."
+
+msgid ""
+"**Explore outcomes:** predict how a scene could evolve under different actions, supporting "
+"planning and evaluation."
+msgstr "**Explore outcomes:** 여러 action에 따라 scene이 어떻게 변할지 예측해 planning과 평가를 지원합니다."
+
+msgid ""
+"**Build policy models:** post-train a World Action Model (WAM), a model that connects "
+"observations of the world to robot actions, using data for a particular robot and its cameras."
+msgstr ""
+"**Build policy models:** 특정 robot과 camera data로 world observation을 robot action에 연결하는 World "
+"Action Model (WAM)을 post-train합니다."
+
+msgid ""
+"These uses follow [NVIDIA's Cosmos 3 capability overview](https://www.nvidia.com/en-"
+"us/ai/cosmos/). This lesson focuses on data augmentation; the policy you train and deploy in the "
+"workshop is GR00T 1.7."
+msgstr ""
+"이 활용 사례는 [NVIDIA Cosmos 3 capability overview](https://www.nvidia.com/en-us/ai/cosmos/)를 따릅니다. 이번"
+" 실습은 data augmentation에 집중하며, 실제 학습·배포하는 policy는 GR00T 1.7입니다."
+
+msgid "Read more about world prediction and action modeling"
+msgstr "World Prediction과 Action Modeling 자세히 보기"
+
+msgid ""
+"**Forward dynamics** predicts what happens next from the current observations and proposed "
+"controls. **Inverse dynamics** estimates actions that could explain a change between observed "
+"states. A **robot policy** uses observations to choose actions for a task. NVIDIA demonstrates "
+"these as different applications of Cosmos 3's shared model. [NVIDIA Cosmos 3 "
+"research](https://research.nvidia.com/labs/cosmos-lab/cosmos3/)"
+msgstr ""
+"**Forward dynamics**는 현재 observation과 제안 control로 다음 상태를 예측합니다. **Inverse dynamics**는 관측 state "
+"변화를 설명하는 action을 추정합니다. **Robot policy**는 observation으로 task용 action을 선택합니다. NVIDIA는 Cosmos 3의 "
+"shared model로 이러한 서로 다른 활용을 보여줍니다. [NVIDIA Cosmos 3 research](https://research.nvidia.com/labs"
+"/cosmos-lab/cosmos3/)"
+
+msgid ""
+"For an optional exploration, inspect the research examples and identify which inputs and outputs "
+"each application needs. Then compare them with the wrist images, external images, joint states, "
+"and actions in a workshop episode."
+msgstr "선택적으로 연구 예시의 입력·출력을 확인하고 workshop episode의 wrist/external image, joint state, action과 비교해 보세요."
+
+msgid "How Cosmos Works"
+msgstr "Cosmos 동작 방식"
+
+msgid ""
+"Consider the video augmentation workflow below. Cosmos 3 uses a prompt and controls such as "
+"edges, blur, depth, or segmentation to guide video generation. [NVIDIA Cosmos 3 transfer "
+"examples](https://github.com/NVIDIA/cosmos/tree/main/cookbooks/cosmos3/generator/transfer)"
+msgstr ""
+"아래 video augmentation workflow를 살펴보세요. Cosmos 3는 prompt와 edge, blur, depth, segmentation 같은 "
+"control로 video generation을 유도합니다. [NVIDIA Cosmos 3 transfer "
+"examples](https://github.com/NVIDIA/cosmos/tree/main/cookbooks/cosmos3/generator/transfer)"
+
+msgid "Source video, appearance prompt, structural control, and task-consistency review"
+msgstr "Source video, appearance prompt, structural control, task-consistency 검토"
+
+msgid "How Control Signals Shape the Result"
+msgstr "Control Signal이 결과에 미치는 영향"
+
+msgid "Control signals guide which parts of the source video Cosmos should preserve:"
+msgstr "Control signal은 Cosmos가 원본 video의 어떤 부분을 보존할지 안내합니다."
+
+msgid "**Edges** guide object outlines and positions."
+msgstr "**Edges**는 object 윤곽과 위치를 안내합니다."
+
+msgid "**Segmentation** separates regions such as the arm, rack, and vials."
+msgstr "**Segmentation**은 arm, rack, vial 등의 영역을 나눕니다."
+
+msgid "**Blur** provides the broad color and layout of the scene with less detail."
+msgstr "**Blur**는 세부 묘사를 줄인 scene의 전체 색상과 배치를 제공합니다."
+
+msgid ""
+"Cosmos demo showing edge, segmentation, and blur inputs above a comparison of the real input with"
+" edge-only, edge-plus-segmentation, and segmentation-only outputs."
+msgstr ""
+"위에는 edge, segmentation, blur 입력, 아래에는 real input과 edge-only, edge-plus-segmentation, "
+"segmentation-only 결과를 보여주는 Cosmos demo입니다."
+
+msgid ""
+"The bottom row compares the real input with three generated results: edges only, edges plus "
+"segmentation, and segmentation only."
+msgstr "아래 행은 실제 입력과 세 가지 생성 결과(edges only, edges plus segmentation, segmentation only)를 비교합니다."
+
+msgid ""
+"Compare the rack holes, vial positions, and gripper shape. Which controls keep these details "
+"closest to the source while still changing the appearance?"
+msgstr "Rack hole, vial 위치, gripper 형태를 비교하세요. 외관을 바꾸면서도 원본의 세부 사항을 가장 잘 유지하는 control은 무엇인가요?"
+
+msgid "Reference: reproduce a Cosmos 3 augmentation"
+msgstr "참고: Cosmos 3 Augmentation 재현"
+
+msgid ""
+"Start with [NVIDIA's Cosmos 3 transfer notebook for "
+"Diffusers](https://github.com/NVIDIA/cosmos/blob/main/cookbooks/cosmos3/generator/transfer/run_video_transfer_with_diffusers.ipynb)"
+" for setup and control-video examples."
+msgstr ""
+"설정과 control-video 예시는 [NVIDIA Cosmos 3 Diffusers transfer "
+"notebook](https://github.com/NVIDIA/cosmos/blob/main/cookbooks/cosmos3/generator/transfer/run_video_transfer_with_diffusers.ipynb)에서"
+" 시작하세요."
+
+msgid ""
+"In one SO-101 trial, we prepared an edge-control video from an external-camera clip and prompted "
+"Cosmos to change the surrounding laboratory. We used `nvidia/Cosmos3-Nano`, 121 frames at 640 × "
+"480 and 30 FPS, 50 diffusion steps, prompt guidance 3.0, control guidance 1.5, and seed 2026. The"
+" result also changed unintended objects, so compare each generated clip with its source before "
+"using it for training."
+msgstr ""
+"SO-101 시험에서는 external-camera clip의 edge-control video를 만들고 주변 laboratory를 바꾸도록 prompt를 작성했습니다. "
+"`nvidia/Cosmos3-Nano`, 640 × 480의 121 frame, 30 FPS, diffusion step 50, prompt guidance 3.0, "
+"control guidance 1.5, seed 2026을 사용했습니다. 의도하지 않은 object도 변했으므로 학습 전에 생성 clip을 원본과 비교하세요."
+
+msgid "Cosmos Augmentation Example 1"
+msgstr "Cosmos Augmentation 예시 1"
+
+msgid ""
+"Two Cosmos restylings of the same robot episode: Pink World with a glittery pink mat and robot, "
+"and Cartoon Workshop with bold colors and illustrated surroundings."
+msgstr ""
+"같은 robot episode를 glittery pink mat와 robot의 Pink World, 선명한 색상과 illustration 배경의 Cartoon "
+"Workshop으로 바꾼 결과입니다."
+
+msgid ""
+"Cosmos can also make dramatic appearance changes: the same episode restyled as “Pink World” and "
+"“Cartoon Workshop.” Notice how the robot, mat, and background change, then compare the vial and "
+"gripper details."
+msgstr ""
+"같은 episode를 “Pink World”와 “Cartoon Workshop”으로 크게 바꿀 수도 있습니다. Robot, mat, background의 변화와 vial 및 "
+"gripper 세부 사항을 비교하세요."
+
+msgid "Example Dataset: Cosmos-Augmented Demonstrations"
+msgstr "Dataset 예시: Cosmos-Augmented Demonstration"
+
+msgid ""
+"This [Cosmos Transfer "
+"dataset](https://huggingface.co/datasets/bdelfino/so101_vials_dr_sts_250ep_20261005_CosmosTransfer)"
+" restyles 10 simulation episodes to resemble physical footage, including a felt mat, foam rack, "
+"and frosted vials. Both the external and wrist videos are augmented; the recorded states, "
+"actions, and timestamps stay unchanged."
+msgstr ""
+"[Cosmos Transfer "
+"dataset](https://huggingface.co/datasets/bdelfino/so101_vials_dr_sts_250ep_20261005_CosmosTransfer)은"
+" simulation episode 10개를 felt mat, foam rack, frosted vial이 있는 실제 영상처럼 바꿉니다. External과 wrist "
+"video를 모두 증강하되 기록된 state, action, timestamp는 유지합니다."
+
+msgid ""
+"External-camera excerpts from augmented dataset episodes 0, 4, and 9, showing the SO-101 moving "
+"vials toward the rack."
+msgstr "증강 dataset의 episode 0, 4, 9에서 SO-101이 vial을 rack 쪽으로 옮기는 external-camera clip입니다."
+
+msgid "Excerpts from augmented episodes 0, 4, and 9, at normal speed."
+msgstr "증강 episode 0, 4, 9의 정상 속도 발췌 영상입니다."
+
+msgid ""
+"Notice the vial caps, rack color, and gripper contact. Do they stay consistent as the arm moves? "
+"The dataset author notes color drift and small geometry differences, and has not tested whether "
+"these episodes improve a trained policy. See the [dataset "
+"notes](https://huggingface.co/datasets/bdelfino/so101_vials_dr_sts_250ep_20261005_CosmosTransfer/blob/11418dc75d705a1d4ef1b8bcb66ea31b1cf386da/README.md)"
+" for the source episodes and augmentation settings."
+msgstr ""
+"Vial cap, rack 색상, gripper contact가 arm 이동 중에도 일관되는지 보세요. 작성자는 color drift와 작은 geometry 차이를 "
+"기록했으며, 학습 policy 개선 여부는 아직 시험하지 않았습니다. 원본 episode와 설정은 [dataset "
+"notes](https://huggingface.co/datasets/bdelfino/so101_vials_dr_sts_250ep_20261005_CosmosTransfer/blob/11418dc75d705a1d4ef1b8bcb66ea31b1cf386da/README.md)를"
+" 확인하세요."
+
+msgid "What to Look for in Augmented Data"
+msgstr "증강 Data 검토 기준"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Visual Diversity**"
+msgstr "**Visual Diversity**"
+
+msgid "Photorealistic rendering variations"
+msgstr "Photorealistic rendering variation"
+
+msgid "Natural lighting changes"
+msgstr "자연스러운 lighting 변화"
+
+msgid "Background and texture diversity"
+msgstr "Background와 texture 다양성"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Scenario Variation**"
+msgstr "**Scenario Variation**"
+
+msgid "Background and surface changes"
+msgstr "Background와 surface 변화"
+
+msgid "Lighting variations"
+msgstr "Lighting variation"
+
+msgid "Appearance changes preserving recorded action labels"
+msgstr "기록된 action label을 보존하는 외관 변화"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Physical Consistency**"
+msgstr "**Physical Consistency**"
+
+msgid "Check that frames preserve task geometry"
+msgstr "Frame이 task geometry를 보존하는지 확인"
+
+msgid "Verify contact timing and motion against the source"
+msgstr "Contact timing과 motion을 원본과 비교"
+
+msgid "Reject augmentations that invalidate recorded actions"
+msgstr "기록된 action과 맞지 않는 augmentation 제외"
+
+msgid "Discussion: Assess Video Augmentation"
+msgstr "토의: Video Augmentation 평가"
+
+msgid "Use the source and generated examples above to discuss:"
+msgstr "위 원본과 생성 예시로 다음을 논의하세요."
+
+msgid "Which lighting, surface, or background changes would be useful for training?"
+msgstr "어떤 lighting, surface, background 변화가 학습에 유용할까요?"
+
+msgid "Do the vial positions, gripper shape, and contact timing still match the recorded actions?"
+msgstr "Vial 위치, gripper 형태, contact timing이 기록된 action과 여전히 맞나요?"
+
+msgid "Which examples would you keep or reject, and why?"
+msgstr "어떤 예시를 남기거나 제외할 것이며 이유는 무엇인가요?"
+
+msgid "How would you compare policies trained with and without augmented data to test whether it helps?"
+msgstr "효과를 시험하려면 증강 data를 사용한 policy와 사용하지 않은 policy를 어떻게 비교할까요?"
+
+msgid ""
+"Reject examples that move the vial, change a grasp, or alter contact timing in a way that no "
+"longer matches the recorded actions. This lecture uses prepared examples; running Cosmos "
+"generation is not required."
+msgstr ""
+"Vial 이동, grasp 변경, contact timing 변화로 기록된 action과 맞지 않게 된 예시는 제외하세요. 준비된 예시를 사용하는 이 수업에서는 Cosmos "
+"generation을 직접 실행할 필요가 없습니다."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid ""
+"Cosmos 3 connects scene understanding, world generation, and action modeling; video augmentation "
+"is one application."
+msgstr ""
+"Cosmos 3는 scene understanding, world generation, action modeling을 연결하며 video augmentation은 활용 사례 "
+"중 하나입니다."
+
+msgid ""
+"Domain randomization, real demonstrations, and generative augmentation provide different ways to "
+"expand training coverage."
+msgstr ""
+"Domain Randomization, 실제 demonstration, generative augmentation은 서로 다른 방식으로 training coverage를 "
+"넓힙니다."
+
+msgid "Inspect generated videos against the recorded actions before using them for policy training."
+msgstr "Policy 학습 전에 생성 video와 기록된 action을 대조하세요."
+
+msgid ""
+"Compare policies on the same task to measure whether an augmentation mix improves real-world "
+"performance."
+msgstr "같은 task에서 policy를 비교해 augmentation 혼합이 실제 성능을 개선하는지 측정하세요."
+
+msgid "Resources"
+msgstr "참고 자료"
+
+msgid "[NVIDIA Cosmos](https://www.nvidia.com/en-us/ai/cosmos/) — Omnimodel overview and use cases"
+msgstr "[NVIDIA Cosmos](https://www.nvidia.com/en-us/ai/cosmos/) — Omnimodel 개요와 활용 사례"
+
+msgid ""
+"[Cosmos 3 documentation](https://docs.nvidia.com/cosmos/latest/cosmos3/index.html) — Model "
+"family, installation, and inference guides"
+msgstr ""
+"[Cosmos 3 documentation](https://docs.nvidia.com/cosmos/latest/cosmos3/index.html) — Model "
+"family, 설치, inference 안내"
+
+msgid ""
+"[Cosmos 3 research](https://research.nvidia.com/labs/cosmos-lab/cosmos3/) — Examples of "
+"reasoning, world prediction, and action modeling"
+msgstr ""
+"[Cosmos 3 research](https://research.nvidia.com/labs/cosmos-lab/cosmos3/) — Reasoning, world "
+"prediction, action modeling 예시"
+
+msgid ""
+"[Cosmos 3 video "
+"transfer](https://github.com/NVIDIA/cosmos/tree/main/cookbooks/cosmos3/generator/transfer) — "
+"Controlled video generation for augmentation"
+msgstr ""
+"[Cosmos 3 video "
+"transfer](https://github.com/NVIDIA/cosmos/tree/main/cookbooks/cosmos3/generator/transfer) — "
+"Augmentation용 controlled video generation"
+
+msgid ""
+"[Cosmos Cookbook](https://nvidia-cosmos.github.io/cosmos-cookbook/) — Recipes and examples for "
+"Cosmos world foundation models"
+msgstr ""
+"[Cosmos Cookbook](https://nvidia-cosmos.github.io/cosmos-cookbook/) — Cosmos world foundation "
+"model recipe와 예시"
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Next, [Sim-to-Real Strategy 5: System Identification With AnchorBench](15-strategy4-sysid.md) "
+"examines the actuation gap through measured SO-101 motions, fitted actuator parameters, and a "
+"paired policy comparison."
+msgstr ""
+"다음 [Sim-to-Real Strategy 5: System Identification With AnchorBench](15-strategy4-sysid.md)에서는 "
+"SO-101 측정 motion, fitted actuator parameter, paired policy 비교로 actuation gap을 살펴봅니다."
+

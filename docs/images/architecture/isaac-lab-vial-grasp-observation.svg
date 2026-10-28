@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="580" viewBox="0 0 1560 580" role="group" aria-labelledby="title description">
+<title id="title">Isaac Lab · Vial grasp observation</title>
+<desc id="description">During an environment step, the observation manager computes the configured grasp observation using contact sensor data. The result indicates whether a vial is grasped, shown as vial_grasped with observation-group nesting omitted. The running loop continues to the next step.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-accent-text,#004831)"/></marker>
+</defs>
+<style>
+text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#1a1a1a);}
+.box {fill:var(--diagram-surface,#f7f7f7);stroke:var(--diagram-accent-text,#004831);stroke-width:2;}
+.heading {font-size:24px;font-weight:700;}
+.detail {font-size:19px;fill:var(--diagram-muted,#666);}
+.edge {fill:none;stroke:var(--diagram-accent-text,#004831);stroke-width:2;marker-end:url(#arrow);}
+.config {stroke:var(--diagram-muted,#666);stroke-dasharray:5 6;stroke-width:1.5;}
+.label {font-size:19px;paint-order:stroke;stroke:var(--diagram-bg,#fff);stroke-width:9px;stroke-linejoin:round;}
+</style>
+<rect width="1560" height="580" fill="var(--diagram-bg,#fff)"/>
+
+<text x="40" y="80" class="detail">Dashed arrows: configuration · Solid arrows: runtime interaction</text>
+<path d="M 820 180 H 690" class="edge config"/>
+<path d="M 550 220 V 320" class="edge config"/>
+<path d="M 970 220 V 320" class="edge"/>
+<path d="M 280 368 H 410" class="edge"/>
+<path d="M 690 368 H 820" class="edge"/>
+<path d="M 1120 368 H 1250" class="edge"/>
+<path d="M 1385 416 V 500 Q 1385 520 1365 520 H 180 Q 160 520 160 500 V 416" class="edge"/>
+<rect x="410" y="140" width="280" height="80" rx="14" class="box"/>
+<text x="550.0" y="187.0" text-anchor="middle" class="heading">
+<tspan x="550.0" dy="0" font-size="22">Observation configuration</tspan>
+</text>
+<rect x="820" y="140" width="300" height="80" rx="14" class="box"/>
+<text x="970.0" y="187.0" text-anchor="middle" class="heading">
+<tspan x="970.0" dy="0">Contact sensor</tspan>
+</text>
+<rect x="40" y="320" width="240" height="96" rx="14" class="box"/>
+<text x="160.0" y="375.0" text-anchor="middle" class="heading">
+<tspan x="160.0" dy="0">Environment step</tspan>
+</text>
+<rect x="410" y="320" width="280" height="96" rx="14" class="box"/>
+<text x="550.0" y="375.0" text-anchor="middle" class="heading">
+<tspan x="550.0" dy="0">Observation manager</tspan>
+</text>
+<rect x="820" y="320" width="300" height="96" rx="14" class="box"/>
+<text x="970.0" y="375.0" text-anchor="middle" class="heading">
+<tspan x="970.0" dy="0">Grasp check</tspan>
+</text>
+<rect x="1250" y="320" width="270" height="96" rx="14" class="box"/>
+<text x="1385.0" y="358" text-anchor="middle" class="heading">
+<tspan x="1385.0" dy="0">Observations</tspan>
+</text>
+<text x="1385.0" y="389" text-anchor="middle" class="detail">
+<tspan x="1385.0" dy="0">vial_grasped</tspan>
+</text>
+<text x="1185" y="354" text-anchor="middle" class="label">
+<tspan x="1185" dy="0">Yes / No</tspan>
+</text>
+<text x="775" y="506" text-anchor="middle" class="label">
+<tspan x="775" dy="0">Next step</tspan>
+</text>
+</svg>

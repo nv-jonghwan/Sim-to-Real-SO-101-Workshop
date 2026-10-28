@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1470" height="650" viewBox="0 0 1470 650" role="group" aria-labelledby="title description">
+<title id="title">Isaac Lab · Camera sensor and ovrtx</title>
+<desc id="description">The environment sends scene state to ovrtx. Camera configuration supplies the sensor settings. The camera sensor sends its pose and render requests to ovrtx, which renders the scene and returns RGB images. The camera image data feeds environment observations.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-accent-text,#004831)"/></marker>
+</defs>
+<style>
+text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#1a1a1a);}
+.box {fill:var(--diagram-surface,#f7f7f7);stroke:var(--diagram-accent-text,#004831);stroke-width:2;}
+.heading {font-size:24px;font-weight:700;}
+.detail {font-size:19px;fill:var(--diagram-muted,#666);}
+.edge {fill:none;stroke:var(--diagram-accent-text,#004831);stroke-width:2;marker-end:url(#arrow);}
+.config {stroke:var(--diagram-muted,#666);stroke-dasharray:5 6;stroke-width:1.5;}
+.label {font-size:19px;paint-order:stroke;stroke:var(--diagram-bg,#fff);stroke-width:9px;stroke-linejoin:round;}
+</style>
+<rect width="1470" height="650" fill="var(--diagram-bg,#fff)"/>
+
+<text x="40" y="80" class="detail">Dashed arrows: configuration · Solid arrows: runtime interaction</text>
+<path d="M 190 245 V 350" class="edge"/>
+<path d="M 800 245 V 350" class="edge config"/>
+<path d="M 340 420 H 650" class="edge"/>
+<path d="M 950 420 H 1140" class="edge"/>
+<path d="M 800 490 V 555 Q 800 575 780 575 H 210 Q 190 575 190 555 V 490" class="edge"/>
+<rect x="40" y="130" width="300" height="115" rx="14" class="box"/>
+<text x="190.0" y="168" text-anchor="middle" class="heading">
+<tspan x="190.0" dy="0">Environment</tspan>
+</text>
+<text x="190.0" y="199" text-anchor="middle" class="detail">
+<tspan x="190.0" dy="0">Provides the scene</tspan>
+<tspan x="190.0" dy="23">and its current state</tspan>
+</text>
+<rect x="650" y="130" width="300" height="115" rx="14" class="box"/>
+<text x="800.0" y="168" text-anchor="middle" class="heading">
+<tspan x="800.0" dy="0">Camera configuration</tspan>
+</text>
+<text x="800.0" y="199" text-anchor="middle" class="detail">
+<tspan x="800.0" dy="0">Lens, resolution, outputs,</tspan>
+<tspan x="800.0" dy="23">and update rate</tspan>
+</text>
+<rect x="40" y="350" width="300" height="140" rx="14" class="box"/>
+<text x="190.0" y="388" text-anchor="middle" class="heading">
+<tspan x="190.0" dy="0">ovrtx renderer</tspan>
+</text>
+<text x="190.0" y="419" text-anchor="middle" class="detail">
+<tspan x="190.0" dy="0">Renders the scene</tspan>
+<tspan x="190.0" dy="23">from the camera&#x27;s view</tspan>
+</text>
+<rect x="650" y="350" width="300" height="140" rx="14" class="box"/>
+<text x="800.0" y="388" text-anchor="middle" class="heading">
+<tspan x="800.0" dy="0">Camera sensor</tspan>
+</text>
+<text x="800.0" y="419" text-anchor="middle" class="detail">
+<tspan x="800.0" dy="0">Tracks the camera pose</tspan>
+<tspan x="800.0" dy="23">and provides image data</tspan>
+</text>
+<rect x="1140" y="350" width="270" height="140" rx="14" class="box"/>
+<text x="1275.0" y="388" text-anchor="middle" class="heading">
+<tspan x="1275.0" dy="0">Observations</tspan>
+</text>
+<text x="1275.0" y="419" text-anchor="middle" class="detail">
+<tspan x="1275.0" dy="0">Camera images available</tspan>
+<tspan x="1275.0" dy="23">to the policy</tspan>
+</text>
+<text x="255" y="301" text-anchor="middle" class="label">
+<tspan x="255" dy="0">Scene state</tspan>
+</text>
+<text x="495" y="406" text-anchor="middle" class="label">
+<tspan x="495" dy="0">RGB images</tspan>
+</text>
+<text x="1045" y="406" text-anchor="middle" class="label">
+<tspan x="1045" dy="0">Image data</tspan>
+</text>
+<text x="495" y="562" text-anchor="middle" class="label">
+<tspan x="495" dy="0">Camera pose + render request</tspan>
+</text>
+</svg>

@@ -1,0 +1,334 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Get the Code and Models"
+msgstr "Code와 Model 준비"
+
+msgid "SO-101 vial-to-rack task represented as a simulation scene."
+msgstr "Simulation scene으로 표현한 SO-101 vial-to-rack task입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"Hands-on. You'll need Ubuntu Linux, Git with Git LFS, Docker, the CUDA Toolkit, the NVIDIA "
+"Container Toolkit, and an NVIDIA RTX GPU."
+msgstr ""
+"실습입니다. Ubuntu Linux, Git LFS가 포함된 Git, Docker, CUDA Toolkit, NVIDIA Container Toolkit, NVIDIA RTX"
+" GPU가 필요합니다."
+
+msgid ""
+"Install Git LFS on the host and initialize it before cloning so the robot assets and course media"
+" download correctly:"
+msgstr "Robot asset과 과정 media를 올바르게 내려받을 수 있도록, clone 전에 host에 Git LFS를 설치하고 초기화하세요."
+
+msgid ""
+"Build one workshop image for simulation, calibration, teleoperation, recording, GR00T training, "
+"and evaluation."
+msgstr "Simulation, calibration, teleoperation, recording, GR00T 학습과 평가에 사용할 하나의 workshop image를 build합니다."
+
+msgid ""
+"Tested on Ubuntu Linux newer than 22.04 with an NVIDIA RTX 6000 Pro (Blackwell), RTX 5090 "
+"(Blackwell), or RTX 6000 (Ada) GPU. Install the host software before building the image."
+msgstr ""
+"Ubuntu Linux 22.04보다 최신 버전에서 NVIDIA RTX 6000 Pro (Blackwell), RTX 5090 (Blackwell), RTX 6000 "
+"(Ada) GPU로 검증했습니다. Image를 build하기 전에 host software를 설치하세요."
+
+msgid ""
+"See [Computer Hardware Prerequisites](02-how-to-take-this-course.md#computer-hardware-"
+"prerequisites)."
+msgstr ""
+"[Computer Hardware Prerequisites](02-how-to-take-this-course.md#computer-hardware-prerequisites)를"
+" 확인하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Workshop Software"
+msgstr "Workshop Software"
+
+msgid "Component"
+msgstr "구성 요소"
+
+msgid "Workshop configuration"
+msgstr "Workshop 구성"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Isaac Lab"
+msgstr "Isaac Lab"
+
+msgid "3.0 development stack, pinned by `ISAACLAB_REF` in `docker/Dockerfile`"
+msgstr "3.0 development stack. `docker/Dockerfile`의 `ISAACLAB_REF`로 고정됩니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Physics"
+msgstr "Physics"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Newton with the MJWarp solver"
+msgstr "Newton with the MJWarp solver"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Camera rendering"
+msgstr "Camera rendering"
+
+msgid "ovrtx; Isaac Lab supplies compatible ovrtx and OVStage versions"
+msgstr "ovrtx. Isaac Lab에서 호환되는 ovrtx와 OVStage 버전을 제공합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "LeRobot"
+msgstr "LeRobot"
+
+msgid "0.6.0 with training, GR00T, async inference, and visualization support"
+msgstr "0.6.0. 학습, GR00T, async inference, visualization 지원 포함"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Policy"
+msgstr "Policy"
+
+msgid "GR00T 1.7, using `nvidia/GR00T-N1.7-3B` for post-training"
+msgstr "GR00T 1.7. Post-training에 `nvidia/GR00T-N1.7-3B` 사용"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Container"
+msgstr "Container"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "CUDA 13, Ubuntu 24.04, Python 3.12"
+msgstr "CUDA 13, Ubuntu 24.04, Python 3.12"
+
+msgid ""
+"The workshop runs without an Isaac Sim or Kit application. Build the pinned stack rather than "
+"substituting a separate Isaac Sim installation."
+msgstr "이 workshop은 Isaac Sim 또는 Kit application 없이 실행됩니다. 별도 Isaac Sim 설치로 대체하지 말고 고정된 stack을 build하세요."
+
+msgid "Clone the Repository"
+msgstr "Repository Clone"
+
+msgid ""
+"**Open a terminal on the host**, **clone** the repository into your home directory, and **enter**"
+" its directory:"
+msgstr "**Host에서 terminal을 열고**, home directory에 repository를 **clone**한 뒤 해당 directory로 **이동**합니다."
+
+msgid "Build the Workshop Container"
+msgstr "Workshop Container Build"
+
+msgid ""
+"**Build** the image and **create** the persistent output directories from the repository root on "
+"the host:"
+msgstr "Host의 repository root에서 image를 **build**하고 영구 output directory를 **생성**합니다."
+
+msgid "The same image supports simulation and real-robot exercises."
+msgstr "같은 image로 simulation과 실제 robot 실습을 모두 진행합니다."
+
+msgid "Start the Workshop Container"
+msgstr "Workshop Container 시작"
+
+msgid "**Start** the container from the repository root on the host:"
+msgstr "Host의 repository root에서 container를 **시작**합니다."
+
+msgid ""
+"The shell starts in `/workspace/Sim-to-Real-SO-101-Workshop`. Its shared Python environment, "
+"`/workspace/IsaacLab/env_isaaclab`, is active automatically."
+msgstr ""
+"Shell은 `/workspace/Sim-to-Real-SO-101-Workshop`에서 시작하며, 공통 Python environment인 "
+"`/workspace/IsaacLab/env_isaaclab`이 자동으로 활성화됩니다."
+
+msgid ""
+"**Keep** this terminal open and use the container prompt for the following lessons. Finish or "
+"stop the current exercise with **Ctrl+C**, wait for shutdown to complete, then run the next "
+"command at the same prompt. Closing this main shell stops the container."
+msgstr ""
+"이 terminal을 **열어 둔 채** 이후 실습을 container prompt에서 진행하세요. 현재 실습을 마치거나 **Ctrl+C**로 중단한 뒤 종료가 완료될 때까지"
+" 기다리고, 같은 prompt에서 다음 명령을 실행합니다. Main shell을 닫으면 container도 종료됩니다."
+
+msgid ""
+"All later workshop commands run from `/workspace/Sim-to-Real-SO-101-Workshop` inside this "
+"container unless a step explicitly says **host**. Settings in the mounted `docker/env` load when "
+"the container shell starts. A plain `export` lasts for the current shell; use the course's "
+"`setenv` helper for persistent robot ports and IDs."
+msgstr ""
+"단계에 **host**라고 명시되어 있지 않다면 이후 명령은 container 내부의 `/workspace/Sim-to-Real-SO-101-Workshop`에서 실행합니다."
+" Mount된 `docker/env`의 설정은 container shell 시작 시 읽습니다. 일반 `export`는 현재 shell에만 적용됩니다. Robot port와 "
+"ID를 유지하려면 과정의 `setenv` helper를 사용하세요."
+
+msgid "Reconnect to a running container or open an optional extra shell"
+msgstr "실행 중인 Container에 다시 접속하거나 추가 Shell 열기"
+
+msgid "From a host terminal, check whether the container is running:"
+msgstr "Host terminal에서 container가 실행 중인지 확인합니다."
+
+msgid "If it is running and you need a shell, use:"
+msgstr "실행 중인 container에 shell이 필요하면 다음을 사용합니다."
+
+msgid ""
+"If it has stopped, repeat step 3 from the repository root on the host. Mounted datasets, models, "
+"outputs, and settings persist. Re-enter ordinary `export` variables when starting a new shell. An"
+" extra shell is optional; simulation evaluation starts its server in the background of the same "
+"terminal."
+msgstr ""
+"종료되어 있다면 host의 repository root에서 3단계를 다시 실행하세요. Mount된 dataset, model, output, 설정은 유지됩니다. 새 "
+"shell에서는 일반 `export` 변수를 다시 설정해야 합니다. 추가 shell은 선택 사항이며, simulation 평가에서는 같은 terminal의 "
+"background로 server를 시작합니다."
+
+msgid "Persistent Files"
+msgstr "유지되는 파일"
+
+msgid "Show container mounts and persistent file locations"
+msgstr "Container mount와 영구 파일 위치 보기"
+
+msgid ""
+"Edits under the mounted directories persist on the host. The `--rm` option removes the container "
+"when its main process exits."
+msgstr "Mount된 directory의 수정은 host에 유지됩니다. `--rm` 옵션은 main process가 끝나면 container를 제거합니다."
+
+msgid "Check the Simulation"
+msgstr "Simulation 확인"
+
+msgid "Inside the container, **list** the tasks and **run** the physics-only check:"
+msgstr "Container 안에서 task를 **조회**하고 physics-only 검사를 **실행**합니다."
+
+msgid "**Stop** with **Ctrl+C**, then **run** the camera-rendering check:"
+msgstr "**Ctrl+C**로 **종료**한 뒤 camera-rendering 검사를 **실행**합니다."
+
+msgid ""
+"The first ovrtx run can take a few minutes to warm up shader caches. The interactive camera "
+"display is introduced in [Teleoperating in Sim](08-simulation-teleoperation.md)."
+msgstr ""
+"ovrtx를 처음 실행하면 shader cache 준비에 몇 분이 걸릴 수 있습니다. Interactive camera display는 [Teleoperating in "
+"Sim](08-simulation-teleoperation.md)에서 다룹니다."
+
+msgid ""
+"Camera commands require explicit `--cameras` selection and `presets=newton,ovrtx_renderer`. "
+"Physics-only commands use `--cameras none presets=newton`."
+msgstr ""
+"Camera 명령에는 명시적인 `--cameras` 선택과 `presets=newton,ovrtx_renderer`가 필요합니다. Physics-only 명령은 "
+"`--cameras none presets=newton`을 사용합니다."
+
+msgid "Choose the Task for Each Stage"
+msgstr "단계별 Task 선택"
+
+msgid "Show task IDs for collection and evaluation"
+msgstr "수집 및 평가 Task ID 보기"
+
+msgid ""
+"**Leader-arm collection:** `Newton-So101-Teleop-Vials-To-Rack-v0`, or `Newton-So101-Teleop-Vials-"
+"To-Rack-DR-v0` for domain randomization, with `lerobot_agent`."
+msgstr ""
+"**Leader-arm collection:** `lerobot_agent`에 `Newton-So101-Teleop-Vials-To-Rack-v0`를 사용합니다. Domain"
+" Randomization에는 `Newton-So101-Teleop-Vials-To-Rack-DR-v0`를 사용합니다."
+
+msgid ""
+"**Scripted collection:** `Newton-So101-Auto-Vials-State-Machine-v0`, or `Newton-So101-Auto-Vials-"
+"State-Machine-DR-v0`, with `vials_state_machine`. Follow [Automated Data Collection](08"
+"-simulation-teleoperation.md#optional-automated-data-collection)."
+msgstr ""
+"**Scripted collection:** `vials_state_machine`에 `Newton-So101-Auto-Vials-State-Machine-v0` 또는 "
+"`Newton-So101-Auto-Vials-State-Machine-DR-v0`를 사용합니다. [Automated Data Collection](08-simulation-"
+"teleoperation.md#optional-automated-data-collection)을 따르세요."
+
+msgid ""
+"**Policy evaluation:** `Newton-So101-Teleop-Vials-To-Rack-Eval-v0`, or `Newton-So101-Teleop-"
+"Vials-To-Rack-DR-Eval-v0`, with `lerobot_eval` and a LeRobot policy server."
+msgstr ""
+"**Policy evaluation:** `lerobot_eval`과 LeRobot policy server를 사용하며, task는 `Newton-So101-Teleop-"
+"Vials-To-Rack-Eval-v0` 또는 `Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0`입니다."
+
+msgid ""
+"`list_envs` also lists the bare-arm, lightbox, and automatic-reach tasks. Use the vial-to-rack "
+"task for the collection method you choose."
+msgstr ""
+"`list_envs`는 bare-arm, lightbox, automatic-reach task도 표시합니다. 선택한 수집 방식에 맞는 vial-to-rack task를 "
+"사용하세요."
+
+msgid "Get the Models"
+msgstr "Model 준비"
+
+msgid "**Stop** the camera check with **Ctrl+C**, then **authenticate** inside the container:"
+msgstr "**Ctrl+C**로 camera 검사를 **종료**하고 container 안에서 **인증**합니다."
+
+msgid ""
+"**Use** [Datasets and Models](datasets-and-models.md) to select a compatible LeRobot GR00T 1.7 "
+"checkpoint, or train one in [GR00T Post-Training](10-groot.md#reference-post-train-your-own-"
+"model). Downloads belong under `models/`."
+msgstr ""
+"[Datasets and Models](datasets-and-models.md)에서 호환되는 LeRobot GR00T 1.7 checkpoint를 선택하거나 [GR00T "
+"Post-Training](10-groot.md#reference-post-train-your-own-model)으로 직접 학습합니다. Download한 파일은 "
+"`models/` 아래에 둡니다."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid "Continue to [Calibrating the SO-101](07-calibrating-so101.md)."
+msgstr "[Calibrating the SO-101](07-calibrating-so101.md)으로 이동하세요."
+
+msgid "Host location"
+msgstr "Host 위치"
+
+msgid "Container location / purpose"
+msgstr "Container 위치 / 용도"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`docker/env`"
+msgstr "`docker/env`"
+
+msgid "`/root/env`; settings such as robot ports and IDs"
+msgstr "`/root/env`: robot port와 ID 등의 설정"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`source/`"
+msgstr "`source/`"
+
+msgid "Workshop package source under the container repository"
+msgstr "Container repository의 workshop package source"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`datasets/`"
+msgstr "`datasets/`"
+
+msgid "Recorded and downloaded datasets under the container repository"
+msgstr "Container repository의 recording 및 download dataset"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`outputs/`"
+msgstr "`outputs/`"
+
+msgid "Training runs and other outputs under the container repository"
+msgstr "Container repository의 training run과 기타 output"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`models/`"
+msgstr "`models/`"
+
+msgid "Downloaded checkpoints under the container repository"
+msgstr "Container repository의 download checkpoint"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`~/.cache/huggingface/`"
+msgstr "`~/.cache/huggingface/`"
+
+msgid "`/root/.cache/huggingface/`; Hub cache and robot calibration"
+msgstr "`/root/.cache/huggingface/`: Hub cache와 robot calibration"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "`~/.cache/ovrtx/`, `~/.cache/warp/`"
+msgstr "`~/.cache/ovrtx/`, `~/.cache/warp/`"
+
+msgid "Renderer and physics caches"
+msgstr "Renderer와 physics cache"
+

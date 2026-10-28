@@ -1,0 +1,29 @@
+[project]
+name = "learning_path"
+version = "0.1.0"
+description = "PROJECT_DESCRIPTION"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "myst-parser>=4.0.1",
+    "nvidia-sphinx-theme>=0.0.8",
+    "sphinx-design>=0.6.1",
+    "sphinx>=8.2.3",
+    "sphinx-copybutton>=0.5.2",
+    "sphinx-nvlearning",
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+brev-deploy = "workshop_code.deploy.cli:run"
+
+[tool.uv.sources]
+sphinx-nvlearning = { git = "https://gitlab-master.nvidia.com/omniverse/learning/tools/physical-ai-learning-sphinx-extension.git" }
+
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = []

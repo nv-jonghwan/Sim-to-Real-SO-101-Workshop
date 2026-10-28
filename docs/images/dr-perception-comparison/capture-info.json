@@ -1,0 +1,30 @@
+{
+  "source_commit": "6c92b65",
+  "seed": 42,
+  "tasks": [
+    "Newton-So101-Teleop-Vials-To-Rack-Eval-v0",
+    "Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0",
+    "Newton-So101-Teleop-Vials-To-Rack-Perception-DR-Eval-v0"
+  ],
+  "comparison": "DR and Perception-DR show eight successive environment resets with task reset events enabled. Base and real images are still references, not pose-matched to the GIFs.",
+  "real_references": {
+    "external": "Saved physical external-camera capture, October 7, 2026.",
+    "wrist": "Existing course wrist-camera reference from _static/wrist-comparison/real.jpg.",
+    "comparison": "Real reference images use different poses and object layouts from simulation and from each other."
+  },
+  "gif_capture": {
+    "resets": 8,
+    "frame_duration_ms": 1400,
+    "settling_control_steps_per_reset": 30,
+    "initial_arm_degrees": [
+      0,
+      -25,
+      -5,
+      90,
+      -90
+    ],
+    "initial_gripper_percent": 10,
+    "disabled_reset_events": []
+  },
+  "base_still": "Previously captured saved scene with robot-base tilt, external-camera and mat-rotation reset events disabled."
+}

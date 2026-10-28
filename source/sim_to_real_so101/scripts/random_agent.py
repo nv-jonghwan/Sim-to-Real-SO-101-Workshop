@@ -15,75 +15,71 @@
 #
 # This file contains code derived from Isaac Lab
 # (https://github.com/isaac-sim/IsaacLab)
-# Copyright (c) 2022-2025, The Isaac Lab Project Developers. All rights reserved.
+# Copyright (c) 2022-2026, The Isaac Lab Project Developers. All rights reserved.
 # Licensed under the BSD-3-Clause License.
 
-"""Script to an environment with random action agent."""
-
-"""Launch Isaac Sim Simulator first."""
+"""Script to run an environment from ``sim_to_real_so101`` with a random-action agent."""
 
 import argparse
-
-from isaaclab.app import AppLauncher
-
-# add argparse arguments
-parser = argparse.ArgumentParser(description="Random agent for Isaac Lab environments.")
-parser.add_argument(
-    "--disable_fabric", action="store_true", default=False, help="Disable fabric and use USD I/O operations."
-)
-parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
-parser.add_argument("--task", type=str, default=None, help="Name of the task.")
-# append AppLauncher cli args
-AppLauncher.add_app_launcher_args(parser)
-# parse the arguments
-args_cli = parser.parse_args()
-args_cli.enable_cameras = True
-
-
-# launch omniverse app
-app_launcher = AppLauncher(args_cli)
-simulation_app = app_launcher.app
-
-"""Rest everything follows."""
+import sys
 
 import gymnasium as gym
 import torch
 
-import isaaclab_tasks  # noqa: F401
-from isaaclab_tasks.utils import parse_env_cfg
-
 import sim_to_real_so101.tasks  # noqa: F401
+from isaaclab.app import add_launcher_args, launch_simulation
+from isaaclab_tasks.utils import resolve_task_config
+
+from sim_to_real_so101.utils.camera_cfg import add_camera_args, apply_camera_selection
+
+parser = argparse.ArgumentParser(description="Random agent for sim_to_real_so101 environments.")
+parser.add_argument(
+    "--disable_fabric",
+    action="store_true",
+    default=False,
+    help="Disable fabric and use USD I/O operations.",
+)
+parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
+parser.add_argument("--task", type=str, default=None, help="Name of the task.")
+add_camera_args(parser)
+add_launcher_args(parser)
+args_cli, hydra_args = parser.parse_known_args()
+
+# pass remaining args to Hydra
+sys.argv = [sys.argv[0]] + hydra_args
 
 
 def main():
-    """Random actions agent with Isaac Lab environment."""
-    # create environment configuration
-    env_cfg = parse_env_cfg(
-        args_cli.task, device=args_cli.device, num_envs=args_cli.num_envs, use_fabric=not args_cli.disable_fabric
-    )
-    # create environment
-    env = gym.make(args_cli.task, cfg=env_cfg)
+    """Run a sim_to_real_so101 environment with random actions."""
+    env_cfg, _ = resolve_task_config(args_cli.task, "")
 
-    # print info (this is vectorized environment)
-    print(f"[INFO]: Gym observation space: {env.observation_space}")
-    print(f"[INFO]: Gym action space: {env.action_space}")
-    # reset environment
-    env.reset()
-    # simulate environment
-    while simulation_app.is_running():
-        # run everything in inference mode
-        with torch.inference_mode():
-            # sample actions from -1 to 1
-            actions = 2 * torch.rand(env.action_space.shape, device=env.unwrapped.device) - 1
-            # apply actions
-            env.step(actions)
+    active_cameras = apply_camera_selection(env_cfg, args_cli.cameras)
 
-    # close the simulator
-    env.close()
+    with launch_simulation(env_cfg, args_cli):
+        env_cfg.scene.num_envs = args_cli.num_envs if args_cli.num_envs is not None else env_cfg.scene.num_envs
+        env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
+        if args_cli.disable_fabric:
+            env_cfg.sim.use_fabric = False
+
+        env = gym.make(args_cli.task, cfg=env_cfg)
+
+        print(f"[INFO]: Gym observation space: {env.observation_space}")
+        print(f"[INFO]: Gym action space: {env.action_space}")
+        print(f"[INFO]: Active cameras: {sorted(active_cameras) or 'none'}")
+
+        env.reset()
+
+        sim = env.unwrapped.sim
+        while True:
+            if sim.visualizers:
+                if not any(v.is_running() and not v.is_closed for v in sim.visualizers):
+                    break
+            with torch.inference_mode():
+                actions = 2 * torch.rand(env.action_space.shape, device=env.unwrapped.device) - 1
+                env.step(actions)
+
+        env.close()
 
 
 if __name__ == "__main__":
-    # run the main function
     main()
-    # close sim app
-    simulation_app.close()

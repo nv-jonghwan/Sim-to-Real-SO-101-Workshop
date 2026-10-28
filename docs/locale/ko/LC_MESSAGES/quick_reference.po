@@ -1,0 +1,346 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Quick Reference"
+msgstr "Quick Reference"
+
+msgid "The workshop SO-101 robot and its lightbox workspace."
+msgstr "Workshop의 SO-101 robot과 lightbox workspace입니다."
+
+msgid ""
+"Use one terminal in one `so101-workshop` container for the full workflow. Finish or stop each "
+"exercise before running the next. Commands below run inside it unless labeled **host**. See [Get "
+"the Code](06-get-the-code.md) for build requirements and mounts."
+msgstr ""
+"전체 workflow를 하나의 `so101-workshop` container terminal에서 진행합니다. 각 실습을 마치거나 종료한 뒤 다음 명령을 실행하세요. "
+"**Host**라고 표시되지 않았다면 container 내부 명령입니다. Build 요구사항과 mount는 [Get the Code](06-get-the-code.md)를 "
+"확인하세요."
+
+msgid "Build and Start — Host"
+msgstr "Build와 시작 — Host"
+
+msgid ""
+"Open a terminal on the host and change into the workshop folder in your home directory before "
+"building or starting the container:"
+msgstr "Host terminal에서 home directory의 workshop folder로 이동한 뒤 container를 build하거나 시작합니다."
+
+msgid ""
+"Keep the resulting container prompt open for all commands below. An extra shell is optional; see "
+"[container shell recovery](container-shell-recovery) if you need to reconnect."
+msgstr ""
+"이후 명령을 위해 container prompt를 열어 두세요. 추가 shell은 선택 사항이며 재접속은 [container shell recovery](container-"
+"shell-recovery)를 참고하세요."
+
+msgid "Connect to a Running Container — Host"
+msgstr "실행 중인 Container에 연결 — Host"
+
+msgid "If the workshop container is already running, open a shell from a **host terminal**:"
+msgstr "Container가 실행 중이면 **host terminal**에서 shell을 엽니다."
+
+msgid ""
+"To check whether it is running, optionally list running containers and look for `so101-workshop` "
+"in the `NAMES` column:"
+msgstr "필요하면 실행 중인 container 목록의 `NAMES`에서 `so101-workshop`을 확인합니다."
+
+msgid "Identify and Calibrate Hardware"
+msgstr "Hardware 확인과 Calibration"
+
+msgid ""
+"Inspect camera previews under `outputs/captured_images`. Replace these example assignments with "
+"your station's values:"
+msgstr "`outputs/captured_images`의 camera preview를 확인하고 아래 예시 값을 본인 station 값으로 바꾸세요."
+
+msgid "`setenv` persists settings in mounted `docker/env`. New container shells load them automatically."
+msgstr "`setenv`는 mount된 `docker/env`에 설정을 유지하며 새 container shell이 자동으로 읽습니다."
+
+msgid "See [Calibration](07-calibrating-so101.md) and [Camera Setup](08-operating-so101.md#camera-setup)."
+msgstr "[Calibration](07-calibrating-so101.md)과 [Camera Setup](08-operating-so101.md#camera-setup)을 확인하세요."
+
+msgid ""
+"For both arms, **skip wrist roll during the range sweep**; LeRobot sets its range automatically. "
+"Still match the initial calibration pose."
+msgstr ""
+"두 arm 모두 **range sweep에서 wrist roll을 생략**합니다. LeRobot이 range를 자동 지정하지만 초기 calibration pose는 맞춰야 "
+"합니다."
+
+msgid "Manual Follower Control"
+msgstr "Follower 수동 제어"
+
+msgid ""
+"Stop other robot-control processes first. Normal control moves to the initial pose and returns "
+"home on exit:"
+msgstr "먼저 다른 robot-control process를 종료합니다. 일반 control은 초기 pose로 이동하고 종료 시 home으로 복귀합니다."
+
+msgid ""
+"Add `--passive_mode=true` for hand-guiding with torque disabled, or `--rerun=true` for telemetry."
+" For individual joint control:"
+msgstr "Torque를 끄고 손으로 움직이려면 `--passive_mode=true`, telemetry는 `--rerun=true`를 추가합니다. Joint별 제어:"
+
+msgid "Up/Down selects a joint, Left/Right moves it, Z commands zero, and Q/Escape exits."
+msgstr "Up/Down으로 joint 선택, Left/Right로 이동, Z로 zero 명령, Q/Escape로 종료합니다."
+
+msgid "Simulation and Recording"
+msgstr "Simulation과 Recording"
+
+msgid "Physics-only check:"
+msgstr "Physics-only 검사:"
+
+msgid "Teleoperation with both cameras:"
+msgstr "두 camera를 사용하는 teleoperation:"
+
+msgid ""
+"Record (keep the username placeholder for local-only collection; use your own username if "
+"uploading):"
+msgstr "Recording(Local 수집은 username placeholder 유지, upload 시 본인 username 사용):"
+
+msgid ""
+"Focus [http://localhost:8090](http://localhost:8090): **Space** starts/saves, **C** discards, "
+"**R** discards and resets. Wait for saving to finish before exiting. Add `--resume` to append to "
+"the same dataset. Use only one browser tab connected to the viewer at a time."
+msgstr ""
+"[http://localhost:8090](http://localhost:8090)에 focus를 두고 **Space**로 시작/저장, **C**로 폐기, **R**로 폐기 "
+"후 reset합니다. 저장이 끝난 뒤 종료하세요. 같은 dataset에 추가하려면 `--resume`을 사용하고 viewer에는 tab 하나만 연결합니다."
+
+msgid "For later uploads to the same dataset, {ref}`refresh its tag <refresh-dataset-tag>`."
+msgstr "같은 dataset에 나중에 다시 upload할 때는 {ref}`tag를 갱신하세요 <refresh-dataset-tag>`."
+
+msgid "Automated Simulation Collection"
+msgstr "자동 Simulation 수집"
+
+msgid "Stop any running simulation client before starting another. Preview without recording:"
+msgstr "다른 simulation client를 종료한 뒤 시작하세요. Recording 없이 preview:"
+
+msgid ""
+"Stop the preview with **Ctrl+C**, then collect 100 successful episodes with domain randomization."
+" Keep the username placeholder if you do not plan to upload:"
+msgstr ""
+"**Ctrl+C**로 preview를 끝내고 Domain Randomization으로 성공 episode 100개를 수집합니다. Upload하지 않는다면 username "
+"placeholder를 유지합니다."
+
+msgid ""
+"Wait for the target and final dataset export; this recorder stages episodes before assembling the"
+" dataset. Then inspect and upload:"
+msgstr "목표 달성과 최종 export를 기다리세요. Recorder는 episode를 임시 저장한 뒤 dataset을 조립합니다. 이후 검토하고 upload합니다."
+
+msgid ""
+"See [Automated Data Collection](08-simulation-teleoperation.md#optional-automated-data-"
+"collection) for the complete sequence."
+msgstr ""
+"전체 순서는 [Automated Data Collection](08-simulation-teleoperation.md#optional-automated-data-"
+"collection)을 확인하세요."
+
+msgid "GR00T 1.7 Training and Evaluation"
+msgstr "GR00T 1.7 학습과 평가"
+
+msgid ""
+"Use the complete [training command](10-groot.md#reference-post-train-your-own-model), with "
+"`--policy.type=groot` and `--policy.base_model_path=nvidia/GR00T-N1.7-3B`."
+msgstr ""
+"전체 [학습 명령](10-groot.md#reference-post-train-your-own-model)에 `--policy.type=groot`와 "
+"`--policy.base_model_path=nvidia/GR00T-N1.7-3B`를 사용합니다."
+
+msgid ""
+"Set `DATASET_NAME=so101_teleop_vials_newton` for the teleoperation example or "
+"`DATASET_NAME=so101_auto_vials_newton` for automated collection. Define the model and output "
+"variables after choosing the dataset. Training uses 20,000 steps, saves every 5,000 steps, and "
+"writes under `outputs/train/<user>/<model>`; choose the single-GPU or multi-GPU command for your "
+"machine."
+msgstr ""
+"Teleoperation은 `DATASET_NAME=so101_teleop_vials_newton`, 자동 수집은 "
+"`DATASET_NAME=so101_auto_vials_newton`을 설정한 뒤 model/output 변수를 정의합니다. 20,000 step을 학습하고 5,000 "
+"step마다 `outputs/train/<user>/<model>` 아래에 저장합니다. Machine에 맞는 single-GPU 또는 multi-GPU 명령을 선택하세요."
+
+msgid "For sim evaluation, start the policy server once in the background of the same container terminal:"
+msgstr "Simulation 평가용 policy server를 같은 container terminal의 background에서 한 번 시작합니다."
+
+msgid ""
+"After `Policy server ready`, select the course sim-only policy at the same prompt, or replace it "
+"with your own checkpoint:"
+msgstr "`Policy server ready` 후 같은 prompt에서 과정의 sim-only policy 또는 본인 checkpoint를 선택합니다."
+
+msgid ""
+"Use `your_hf_username/so101_auto_vials_newton_GR00T17` for the automated-data example, or set "
+"`MODEL_ID` to the absolute path of a local `pretrained_model` directory. Keep using this "
+"container shell."
+msgstr ""
+"자동 수집 예시는 `your_hf_username/so101_auto_vials_newton_GR00T17`, local checkpoint는 "
+"`pretrained_model` directory의 절대 경로로 `MODEL_ID`를 설정합니다. 같은 container shell을 계속 사용하세요."
+
+#, python-format
+msgid ""
+"See [Selected Policies](datasets-and-models.md#current-model-selection) for Johnny42, the 94% "
+"simulation policy, and the co-trained checkpoint. See [Sim Evaluation](11-sim-evaluation.md) for "
+"scoring and camera compatibility. For the physical robot, follow [Real Evaluation](run-the-"
+"policy), which uses `lerobot-rollout` in this same container."
+msgstr ""
+"Johnny42, 94% simulation policy, Co-Trained checkpoint는 [Selected Policies](datasets-and-"
+"models.md#current-model-selection)를 확인하세요. 채점과 camera 호환성은 [Sim Evaluation](11-sim-"
+"evaluation.md), 실제 robot은 같은 container에서 `lerobot-rollout`을 사용하는 [Real Evaluation](run-the-"
+"policy)을 따릅니다."
+
+msgid ""
+"`lerobot-rollout` moves to the dataset-derived starting pose specified in the evaluation command,"
+" then waits for **P**. When changing models, also change `--start_pose_dataset` to the matching "
+"training dataset."
+msgstr ""
+"`lerobot-rollout`은 `--start_pose_dataset`으로 지정한 dataset-derived pose로 이동한 뒤 **P**를 기다립니다. Model을 "
+"바꾸면 대응하는 training dataset으로 해당 옵션도 바꾸세요."
+
+msgid "Rollout controls"
+msgstr "Rollout Control"
+
+msgid ""
+"The arm moves to the workshop start pose on startup, then waits for **P**. Keep the rollout "
+"terminal focused. Keys are case-insensitive."
+msgstr ""
+"시작 시 arm이 workshop 시작 pose로 움직인 뒤 **P**를 기다립니다. Rollout terminal에 focus를 두세요. Key는 대소문자를 구분하지 "
+"않습니다."
+
+msgid ""
+"Wait for `Paused` before rearranging props. On exit, wait for cleanup and any return motion to "
+"finish before touching the arm."
+msgstr "소품을 옮기기 전에 `Paused`를 기다리세요. 종료할 때도 cleanup과 복귀 동작이 끝난 뒤 arm을 만집니다."
+
+msgid ""
+"When comparing models, record the first-action delay shown in the terminal and the number of "
+"successes out of scored trials."
+msgstr "Model 비교 시 terminal에 표시되는 첫 action 지연과 평가한 trial 중 성공 수를 기록하세요."
+
+msgid ""
+"Wait for `Paused` before resetting props. Scored trials are saved when recording is enabled. The "
+"default `workshop` strategy ignores `--duration`; end trials manually. See the [real rollout "
+"instructions and controls](run-the-policy)."
+msgstr ""
+"소품 reset 전에 `Paused`를 기다립니다. Recording을 켜면 채점된 trial이 저장됩니다. 기본 `workshop` strategy는 "
+"`--duration`을 무시하므로 직접 trial을 끝내세요. [실제 rollout 안내와 control](run-the-policy)을 참고하세요."
+
+msgid ""
+"After evaluation returns to the prompt, stop the background server before real rollout or "
+"training:"
+msgstr "평가가 prompt로 돌아오면 실제 rollout이나 학습 전에 background server를 종료합니다."
+
+msgid "Or **stop all policy servers** in the container:"
+msgstr "또는 container의 **모든 policy server를 종료**합니다."
+
+msgid ""
+"If server readiness fails, inspect `tail -n 40 outputs/policy-server.log` before retrying. See "
+"[Sim Evaluation](11-sim-evaluation.md#run-policy-evaluation) for the full startup and cleanup "
+"sequence."
+msgstr ""
+"Server가 준비되지 않으면 재시도 전에 `tail -n 40 outputs/policy-server.log`를 확인합니다. 전체 시작·종료 순서는 [Sim "
+"Evaluation](11-sim-evaluation.md#run-policy-evaluation)을 보세요."
+
+msgid "Common Issues"
+msgstr "자주 발생하는 문제"
+
+msgid "Symptom"
+msgstr "증상"
+
+msgid "Check"
+msgstr "확인 사항"
+
+msgid "All motors missing"
+msgstr "모든 motor가 보이지 않음"
+
+msgid "Correct arm power supply and connection"
+msgstr "Arm에 맞는 전원과 연결 확인"
+
+msgid "One motor missing"
+msgstr "Motor 하나가 보이지 않음"
+
+msgid "Motor cable and power cycle"
+msgstr "Motor cable 확인 후 power cycle"
+
+msgid "Camera or serial index changed"
+msgstr "Camera 또는 serial index 변경"
+
+msgid "Repeat detection and update saved settings"
+msgstr "다시 탐지하고 저장 설정 갱신"
+
+msgid "No simulated images"
+msgstr "Simulation image가 없음"
+
+msgid "Explicit `--cameras all presets=newton,ovrtx_renderer`"
+msgstr "`--cameras all presets=newton,ovrtx_renderer` 명시"
+
+msgid "Browser controls inactive"
+msgstr "Browser control이 반응하지 않음"
+
+msgid "Focus browser; use `--browser-display`"
+msgstr "Browser focus와 `--browser-display` 확인"
+
+msgid "Policy cannot connect"
+msgstr "Policy 연결 실패"
+
+msgid "Confirm background server readiness on port 8080; inspect `outputs/policy-server.log`"
+msgstr "Port 8080의 background server 준비 상태와 `outputs/policy-server.log` 확인"
+
+msgid "Dataset already exists"
+msgstr "Dataset이 이미 존재함"
+
+msgid "Use `--resume` or a different `--repo_id`"
+msgstr "`--resume` 또는 다른 `--repo_id` 사용"
+
+msgid "See [Troubleshooting](troubleshooting.md)."
+msgstr "[Troubleshooting](troubleshooting.md)을 확인하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Key"
+msgstr "Key"
+
+msgid "Action"
+msgstr "동작"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**P**"
+msgstr "**P**"
+
+msgid "**P for policy:** Start the first or next trial."
+msgstr "**P for policy:** 첫 trial 또는 다음 trial을 시작합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**S / F**"
+msgstr "**S / F**"
+
+msgid "Score success/failure, return to the start pose, and pause."
+msgstr "성공/실패를 기록하고 시작 pose로 복귀한 뒤 일시 정지합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**N / →**"
+msgstr "**N / →**"
+
+msgid "**N for next:** Discard the trial, return to the start pose, and pause."
+msgstr "**N for next:** Trial을 폐기하고 시작 pose로 복귀한 뒤 일시 정지합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Q / Esc**"
+msgstr "**Q / Esc**"
+
+msgid "**Q for Quit:** Exit and discard any unfinished trial."
+msgstr "**Q for Quit:** 종료하며 미완료 trial은 폐기합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Ctrl+C**"
+msgstr "**Ctrl+C**"
+
+msgid "Stop the rollout and run cleanup."
+msgstr "Rollout을 중단하고 cleanup을 실행합니다."
+

@@ -1,0 +1,391 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Overview"
+msgstr "과정 개요"
+
+msgid "Wireframe view of the SO-101, cameras, vials, and rack in the simulated workspace."
+msgstr "Simulation workspace의 SO-101, camera, vial, rack을 wireframe으로 보여줍니다."
+
+msgid "What Is Physical AI?"
+msgstr "Physical AI란?"
+
+msgid ""
+"Physical AI refers to AI systems that interact with and manipulate the physical world. Unlike "
+"generative or agentic AI (think image generators, chatbots), Physical AI has the ability to:"
+msgstr ""
+"Physical AI는 물리적 세계와 상호작용하고 이를 조작하는 AI system을 말합니다. 이미지 생성기나 chatbot 같은 generative AI 또는 agentic"
+" AI와 달리, Physical AI는 다음과 같은 능력을 갖습니다."
+
+msgid "**Perceive** the real world through sensors"
+msgstr "**Perceive**: sensor로 실제 세계를 인식"
+
+msgid "**Reason** about physics, objects, and spatial relationships"
+msgstr "**Reason**: 물리 법칙, 물체, 공간적 관계를 추론"
+
+msgid "**Act** through motors, actuators, and end-effectors"
+msgstr "**Act**: motor, actuator, end-effector를 통해 행동"
+
+msgid "**Adapt** to the unpredictability of real environments"
+msgstr "**Adapt**: 예측하기 어려운 실제 환경에 적응"
+
+msgid ""
+"Sensor images and text enter a Physical AI model, which produces actions for factory robots, "
+"humanoids, and autonomous vehicles."
+msgstr ""
+"Sensor image와 text를 입력받은 Physical AI model이 factory robot, humanoid, autonomous vehicle의 action을 "
+"생성합니다."
+
+msgid "Physical AI connects sensor observations and instructions to actions in the world."
+msgstr "Physical AI는 sensor observation과 instruction을 실제 세계의 action으로 연결합니다."
+
+msgid ""
+"This learning path teaches a complete Physical AI workflow with physical robots, from simulation "
+"to a robot acting autonomously, right in front of you."
+msgstr "이 과정에서는 simulation부터 눈앞의 robot이 자율적으로 동작하기까지, 실제 robot을 사용하는 전체 Physical AI workflow를 배웁니다."
+
+msgid "Camera observations and robot actions form a feedback loop"
+msgstr "Camera observation과 robot action이 feedback loop를 구성합니다."
+
+msgid "Specialist and Generalist Robots"
+msgstr "Specialist와 Generalist Robot"
+
+msgid ""
+"A specialist learns a narrow task. A generalist aims to handle a wider range of tasks; post-"
+"training adapts that broad foundation to a particular robot and job. In this workshop, we adapt "
+"GR00T to the SO-101 vial-to-rack task."
+msgstr ""
+"Specialist는 좁은 범위의 task를 학습합니다. Generalist는 더 다양한 task를 다루는 것을 목표로 하며, post-training을 통해 폭넓은 기반 "
+"능력을 특정 robot과 작업에 맞게 조정합니다. 이 workshop에서는 GR00T를 SO-101의 vial-to-rack task에 맞게 조정합니다."
+
+msgid ""
+"Specialist robots have narrow scope; generalists cover more tasks; adapting a generalist adds "
+"task proficiency. Broad capability across robots remains a research goal."
+msgstr ""
+"Specialist robot은 좁은 범위를, generalist는 더 많은 task를 다룹니다. Generalist를 조정하면 특정 task의 숙련도가 높아집니다. 다양한 "
+"robot에 걸친 폭넓은 능력은 여전히 연구 목표입니다."
+
+msgid "See examples of specialist and generalist robots"
+msgstr "Specialist와 generalist robot의 예시 보기"
+
+msgid ""
+"Examples illustrate a factory production line, robot manipulation, and a humanoid performing a "
+"household task."
+msgstr "Factory production line, robot manipulation, 가사 작업을 수행하는 humanoid의 예시입니다."
+
+msgid "The Task: Centrifuge Vial Pick-and-Place"
+msgstr "수행할 Task: Centrifuge Vial Pick-and-Place"
+
+msgid "Vial to rack task performed by SO-101 robot"
+msgstr "SO-101 robot이 수행하는 vial-to-rack task"
+
+msgid "Vial to rack pick-and-place task performed autonomously by an SO-101 robot."
+msgstr "SO-101 robot이 vial-to-rack pick-and-place task를 자율적으로 수행합니다."
+
+msgid ""
+"The task we'll use today is unstructured pick-and-place of centrifuge vials. The vials are "
+"scattered on a table and need to be placed into a designated rack."
+msgstr ""
+"이번 task는 흩어져 있는 centrifuge vial을 집어 옮기는 unstructured pick-and-place입니다. 테이블 위에 흩어진 vial을 지정된 "
+"rack에 넣어야 합니다."
+
+msgid ""
+"We've simplified some of the constraints with a lightbox, and with some of the parameters of the "
+"task, to make it more approachable."
+msgstr "실습에 쉽게 접근할 수 있도록 lightbox를 사용하고 task의 일부 조건과 parameter를 단순화했습니다."
+
+msgid ""
+"But the tools and techniques you'll learn are applicable to more complex tasks and production "
+"robots. The focus of this learning path is the sim-to-real workflow."
+msgstr "여기서 배우는 도구와 기법은 더 복잡한 task와 production robot에도 적용할 수 있습니다. 이 과정의 초점은 sim-to-real workflow입니다."
+
+msgid "Why This Task?"
+msgstr "이 Task를 선택한 이유"
+
+msgid "Read more about why we chose vial pick-and-place"
+msgstr "Vial pick-and-place를 선택한 이유 자세히 보기"
+
+msgid "So why did we pick this task? Let's imagine we are engineers solving a laboratory problem."
+msgstr "왜 이 task를 선택했을까요? 실험실의 문제를 해결하는 engineer라고 가정해 봅시다."
+
+msgid ""
+"In our fictional problem, these vials are dropped down a chute or otherwise scattered in an "
+"unstructured way, but need to be organized into a rack for processing by automated machinery - a "
+"line that already exists."
+msgstr "가상의 상황에서 vial은 chute를 통해 떨어지거나 불규칙하게 흩어져 있습니다. 이미 설치된 자동화 장비가 처리할 수 있도록 이를 rack에 정리해야 합니다."
+
+msgid ""
+"**Real-world relevance**: this is an analogy for workflows where items must be prepared for "
+"autonomous analysis machines."
+msgstr "**Real-world relevance**: 자동 분석 장비에 투입할 물품을 준비하는 workflow와 유사합니다."
+
+msgid ""
+"**Safety implications**: think of use cases where potentially hazardous samples are handled, so "
+"minimizing human exposure is critical, hence the use of robotics. The ability to teach the task "
+"in simulation also saves time and reduces exposure."
+msgstr ""
+"**Safety implications**: 잠재적으로 위험한 시료를 다룰 때는 사람의 노출을 최소화해야 하므로 robotics가 유용합니다. Simulation에서 "
+"task를 가르치면 시간과 노출을 함께 줄일 수 있습니다."
+
+msgid "**Technical challenge**: adaptation to change, ability for the robot to adapt and retry."
+msgstr "**Technical challenge**: 변화에 적응하고, robot이 상황에 맞게 재시도할 수 있어야 합니다."
+
+msgid ""
+"**Approachable**: for learning, this task is simple enough to gather objects for and perform "
+"teleoperation."
+msgstr "**Approachable**: 학습용 물품을 준비하고 teleoperation을 수행하기에 충분히 단순한 task입니다."
+
+msgid "Why Is This Problem Interesting?"
+msgstr "이 문제가 흥미로운 이유"
+
+msgid ""
+"Our policy will work from 2D camera information, and the placement of the vials in the rack "
+"requires re-orienting the vials and placing them fairly precisely. Depth information isn't there "
+"to help in this configuration."
+msgstr ""
+"Policy는 2D camera 정보로 동작합니다. Vial을 rack에 넣으려면 방향을 바꾸고 비교적 정밀하게 배치해야 하며, 이 구성에서는 depth "
+"information을 사용할 수 없습니다."
+
+msgid "As you'll likely find from teleoperating the task yourself, it's not easy at first."
+msgstr "직접 teleoperation을 해보면 처음에는 쉽지 않다는 점을 느끼게 됩니다."
+
+msgid ""
+"One major issue is that the robot's wrist camera will become occluded after the robot grasps a "
+"vial, so the policy will need to be able to operate without this information."
+msgstr "특히 robot이 vial을 잡으면 wrist camera가 가려집니다. Policy는 이 정보를 사용할 수 없는 상황에서도 동작해야 합니다."
+
+msgid "You'll experience this challenge first-hand when you do teleoperation yourself."
+msgstr "직접 teleoperation을 진행하면서 이 어려움을 경험하게 됩니다."
+
+msgid ""
+"The SO-101 isn't a production robot, but it's a fun, approachable platform for learning these "
+"tools before you apply them to production robots. Again, the focus here is a **workflow** that "
+"you can apply to other tasks, or to production robots."
+msgstr ""
+"SO-101은 production robot은 아니지만, production robot에 적용하기 전에 도구를 익히기 좋은 접근성 높은 플랫폼입니다. 핵심은 다른 task나 "
+"production robot에도 적용할 수 있는 **workflow**입니다."
+
+msgid "Learning From Demonstrations"
+msgstr "Demonstration으로 학습"
+
+msgid ""
+"A demonstration pairs what the robot observed with the action that followed. **Imitation "
+"learning** uses many such examples to teach a policy how to act in new situations."
+msgstr ""
+"Demonstration은 robot이 관측한 내용과 그에 이어진 action을 한 쌍으로 기록합니다. **Imitation learning**은 이런 예시를 다수 사용해 "
+"새로운 상황에서 어떻게 행동할지 policy에 가르칩니다."
+
+msgid "Collect demonstrations, review episodes, post-train, and evaluate"
+msgstr "Demonstration 수집, episode 검토, post-training, 평가"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Scaling Physical AI"
+msgstr "Scaling Physical AI"
+
+msgid ""
+"Broad pre-training, task-specific post-training, and additional computation at inference are "
+"different ways to develop capability. This illustration shows the idea; its curves are conceptual"
+" rather than measured workshop results."
+msgstr ""
+"폭넓은 pre-training, task별 post-training, inference 단계의 추가 연산은 각각 능력을 발전시키는 방법입니다. 그림의 곡선은 개념을 설명하며,"
+" workshop에서 측정한 결과가 아닙니다."
+
+msgid ""
+"Conceptual scaling curves show pre-training, post-training, and test-time computation, with "
+"internet video, human demonstrations, and synthetic data as sources."
+msgstr ""
+"Internet video, human demonstration, synthetic data를 활용한 pre-training, post-training, test-time "
+"computation의 개념적 scaling curve입니다."
+
+msgid "Why Robot Data Takes Work"
+msgstr "Robot Data 수집에 노력이 필요한 이유"
+
+msgid ""
+"Videos show what happened, but robot demonstrations also need the observations and actions that "
+"produced it. Human teleoperation takes time, and different robots have different controls and "
+"camera views. We use simulation and real demonstrations together to help address that collection "
+"burden."
+msgstr ""
+"Video는 일어난 일을 보여주지만, robot demonstration에는 그 결과를 만든 observation과 action도 필요합니다. Human "
+"teleoperation에는 시간이 들고, robot마다 제어 방식과 camera view가 다릅니다. 이 수집 부담을 줄이기 위해 simulation과 실제 "
+"demonstration을 함께 사용합니다."
+
+msgid ""
+"Robot learning needs observations paired with actions and outcomes. Teleoperation takes human "
+"effort, while hardware differences complicate dataset reuse."
+msgstr ""
+"Robot learning에는 observation, action, outcome의 대응 관계가 필요합니다. Teleoperation에는 사람의 노력이 들며, hardware"
+" 차이로 dataset 재사용도 복잡해집니다."
+
+msgid "Why Simulation Matters"
+msgstr "Simulation이 중요한 이유"
+
+msgid "Task wireframe: vials on table, target rack outlined."
+msgstr "Task wireframe: 테이블 위 vial과 목표 rack의 윤곽입니다."
+
+msgid "Task wireframe: vials are scattered on a table, to be placed into a rack by the robot."
+msgstr "Task wireframe: robot이 rack에 넣어야 할 vial이 테이블 위에 흩어져 있습니다."
+
+msgid "Testing robots in the real world is expensive, risky, and sometimes dangerous."
+msgstr "실제 환경에서 robot을 시험하려면 비용이 많이 들고, 손상이나 안전 위험도 있습니다."
+
+msgid "Simulation addresses these fundamental limitations:"
+msgstr "Simulation은 다음과 같은 근본적인 제약을 완화합니다."
+
+msgid ""
+"**Time**: Real-world data collection is slow—one trajectory takes the same time whether you have "
+"one robot or one thousand"
+msgstr "**Time**: 실제 data 수집은 느립니다. Robot이 한 대든 천 대든, trajectory 하나를 수행하는 데는 같은 시간이 필요합니다."
+
+msgid "**Cost**: Robot hardware is expensive, and failures during exploration can cause damage"
+msgstr "**Cost**: Robot hardware는 비싸며, 탐색 중 실패로 손상될 수 있습니다."
+
+msgid "**Safety**: Exploring failure modes on real hardware can be dangerous"
+msgstr "**Safety**: 실제 hardware에서 failure mode를 탐색하는 것은 위험할 수 있습니다."
+
+msgid ""
+"**Diversity**: Creating varied training scenarios (different lighting, objects, positions) is "
+"labor-intensive"
+msgstr "**Diversity**: 조명, 물체, 위치가 다른 다양한 학습 상황을 직접 구성하려면 많은 노동이 필요합니다."
+
+msgid "Compare real-world and simulated training"
+msgstr "실제 환경과 simulation에서의 학습 비교"
+
+msgid "Simulation addresses all of these:"
+msgstr "Simulation은 이 모든 문제를 완화합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Privileged Information"
+msgstr "Privileged Information"
+
+msgid "Read more about privileged information in simulation"
+msgstr "Simulation의 privileged information 자세히 보기"
+
+msgid ""
+"Simulation also provides access to information that might be impossible to obtain in the real "
+"world:"
+msgstr "Simulation에서는 실제 환경에서 얻기 어려운 정보에도 접근할 수 있습니다."
+
+msgid "**Exact object poses**: No perception noise or occlusion"
+msgstr "**Exact object poses**: perception noise나 occlusion 없이 정확한 pose 제공"
+
+msgid "**Contact forces**: Precise measurements at every contact point"
+msgstr "**Contact forces**: 모든 contact point의 힘을 정밀하게 측정"
+
+msgid "**Ground truth labels**: Perfect segmentation and object identity"
+msgstr "**Ground truth labels**: 정확한 segmentation과 object identity 제공"
+
+msgid "**State derivatives**: Exact velocities and accelerations"
+msgstr "**State derivatives**: 정확한 velocity와 acceleration 제공"
+
+msgid ""
+"This privileged information can accelerate learning, even when the final policy only uses "
+"realistic sensor inputs."
+msgstr "최종 policy가 실제적인 sensor 입력만 사용하더라도, 이러한 privileged information으로 학습을 가속할 수 있습니다."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid "Simulation enables fast, safe, diverse training that can be impossible in the real world"
+msgstr "Simulation은 실제 환경에서는 어려울 수 있는 빠르고 안전하며 다양한 학습을 가능하게 합니다."
+
+msgid "The sim-to-real gap is a fundamental challenge that requires systematic approaches"
+msgstr "Sim-to-real gap은 체계적인 접근이 필요한 근본적인 과제입니다."
+
+msgid ""
+"This learning path provides hands-on experience with NVIDIA Isaac and multiple gap-closing "
+"strategies"
+msgstr "이 과정에서는 NVIDIA Isaac과 다양한 gap 완화 전략을 직접 실습합니다."
+
+msgid "Success comes from iteration and combining approaches"
+msgstr "반복 실험과 여러 접근의 조합이 성공의 열쇠입니다."
+
+msgid ""
+"Using a VLA (Vision Language Action) model from Isaac GR00T 1.7, our system will receive a "
+"language command like \"pick up the vial and place it on the rack\", and use robot joint feedback"
+" and camera observations as policy inputs."
+msgstr ""
+"Isaac GR00T 1.7의 VLA (Vision Language Action) model은 \"pick up the vial and place it on the "
+"rack\" 같은 language command를 받고, robot joint feedback과 camera observation을 policy 입력으로 사용합니다."
+
+msgid "The policy then outputs motor positions to execute the task."
+msgstr "Policy는 task를 수행하기 위한 motor position을 출력합니다."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"This learning path has some flexibility built-in to match your goals and time constraints. Let's "
+"cover those options next!"
+msgstr "이 과정은 목표와 사용 가능한 시간에 맞춰 유연하게 진행할 수 있습니다. 다음에서 선택지를 살펴봅니다."
+
+msgid "Continue to [How to Take This Course](02-how-to-take-this-course.md)."
+msgstr "[How to Take This Course](02-how-to-take-this-course.md)로 이동하세요."
+
+msgid "Challenge"
+msgstr "과제"
+
+msgid "Real World"
+msgstr "실제 환경"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Simulation"
+msgstr "Simulation"
+
+msgid "Training speed"
+msgstr "학습 속도"
+
+msgid "1x real-time"
+msgstr "실시간 1배"
+
+msgid "1000x+ parallel environments"
+msgstr "Parallel environment로 1000배 이상"
+
+msgid "Hardware cost"
+msgstr "Hardware 비용"
+
+msgid "$10K-$100K+ per robot"
+msgstr "Robot 한 대당 $10K–$100K 이상"
+
+msgid "Marginal compute cost"
+msgstr "추가 compute 비용"
+
+msgid "Failure consequence"
+msgstr "실패의 영향"
+
+msgid "Damage, downtime"
+msgstr "손상과 downtime"
+
+msgid "Reset and continue"
+msgstr "Reset 후 계속 진행"
+
+msgid "Scenario diversity"
+msgstr "Scenario 다양성"
+
+msgid "Manual setup"
+msgstr "수동 설정"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Procedural generation"
+msgstr "Procedural generation"
+
+msgid "Continue to [LeRobot and the SO-101](04-lerobot.md)."
+msgstr "[LeRobot and the SO-101](04-lerobot.md)으로 이동하세요."
+

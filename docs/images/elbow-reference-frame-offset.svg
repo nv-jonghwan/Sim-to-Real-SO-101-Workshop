@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900" role="img" aria-labelledby="title desc">
+  <title id="title">SO-101 elbow zero-reference discrepancy</title>
+  <desc id="desc">A large elbow joint diagram comparing LeRobot's calibrated zero and calibrated limits in green with the USD asset's baked zero in orange. A red arc shows the approximately 6.5 degree discrepancy.</desc>
+  <defs>
+    <style>
+      .title { font: 700 38px system-ui, sans-serif; fill: #172033; }
+      .subtitle { font: 400 19px system-ui, sans-serif; fill: #526078; }
+      .label { font: 700 20px system-ui, sans-serif; fill: #263248; }
+      .error-label { font: 700 20px system-ui, sans-serif; fill: #dc2626; }
+      .small { font: 500 17px system-ui, sans-serif; fill: #526078; }
+      .mono { font: 700 18px ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .arm { stroke: #334155; stroke-width: 42; stroke-linecap: round; }
+      .arm-edge { stroke: #94a3b8; stroke-width: 3; stroke-linecap: round; }
+      .construction { fill: none; stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 7 8; }
+      .limit-arc { fill: none; stroke: #16a34a; stroke-width: 15; stroke-linecap: round; opacity: .9; }
+      .limit-ray { stroke: #16a34a; stroke-width: 5; }
+      .lerobot-zero { stroke: #16a34a; stroke-width: 8; }
+      .usd-zero { stroke: #f97316; stroke-width: 8; }
+      .offset-arc { fill: none; stroke: #dc2626; stroke-width: 4; stroke-linecap: round; }
+      .card { fill: #fff; stroke: #dbe3ef; stroke-width: 2; }
+    </style>
+    <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#0f172a" flood-opacity=".1"/>
+    </filter>
+  </defs>
+
+  <rect width="1400" height="900" fill="#f4f7fb"/>
+  <text x="70" y="70" class="title">Elbow reference-frame mismatch</text>
+  <text x="70" y="105" class="subtitle">The physical joint is the same; its angle is measured from two different definitions of 0°.</text>
+
+  <g filter="url(#shadow)">
+    <rect x="55" y="140" width="1290" height="690" rx="22" class="card"/>
+  </g>
+
+  <!-- Joint construction circle and LeRobot range. Center: 650, 500; radius: 270. -->
+  <circle cx="650" cy="500" r="270" class="construction"/>
+  <path d="M618.9,768.2 A270,270 0 1 0 618.9,231.8" class="limit-arc"/>
+
+  <!-- LeRobot limit rays: +96.6 degrees and -96.6 degrees from calibrated zero. -->
+  <line x1="650" y1="500" x2="618.9" y2="231.8" class="limit-ray"/>
+  <line x1="650" y1="500" x2="618.9" y2="768.2" class="limit-ray"/>
+  <circle cx="618.9" cy="231.8" r="10" fill="#16a34a"/>
+  <circle cx="618.9" cy="768.2" r="10" fill="#16a34a"/>
+
+  <!-- Stylized upper arm and joint. -->
+  <line x1="650" y1="500" x2="390" y2="295" class="arm"/>
+  <line x1="650" y1="500" x2="390" y2="295" class="arm-edge"/>
+  <circle cx="650" cy="500" r="58" fill="#e2e8f0" stroke="#334155" stroke-width="10"/>
+  <circle cx="650" cy="500" r="19" fill="#334155"/>
+
+  <!-- The two authored/calibrated zero directions. -->
+  <line x1="650" y1="500" x2="1010" y2="500" class="lerobot-zero"/>
+  <circle cx="1010" cy="500" r="10" fill="#16a34a"/>
+  <line x1="650" y1="500" x2="1007.7" y2="459.2" class="usd-zero"/>
+  <circle cx="1007.7" cy="459.2" r="10" fill="#f97316"/>
+
+  <!-- Offset between the reference directions. -->
+  <path d="M965,500 A315,315 0 0 0 963,464.4" class="offset-arc" marker-end="url(#arrow-red)"/>
+  <text x="974" y="492" class="error-label">x°</text>
+
+  <!-- Labels. -->
+  <g transform="translate(1028 478)">
+    <rect x="0" y="0" width="270" height="57" rx="10" fill="#ecfdf3" stroke="#86efac"/>
+    <line x1="18" y1="28" x2="58" y2="28" class="lerobot-zero"/>
+    <text x="73" y="25" class="label" fill="#15803d">LeRobot 0°</text>
+    <text x="73" y="46" class="small">from calibration</text>
+  </g>
+
+  <g transform="translate(1028 397)">
+    <rect x="0" y="0" width="270" height="57" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+    <line x1="18" y1="28" x2="58" y2="28" class="usd-zero"/>
+    <text x="73" y="25" class="label" fill="#c2410c">USD 0°</text>
+    <text x="73" y="46" class="small">baked into joint frame</text>
+  </g>
+
+  <g transform="translate(145 205)">
+    <rect x="0" y="0" width="310" height="76" rx="11" fill="#ecfdf3" stroke="#86efac"/>
+    <text x="18" y="29" class="label" fill="#15803d">Upper limit from calibration</text>
+    <text x="18" y="57" class="mono" fill="#15803d">+96.6°</text>
+  </g>
+  <line x1="455" y1="243" x2="588" y2="236" stroke="#16a34a" stroke-width="3"/>
+
+  <g transform="translate(145 720)">
+    <rect x="0" y="0" width="310" height="76" rx="11" fill="#ecfdf3" stroke="#86efac"/>
+    <text x="18" y="29" class="label" fill="#15803d">Lower limit from calibration</text>
+    <text x="18" y="57" class="mono" fill="#15803d">−96.6°</text>
+  </g>
+  <line x1="455" y1="757" x2="588" y2="764" stroke="#16a34a" stroke-width="3"/>
+
+  <g transform="translate(953 650)">
+    <rect x="0" y="0" width="345" height="118" rx="12" fill="#f8fafc" stroke="#cbd5e1"/>
+    <text x="20" y="31" class="label">Direct mapping requires</text>
+    <text x="20" y="62" class="mono" fill="#263248">q_sim = q_lerobot</text>
+    <text x="20" y="91" class="small">and coincident green/orange zeros.</text>
+  </g>
+
+  <text x="650" y="850" text-anchor="middle" class="small">Green sweep: LeRobot elbow limits derived from calibration · Values shown use the measured approximately ±96.6° endpoints.</text>
+</svg>

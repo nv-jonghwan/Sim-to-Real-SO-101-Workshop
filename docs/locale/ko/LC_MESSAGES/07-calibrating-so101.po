@@ -1,0 +1,390 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Calibrating the SO-101"
+msgstr "SO-101 Calibration"
+
+msgid "Positioning the SO-101 leader arm for calibration."
+msgstr "Calibration을 위해 SO-101 leader arm의 pose를 맞추는 모습입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"Hands-on. You'll need the SO-101 leader and follower arms, USB cables, and the assembled "
+"workspace from [Using the Workspace](07-using-workspace.md)."
+msgstr ""
+"실습입니다. SO-101 leader와 follower arm, USB cable, [Using the Workspace](07-using-workspace.md)에서 조립한"
+" workspace가 필요합니다."
+
+msgid ""
+"You'll power on and calibrate both arms, then check their joint ranges. The **leader / teleop "
+"arm** is the arm you move by hand; the **follower / robot arm** performs the task."
+msgstr ""
+"두 arm의 전원을 켜고 calibration한 뒤 joint range를 확인합니다. **leader / teleop arm**은 손으로 움직이는 arm이고, "
+"**follower / robot arm**은 task를 수행합니다."
+
+msgid ""
+"If you encounter hardware issues during this session, see the [Troubleshooting "
+"Guide](troubleshooting.md) for solutions to common problems."
+msgstr "Hardware 문제가 발생하면 [Troubleshooting Guide](troubleshooting.md)에서 흔한 문제의 해결 방법을 확인하세요."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "By the end of this session, you'll be able to:"
+msgstr "이 session을 마치면 다음을 수행할 수 있습니다."
+
+msgid "**Power on** both arms safely"
+msgstr "두 arm의 전원을 안전하게 **켜기**"
+
+msgid "**Calibrate** the leader and follower for accurate positioning"
+msgstr "정확한 positioning을 위한 leader와 follower **calibration**"
+
+msgid "Safety Guidelines"
+msgstr "안전 지침"
+
+msgid "Review the [Safety](08-operating-so101.md#safety) protocol before powering on the robot."
+msgstr "Robot 전원을 켜기 전에 [Safety](08-operating-so101.md#safety) 절차를 확인하세요."
+
+msgid "Powering On the Robot"
+msgstr "Robot 전원 켜기"
+
+msgid "Physical Inspection"
+msgstr "실물 점검"
+
+msgid "Before powering on:"
+msgstr "전원을 켜기 전에:"
+
+msgid "**Inspect** the robot for any visible damage"
+msgstr "Robot에 눈에 보이는 손상이 없는지 **점검**합니다."
+
+msgid "The **leader uses 5V** and the **follower uses 12V**. Do not swap their power supplies."
+msgstr "**Leader는 5V**, **follower는 12V**를 사용합니다. 전원 공급 장치를 바꿔 연결하지 마세요."
+
+msgid "**Connect** the power and USB cables."
+msgstr "전원과 USB cable을 **연결**합니다."
+
+msgid "**Verify** the **power LED** illuminates on the control board at the back of the robot."
+msgstr "Robot 뒤쪽 control board의 **power LED**가 켜지는지 **확인**합니다."
+
+msgid "**Connect** both arms to your computer with USB cables."
+msgstr "두 arm을 USB cable로 computer에 **연결**합니다."
+
+msgid "Run the Docker Container for This Course"
+msgstr "과정용 Docker Container 실행"
+
+msgid ""
+"USB port assignments can change when you reconnect the arms. Usually reconnecting just one won't "
+"reassign the value. Use LeRobot's port finder to identify each one, then save the ports for later"
+" commands."
+msgstr ""
+"Arm을 다시 연결하면 USB port 할당이 바뀔 수 있습니다. 하나만 다시 연결하면 보통 바뀌지 않습니다. LeRobot port finder로 각 port를 확인하고 "
+"이후 명령에 사용할 값을 저장하세요."
+
+msgid "**Open a terminal on the host** and **change into the workshop folder in your home directory**:"
+msgstr "**Host에서 terminal을 열고 home directory의 workshop folder로 이동**합니다."
+
+msgid "**Start** the container from this folder if you haven't already:"
+msgstr "아직 시작하지 않았다면 이 folder에서 container를 **시작**합니다."
+
+msgid "Connect to an Already-Running Container"
+msgstr "이미 실행 중인 Container에 연결"
+
+msgid ""
+"If the container is already running and you need another terminal, run this on the host. If you "
+"are already at the container prompt, skip this step."
+msgstr "Container가 이미 실행 중이고 추가 terminal이 필요하면 host에서 실행하세요. 이미 container prompt에 있다면 건너뜁니다."
+
+msgid "The workshop's Python environment and saved settings load automatically."
+msgstr "Workshop Python environment와 저장된 설정이 자동으로 로드됩니다."
+
+msgid "Identify the Leader Arm Port"
+msgstr "Leader Arm Port 확인"
+
+msgid "**Run** this command to start port identification:"
+msgstr "다음 명령을 **실행**해 port를 확인합니다."
+
+msgid "When prompted, **unplug the leader's USB cable**."
+msgstr "안내가 나오면 **leader의 USB cable을 분리**합니다."
+
+msgid "After removing the cable, **press** **Enter**."
+msgstr "Cable을 분리한 뒤 **Enter**를 누릅니다."
+
+msgid ""
+"In this example, `/dev/ttyACM2` is the port assigned by the host computer. It's discovered by a "
+"simple diff of connected devices."
+msgstr "이 예시에서 host가 할당한 port는 `/dev/ttyACM2`입니다. 연결 전후 device 목록의 차이로 찾습니다."
+
+msgid ""
+"**Reconnect** the leader and **save** its port. Replace `/dev/ttyACM2` with the port the tool "
+"found."
+msgstr "Leader를 **다시 연결**하고 port를 **저장**합니다. `/dev/ttyACM2`를 도구가 찾은 port로 바꾸세요."
+
+msgid ""
+"`setenv` saves these settings in the repository's `docker/env` file so they load in future "
+"container sessions."
+msgstr "`setenv`는 repository의 `docker/env`에 설정을 저장하므로 다음 container session에서도 자동으로 로드됩니다."
+
+msgid "Identify the Follower Arm Port"
+msgstr "Follower Arm Port 확인"
+
+msgid "**Repeat** for the **follower**, unplugging and reconnecting its USB cable when prompted."
+msgstr "**Follower**에서도 같은 절차를 **반복**하며, 안내에 따라 USB cable을 분리하고 다시 연결합니다."
+
+msgid "**Save** the follower's port, replacing `/dev/ttyACM0` with the port the tool found."
+msgstr "`/dev/ttyACM0`를 도구가 찾은 port로 바꿔 follower port를 **저장**합니다."
+
+msgid "The ID names the arm's calibration file. Use the same ID for that arm in every session."
+msgstr "ID는 arm의 calibration filename을 결정합니다. 같은 arm에는 모든 session에서 같은 ID를 사용하세요."
+
+msgid "**Check** the saved ports and IDs:"
+msgstr "저장한 port와 ID를 **확인**합니다."
+
+msgid "**Continue** calibration in this terminal."
+msgstr "이 terminal에서 calibration을 **계속**합니다."
+
+msgid ""
+"After reconnecting USB devices, run the port finder again if the assignments have changed. These "
+"commands are also on the [Quick Reference](quick_reference.md) page."
+msgstr "USB를 다시 연결한 뒤 할당이 바뀌었다면 port finder를 다시 실행하세요. 명령은 [Quick Reference](quick_reference.md)에도 있습니다."
+
+msgid "Calibration Process"
+msgstr "Calibration 절차"
+
+msgid ""
+"Calibration aligns encoder readings with the physical positions of each link. The policy relies "
+"on these joint positions, so incorrect calibration can cause unintended motion, task failures, or"
+" collisions."
+msgstr ""
+"Calibration은 encoder reading과 각 link의 실제 위치를 맞춥니다. Policy는 joint position에 의존하므로, calibration이 "
+"잘못되면 의도하지 않은 움직임, task 실패, 충돌이 발생할 수 있습니다."
+
+msgid "Follow the same process for both arms: calibrate, then check."
+msgstr "두 arm 모두 calibration 후 검증하는 같은 절차를 따릅니다."
+
+msgid "Calibrate the Leader Arm"
+msgstr "Leader Arm Calibration"
+
+msgid "**Run** the leader calibration command using the port and ID you saved:"
+msgstr "저장한 port와 ID로 leader calibration 명령을 **실행**합니다."
+
+msgid ""
+"When prompted, **move each joint to the middle of its range**. That ends up looking like this "
+"pose, which you can simply match:"
+msgstr "안내가 나오면 **각 joint를 가동 범위의 중간에 놓습니다**. 아래 pose와 같아지므로 사진에 맞추면 됩니다."
+
+msgid "Leader arm in its calibration pose."
+msgstr "Calibration pose의 leader arm입니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Leader calibration pose"
+msgstr "Leader calibration pose"
+
+msgid "**Press Enter** once the arm matches the pose."
+msgstr "Pose를 맞춘 뒤 **Enter를 누릅니다**."
+
+msgid "**Move** each joint **except wrist roll** through its full range, one at a time."
+msgstr "**Wrist roll을 제외한** 각 joint를 하나씩 전체 가동 범위로 **움직입니다**."
+
+msgid "Moving the leader joints through their calibration ranges."
+msgstr "Leader joint를 calibration range 전체로 움직이는 모습입니다."
+
+msgid ""
+"*Example calibration motion. Start in the calibration pose, then sweep the other joints one by "
+"one; wrist roll does not need a sweep.*"
+msgstr "*Calibration 동작 예시입니다. Calibration pose에서 시작해 각 joint를 하나씩 움직입니다. Wrist roll은 sweep할 필요가 없습니다.*"
+
+msgid ""
+"You can sweep a joint more than once if needed. The script records its minimum and maximum "
+"positions. If you miss a joint, run calibration again."
+msgstr "필요하면 같은 joint를 여러 번 움직여도 됩니다. Script가 최솟값과 최댓값을 기록합니다. 빠뜨린 joint가 있다면 calibration을 다시 실행하세요."
+
+msgid ""
+"**Reach the mechanical end stops.** Keep cables and other obstacles clear so they don't stop a "
+"joint early and produce an incorrect calibration."
+msgstr "**Mechanical end stop까지 움직이세요.** Cable이나 장애물이 먼저 joint를 막아 잘못된 calibration이 기록되지 않도록 치웁니다."
+
+msgid ""
+"In these newer versions of LeRobot, **wrist roll does not need a range sweep** on either arm. Its"
+" range is assigned automatically, but you must still place it in the initial calibration pose "
+"shown below. It's fine if you do move it."
+msgstr ""
+"이 LeRobot 버전에서는 두 arm 모두 **wrist roll range sweep이 필요 없습니다**. Range는 자동으로 할당되지만, 아래의 초기 "
+"calibration pose에는 정확히 맞춰야 합니다. 움직이더라도 문제는 없습니다."
+
+msgid "**Press Enter** when done."
+msgstr "완료하면 **Enter를 누릅니다**."
+
+msgid ""
+"**Check the leader calibration** before moving on to the follower. The checker uses your saved "
+"`TELEOP_ID` and `TELEOP_PORT`."
+msgstr "Follower로 넘어가기 전에 **leader calibration을 확인**합니다. Checker는 저장된 `TELEOP_ID`와 `TELEOP_PORT`를 사용합니다."
+
+msgid ""
+"**Check** that the report says `Arm: teleop` and names your calibration file. For any `WARN` or "
+"live `OUT OF RANGE` result, check the arm ID and joint travel. Correct any problems, then "
+"recalibrate and run the check again."
+msgstr ""
+"Report에 `Arm: teleop`와 본인의 calibration file이 표시되는지 **확인**합니다. `WARN` 또는 live `OUT OF RANGE`가 있으면 "
+"arm ID와 joint travel을 점검하세요. 문제를 수정하고 recalibration한 뒤 다시 검사합니다."
+
+msgid "Optional: how the calibration check works"
+msgstr "선택 사항: Calibration 검사 원리"
+
+msgid ""
+"The reference data comes from WowRobo robots calibrated for a live version of this workshop. The "
+"checker compares each arm against its own reference dataset: 10 teleop calibrations or 10 "
+"follower calibrations. It flags motion ranges outside the mean ±2 population standard deviations."
+" When all reference ranges are identical, a different range produces a warning. These are "
+"statistical comparisons, not proof that a calibration is correct or incorrect; even a reference "
+"sample can fall outside ±2σ."
+msgstr ""
+"Reference data는 이 workshop의 현장 운영을 위해 calibration한 WowRobo robot에서 얻었습니다. Checker는 arm별 reference"
+" dataset(teleop 10개 또는 follower 10개)과 비교하며, 평균 ±2 population standard deviation을 벗어나는 motion "
+"range를 표시합니다. 모든 reference range가 같다면 다른 값은 warning으로 표시됩니다. 이는 통계적 비교이며 calibration의 정오를 증명하지 "
+"않습니다. Reference sample도 ±2σ를 벗어날 수 있습니다."
+
+msgid ""
+"The checker also reads live encoder positions when the selected arm connects. Look for the “Live "
+"Encoder Positions” section and review any `OUT OF RANGE` results. Add `--static-only` to check "
+"the saved file without connecting to hardware; a file-only PASS does not verify live positions."
+msgstr ""
+"선택한 arm이 연결되면 checker는 live encoder position도 읽습니다. “Live Encoder Positions”에서 `OUT OF RANGE` 결과를"
+" 확인하세요. Hardware 연결 없이 저장 파일만 검사하려면 `--static-only`를 추가합니다. 파일 검사만 PASS했다고 live position까지 검증된 것은"
+" 아닙니다."
+
+msgid ""
+"To check a specific file with either arm's command, add `--calibration /path/to/arm.json`. The "
+"`STATS_JSON` environment variable can override the selected arm's reference statistics."
+msgstr ""
+"특정 파일을 검사하려면 어느 arm 명령이든 `--calibration /path/to/arm.json`을 추가합니다. `STATS_JSON` environment "
+"variable로 선택한 arm의 reference 통계를 바꿀 수 있습니다."
+
+msgid "Calibrate the Follower Arm"
+msgstr "Follower Arm Calibration"
+
+msgid "**Run** the follower calibration command:"
+msgstr "Follower calibration 명령을 **실행**합니다."
+
+msgid "**Move** the follower to the calibration pose, with each joint in the middle of its range:"
+msgstr "Follower의 각 joint를 가동 범위 중간에 두어 calibration pose로 **맞춥니다**."
+
+msgid "Calibration Pose Example"
+msgstr "Calibration Pose 예시"
+
+msgid "Match this wrist-roll position carefully to prevent its readings from wrapping around."
+msgstr "Reading이 wrap around되지 않도록 wrist-roll 위치를 정확히 맞추세요."
+
+msgid "**Press Enter** to begin calibration."
+msgstr "**Enter를 눌러** calibration을 시작합니다."
+
+msgid "Full SO-101 Calibration Sequence"
+msgstr "전체 SO-101 Calibration 순서"
+
+msgid "Example calibration motion on the SO-101; skip the wrist-roll sweep."
+msgstr "SO-101 calibration 동작 예시입니다. Wrist-roll sweep은 생략합니다."
+
+msgid ""
+"**Check the follower calibration** before teleoperation. The checker uses your saved `ROBOT_ID` "
+"and `ROBOT_PORT`."
+msgstr "Teleoperation 전에 **follower calibration을 확인**합니다. Checker는 저장한 `ROBOT_ID`와 `ROBOT_PORT`를 사용합니다."
+
+msgid ""
+"**Check** that the report says `Arm: follower` and names your calibration file. Investigate any "
+"`WARN` or live `OUT OF RANGE` result before teleoperation. Correct any problems, then recalibrate"
+" and run the check again."
+msgstr ""
+"Report에 `Arm: follower`와 본인의 calibration file이 표시되는지 **확인**합니다. Teleoperation 전에 `WARN`이나 live "
+"`OUT OF RANGE`를 점검하고, 문제를 수정한 뒤 recalibration과 검사를 반복하세요."
+
+msgid ""
+"LeRobot saves the calibration under `~/.cache/huggingface/lerobot/calibration`, organized by arm "
+"type and ID."
+msgstr "LeRobot은 arm type과 ID별로 `~/.cache/huggingface/lerobot/calibration` 아래에 calibration을 저장합니다."
+
+msgid "Show an example calibration check report"
+msgstr "Calibration 검사 Report 예시 보기"
+
+msgid "Example follower output from a file-only check:"
+msgstr "파일만 검사한 follower output 예시입니다."
+
+msgid "Match the External Camera Tilt to Simulation"
+msgstr "External Camera 기울기를 Simulation에 맞추기"
+
+msgid ""
+"Camera mounts vary between stations. Adjust the real camera to match the view used to train the "
+"provided policies."
+msgstr "Station마다 camera mount가 다릅니다. 제공된 policy의 학습 view와 같도록 실제 camera를 조정하세요."
+
+msgid ""
+"The simulated camera looks about **54° downward from horizontal**. Use a phone level app to set a"
+" similar tilt:"
+msgstr "Simulation camera는 **수평에서 아래로 약 54°**를 봅니다. 휴대전화 수평계 app으로 비슷한 기울기를 맞추세요."
+
+msgid "**Rest the phone's long edge on the tabletop** and check for a reading near **0°**."
+msgstr "**휴대전화의 긴 모서리를 테이블 위에 대고** 약 **0°**인지 확인합니다."
+
+msgid "**Place that edge against the camera's front face**, running from top to bottom beside the lens."
+msgstr "**그 모서리를 camera 전면에 대고**, lens 옆에서 위아래 방향으로 맞춥니다."
+
+msgid "**Adjust the mount** until the edge is about **54° downward**, within a few degrees."
+msgstr "몇 도 이내의 오차로 **아래쪽 약 54°**가 되도록 **mount를 조절**합니다."
+
+msgid ""
+"In the next lesson, [compare the live view](08-operating-so101.md#teleoperation-with-cameras) "
+"with simulation. The robot, rack, and vials should be framed similarly; camera position and field"
+" of view matter too."
+msgstr ""
+"다음 실습에서 [live view](08-operating-so101.md#teleoperation-with-cameras)를 simulation과 비교하세요. Robot, "
+"rack, vial의 구도가 비슷해야 하며, camera 위치와 field of view도 중요합니다."
+
+msgid "Phone level resting on the tabletop with a zero-degree reading."
+msgstr "휴대전화를 테이블에 대고 0°를 확인합니다."
+
+msgid "Set zero on the tabletop."
+msgstr "테이블에서 zero를 맞춥니다."
+
+msgid "Phone held against the external camera to check its tilt."
+msgstr "External camera에 휴대전화를 대고 기울기를 확인합니다."
+
+msgid "Check the camera tilt with the phone."
+msgstr "휴대전화로 camera 기울기를 확인합니다."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid "Keep each arm's port, ID, and calibration file together."
+msgstr "Arm별 port, ID, calibration file을 함께 관리하세요."
+
+msgid "Center wrist roll for calibration, but skip its range sweep."
+msgstr "Calibration 시 wrist roll을 중앙에 맞추되 range sweep은 생략합니다."
+
+msgid "Check both calibrations and the camera view before collecting data or running a policy."
+msgstr "Data 수집이나 policy 실행 전에 두 arm의 calibration과 camera view를 확인하세요."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to [Teleoperating](08-operating-so101.md) to move the follower with the leader and set "
+"up live camera views."
+msgstr "[Teleoperating](08-operating-so101.md)에서 leader로 follower를 움직이고 live camera view를 설정하세요."
+

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One step of GR00T training</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* User-requested variation: explanations only, with no term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+.batch-controls{margin:16px 0;padding:16px;border:1px solid var(--diagram-border);border-radius:12px;background:var(--diagram-surface)}.batch-controls h2{font-size:18px;margin:0 0 14px}.controls-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.controls-grid label{font-size:14px;font-weight:600}.controls-grid select{display:block;width:100%;margin-top:8px;padding:8px;border:1px solid var(--diagram-border);border-radius:6px;color:var(--diagram-text);background:var(--diagram-bg);font:inherit}#batch-result{min-height:3em;font-size:16px}@media(max-width:540px){.controls-grid{grid-template-columns:1fr}}
+
+/* Reserve the tallest explanation at the current width so previews do not
+   resize the iframe or trigger scroll anchoring. Hidden text stays inaccessible. */
+.is-enhanced .explanations { display: grid; }
+.is-enhanced .explanations > .definition,
+.is-enhanced .explanations > #empty-prompt { grid-area: 1 / 1; }
+.is-enhanced .explanations > .definition[hidden],
+.is-enhanced .explanations > #empty-prompt[hidden] {
+  display: block; visibility: hidden; pointer-events: none;
+}
+html { scrollbar-gutter: stable; }
+</style>
+</head>
+<body>
+<main id="interactive-learning-diagram">
+
+<div class="layout">
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 490" role="group" aria-labelledby="title desc"><title id="title">One GR00T optimizer update</title><desc id="desc">Sample a batch of observation and action windows, prepare noisy flow-matching targets, compute loss and gradients, and update trainable weights. Batch size and horizon shape the training data; trainable components and learning rate control the update.</desc><style>text{font-family:var(--diagram-font);fill:var(--diagram-text)}.heading{font-size:23px;font-weight:700}.detail{font-size:19px;fill:var(--diagram-muted)}.line{fill:none;stroke:var(--diagram-accent-text);stroke-width:3}.arrow{fill:none;stroke:var(--diagram-muted);stroke-width:3}</style>
+<path class="arrow" d="M465 122 H530 M530 122 l-10 -7 m10 7 l-10 7 M755 205 V265 M755 265 l-7 -10 m7 10 l7 -10 M535 355 H475 M475 355 l10 -7 m-10 7 l10 7"/>
+<rect x="20" y="20" width="440" height="205" rx="14" fill="var(--diagram-surface)" stroke="var(--diagram-border)"/><text class="heading" x="45" y="59">1 · Sample windows</text><rect x="45" y="86" width="62" height="44" rx="4" class="line"/><rect x="55" y="96" width="62" height="44" rx="4" class="line"/><path d="M135 103 h105 m-105 15 h75 m-75 15 h95" class="line"/><text x="45" y="176" class="detail">Images + instruction + joint state</text><text x="45" y="205" class="detail">Batch size: windows per pass</text><a class="hotspot" data-term="batch" href="#definition-batch" role="button" tabindex="0" aria-label="1 · Sample windows: Batch size" aria-controls="definition-batch" aria-expanded="false"><rect class="hit-area" x="20" y="20" width="440" height="205" rx="14"/></a><rect x="535" y="20" width="440" height="205" rx="14" fill="var(--diagram-surface)" stroke="var(--diagram-border)"/><text class="heading" x="560" y="59">2 · Prepare targets</text><path d="M560 106 h300" class="line"/><rect x="560" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="579" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="598" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="617" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="636" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="655" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="674" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="693" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="712" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="731" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="750" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="769" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="788" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="807" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="826" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><rect x="845" y="95" width="13" height="23" fill="var(--diagram-accent)" opacity=".65"/><text x="560" y="158" class="detail">Action chunk + noise → flow target</text><text x="560" y="187" class="detail">Optional image augmentation</text><a class="hotspot" data-term="targets" href="#definition-targets" role="button" tabindex="0" aria-label="2 · Prepare targets: Training horizon" aria-controls="definition-targets" aria-expanded="false"><rect class="hit-area" x="535" y="20" width="440" height="205" rx="14"/></a><rect x="535" y="275" width="440" height="205" rx="14" fill="var(--diagram-surface)" stroke="var(--diagram-border)"/><text class="heading" x="560" y="314">3 · Compute loss</text><path d="M560 354 h75 l15 -26 l24 50 l24 -34 h75" class="line"/><text x="560" y="425" class="detail">Prediction → loss → gradients</text><text x="560" y="454" class="detail">Freeze or train selected components</text><a class="hotspot" data-term="loss" href="#definition-loss" role="button" tabindex="0" aria-label="3 · Compute loss: Trainable components" aria-controls="definition-loss" aria-expanded="false"><rect class="hit-area" x="535" y="275" width="440" height="205" rx="14"/></a><rect x="20" y="275" width="440" height="205" rx="14" fill="var(--diagram-surface)" stroke="var(--diagram-border)"/><text class="heading" x="45" y="314">4 · Update weights</text><path d="M55 370 l45 -35 l45 20 l50 -32" class="line"/><circle cx="55" cy="370" r="6" fill="var(--diagram-accent)"/><circle cx="195" cy="323" r="6" fill="var(--diagram-accent)"/><text x="45" y="425" class="detail">Optimizer → updated weights</text><text x="45" y="454" class="detail">Learning rate: scale the update</text><a class="hotspot" data-term="update" href="#definition-update" role="button" tabindex="0" aria-label="4 · Update weights: Learning rate" aria-controls="definition-update" aria-expanded="false"><rect class="hit-area" x="20" y="275" width="440" height="205" rx="14"/></a></svg><section class="batch-controls" aria-label="Explore batch and target sizes"><h2>How much data goes into one update?</h2><div class="controls-grid"><label>Batch size per GPU <select id="batch"><option>8</option><option>16</option><option selected>32</option><option>64</option></select></label><label>GPU processes <select id="gpus"><option selected>1</option><option>2</option><option>4</option></select></label><label>Training horizon <select id="horizon"><option>8</option><option selected>16</option><option>32</option></select></label></div><p id="batch-result" aria-live="polite">One GPU: 32 windows × 16 action targets = 512 target timesteps per optimizer update.</p><p class="diagram-note">Illustrative counts, including repeated samples—not unique episodes. Only valid, unmasked targets contribute to the loss. These controls do not change the workshop recipe. Effective batch = batch size per GPU × GPU processes.</p></section></div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt">Select a step or object for its explanation.</p>
+<article class="definition" id="definition-batch" data-definition="batch" aria-labelledby="heading-batch"><h2 id="heading-batch">Batch size</h2><p>Batch size counts sampled observation/action windows, not whole episodes. Each window contains camera images, the instruction, joint state, and an action target chunk starting at the sampled frame. In the pinned lesson training loop, batch size × GPU processes gives the effective batch for one optimizer update. Each GPU processes its own batch, gradients are synchronized, and the optimizer updates once. This loop does not accumulate several batches before updating.</p></article><article class="definition" id="definition-targets" data-definition="targets" aria-labelledby="heading-targets"><h2 id="heading-targets">Training horizon</h2><p>The training action horizon is the number of action targets paired with an observation. The targets start at that frame: indices 0 through H−1. Sixteen commands at 30 Hz represent about 0.53 seconds of control; their first-to-last timestamps span 0.50 seconds. Longer chunks change the temporal learning problem and increase target size. The loader caps the requested chunk at the base model’s supported horizon. Use a supported training horizon; it is distinct from how many actions a rollout executes. Arm targets are relative to the observation state; the gripper remains absolute. Image augmentation is optional.</p></article><article class="definition" id="definition-loss" data-definition="loss" aria-labelledby="heading-loss"><h2 id="heading-loss">Trainable components</h2><p>Images, instruction, and joint state condition the model. Flow matching mixes the action targets with random noise at a sampled flow time. The action head predicts the target flow (action minus noise); a masked mean-squared error supplies the training loss. Backpropagation computes gradients for trainable weights. Frozen components still provide features, but receive no optimizer updates. Unfreezing vision adds trainable weights and usually increases memory use.</p></article><article class="definition" id="definition-update" data-definition="update" aria-labelledby="heading-update"><h2 id="heading-update">Learning rate</h2><p>After backpropagation, the loop clips the gradient norm when configured, then the optimizer updates trainable weights. Learning rate scales this update together with the optimizer. A schedule changes the learning rate across updates. The loop then clears the gradients and advances the learning-rate schedule. This optimizer update counts as one training step. Repeat for the configured number of steps, then evaluate the saved policy.</p></article>
+</section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+<script>(()=>{const ids=['batch','gpus','horizon'];function update(){const [b,a,h]=ids.map(id=>Number(document.getElementById(id).value));document.getElementById('batch-result').textContent=`${a} GPU process(es): ${b} × ${a} = ${b*a} windows per update; ${b*a} × ${h} = ${b*a*h} target timesteps. Control duration: about ${(h/30).toFixed(2)} seconds at 30 Hz; first-to-last target span: ${((h-1)/30).toFixed(2)} seconds.`;}ids.forEach(id=>document.getElementById(id).addEventListener('change',update));update();})();</script></body>
+</html>

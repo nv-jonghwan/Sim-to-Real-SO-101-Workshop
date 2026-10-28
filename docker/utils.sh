@@ -1,5 +1,9 @@
 source /root/env 2>/dev/null
 
+if [ -f "${ISAACLAB_VENV:-}/bin/activate" ]; then
+  source "${ISAACLAB_VENV}/bin/activate"
+fi
+
 setenv() {
   local key val
   if [ -z "$1" ]; then

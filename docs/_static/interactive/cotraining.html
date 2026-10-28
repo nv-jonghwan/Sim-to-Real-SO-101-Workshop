@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Co-training: two data sources, one policy, separate evaluation</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* Show the selected explanation without a term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+/* The illustrated workflow uses one column in narrow course articles. */
+main { max-width: 900px; padding: 6px 0; }
+.layout { gap: 10px; }
+svg { font-family: var(--diagram-font); }
+.marker { font-size: 16px; font-weight: 700; fill: var(--diagram-accent-text); letter-spacing: .3px; }
+.label { font-size: 25px; font-weight: 700; fill: var(--diagram-text); }
+.step-number { font-size: 25px; font-weight: 700; fill: var(--diagram-accent-text); }
+.caption { font-size: 20px; fill: var(--diagram-muted); }
+.minor { font-size: 18px; fill: var(--diagram-muted); }
+.line, .accent-line, .arrow { fill: none; stroke: var(--diagram-line); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.accent-line { stroke: var(--diagram-accent-text); }
+.arrow { marker-end: url(#arrow); }
+.paper { fill: var(--diagram-bg); stroke: var(--diagram-line); stroke-width: 2.2; stroke-linejoin: round; }
+.scene-back { fill: var(--diagram-surface); stroke: var(--diagram-border); stroke-width: 1.8; }
+.chip-body { fill: var(--diagram-tint); stroke: var(--diagram-accent-text); stroke-width: 2.6; }
+.accent-fill { fill: var(--diagram-accent-text); }
+.muted-fill { fill: var(--diagram-muted); }
+.mobile-connectors { display: none; }
+.definition + .definition { margin-top: 24px; }
+.is-enhanced .definition { margin-top: 0; }
+.definition a { color: var(--diagram-accent-text); text-underline-offset: 3px; }
+.definition a:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 3px; }
+.compact .stage-1 { transform: translate(20px, 48px); }
+.compact .stage-2 { transform: translate(20px, 334px); }
+.compact .stage-3 { transform: translate(20px, 620px); }
+.compact .stage-4 { transform: translate(20px, 906px); }
+.compact .desktop-connectors { display: none; }
+.compact .mobile-connectors { display: block; }
+
+</style>
+<link rel="stylesheet" href="diagram-layout.css">
+</head>
+<body>
+<main id="interactive-learning-diagram">
+<div class="layout">
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" id="workflow-svg" viewBox="0 0 760 626" width="760" height="626" role="group" aria-labelledby="workflow-title workflow-desc"><title id="workflow-title">Co-training: two data sources, one policy, separate evaluation</title><desc id="workflow-desc">Simulation and real demonstrations are reviewed, sampled into training windows, used to adapt one policy, and evaluated separately in simulation and reality.</desc><defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="var(--diagram-line)" stroke-width="2"/></marker></defs><text class="marker" x="20" y="24" text-anchor="start">CO-TRAINING</text><g class="desktop-connectors" aria-hidden="true"><path class="arrow" d="M365 178 H393"/><path class="arrow" d="M570 306 V325 H190 V343"/><path class="arrow" d="M365 482 H393"/></g><g class="mobile-connectors" aria-hidden="true"><path class="arrow" d="M190 308 V327"/><path class="arrow" d="M190 594 V613"/><path class="arrow" d="M190 880 V899"/></g><g class="stage stage-1" transform="translate(20 48)"><text class="step-number" x="16" y="28" text-anchor="start">1</text><text class="label" x="48" y="28" text-anchor="start">Review both sources</text><g transform="translate(18 64) scale(0.93)"><path class="scene-back" d="M0 0 H145 V95 H0 Z"/><path class="line" d="M8 79 H136 M14 14 H35 M14 20 H28"/><g transform="translate(14 49) scale(1)"><path class="paper" d="M0 14 L12 0 H75 L86 14 V34 H0 Z"/><path class="line" d="M0 14 H86"/><ellipse class="accent-line" cx="23" cy="8" rx="7" ry="3"/><ellipse class="accent-line" cx="43" cy="8" rx="7" ry="3"/><ellipse class="accent-line" cx="63" cy="8" rx="7" ry="3"/></g><g transform="translate(115 60) rotate(35)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><circle class="accent-fill" cx="124" cy="18" r="8"/><path class="accent-line" d="M124 4 V0 M124 32 V38 M110 18 H104 M138 18 H144"/></g><g transform="translate(193 47) scale(0.96)"><path class="accent-line" stroke-width="7" d="M20 100 V75 L50 35 L92 54 L115 24"/><circle class="paper" cx="20" cy="75" r="8"/><circle class="paper" cx="50" cy="35" r="8"/><circle class="paper" cx="92" cy="54" r="7"/><path class="line" d="M8 106 H37 M108 18 L121 30 M117 26 L129 18 L135 25 M117 26 L108 38 L114 43"/></g><g transform="translate(317 137) rotate(0)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><text class="minor" x="84" y="181" text-anchor="middle">Sim coverage</text><text class="minor" x="263" y="181" text-anchor="middle">Real examples</text><text class="caption" x="170" y="231" text-anchor="middle">Complementary task examples</text><a class="hotspot" data-term="sources" href="#definition-sources" tabindex="0" role="button" aria-label="1. Review both sources" aria-controls="definition-sources" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="250" rx="12"/></a></g><g class="stage stage-2" transform="translate(400 48)"><text class="step-number" x="16" y="28" text-anchor="start">2</text><text class="label" x="48" y="28" text-anchor="start">Check exposure</text><path class="line" d="M28 85 H115 M28 139 H115"/><circle class="accent-fill" cx="35" cy="85" r="7"/><circle class="paper" cx="35" cy="139" r="7"/><circle class="accent-fill" cx="67" cy="85" r="7"/><circle class="paper" cx="67" cy="139" r="7"/><circle class="accent-fill" cx="99" cy="85" r="7"/><circle class="paper" cx="99" cy="139" r="7"/><path class="arrow" d="M124 85 L177 110 M124 139 L177 113"/><path class="paper" d="M195 69 H309 V155 H195 Z"/><circle class="accent-fill" cx="216" cy="91" r="7"/><circle class="paper" cx="248" cy="91" r="7"/><circle class="accent-fill" cx="280" cy="91" r="7"/><circle class="paper" cx="216" cy="131" r="7"/><circle class="accent-fill" cx="248" cy="131" r="7"/><circle class="accent-fill" cx="280" cy="131" r="7"/><text class="minor" x="253" y="181" text-anchor="middle">Sampled windows</text><text class="caption" x="170" y="231" text-anchor="middle">Merging does not fix the ratio</text><a class="hotspot" data-term="exposure" href="#definition-exposure" tabindex="0" role="button" aria-label="2. Check exposure" aria-controls="definition-exposure" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="250" rx="12"/></a></g><g class="stage stage-3" transform="translate(20 352)"><text class="step-number" x="16" y="28" text-anchor="start">3</text><text class="label" x="48" y="28" text-anchor="start">Train one policy</text><g transform="translate(19 81) scale(0.76)"><path class="paper" d="M0 0 H120 V92 H0 Z"/><path class="line" d="M0 15 H120 M0 78 H120 M40 15 V78 M80 15 V78"/><path class="line" d="M8 5 H16 M8 86 H16"/><path class="line" d="M28 5 H36 M28 86 H36"/><path class="line" d="M48 5 H56 M48 86 H56"/><path class="line" d="M68 5 H76 M68 86 H76"/><path class="line" d="M88 5 H96 M88 86 H96"/><path class="line" d="M108 5 H116 M108 86 H116"/><g transform="translate(20 42) rotate(-30)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><g transform="translate(60 42) rotate(0)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><g transform="translate(100 42) rotate(35)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g></g><path class="arrow" d="M124 122 H158"/><g transform="translate(176 62) scale(1)"><rect class="chip-body" x="15" y="15" width="80" height="80" rx="10"/><path class="line" d="M30 3 V15 M30 95 V107 M3 30 H15 M95 30 H107"/><path class="line" d="M55 3 V15 M55 95 V107 M3 55 H15 M95 55 H107"/><path class="line" d="M80 3 V15 M80 95 V107 M3 80 H15 M95 80 H107"/><path class="accent-line" d="M36 37 L55 32 L76 49 L56 73 L34 67 Z M36 37 L56 73 M34 67 L76 49 M55 32 L56 73"/><circle class="accent-fill" cx="36" cy="37" r="4"/><circle class="accent-fill" cx="55" cy="32" r="4"/><circle class="accent-fill" cx="76" cy="49" r="4"/><circle class="accent-fill" cx="56" cy="73" r="4"/><circle class="accent-fill" cx="34" cy="67" r="4"/></g><text class="minor" x="232" y="191" text-anchor="middle">GR00T 1.7</text><text class="caption" x="170" y="231" text-anchor="middle">One compatible data contract</text><a class="hotspot" data-term="policy" href="#definition-policy" tabindex="0" role="button" aria-label="3. Train one policy" aria-controls="definition-policy" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="250" rx="12"/></a></g><g class="stage stage-4" transform="translate(400 352)"><text class="step-number" x="16" y="28" text-anchor="start">4</text><text class="label" x="48" y="28" text-anchor="start">Evaluate separately</text><g transform="translate(24 69) scale(0.78)"><path class="scene-back" d="M0 0 H145 V95 H0 Z"/><path class="line" d="M8 79 H136 M14 14 H35 M14 20 H28"/><g transform="translate(14 49) scale(1)"><path class="paper" d="M0 14 L12 0 H75 L86 14 V34 H0 Z"/><path class="line" d="M0 14 H86"/><ellipse class="accent-line" cx="23" cy="8" rx="7" ry="3"/><ellipse class="accent-line" cx="43" cy="8" rx="7" ry="3"/><ellipse class="accent-line" cx="63" cy="8" rx="7" ry="3"/></g><g transform="translate(115 60) rotate(0)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><circle class="muted-fill" cx="124" cy="18" r="8"/></g><g transform="translate(211 56) scale(0.9)"><path class="accent-line" stroke-width="7" d="M20 100 V75 L50 35 L92 54 L115 24"/><circle class="paper" cx="20" cy="75" r="8"/><circle class="paper" cx="50" cy="35" r="8"/><circle class="paper" cx="92" cy="54" r="7"/><path class="line" d="M8 106 H37 M108 18 L121 30 M117 26 L129 18 L135 25 M117 26 L108 38 L114 43"/></g><g transform="translate(318 148) rotate(0)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><text class="minor" x="81" y="178" text-anchor="middle">Simulation</text><text class="minor" x="265" y="178" text-anchor="middle">Real robot</text><path class="line" d="M46 188 H121 M226 188 H301"/><text class="caption" x="170" y="231" text-anchor="middle">Separate sim and real outcomes</text><a class="hotspot" data-term="evaluate" href="#definition-evaluate" tabindex="0" role="button" aria-label="4. Evaluate separately" aria-controls="definition-evaluate" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="250" rx="12"/></a></g></svg></div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt">Select a step or object for its explanation.</p>
+<article class="definition" id="definition-sources" data-definition="sources" aria-labelledby="heading-sources"><h2 id="heading-sources">1. Review both sources</h2><p>Simulation makes repeated collection and controlled variation easier. Real demonstrations show the cameras and robot response at a deployment station. Check the task instruction, episode starts, purposeful motion, and successful outcomes in both collections. Each source has limits; neither guarantees coverage of every future condition.</p><p><a href="../../13-strategy2-cotraining.html#the-data-challenge" target="_top">Compare the two data sources</a></p></article>
+<article class="definition" id="definition-exposure" data-definition="exposure" aria-labelledby="heading-exposure"><h2 id="heading-exposure">2. Check exposure</h2><p>Training samples individual frames or short windows, not whole episodes, so each data source’s share depends on how many frames it contributes. Longer episodes contribute more samples. Setting an exact ratio between sources requires a sampler that supports source weights, and repeating real samples doesn’t add new real-world variety.</p><p><a href="../../10-groot.html#adding-real-data-control-the-sampling-ratio" target="_top">Understand source sampling</a></p></article>
+<article class="definition" id="definition-policy" data-definition="policy" aria-labelledby="heading-policy"><h2 id="heading-policy">3. Train one policy</h2><p>One GR00T 1.7 policy learns from both sources. Match joint order, units, action convention, gripper calibration, camera geometry and names, frame rate, and instruction. Keep the original datasets and their revisions traceable. The workshop provides a prepared co-trained checkpoint; the optional training workflow is a separate activity.</p><p><a href="../../13-cotraining-practice.html#optional-collecting-real-demonstrations-with-lerobot" target="_top">Review dataset compatibility</a></p></article>
+<article class="definition" id="definition-evaluate" data-definition="evaluate" aria-labelledby="heading-evaluate"><h2 id="heading-evaluate">4. Evaluate separately</h2><p>Compare the co-trained checkpoint with the simulation-only baseline under matched evaluation conditions. Record simulation outcomes separately from autonomous physical trials. Match the actual training-data starting distribution, including any continuation data, and verify the achieved pose under supervision. Improvement from co-training is something to measure.</p><p><a href="../../13-cotraining-practice.html#run-and-compare" target="_top">Compare the prepared policies</a></p></article>
+</section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+<script>
+(() => {
+  const svg = document.getElementById('workflow-svg');
+  const narrow = matchMedia('(max-width: 539px)');
+  const fit = () => {
+    svg.classList.toggle('compact', narrow.matches);
+    svg.setAttribute('width', narrow.matches ? '380' : '760');
+    svg.setAttribute('height', narrow.matches ? '1194' : '626');
+    svg.setAttribute('viewBox', narrow.matches ? '0 0 380 1194' : '0 0 760 626');
+  };
+  narrow.addEventListener('change', fit);
+  fit();
+})();
+</script>
+</body>
+</html>

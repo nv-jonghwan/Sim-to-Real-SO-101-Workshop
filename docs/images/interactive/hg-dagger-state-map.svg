@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 570" role="group" aria-labelledby="map-title map-desc">
+<title id="map-title">From demonstrations to human-guided recovery</title>
+<desc id="map-desc">Illustrative state map: gray demonstrations connect start to task completion. A policy path leaves the familiar band. The human takes over, adds a green recovery segment, and hands control back. Saved corrections become examples for later training. Paths represent states, not physical robot trajectories.</desc>
+<rect width="1000" height="570" fill="#111"/><style>text{font-family:Arial, sans-serif;fill:#eee;font-size:21px}.muted{fill:#aaa;font-size:18px}.demo{fill:none;stroke:#aaa;stroke-width:3}.policy{fill:none;stroke:#eee;stroke-width:5}.human{fill:none;stroke:#76b900;stroke-width:6}.label{font-weight:700}.green{fill:#76b900} </style>
+
+<path d="M70 300 C300 350 320 160 540 170 S780 130 925 100" fill="none" stroke="#aaa" stroke-opacity=".12" stroke-width="80"/>
+<path class="demo" d="M70 300 C300 330 320 160 540 170 S780 130 925 100"/>
+<path class="demo" d="M70 300 C310 345 320 180 540 185 S790 150 925 100"/>
+<path class="demo" d="M70 300 C285 315 315 145 540 160 S790 110 925 100"/>
+<path class="policy" d="M70 300 C270 305 350 230 480 295"/>
+<path class="human" d="M480 295 C580 320 580 195 680 168"/>
+<path class="policy" d="M680 168 Q800 155 925 100"/>
+<circle cx="70" cy="300" r="7" fill="#eee"/><circle cx="480" cy="295" r="8" fill="#76b900"/>
+<circle cx="680" cy="168" r="8" fill="#111" stroke="#eee" stroke-width="3"/>
+<circle cx="925" cy="100" r="10" fill="#111" stroke="#eee" stroke-width="3"/>
+<text x="45" y="350">Start</text><text x="780" y="70">Task complete</text>
+<text x="135" y="115" class="label">Demonstrations</text><text x="135" y="141" class="muted">Familiar states</text>
+<text x="280" y="235" class="label">Policy drifts</text>
+<text x="310" y="365" class="label green">1 · Take over</text>
+<path d="M465 343 L480 305" class="demo"/>
+<text x="630" y="290" class="label green">2 · Human correction</text>
+<path d="M635 275 L607 246" class="human"/>
+<text x="620" y="112" class="label">3 · Hand back</text><path d="M670 123 L680 156" class="demo"/>
+<path d="M580 320 L580 405" class="human" stroke-dasharray="5 6"/>
+<path d="M573 396 L580 406 L587 396" class="human"/>
+<rect x="270" y="424" width="620" height="100" rx="14" fill="#222" stroke="#666"/>
+<text x="295" y="460" class="label">Save recovery examples</text>
+<text x="295" y="492" class="muted">Observation + human action → separate training run</text>
+</svg>

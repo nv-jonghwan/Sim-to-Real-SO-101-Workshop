@@ -1,223 +1,156 @@
 # SPDX-FileCopyrightText: Copyright (c) 2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+
 import os
-import numpy as np
+import tempfile
 
 import isaaclab.sim as sim_utils
+import warp as wp
+from isaaclab.assets import AssetBaseCfg, RigidObjectCfg
+from isaaclab.envs.mdp import reset_root_state_uniform
 from isaaclab.managers import EventTermCfg as EventTerm
-from isaaclab.managers import SceneEntityCfg
-from isaaclab.utils import configclass
-from isaaclab.assets import AssetBaseCfg
-from isaaclab.utils import configclass
-from isaaclab.sensors import TiledCameraCfg
-from isaacsim.core.utils.rotations import euler_angles_to_quat
 from isaaclab.managers import ObservationGroupCfg as ObsGroup
 from isaaclab.managers import ObservationTermCfg as ObsTerm
-
-from sim_to_real_so101 import assets
+from isaaclab.managers import SceneEntityCfg
+from isaaclab.sensors import CameraCfg
+from isaaclab.utils.configclass import configclass
+from isaaclab_tasks.utils.presets import MultiBackendRendererCfg
 from sim_to_real_so101.mdp import (
-    randomize_light_exposure,
-    randomize_sky_light,
-    randomize_mat_rotation,
-    randomize_camera_focal_length,
-    randomize_camera_pose,
     image,
-    image_raw,
+    randomize_light_exposure,
 )
+from sim_to_real_so101.utils.ovrtx.renderer_cfg import SO101OVRTXRendererCfg
 
 from .so101_env_cfg import (
-    SO101TeleopEnvCfg,
-    LerobotSo101BaseSceneCfg,
     EventCfg,
     ObservationsCfg,
-)
-
-assets_path = os.path.dirname(os.path.abspath(assets.__file__))
-
-camera_object = TiledCameraCfg(
-    prim_path="",
-    update_period=0.0,
-    height=480,
-    width=640,
-    data_types=["rgb", "depth", "instance_id_segmentation_fast"],
-    colorize_instance_segmentation=True,
-    spawn=sim_utils.PinholeCameraCfg(
-        projection_type="pinhole",
-        f_stop=100,  # x10 of real
-        focal_length=13.5,  # 10th of real
-        focus_distance=0.05,  # 5cm in front of the camera
-    ),
-    offset=TiledCameraCfg.OffsetCfg(
-        pos=(0.0, 0.0, 0.0),
-        rot=euler_angles_to_quat(np.array([0, 0, 0]), degrees=True),
-        convention="opengl",
-    ),
+    SO101BaseSceneCfg,
+    SO101TeleopEnvCfg,
 )
 
 
+# Both cameras share one OVRtx backend.
 @configclass
-class SO101TaskSceneCfg(LerobotSo101BaseSceneCfg):
+class _CameraRendererCfg(MultiBackendRendererCfg):
+    ovrtx_renderer: SO101OVRTXRendererCfg = SO101OVRTXRendererCfg(
+        log_file_path=os.path.join(tempfile.gettempdir(), "ovrtx_cameras.log")
+    )
+
+
+_USD_DIR = os.path.normpath(
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "assets",
+        "usd",
+    )
+)
+@configclass
+class SO101TaskSceneCfg(SO101BaseSceneCfg):
+    ground = None
+
     lightstudio = AssetBaseCfg(
         prim_path="{ENV_REGEX_NS}/LightStudio",
         spawn=sim_utils.UsdFileCfg(
-            usd_path=f"{assets_path}/usd/lightbox-simple.usd",
+            usd_path=os.path.join(_USD_DIR, "lightbox-backing-colliders.usda"),
         ),
         init_state=AssetBaseCfg.InitialStateCfg(pos=(-0.1, 0, 0.0257)),
     )
+
+    mat = RigidObjectCfg(
+        prim_path="{ENV_REGEX_NS}/Mat",
+        spawn=sim_utils.UsdFileCfg(
+            usd_path=os.path.join(_USD_DIR, "mat-thick-collision.usda"),
+            rigid_props=[sim_utils.UsdPhysicsRigidBodyCfg(kinematic_enabled=True)],
+        ),
+        init_state=RigidObjectCfg.InitialStateCfg(
+            pos=(0.22, 0, 0.032),
+            rot=tuple(wp.quat_rpy(0.0, 0.0, wp.pi / 2.0)),
+        ),
+    )
+
     lightbox_light = AssetBaseCfg(
         prim_path="{ENV_REGEX_NS}/LightStudio/LightBox/RectLight"
     )
 
-    # sky_light = AssetBaseCfg(
-    #     prim_path="/World/sky_light",
-    #     spawn=sim_utils.DomeLightCfg(
-    #         intensity=1000.0,
-    #         texture_file=f"{assets_path}/hdri/moon_lab_1k.exr",
-    #         visible_in_primary_ray=False,
-    #         enable_color_temperature=True,
-    #         color_temperature=6500.0
-    #     )
-    # )
-
-    mat = AssetBaseCfg(
-        prim_path="{ENV_REGEX_NS}/Mat",
-        spawn=sim_utils.UsdFileCfg(
-            usd_path=f"{assets_path}/usd/mat.usda",
-        ),
-        init_state=AssetBaseCfg.InitialStateCfg(
-            pos=(0.22, 0, 0.032),
-            rot=euler_angles_to_quat(np.array([0, 0, 90]), degrees=True),
-        ),
+    # Wrist camera authored by the robot asset's Sensor=sensors variant.
+    # The workshop USD layer supplies its mount and native OpenCV-fisheye lens.
+    # This cfg binds the composed camera to Isaac Lab without respawning.
+    camera_wrist: CameraCfg = CameraCfg(
+        prim_path="{ENV_REGEX_NS}/Robot/gripper/wowrobo_2MP_camera",
+        # 30 Hz to match the real SO-101 camera and control loop.
+        update_period=1.0 / 30.0,
+        height=480,
+        width=640,
+        data_types=["rgb"],
+        update_latest_camera_pose=True,
+        spawn=None,
+        renderer_cfg=_CameraRendererCfg(),
     )
 
-    # Camera
-    camera_ego = camera_object.replace()
-    camera_ego.prim_path = "{ENV_REGEX_NS}/Robot/gripper/gripper_cam"
-    camera_ego.offset.pos = (-0.005, 0.06, -0.062)
-    camera_ego.offset.rot = euler_angles_to_quat(np.array([-45, 0, 0]), degrees=True)
-
-    camera_external_D455 = camera_object.replace()
-    camera_external_D455.prim_path = "{ENV_REGEX_NS}/LightStudio/LightBox/camera_mount/rsd455/RSD455/Camera_OmniVision_OV9782_Right"
-    camera_external_D455.spawn = None
+    camera_external: CameraCfg = CameraCfg(
+        prim_path="{ENV_REGEX_NS}/ExternalStandaloneCamera",
+        offset=CameraCfg.OffsetCfg(
+            pos=(0.138, 0.330, 0.489),
+            rot=(-0.0278, 0.3056, 0.9499, -0.0599),
+            convention="opengl",
+        ),
+        # 30 Hz to match the real SO-101 camera and control loop.
+        update_period=1.0 / 30.0,
+        height=480,
+        width=640,
+        data_types=["rgb"],
+        update_latest_camera_pose=True,
+        spawn=sim_utils.PinholeCameraCfg(
+            focal_length=2.5,
+            horizontal_aperture=2.4,
+            clipping_range=(0.01, 1.0e6),
+        ),
+        renderer_cfg=_CameraRendererCfg(),
+    )
 
 
 @configclass
 class TaskEventCfg(EventCfg):
-    """Configuration for events."""
-
     reset_lightbox_light_exposure = EventTerm(
         func=randomize_light_exposure,
         mode="reset",
         params={
-            "exposure_range": (-3.0, 1.0),
+            "exposure_range": (1.0, 1.0),
             "asset_cfg": SceneEntityCfg("lightbox_light"),
         },
     )
 
     reset_mat_rotation = EventTerm(
-        func=randomize_mat_rotation,
+        func=reset_root_state_uniform,
         mode="reset",
         params={
-            "yaw_range": (-0.1, 0.1),
+            "pose_range": {"yaw": (-0.1, 0.1)},
+            "velocity_range": {},
             "asset_cfg": SceneEntityCfg("mat"),
-        },
-    )
-
-    reset_camera_ego_fov = EventTerm(
-        func=randomize_camera_focal_length,
-        mode="reset",
-        params={
-            "focal_length_range": (12.0, 15.0),  # ~±10% around 13.5mm
-            "asset_cfg": SceneEntityCfg("camera_ego"),
-        },
-    )
-
-    reset_camera_external_pose = EventTerm(
-        func=randomize_camera_pose,
-        mode="reset",
-        params={
-            "prim_path_pattern": "{ENV_REGEX_NS}/LightStudio/LightBox/camera_mount",
-            "pos_range": {
-                "x": (-0.02, 0.02),  # ±2cm
-                "y": (-0.02, 0.02),
-                "z": (-0.01, 0.01),
-            },
-            "rot_range": {
-                "roll": (-0.05, 0.05),  # ±3°
-                "pitch": (-0.05, 0.05),
-                "yaw": (-0.05, 0.05),
-            },
         },
     )
 
 
 @configclass
 class TaskObservationsCfg(ObservationsCfg):
-
     @configclass
     class VisualCfg(ObsGroup):
-
-        rgb_ego = ObsTerm(
+        rgb_wrist = ObsTerm(
             func=image,
             params={
-                "sensor_cfg": SceneEntityCfg("camera_ego"),
+                "sensor_cfg": SceneEntityCfg("camera_wrist"),
                 "data_type": "rgb",
                 "normalize": False,
             },
         )
 
-        depth_ego = ObsTerm(
+        rgb_external = ObsTerm(
             func=image,
             params={
-                "sensor_cfg": SceneEntityCfg("camera_ego"),
-                "data_type": "depth",
-                # "normalize": False,
-            },
-        )
-
-        instance_id_seg_ego = ObsTerm(
-            func=image_raw,
-            params={
-                "sensor_cfg": SceneEntityCfg("camera_ego"),
-                "data_type": "instance_id_segmentation_fast",
-            },
-        )
-
-        rgb_external_D455 = ObsTerm(
-            func=image,
-            params={
-                "sensor_cfg": SceneEntityCfg("camera_external_D455"),
+                "sensor_cfg": SceneEntityCfg("camera_external"),
                 "data_type": "rgb",
                 "normalize": False,
-            },
-        )
-
-        depth_external_D455 = ObsTerm(
-            func=image,
-            params={
-                "sensor_cfg": SceneEntityCfg("camera_external_D455"),
-                "data_type": "depth",
-                # "normalize": False,
-            },
-        )
-
-        instance_id_seg_external_D455 = ObsTerm(
-            func=image_raw,
-            params={
-                "sensor_cfg": SceneEntityCfg("camera_external_D455"),
-                "data_type": "instance_id_segmentation_fast",
             },
         )
 
@@ -230,23 +163,13 @@ class TaskObservationsCfg(ObservationsCfg):
 
 @configclass
 class SO101TaskEnvCfg(SO101TeleopEnvCfg):
-    """Configuration for the task environment."""
-
     scene: SO101TaskSceneCfg = SO101TaskSceneCfg()
     events: TaskEventCfg = TaskEventCfg()
     observations: TaskObservationsCfg = TaskObservationsCfg()
 
     def __post_init__(self) -> None:
-        """Post initialization."""
         super().__post_init__()
-
-        self.sim.render.enable_translucency = True
-        carb_settings = {
-            "rtx.reflections.enabled": True,
-            "rtx.translucency.reflectAtAllBounce": True,
-            "rtx.translucency.sampleRoughness": True,
-            "rtx.translucency.reflectionThroughputThreshold": 0.05,
-            "rtx.translucency.maxRefractionBounces": 5,
-            "rtx.raytracing.fractionalCutoutOpacity": True,
-        }
-        self.sim.render.carb_settings = carb_settings
+        # Match control, rendering, and camera capture at 30 Hz while retaining
+        # the 60 Hz physics rate.
+        self.decimation = 2
+        self.sim.render_interval = self.decimation

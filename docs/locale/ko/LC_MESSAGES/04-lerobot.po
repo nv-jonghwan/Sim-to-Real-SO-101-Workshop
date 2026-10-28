@@ -1,0 +1,369 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "LeRobot and the SO-101"
+msgstr "LeRobot과 SO-101"
+
+msgid "SO-101 leader arm used to demonstrate robot motions."
+msgstr "Robot 동작을 시연하는 SO-101 leader arm입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid "Nothing — this module is theory-only."
+msgstr "없습니다. 이 module은 이론만 다룹니다."
+
+msgid ""
+"Meet the SO-101 and the Hugging Face LeRobot tools we'll use to collect demonstrations, train "
+"policies, and control the robot."
+msgstr "Demonstration 수집, policy 학습, robot 제어에 사용할 SO-101과 Hugging Face LeRobot 도구를 알아봅니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "By the end of this session, you'll be able to:"
+msgstr "이 session을 마치면 다음을 수행할 수 있습니다."
+
+msgid "**Describe** the SO-101 robot and its capabilities"
+msgstr "**Describe**: SO-101 robot과 그 기능 설명"
+
+msgid "**Explain** the LeRobot project and its role in the robotics community"
+msgstr "**Explain**: LeRobot project와 robotics community에서의 역할 설명"
+
+msgid "**Identify** community resources for continued learning"
+msgstr "**Identify**: 학습을 이어갈 community resource 확인"
+
+msgid "The SO-101 Robot"
+msgstr "SO-101 Robot"
+
+msgid ""
+"The SO-101 is a 6-DOF (degrees of freedom) robot arm designed for research and education in "
+"manipulation tasks. Play the animation below to get familiar with the axes of motion."
+msgstr ""
+"SO-101은 manipulation 연구와 교육을 위해 설계된 6-DOF (degrees of freedom) robot arm입니다. 아래 animation을 재생해 각 "
+"motion axis를 확인하세요."
+
+msgid "The SO-101 kit has two arms:"
+msgstr "SO-101 kit는 두 arm으로 구성됩니다."
+
+msgid ""
+"**Leader / Teleop arm**: You move this arm by hand to control the real or simulated follower and "
+"record demonstrations."
+msgstr "**Leader / Teleop arm**: 손으로 움직여 실제 또는 simulation의 follower를 제어하고 demonstration을 기록합니다."
+
+msgid ""
+"**Follower / Robot arm**: This arm performs the task. It follows the leader during teleoperation "
+"or a policy during evaluation."
+msgstr "**Follower / Robot arm**: task를 수행하는 arm입니다. Teleoperation 중에는 leader를, 평가 중에는 policy를 따릅니다."
+
+msgid "LeRobot commands use `--teleop` for the leader and `--robot` for the follower."
+msgstr "LeRobot 명령에서 `--teleop`는 leader, `--robot`은 follower를 지정합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "SO-101 Follower Arm"
+msgstr "SO-101 Follower Arm"
+
+msgid "The follower / robot arm performs the task."
+msgstr "Follower / robot arm이 task를 수행합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "SO-101 Leader Arm"
+msgstr "SO-101 Leader Arm"
+
+msgid "The leader / teleop arm has a handle for controlling the gripper by hand."
+msgstr "Leader / teleop arm에는 gripper를 손으로 제어하는 handle이 있습니다."
+
+msgid "Why SO-101?"
+msgstr "SO-101을 사용하는 이유"
+
+msgid "The SO-101 is ideal for this learning path because:"
+msgstr "SO-101은 다음 이유로 이 과정에 적합합니다."
+
+msgid "**Accessible**: Affordable for education and research"
+msgstr "**Accessible**: 교육과 연구에 적합한 가격"
+
+msgid "**Well-documented**: Strong community support"
+msgstr "**Well-documented**: 충실한 문서와 community 지원"
+
+msgid "**LeRobot integration**: First-class support in the LeRobot ecosystem"
+msgstr "**LeRobot integration**: LeRobot ecosystem의 기본 지원"
+
+msgid "What makes it difficult for precision tasks:"
+msgstr "정밀한 task를 어렵게 만드는 요인:"
+
+msgid "**Significant backlash in the joints**"
+msgstr "**Joint의 큰 Backlash**"
+
+msgid ""
+"**Joints loosen over time:** tightening the fasteners compresses the 3D-printed plastic, so "
+"connections between links and motor flanges gradually lose their clamping force"
+msgstr ""
+"**Joints loosen over time:** Fastener를 조이면 3D-printed plastic이 압축되므로, link와 motor flange 사이의 체결력이"
+" 점차 약해집니다."
+
+msgid "The LeRobot Project"
+msgstr "LeRobot Project"
+
+msgid ""
+"LeRobot is an open-source library from Hugging Face which includes tools for data collection, "
+"training, robot control, and evaluation of robot policies."
+msgstr "LeRobot은 Hugging Face의 open-source library로, data 수집, 학습, robot 제어, policy 평가 도구를 제공합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Community Datasets"
+msgstr "Community Datasets"
+
+msgid ""
+"LeRobot hosts community-contributed datasets on the Hugging Face Hub with the LeRobot Dataset "
+"Format."
+msgstr "LeRobot은 Hugging Face Hub에서 LeRobot Dataset Format을 사용하는 community dataset을 제공합니다."
+
+msgid "Thousands of robot demonstrations"
+msgstr "수천 개의 robot demonstration"
+
+msgid "Multiple robot platforms"
+msgstr "다양한 robot platform"
+
+msgid "Various manipulation tasks"
+msgstr "여러 manipulation task"
+
+msgid "Standardized formats for interoperability"
+msgstr "상호 운용을 위한 표준 format"
+
+msgid "Why LeRobot for This Course"
+msgstr "이 과정에서 LeRobot을 사용하는 이유"
+
+msgid "LeRobot is the foundation of this course for several practical reasons:"
+msgstr "여러 실용적인 이유로 LeRobot을 이 과정의 기반으로 사용합니다."
+
+msgid "Preview the collection, training, and evaluation workflow"
+msgstr "수집·학습·평가 workflow 미리 보기"
+
+msgid "Data Flow With Hugging Face Hub"
+msgstr "Hugging Face Hub를 통한 Data Flow"
+
+msgid ""
+"The workshop uses one `so101-workshop` container for LeRobot tools. Simulation recording writes "
+"`datasets/<repo_id>`; use the same namespace when uploading:"
+msgstr ""
+"Workshop은 하나의 `so101-workshop` container에서 LeRobot 도구를 사용합니다. Simulation recording 결과는 "
+"`datasets/<repo_id>`에 저장됩니다. Upload할 때도 같은 namespace를 사용하세요."
+
+msgid "Set `HF_USER` to your Hugging Face username and authenticate with `hf auth login` first."
+msgstr "먼저 `HF_USER`를 본인의 Hugging Face username으로 설정하고 `hf auth login`으로 인증하세요."
+
+msgid "For later uploads to the same dataset, {ref}`refresh its tag <refresh-dataset-tag>`."
+msgstr "같은 dataset에 나중에 다시 upload할 때는 {ref}`tag를 갱신하세요 <refresh-dataset-tag>`."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Post-Training Pipeline"
+msgstr "Post-Training Pipeline"
+
+msgid ""
+"Collect demonstrations with `lerobot_agent` and a leader arm, or use `vials_state_machine` for "
+"[automated simulation collection](08-simulation-teleoperation.md#optional-automated-data-"
+"collection). Both workflows produce LeRobot datasets under `datasets/<repo_id>`. Inspect episodes"
+" with `lerobot-dataset-viz` before uploading and training."
+msgstr ""
+"`lerobot_agent`와 leader arm으로 demonstration을 수집하거나, `vials_state_machine`으로 [automated simulation"
+" collection](08-simulation-teleoperation.md#optional-automated-data-collection)을 수행합니다. 두 "
+"workflow 모두 `datasets/<repo_id>` 아래에 LeRobot dataset을 생성합니다. Upload와 학습 전에 `lerobot-dataset-viz`로"
+" episode를 확인하세요."
+
+msgid ""
+"Use `lerobot-train` with `--policy.type=groot` and "
+"`--policy.base_model_path=nvidia/GR00T-N1.7-3B`. [GR00T Post-Training](10-groot.md#reference-"
+"post-train-your-own-model) provides the full configuration."
+msgstr ""
+"`lerobot-train`에 `--policy.type=groot`와 `--policy.base_model_path=nvidia/GR00T-N1.7-3B`를 지정합니다. "
+"전체 설정은 [GR00T Post-Training](10-groot.md#reference-post-train-your-own-model)에 있습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Simulation Evaluation"
+msgstr "Simulation Evaluation"
+
+msgid ""
+"Use the same container terminal: start `python -m lerobot.async_inference.policy_server` in the "
+"background, then run `lerobot_eval` at the prompt. The client selects the checkpoint and executes"
+" the policy in Isaac Lab. [Sim Evaluation](11-sim-evaluation.md) provides the complete commands "
+"and camera requirements."
+msgstr ""
+"같은 container terminal에서 `python -m lerobot.async_inference.policy_server`를 background로 시작한 뒤, "
+"prompt에서 `lerobot_eval`을 실행합니다. Client가 checkpoint를 선택하고 Isaac Lab에서 policy를 실행합니다. 전체 명령과 camera"
+" 요구사항은 [Sim Evaluation](11-sim-evaluation.md)을 확인하세요."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Real Robot Evaluation"
+msgstr "Real Robot Evaluation"
+
+msgid ""
+"Use `lerobot-rollout` with the trained LeRobot policy and the follower's calibrated robot and "
+"camera configuration. Follow [Real Evaluation](12-real-evaluation.md) for the command."
+msgstr ""
+"학습한 LeRobot policy와 calibration된 follower의 robot 및 camera 설정으로 `lerobot-rollout`을 사용합니다. 명령은 "
+"[Real Evaluation](12-real-evaluation.md)을 따르세요."
+
+msgid ""
+"The workflow is collect → inspect → train → evaluate → iterate, using the shared workshop "
+"environment."
+msgstr "공통 workshop 환경에서 수집 → 검토 → 학습 → 평가 → 반복의 workflow를 진행합니다."
+
+msgid "Community Resources"
+msgstr "Community 자료"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Dataset Visualizer"
+msgstr "Dataset Visualizer"
+
+msgid "LeRobot provides an interactive dataset visualizer on Hugging Face Spaces:"
+msgstr "LeRobot은 Hugging Face Spaces에서 interactive dataset visualizer를 제공합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "[LeRobot Dataset Visualizer](https://huggingface.co/spaces/lerobot/visualize_dataset)"
+msgstr "[LeRobot Dataset Visualizer](https://huggingface.co/spaces/lerobot/visualize_dataset)"
+
+msgid ""
+"Use this tool to explore any LeRobot dataset on the Hub. You can scrub through episodes, view "
+"camera feeds, and inspect action/state trajectories—useful for debugging data quality issues or "
+"understanding what a dataset contains before training."
+msgstr ""
+"Hub의 LeRobot dataset을 탐색할 수 있습니다. Episode를 앞뒤로 이동하고, camera feed와 action/state trajectory를 확인하세요."
+" Data 품질 문제를 진단하거나 학습 전에 dataset 내용을 파악할 때 유용합니다."
+
+msgid "To view an example, enter `lerobot/FineART` in the Dataset Visualizer input field, then click **GO**."
+msgstr "예제를 확인하려면 Dataset Visualizer의 입력란에 `lerobot/FineART`를 입력한 후 **GO** 버튼을 누르세요."
+
+msgid "Documentation"
+msgstr "문서"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "[LeRobot Documentation](https://huggingface.co/docs/lerobot)"
+msgstr "[LeRobot Documentation](https://huggingface.co/docs/lerobot)"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "[SO-101 Getting Started Guide](https://huggingface.co/docs/lerobot/en/so101)"
+msgstr "[SO-101 Getting Started Guide](https://huggingface.co/docs/lerobot/en/so101)"
+
+msgid "Examples and Tutorials"
+msgstr "예제와 Tutorial"
+
+msgid "Community notebooks and examples"
+msgstr "Community notebook과 예제"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Hugging Face Hub Integration"
+msgstr "Hugging Face Hub Integration"
+
+msgid "LeRobot leverages the Hugging Face Hub for:"
+msgstr "LeRobot은 다음 용도로 Hugging Face Hub를 사용합니다."
+
+msgid "Read more about how this course uses Hugging Face"
+msgstr "이 과정의 Hugging Face 활용 방법 자세히 보기"
+
+msgid "How We Used Hugging Face in This Course"
+msgstr "이 과정에서 Hugging Face를 활용한 방법"
+
+msgid "**1. Dataset format for gathering demonstrations**"
+msgstr "**1. Demonstration 수집용 Dataset Format**"
+
+msgid ""
+"We used the LeRobot dataset format for all teleoperation and state machine (procedurally "
+"generated) data. Episodes are stored with observations (e.g. camera images), robot state, and "
+"actions in a consistent schema. Simulation recording uses `lerobot_agent --repo_id` and derives "
+"the local path as `datasets/<repo_id>`. Real recording uses `lerobot-record` with "
+"`--dataset.repo_id` and an explicit `--dataset.root`."
+msgstr ""
+"모든 teleoperation 및 state machine 기반 procedural data에 LeRobot dataset format을 사용했습니다. Episode는 "
+"observation(예: camera image), robot state, action을 일관된 schema로 저장합니다. Simulation recording은 "
+"`lerobot_agent --repo_id`를 사용하며 local 경로는 `datasets/<repo_id>`로 정해집니다. Real recording은 `lerobot-"
+"record`에 `--dataset.repo_id`와 명시적인 `--dataset.root`를 지정합니다."
+
+msgid "**2. Sharing datasets**"
+msgstr "**2. Dataset 공유**"
+
+msgid ""
+"Datasets were pushed to the Hugging Face Hub so they could be reused for training, shared with "
+"others, and versioned. We used `--dataset.repo_id=${HF_USER}/dataset_name` and "
+"`--dataset.push_to_hub=true` when recording, or `hf upload` for existing local datasets. The "
+"[LeRobot Dataset Visualizer](https://huggingface.co/spaces/lerobot/visualize_dataset) on the Hub "
+"was used to inspect episodes and verify quality before training."
+msgstr ""
+"학습 재사용, 공유, version 관리를 위해 dataset을 Hugging Face Hub에 push했습니다. Recording 시 "
+"`--dataset.repo_id=${HF_USER}/dataset_name`과 `--dataset.push_to_hub=true`를 사용하거나, 기존 local "
+"dataset에는 `hf upload`를 사용했습니다. 학습 전에 Hub의 [LeRobot Dataset "
+"Visualizer](https://huggingface.co/spaces/lerobot/visualize_dataset)로 episode와 품질을 확인했습니다."
+
+msgid "**3. Merging datasets for co-training (sim + real, sim + Cosmos)**"
+msgstr "**3. Co-Training용 Dataset Merge(sim + real, sim + Cosmos)**"
+
+msgid ""
+"For co-training we combined multiple data sources into a single training dataset or ran multiple "
+"passesof training."
+msgstr "Co-training을 위해 여러 data source를 하나의 training dataset으로 합치거나 여러 차례 학습을 진행했습니다."
+
+msgid "**4. Sharing evaluations**"
+msgstr "**4. 평가 결과 공유**"
+
+msgid ""
+"Evaluation results and policy checkpoints were shared via the Hub. Trained models were uploaded "
+"(e.g. as GR00T checkpoints or LeRobot policy repos) so others could reproduce evaluations or run "
+"the same policy in sim and on the real robot. Links to specific datasets and model repos were "
+"used in this learning path to align everyone on the same baselines and co-trained models."
+msgstr ""
+"평가 결과와 policy checkpoint를 Hub로 공유했습니다. GR00T checkpoint 또는 LeRobot policy repo 등의 형태로 model을 "
+"upload해 다른 사람도 평가를 재현하거나 simulation과 실제 robot에서 같은 policy를 실행할 수 있도록 했습니다. 이 과정의 dataset과 model "
+"repo 링크는 모두가 같은 baseline과 co-trained model을 사용하도록 연결합니다."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid "SO-101 is an accessible, well-supported robot for learning sim-to-real"
+msgstr "SO-101은 sim-to-real 학습에 적합하며 접근성과 지원이 좋은 robot입니다."
+
+msgid "LeRobot provides open-source tools, datasets, and models"
+msgstr "LeRobot은 open-source 도구, dataset, model을 제공합니다."
+
+msgid "The Hugging Face community offers ongoing support and resources"
+msgstr "Hugging Face community에서 지속적인 지원과 자료를 얻을 수 있습니다."
+
+msgid "You're joining a growing community of robot learners and practitioners"
+msgstr "계속 성장하는 robot 학습자와 실무자 community에 함께 참여할 수 있습니다."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Next, [Building the Workspace](05-building-workspace.md) walks through assembling and lighting "
+"the physical lightbox and task props. After that, [Calibrating the SO-101](07-calibrating-"
+"so101.md) covers power-on and calibration, and [Teleoperating](08-operating-so101.md) covers "
+"teleoperation and camera setup."
+msgstr ""
+"다음 [Building the Workspace](05-building-workspace.md)에서 실제 lightbox와 task 소품의 조립 및 조명을 준비합니다. 이어서"
+" [Calibrating the SO-101](07-calibrating-so101.md)에서 전원 연결과 calibration을, [Teleoperating](08"
+"-operating-so101.md)에서 teleoperation과 camera 설정을 다룹니다."
+
+msgid ""
+"Continue to [Calibrating the SO-101](07-calibrating-so101.md) with the prepared event workspace. "
+"Follow your instructor's directions about calibration, then continue to [Teleoperating](08"
+"-operating-so101.md)."
+msgstr ""
+"준비된 행사 workspace에서 [Calibrating the SO-101](07-calibrating-so101.md)으로 이동하세요. Calibration은 "
+"instructor의 안내에 따르고, 이어서 [Teleoperating](08-operating-so101.md)을 진행하세요."
+

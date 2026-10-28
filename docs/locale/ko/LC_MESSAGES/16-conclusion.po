@@ -1,0 +1,199 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Conclusion"
+msgstr "마무리"
+
+msgid ""
+"Your responses help us improve our content. Please help us by taking a few minutes to provide "
+"your feedback."
+msgstr "여러분의 의견은 콘텐츠 개선에 도움이 됩니다. 잠시 시간을 내어 feedback을 남겨 주세요."
+
+msgid "Share Your Feedback"
+msgstr "Feedback 보내기"
+
+msgid "Blue-capped centrifuge vials in the yellow rack used throughout the workshop."
+msgstr "Workshop에서 사용한 yellow rack과 blue-cap centrifuge vial입니다."
+
+msgid ""
+"This session provides time for remaining questions, continued experimentation, and a conclusion "
+"for this learning path."
+msgstr "남은 질문을 논의하고 실험을 이어가며 과정을 마무리합니다."
+
+msgid "Learning Path Summary"
+msgstr "과정 돌아보기"
+
+msgid "What You Accomplished"
+msgstr "수행한 내용"
+
+msgid "Learned why simulation matters and what the sim-to-real gap is"
+msgstr "Simulation의 중요성과 Sim-to-Real gap 이해"
+
+msgid "Built and standardized the physical lightbox workspace to match the sim task"
+msgstr "Simulation task에 맞는 실물 lightbox workspace 구축·표준화"
+
+msgid "Got hands-on time with the SO-101 robot and LeRobot tools"
+msgstr "SO-101 robot과 LeRobot 도구 실습"
+
+msgid "Applied Strategy 1: Domain randomization with teleoperation"
+msgstr "전략 1: Teleoperation과 Domain Randomization 적용"
+
+msgid "Explored NVIDIA GR00T, vision-language-action models"
+msgstr "NVIDIA GR00T와 Vision-Language-Action model 탐색"
+
+msgid "Evaluated policies in simulation and on the real robot (sim-to-real gap)"
+msgstr "Simulation 및 실제 robot 평가로 Sim-to-Real gap 확인"
+
+msgid "Applied Strategy 2: Co-training with real data, deployed to robot"
+msgstr "전략 2: 실제 data와 Co-Training 후 robot 배포"
+
+msgid "Explored Strategy 3: HG-DAgger, collecting human corrections around policy failures"
+msgstr "전략 3: Policy 실패 주변의 human correction을 수집하는 HG-DAgger 탐색"
+
+msgid "Applied Strategy 4: Cosmos synthetic data augmentation"
+msgstr "전략 4: Cosmos synthetic data augmentation 탐색"
+
+msgid ""
+"Explored Strategy 5: System identification with Anchor-Lab measurements and an AnchorBench "
+"actuator-profile comparison"
+msgstr "전략 5: Anchor-Lab 측정과 AnchorBench actuator-profile 비교를 통한 System Identification 탐색"
+
+msgid "The Five Strategies We Covered"
+msgstr "다룬 다섯 가지 전략"
+
+msgid "Strategy"
+msgstr "전략"
+
+msgid "Approach"
+msgstr "접근 방식"
+
+msgid "Key Benefit"
+msgstr "주요 효과"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**1. Domain Randomization**"
+msgstr "**1. Domain Randomization**"
+
+msgid "Vary simulation parameters"
+msgstr "Simulation parameter 변화"
+
+msgid "Robust to configured visual and scene variation"
+msgstr "설정된 visual 및 scene variation에 대한 robustness"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**2. Co-training**"
+msgstr "**2. Co-training**"
+
+msgid "Mix sim and real data"
+msgstr "Simulation과 실제 data 혼합"
+
+msgid "Better real-world distribution"
+msgstr "실제 distribution을 더 잘 반영"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**3. HG-DAgger**"
+msgstr "**3. HG-DAgger**"
+
+msgid "Mix human corrections with original demonstrations"
+msgstr "Human correction과 원래 demonstration 혼합"
+
+msgid "Target the states where the policy needs help"
+msgstr "Policy에 도움이 필요한 state를 집중 보완"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**4. Cosmos Augmentation**"
+msgstr "**4. Cosmos Augmentation**"
+
+msgid "Synthetic visual diversity"
+msgstr "Synthetic visual diversity 생성"
+
+msgid "Robust to visual variations"
+msgstr "Visual variation에 대한 robustness"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**5. System Identification**"
+msgstr "**5. System Identification**"
+
+msgid "Fit simulation parameters to measured robot behavior"
+msgstr "측정한 robot 동작에 맞춰 simulation parameter fitting"
+
+msgid "More representative actuator dynamics"
+msgstr "실제에 더 가까운 actuator dynamics"
+
+msgid "Key Lessons"
+msgstr "주요 교훈"
+
+msgid "**The gap is real** — simulation success doesn't guarantee real-world success"
+msgstr "**Gap은 실제로 존재합니다** — Simulation 성공이 실제 성공을 보장하지 않습니다."
+
+msgid "**Multiple strategies combine** — no single approach solves everything"
+msgstr "**여러 전략을 조합하세요** — 하나의 접근으로 모든 문제를 해결할 수 없습니다."
+
+msgid ""
+"**Measurement enables improvement** — system identification connects actuator parameters to "
+"observed motion"
+msgstr "**측정이 개선을 가능하게 합니다** — System Identification은 actuator parameter와 관측 motion을 연결합니다."
+
+msgid "**Iteration is essential** — systematic improvement beats one-shot attempts"
+msgstr "**반복이 중요합니다** — 한 번의 시도보다 체계적인 개선이 효과적입니다."
+
+msgid "**Documentation matters** — recorded observations guide decisions"
+msgstr "**기록이 중요합니다** — 기록한 observation이 판단의 근거가 됩니다."
+
+msgid "How Can I Get This Code Later?"
+msgstr "나중에 Code를 다시 확인하려면?"
+
+msgid ""
+"Bookmark the [public SO-101 workshop page](https://docs.nvidia.com/learning/physical-ai/sim-to-"
+"real-so-101/latest/index.html) for the learning content and links to the code. This updated "
+"workshop will replace the version currently published there and will be publicly available soon."
+msgstr ""
+"학습 자료와 code 링크가 있는 [공개 SO-101 workshop page](https://docs.nvidia.com/learning/physical-ai/sim-to-"
+"real-so-101/latest/index.html)를 bookmark하세요. 이 source tag의 안내 기준으로, 갱신된 workshop은 현재 공개된 버전을 대체해 "
+"곧 제공될 예정입니다."
+
+msgid ""
+"The [bill of materials](05-building-workspace.md#bill-of-materials) will be largely the same as "
+"in the current public workshop. The [YouTube playlist](https://www.youtube.com/playlist?list"
+"=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_) can help you get started building your robot and workspace "
+"before the update is published."
+msgstr ""
+"[Bill of materials](05-building-workspace.md#bill-of-materials)는 현재 공개 workshop과 대체로 같습니다. 갱신 전에 "
+"robot과 workspace를 준비하려면 [YouTube playlist](https://www.youtube.com/playlist?list=PL2bKqBZg-"
+"pzVQspO8-wieuIFctBdz_Tr_)를 활용하세요."
+
+msgid ""
+"For further courses, documentation, community links, and papers, see [Explore and "
+"Experiment](15-explore.md#further-resources)."
+msgstr "추가 과정, 문서, community 링크, paper는 [Explore and Experiment](15-explore.md#further-resources)에 있습니다."
+
+msgid ""
+"Congratulations on finishing this course **\"Train an SO-101 Robot From Sim-to-Real With NVIDIA "
+"Isaac.\"**"
+msgstr "**\"Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac\"** 과정을 마쳤습니다."
+
+msgid ""
+"We hope this will enable and inspire you to keep learning and practicing your skills in Physical "
+"AI!"
+msgstr "이 경험을 바탕으로 Physical AI 학습과 실습을 계속 이어가시기 바랍니다."
+
+msgid "Used a prepared physical lightbox workspace matched to the simulation task"
+msgstr "Simulation task에 맞춰 준비된 실물 lightbox workspace 사용"
+

@@ -1,0 +1,448 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Co-Training in Practice"
+msgstr "Co-Training 실습"
+
+msgid "Physical SO-101 holding a vial above the yellow rack."
+msgstr "실제 SO-101이 yellow rack 위에서 vial을 잡고 있습니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"Hands-on. You'll need the calibrated SO-101 robot, leader arm, both cameras, the assembled "
+"workspace, and the `so101-workshop` container."
+msgstr ""
+"실습입니다. Calibration된 SO-101 robot과 leader arm, camera 두 대, 조립된 workspace, `so101-workshop` "
+"container가 필요합니다."
+
+msgid ""
+"In this session, you'll compare a co-trained policy with the sim-only baseline on the physical "
+"robot."
+msgstr "실제 robot에서 Co-Trained policy와 sim-only baseline을 비교합니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "By the end of this session, you'll be able to:"
+msgstr "이 session을 마치면 다음을 수행할 수 있습니다."
+
+msgid "**Deploy** trained policies safely to the physical SO-101 robot"
+msgstr "학습한 policy를 실제 SO-101에 안전하게 **배포**"
+
+msgid "**Observe** and document real-world policy behavior"
+msgstr "실제 policy 동작 **관찰과 기록**"
+
+msgid "**Identify** initial sim-to-real gap symptoms"
+msgstr "초기 Sim-to-Real gap 증상 **파악**"
+
+msgid "Example Results"
+msgstr "결과 예시"
+
+msgid ""
+"These real-robot sessions show a policy trained on **75 simulated teleoperation demonstrations "
+"and 10 real demonstrations**. The exercise below uses this Sim75 + Real10 checkpoint."
+msgstr ""
+"이 실제 robot session은 **simulation teleoperation demonstration 75개와 실제 demonstration 10개**로 학습한 "
+"policy를 보여줍니다. 아래 실습은 Sim75 + Real10 checkpoint를 사용합니다."
+
+msgid ""
+"As you watch, notice the failure modes—most commonly **missing the vial slot in the rack**. "
+"Compare them with your own setup: do you see the same misses?"
+msgstr "가장 흔한 **rack의 vial slot을 놓치는 실패**를 주의 깊게 보세요. 본인 setup에서도 같은 문제가 나타나는지 비교하세요."
+
+msgid ""
+"In these small-sample tests, changing the robot color and using slightly different vials had **no"
+" measurable impact on policy performance**."
+msgstr "이 소규모 시험에서는 robot 색상과 vial을 조금 바꾸어도 **policy 성능에 측정 가능한 영향이 없었습니다**."
+
+msgid "(Optional) Collecting Real Demonstrations With LeRobot"
+msgstr "선택 사항: LeRobot으로 실제 Demonstration 수집"
+
+msgid ""
+"Historical datasets are listed in [Datasets and Models](datasets-and-models.md). For this stack, "
+"collect compatible real demonstrations and train GR00T 1.7 on your mixed dataset."
+msgstr ""
+"이전 dataset은 [Datasets and Models](datasets-and-models.md)에 있습니다. 현재 stack과 호환되는 실제 demonstration을"
+" 수집하고 혼합 dataset으로 GR00T 1.7을 학습하세요."
+
+msgid ""
+"Use the same camera names, joint order, normalization, frame rate, and task instruction in "
+"simulation and real demonstrations."
+msgstr ""
+"Simulation과 실제 demonstration에서 camera 이름, joint 순서, normalization, frame rate, task instruction을 "
+"같게 사용합니다."
+
+msgid "Reference: collect and prepare your own co-training data"
+msgstr "참고: 직접 Co-Training Data 수집과 준비"
+
+msgid ""
+"This recording workflow starts with five new real episodes; this is a separate collection, not "
+"the selected checkpoint's training dataset."
+msgstr "이 workflow는 새 실제 episode 5개부터 수집합니다. 선택된 checkpoint의 training dataset과는 별도의 수집입니다."
+
+msgid "Use the existing container terminal after stopping any active rollout."
+msgstr "실행 중인 rollout을 끝낸 뒤 기존 container terminal을 사용합니다."
+
+msgid ""
+"If you plan to upload, **log in** with `hf auth login`. Skip this for local-only collection "
+"(recommended)."
+msgstr "Upload할 계획이면 `hf auth login`으로 **로그인**하세요. Local 수집만 한다면 생략합니다(권장)."
+
+msgid ""
+"**Set** the dataset namespace. Keep the placeholder for local-only collection, or use your "
+"Hugging Face username if you plan to upload."
+msgstr ""
+"Dataset namespace를 **설정**합니다. Local 수집은 placeholder를 유지하고, upload하려면 본인의 Hugging Face username을 "
+"사용하세요."
+
+msgid "Run the following command - make sure to set the `dataset.repo_id` argument."
+msgstr "`dataset.repo_id`를 반드시 설정한 뒤 아래 명령을 실행합니다."
+
+msgid "Use these controls to control recording:"
+msgstr "Recording control은 다음과 같습니다."
+
+msgid "**Press Right Arrow (→):** Early stop the current episode or reset time and move to the next."
+msgstr "**Right Arrow (→):** 현재 episode 또는 reset 시간을 조기에 끝내고 다음으로 이동합니다."
+
+msgid "**Press Left Arrow (←):** Cancel the current episode and re-record it."
+msgstr "**Left Arrow (←):** 현재 episode를 취소하고 다시 기록합니다."
+
+msgid "**Press Escape (ESC):** Stop the session and allow video encoding and saving to finish."
+msgstr "**Escape (ESC):** Session을 끝내고 video encoding과 저장 완료를 기다립니다."
+
+msgid ""
+"Read more about LeRobot Record here: [lerobot-"
+"record](https://huggingface.co/docs/lerobot/il_robots#record-function)"
+msgstr "자세한 내용은 [lerobot-record](https://huggingface.co/docs/lerobot/il_robots#record-function)를 참고하세요."
+
+msgid "**Upload** and **tag** the completed dataset:"
+msgstr "완료된 dataset을 **upload**하고 **tag**를 지정합니다."
+
+msgid "For later uploads to the same dataset, {ref}`refresh its tag <refresh-dataset-tag>`."
+msgstr "같은 dataset에 나중에 다시 upload할 때는 {ref}`tag를 갱신하세요 <refresh-dataset-tag>`."
+
+msgid ""
+"**Merge** the local simulation dataset from [Teleoperating in Sim](08-simulation-teleoperation.md"
+"#review-and-upload-collected-data) with the real episodes you just recorded:"
+msgstr ""
+"[Teleoperating in Sim](08-simulation-teleoperation.md#review-and-upload-collected-data)의 local "
+"simulation dataset과 방금 기록한 실제 episode를 **merge**합니다."
+
+msgid ""
+"Both input folders must contain completed LeRobot datasets. If you used automated collection, set"
+" `SIM_DATASET_ID` to `${HF_USER}/so101_auto_vials_newton` before merging. Use a new output "
+"dataset name for each merge. Check that the inputs share camera names (`wrist` and `external`), "
+"joint units, task instruction, and 30 Hz frame rate."
+msgstr ""
+"두 입력 folder는 완성된 LeRobot dataset이어야 합니다. 자동 수집을 했다면 merge 전에 `SIM_DATASET_ID`를 "
+"`${HF_USER}/so101_auto_vials_newton`으로 설정하세요. Merge마다 새 output 이름을 사용하고 camera 이름(`wrist`, "
+"`external`), joint 단위, task instruction, 30 Hz frame rate가 일치하는지 확인합니다."
+
+msgid ""
+"This example includes all episodes from both sources without balancing or duplicating them. "
+"Longer datasets contribute more training frames; merging does not create a 50/50 sampling ratio "
+"or reproduce the selected Sim75 + Real10 model."
+msgstr ""
+"두 source의 모든 episode를 balancing이나 복제 없이 포함합니다. 긴 dataset이 더 많은 training frame을 제공하므로, merge만으로 "
+"50/50 sampling ratio가 만들어지거나 Sim75 + Real10 model이 재현되지는 않습니다."
+
+msgid ""
+"**Inspect** episodes from both sources in the merged dataset. Simulation episodes come first, "
+"followed by real episodes:"
+msgstr "Merge된 dataset에서 두 source의 episode를 **확인**합니다. Simulation episode가 먼저, 실제 episode가 뒤에 옵니다."
+
+msgid ""
+"Change `--episode-index` to inspect a real episode too; its first index is the number of "
+"simulation episodes in your input dataset. Then **upload** the merged dataset:"
+msgstr ""
+"`--episode-index`를 바꿔 실제 episode도 확인하세요. 첫 실제 index는 입력 simulation episode 수와 같습니다. 이후 merged "
+"dataset을 **upload**합니다."
+
+msgid ""
+"Follow [GR00T Post-Training](10-groot.md#reference-post-train-your-own-model), using "
+"`DATASET_NAME=so101_vials_sim_real_round1` instead of its teleoperation-only example. Define the "
+"training variables after choosing that name so the dataset, model ID, and output directory refer "
+"to this new experiment."
+msgstr ""
+"[GR00T Post-Training](10-groot.md#reference-post-train-your-own-model)을 따르되 "
+"`DATASET_NAME=so101_vials_sim_real_round1`을 사용합니다. 이름을 선택한 뒤 training variable을 정의해 dataset, "
+"model ID, output directory가 새 실험을 가리키게 하세요."
+
+msgid "Hands-On: Deploy a Co-Trained Policy"
+msgstr "실습: Co-Trained Policy 배포"
+
+msgid ""
+"Use the selected [Sim75 + Real10 policy](cotrained-reference): a GR00T 1.7 checkpoint trained for"
+" 20,000 updates on 75 simulated teleoperation episodes and 10 real demonstrations. It uses a "
+"16-action window with vision trainable and language frozen. The example videos show preliminary "
+"real trials; this exercise measures how it performs on your station."
+msgstr ""
+"[Sim75 + Real10 policy](cotrained-reference)는 simulation teleoperation episode 75개와 실제 "
+"demonstration 10개로 20,000 update를 학습한 GR00T 1.7 checkpoint입니다. 16-action window, vision "
+"trainable, language frozen을 사용합니다. Video는 예비 실제 시험이며, 이번 실습에서 본인 station의 성능을 측정합니다."
+
+msgid "See [model downloads and benchmark conditions](cotrained-reference)."
+msgstr "[Model download와 benchmark 조건](cotrained-reference)을 확인하세요."
+
+msgid "Workspace Prep"
+msgstr "Workspace 준비"
+
+msgid "Review [Safety](08-operating-so101.md#safety) before proceeding."
+msgstr "진행 전에 [Safety](08-operating-so101.md#safety)를 확인하세요."
+
+msgid "**Verify** the follower connection and calibrated robot ID."
+msgstr "Follower 연결과 calibration한 robot ID를 **확인**합니다."
+
+msgid ""
+"**Place** the vials and rack in the [workspace](12-real-evaluation.md#workspace-prep) used for "
+"the sim-only baseline."
+msgstr "Sim-only baseline에 사용한 [workspace](12-real-evaluation.md#workspace-prep)에 vial과 rack을 **배치**합니다."
+
+msgid "**Check** camera assignments and clear their views."
+msgstr "Camera 할당과 가림 여부를 **확인**합니다."
+
+msgid "**Turn on** the lightbox with the same settings used for the baseline."
+msgstr "Baseline과 같은 설정으로 lightbox 조명을 **켭니다**."
+
+msgid "Run and Compare"
+msgstr "실행과 비교"
+
+msgid ""
+"**Use** the same container terminal after the preceding rollout stops, following [Real Evaluation"
+"](run-the-policy)."
+msgstr "이전 rollout을 끝내고 [Real Evaluation](run-the-policy)에 따라 같은 container terminal을 **사용**합니다."
+
+msgid "**Set** the selected co-trained model, or use the local path from its download instructions:"
+msgstr "선택한 Co-Trained model 또는 download 안내의 local 경로를 **설정**합니다."
+
+msgid "What to Expect"
+msgstr "예상되는 동작"
+
+msgid ""
+"This model was trained on 75 simulated teleoperation demonstrations and 10 real demonstrations. "
+"In our real-robot trials, it succeeded in **10 of 20 episodes (50%)**. Compare its grasping and "
+"placement with the sim-only policy, especially whether the vial tip misses the rack slot."
+msgstr ""
+"Simulation teleoperation demonstration 75개와 실제 demonstration 10개로 학습했습니다. 실제 시험에서 **20 episode 중 "
+"10개(50%)** 성공했습니다. Sim-only policy와 grasp 및 placement를 비교하고, vial tip이 rack slot을 놓치는지 특히 살펴보세요."
+
+msgid ""
+"Use camera keys `wrist` and `external`, with the camera configuration from [Real Evaluation](run-"
+"the-policy)."
+msgstr "[Real Evaluation](run-the-policy)의 camera 구성과 `wrist`, `external` key를 사용합니다."
+
+msgid ""
+"Both commands below use the [merged training dataset](https://huggingface.co/datasets/sreetz-"
+"nv/so101_real10_sim75_20261011) to calculate the starting pose from its 10 real and 75 simulated "
+"episodes."
+msgstr ""
+"아래 두 명령은 [merged training dataset](https://huggingface.co/datasets/sreetz-"
+"nv/so101_real10_sim75_20261011)의 실제 10개와 simulation 75개 episode로 starting pose를 계산합니다."
+
+msgid "Optional: Try This Policy in Simulation First"
+msgstr "선택 사항: 먼저 Simulation에서 시험"
+
+msgid ""
+"**Stop** the real rollout and continue in the same container terminal. Keep the selected "
+"`MODEL_ID` and task instruction."
+msgstr "실제 rollout을 **종료**한 뒤 같은 container terminal을 사용합니다. `MODEL_ID`와 task instruction은 유지합니다."
+
+msgid "**Start** the simulation policy server below, or reuse it if it is already running."
+msgstr "아래 simulation policy server를 **시작**하거나 이미 실행 중이면 재사용합니다."
+
+msgid "**Wait** for `Policy server ready`, then **run** the evaluation:"
+msgstr "`Policy server ready`를 **기다린 뒤** 평가를 **실행**합니다."
+
+msgid ""
+"**Open** [http://localhost:8090](http://localhost:8090). Use only one browser tab connected to "
+"the viewer at a time."
+msgstr "[http://localhost:8090](http://localhost:8090)을 **엽니다**. Viewer에는 browser tab 하나만 연결하세요."
+
+msgid ""
+"**Stop** the background server before running the real policy. If evaluation is still running, "
+"press **Ctrl+C** first:"
+msgstr "실제 policy를 실행하기 전에 background server를 **종료**합니다. 평가가 실행 중이면 먼저 **Ctrl+C**를 누르세요."
+
+msgid "Or **stop all policy servers** in the container:"
+msgstr "또는 container의 **모든 policy server를 종료**합니다."
+
+msgid ""
+"If reusing a server from another terminal, stop it there instead. Continue with the real rollout "
+"below; it loads the policy directly."
+msgstr "다른 terminal의 server를 재사용했다면 해당 terminal에서 종료합니다. 아래 실제 rollout은 policy를 직접 로드합니다."
+
+msgid "**Run** the policy on the real robot:"
+msgstr "실제 robot에서 policy를 **실행**합니다."
+
+msgid "Rollout controls"
+msgstr "Rollout Control"
+
+msgid ""
+"The arm moves to the workshop start pose on startup, then waits for **P**. Keep the rollout "
+"terminal focused. Keys are case-insensitive."
+msgstr ""
+"시작 시 arm이 workshop 시작 pose로 움직인 뒤 **P**를 기다립니다. Rollout terminal에 focus를 두세요. Key는 대소문자를 구분하지 "
+"않습니다."
+
+msgid ""
+"Wait for `Paused` before rearranging props. On exit, wait for cleanup and any return motion to "
+"finish before touching the arm."
+msgstr "소품을 옮기기 전에 `Paused`를 기다리세요. 종료할 때도 cleanup과 복귀 동작이 끝난 뒤 arm을 만집니다."
+
+msgid ""
+"When comparing models, record the first-action delay shown in the terminal and the number of "
+"successes out of scored trials."
+msgstr "Model 비교 시 terminal에 표시되는 첫 action 지연과 평가한 trial 중 성공 수를 기록하세요."
+
+msgid ""
+"**Record** successful grasps/placements, recovery attempts, drops, and overshoot across "
+"comparable trials."
+msgstr "비교 가능한 trial에서 grasp/placement 성공, recovery 시도, 낙하, overshoot를 **기록**합니다."
+
+msgid ""
+"**Score** or **discard** the trial, then wait for `Paused` before resetting props. Press **P** to"
+" try again, or **Q / Esc** to exit before changing checkpoints."
+msgstr ""
+"Trial을 **채점하거나 폐기**하고 `Paused`를 기다린 뒤 소품을 reset합니다. **P**로 재시도하거나 checkpoint 변경 전에 **Q / Esc**로 "
+"종료하세요."
+
+msgid "Optional: Try i5: Add State-Machine Variation"
+msgstr "선택 사항: State-Machine Variation을 추가한 i5"
+
+msgid "**Stop** the previous rollout and wait for cleanup, then **select** this model:"
+msgstr "이전 rollout을 **종료**하고 cleanup 후 다음 model을 **선택**합니다."
+
+msgid ""
+"This model first trained on 75 sim-teleoperation and 10 real demonstrations, then trained further"
+" on 125 state-machine demonstrations with broader rack layouts. In our real-robot trials, it "
+"succeeded in **9 of 20 trials (45%)**. The state-machine variation lets it support some "
+"evaluations with the rack on the other side of the workspace. Try that layout and compare "
+"grasping and slot alignment with your usual setup."
+msgstr ""
+"처음에는 sim-teleoperation 75개와 실제 demonstration 10개로 학습하고, 이후 더 넓은 rack 배치의 state-machine "
+"demonstration 125개로 추가 학습했습니다. 실제 시험은 **20회 중 9회(45%)** 성공했습니다. Workspace 반대쪽 rack 배치도 일부 지원합니다. "
+"해당 배치에서 grasp와 slot 정렬을 평소 setup과 비교하세요."
+
+msgid ""
+"The command uses the initial poses from this model's second-stage state-machine dataset. Verify "
+"the achieved starting pose before pressing **P**."
+msgstr "Model의 두 번째 학습 단계에 사용된 state-machine dataset의 초기 pose를 사용합니다. **P** 전에 실제 시작 pose를 확인하세요."
+
+msgid "Key Takeaways"
+msgstr "핵심 내용"
+
+msgid "Co-training combines sim and real data for better policies"
+msgstr "Co-Training은 simulation과 실제 data를 결합해 policy 개선을 시도합니다."
+
+msgid "Document observations systematically—they guide improvement"
+msgstr "관찰 결과를 체계적으로 기록하면 개선 방향을 정할 수 있습니다."
+
+msgid "The sim-to-real gap is real and often significant"
+msgstr "Sim-to-Real gap은 실제로 존재하며 큰 경우가 많습니다."
+
+msgid "Different policies exhibit different failure modes"
+msgstr "Policy마다 실패 양상이 다릅니다."
+
+msgid "Resources"
+msgstr "참고 자료"
+
+msgid ""
+"[Isaac-GR00T Repository](https://github.com/NVIDIA/Isaac-GR00T) — Source code for GR00T "
+"deployment including SO-101 evaluation scripts"
+msgstr ""
+"[Isaac-GR00T Repository](https://github.com/NVIDIA/Isaac-GR00T) — SO-101 평가 script를 포함한 GR00T 배포 "
+"source code"
+
+msgid ""
+"[SO-101 Finetuning Guide](https://github.com/NVIDIA/Isaac-"
+"GR00T/blob/main/examples/SO100/README.md) — Full instructions for finetuning and evaluation"
+msgstr ""
+"[SO-101 Finetuning Guide](https://github.com/NVIDIA/Isaac-"
+"GR00T/blob/main/examples/SO100/README.md) — Fine-tuning과 평가 전체 안내"
+
+msgid ""
+"[Sim-and-Real Co-Training: A Simple Recipe for Vision-Based Robotic Manipulation](https://co-"
+"training.github.io/) — RSS 2025 paper on co-training strategies"
+msgstr ""
+"[Sim-and-Real Co-Training: A Simple Recipe for Vision-Based Robotic Manipulation](https://co-"
+"training.github.io/) — Co-Training 전략을 다룬 RSS 2025 paper"
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to [Strategy 3: HG-DAgger](14-hg-dagger.md) to learn how human corrections can target "
+"the failures you observed during real evaluation."
+msgstr "[Strategy 3: HG-DAgger](14-hg-dagger.md)에서 실제 평가 중 발견한 실패를 human correction으로 개선하는 방법을 배웁니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Key"
+msgstr "Key"
+
+msgid "Action"
+msgstr "동작"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**P**"
+msgstr "**P**"
+
+msgid "**P for policy:** Start the first or next trial."
+msgstr "**P for policy:** 첫 trial 또는 다음 trial을 시작합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**S / F**"
+msgstr "**S / F**"
+
+msgid "Score success/failure, return to the start pose, and pause."
+msgstr "성공/실패를 기록하고 시작 pose로 복귀한 뒤 일시 정지합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**N / →**"
+msgstr "**N / →**"
+
+msgid "**N for next:** Discard the trial, return to the start pose, and pause."
+msgstr "**N for next:** Trial을 폐기하고 시작 pose로 복귀한 뒤 일시 정지합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Q / Esc**"
+msgstr "**Q / Esc**"
+
+msgid "**Q for Quit:** Exit and discard any unfinished trial."
+msgstr "**Q for Quit:** 종료하며 미완료 trial은 폐기합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Ctrl+C**"
+msgstr "**Ctrl+C**"
+
+msgid "Stop the rollout and run cleanup."
+msgstr "Rollout을 중단하고 cleanup을 실행합니다."
+
+msgid ""
+"**Already prepared for you:** The event datasets and trained models are provided. You do not need"
+" to collect, merge, upload, or train data for this exercise. Continue to [Deploy a Co-Trained "
+"Policy](#hands-on-deploy-a-co-trained-policy). The dropdown below is a reference for trying the "
+"preparation workflow later."
+msgstr ""
+"**이미 준비되어 있습니다:** 행사 dataset과 학습 model이 제공되므로 이 실습에서 수집, merge, upload, 학습할 필요는 없습니다. [Deploy a "
+"Co-Trained Policy](#hands-on-deploy-a-co-trained-policy)로 진행하세요. 아래 dropdown은 나중에 준비 workflow를 직접"
+" 해보기 위한 참고입니다."
+

@@ -12,48 +12,49 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""LeRobot SO-101 interface for the Newton stack.
+
+Uses numpy for joint math (lerobot is numpy-native); converts to torch only at
+the env.step() boundary.
+
+The eval policy client (:class:`LeRobotPolicyServerClient`) speaks LeRobot's
+async-inference gRPC protocol (``lerobot.async_inference.policy_server``). The
+server is policy-agnostic: the client sends a ``RemotePolicyConfig`` and the
+server loads the checkpoint and runs its own pre/post-processor pipeline, so
+the GR00T-specific obs packing / normalization / relative-action decoding all
+happen server-side. The only sim-side contract that remains is the SO-101
+joint mapping (sim radians <-> raw LeRobot units), handled by
+:class:`LeRobotSO101Interface`.
+"""
+
+import pickle  # nosec B403 - internal trusted localhost gRPC payloads
+import time
+import uuid
 from collections import deque
+from typing import ClassVar
 
 import numpy as np
+import rerun as rr
 import torch
-import uuid
-
-from lerobot.teleoperators.so101_leader import SO101LeaderConfig
-from lerobot.robots.so101_follower import SO101FollowerConfig
-
-from lerobot.cameras.opencv import OpenCVCameraConfig
-from lerobot.configs.policies import PreTrainedConfig
-from lerobot.policies.factory import make_policy, make_pre_post_processors
-from lerobot.robots import make_robot_from_config
-from lerobot.processor import make_default_processors
-from lerobot.datasets.pipeline_features import (
-    aggregate_pipeline_dataset_features,
-    create_initial_features,
+from lerobot.teleoperators.so_leader import SOLeader
+from lerobot.teleoperators.so_leader.config_so_leader import SOLeaderTeleopConfig
+from sim_to_real_so101.utils.gripper_calibration import (
+    WORKSHOP_GRIPPER_CALIBRATION,
+    GripperCalibration,
 )
-from lerobot.datasets.utils import build_dataset_frame, combine_feature_dicts
-from lerobot.utils.constants import OBS_STR
-from lerobot.utils.control_utils import predict_action
-from lerobot.utils.utils import get_safe_torch_device
-from lerobot.policies.utils import make_robot_action
-from lerobot.utils.visualization_utils import init_rerun, log_rerun_data
+from torchvision.io import encode_jpeg
 
 
-# Ideally, we should make a base class for all robot interfaces,
-# and inherit from it for each robot type.
+class LeaderReadError(RuntimeError):
+    """Raised when the SO-101 leader arm cannot be read after retries.
+
+    Lets callers distinguish a recoverable teleop/serial dropout (so they can
+    flush in-flight work and shut down cleanly) from a genuine programming bug.
+    """
+
+
 class LeRobotSO101Interface:
-
-    # USD Robot has joint ranges that are not ranging from -100 to 100
-    SO101_USD_MAPPING = {
-        "shoulder_pan": {"joint_min": -110, "joint_max": 110},
-        "shoulder_lift": {"joint_min": -100, "joint_max": 100},
-        "elbow_flex": {"joint_min": -100, "joint_max": 90},
-        "wrist_flex": {"joint_min": -95, "joint_max": 95},
-        "wrist_roll": {"joint_min": -160, "joint_max": 160},
-        "gripper": {"joint_min": -10, "joint_max": 100},
-    }
-
-    # Joint order is the order of the joints in the USD articulation
-    SO101_JOINT_ORDER = [
+    SO101_JOINT_ORDER: ClassVar[list[str]] = [
         "shoulder_pan.pos",
         "shoulder_lift.pos",
         "elbow_flex.pos",
@@ -64,434 +65,364 @@ class LeRobotSO101Interface:
 
     def __init__(
         self,
-        device: str,
         port: str,
-        id: str,
-        cameras: dict,
-        fps: int,
-        kind: str = "leader",
-        rename_map: dict = None,
+        robot_id: str,
+        sim_device: str = "cuda:0",
+        calibration: GripperCalibration = WORKSHOP_GRIPPER_CALIBRATION,
     ):
-
+        self.calibration = calibration
         self.port = port
-        self.id = id
-        self.cameras = cameras
-        self.device = device
-        self.fps = fps
-        self.kind = kind
-        self.rename_map = rename_map
+        self.robot_id = robot_id
+        self.sim_device = sim_device
 
-        self.joint_names = [joint.split(".")[0] for joint in self.SO101_JOINT_ORDER]
-        self.joint_mins = torch.tensor(
-            [self.SO101_USD_MAPPING[name]["joint_min"] for name in self.joint_names],
-            dtype=torch.float32,
-            device=self.device,
-        )
-        self.joint_maxs = torch.tensor(
-            [self.SO101_USD_MAPPING[name]["joint_max"] for name in self.joint_names],
-            dtype=torch.float32,
-            device=self.device,
-        )
+        self.joint_names = [j.split(".")[0] for j in self.SO101_JOINT_ORDER]
 
-    def make_cameras_cfg(self):
-        cameras = {}
-        # need to rename cameras to match policy/feature config
-        for camera in self.cameras.keys():
-            camera_name = camera
-            if self.rename_map:
-                camera_name = self.rename_map[camera]
-            cameras[camera_name] = OpenCVCameraConfig(
-                index_or_path="null",  # we are in simulation :)
-                fps=self.fps,
-                width=self.cameras[camera]["width"],
-                height=self.cameras[camera]["height"],
-            )
-
-        return cameras
-
-    def make_cfg(self):
-        if self.kind == "leader":
-            return SO101LeaderConfig(port=self.port, id=self.id)
-        elif self.kind == "follower":
-            cameras = self.make_cameras_cfg()
-            return SO101FollowerConfig(port=self.port, id=self.id, cameras=cameras)
-
-    def init_device(self, visualize: bool = False):
-        self.cfg = self.make_cfg()
-        self.robot = make_robot_from_config(self.cfg)
-
-        random_session_name = f"eval_{uuid.uuid4().hex[:8]}"
+    def connect(self, visualize: bool = False, hold_position: bool = False):
+        """Connect a leader; held startup requires calibrated position-mode motors."""
+        cfg = SOLeaderTeleopConfig(port=self.port, id=self.robot_id, use_degrees=True)
+        self.teleop = SOLeader(cfg)
+        self._visualize = visualize
+        if hold_position:
+            # SOLeader.configure() releases every motor. DAgger must reconnect
+            # to a held arm without running configuration or calibration motion.
+            self.teleop.bus.connect()
+            if not self.teleop.is_calibrated:
+                raise RuntimeError("Calibrate the leader with the workshop calibration command before DAgger.")
+            modes = self.teleop.bus.sync_read("Operating_Mode", normalize=False)
+            if any(mode != 0 for mode in modes.values()):
+                raise RuntimeError("DAgger requires calibrated SO101 motors already configured in position mode.")
+            self.teleop.send_feedback(self.teleop.get_action())
+            self.teleop.enable_torque()
+        else:
+            try:
+                self.teleop.connect()
+            except ConnectionError as exc:
+                raise ConnectionError(
+                    f"Could not connect to the SO-101 leader arm on {self.port!r}. "
+                    "Make sure the leader arm is plugged in via USB and powered on. "
+                    "Run `lerobot-find-port`, then use `setenv` to set TELEOP_PORT "
+                    "to the detected leader port."
+                ) from exc
         if visualize:
-            init_rerun(session_name=random_session_name)
+            session_name = f"so101_teleop_{uuid.uuid4().hex[:8]}"
+            rr.init(session_name, spawn=True)
+            print(f"[INFO]: Rerun visualization started (session={session_name})")
+        print(f"[INFO]: Connected to SO-101 leader at {self.port} (id={self.robot_id})")
 
-        print(f"[INFO]: Connected to the Arm at {self.port} with id {self.id}")
+    def disconnect(self):
+        if self._visualize:
+            rr.disconnect()
+        if hasattr(self, "teleop"):
+            self.teleop.disconnect()
 
-    def connect(self):
-        self.robot.connect()
-
-    def get_raw_actions_tensor(self, real_action):
-        return torch.tensor(
-            [real_action[joint] for joint in self.SO101_JOINT_ORDER],
-            dtype=torch.float32,
-            device=self.device,
+    def get_raw_action(self, action_dict: dict) -> np.ndarray:
+        """Extract ordered joint values from lerobot action dict → (6,) float32."""
+        return np.array(
+            [action_dict[j] for j in self.SO101_JOINT_ORDER], dtype=np.float32
         )
 
-    def get_mapped_actions_vectorized(self, raw_values):
-        normalized = torch.zeros_like(raw_values)
-        normalized[:-1] = (
-            raw_values[:-1] + 100
-        ) / 200.0  # first 5 joints: -100-100 -> 0-1
-        normalized[-1] = raw_values[-1] / 100.0  # gripper: 0-100 -> 0-1
+    def raw_to_sim_radians(self, raw: np.ndarray) -> np.ndarray:
+        """Convert arm degrees and gripper percentage to simulator radians.
 
-        # Map to joint ranges (degrees)
-        mapped_deg = self.joint_mins + normalized * (self.joint_maxs - self.joint_mins)
+        Gripper percentage uses the measured follower scale and jaw-frame zero.
+        Arm values are already angles. Conversion is unclipped; the simulator
+        enforces physical joint limits through its asset.
+        """
+        raw = np.asarray(raw)
+        degrees = raw.astype(np.result_type(raw.dtype, np.float32), copy=True)
+        degrees[..., 5] = self.calibration.percent_to_degrees(raw[..., 5])
+        return np.deg2rad(degrees)
 
-        # Convert to radians
-        return mapped_deg * torch.pi / 180
+    def sim_radians_to_raw(self, radians: np.ndarray) -> np.ndarray:
+        """Convert simulator radians to arm degrees and gripper percentage, unclipped."""
+        raw = np.rad2deg(radians)
+        raw[..., 5] = self.calibration.degrees_to_percent(raw[..., 5])
+        return raw
 
-    def get_raw_actions_from_radians(self, raw_values):
-        # Convert from radians to degrees
-        mapped_deg = raw_values * 180 / torch.pi
+    def _read_action_dict(self, max_retries: int, retry_delay: float) -> dict:
+        """Read the leader arm with retries on transient serial dropouts.
 
-        # Reverse the joint range mapping
-        normalized = (mapped_deg - self.joint_mins) / (
-            self.joint_maxs - self.joint_mins
-        )
+        The Feetech bus occasionally drops a status packet (USB/EMI hiccup),
+        which surfaces as a ``ConnectionError`` from ``teleop.get_action()``.
+        These are almost always momentary, so we retry a few times before
+        giving up with a typed :class:`LeaderReadError`.
+        """
+        last_exc: Exception | None = None
+        for attempt in range(max_retries + 1):
+            try:
+                return self.teleop.get_action()
+            except Exception as exc:  # noqa: BLE001 - serial layer raises broadly
+                last_exc = exc
+                if attempt < max_retries:
+                    print(
+                        f"[WARNING]: Leader read failed "
+                        f"(attempt {attempt + 1}/{max_retries + 1}): {exc}. Retrying..."
+                    )
+                    time.sleep(retry_delay)
+        raise LeaderReadError(
+            f"Leader read failed after {max_retries + 1} attempts: {last_exc}"
+        ) from last_exc
 
-        # Reverse the normalization
-        raw_degrees = torch.zeros_like(normalized)
-        raw_degrees[:-1] = (
-            normalized[:-1] * 200.0 - 100
-        )  # first 5 joints: 0-1 -> -100-100
-        raw_degrees[-1] = normalized[-1] * 100.0  # gripper: 0-1 -> 0-100
-
-        return raw_degrees
-
-    def make_policy(
+    def read_action(
         self,
-        name_or_path: str,
-    ):
+        visual_obs: dict | None = None,
+        max_retries: int = 3,
+        retry_delay: float = 0.02,
+    ) -> tuple[np.ndarray, torch.Tensor]:
+        """Read leader arm → return (raw_values, sim_action_tensor).
 
-        _, self.robot_action_processor, self.robot_observation_processor = (
-            make_default_processors()
-        )
+        Args:
+            visual_obs: Optional dict of visual observations (e.g. {"rgb_wrist": tensor})
+                to log to rerun when visualization is enabled.
+            max_retries: Extra attempts on a transient serial read failure
+                before raising :class:`LeaderReadError`.
+            retry_delay: Seconds to wait between retries.
 
-        self.dataset_features = combine_feature_dicts(
-            # Observation features (joint positions + camera images)
-            aggregate_pipeline_dataset_features(
-                pipeline=self.robot_observation_processor,
-                initial_features=create_initial_features(
-                    observation=self.robot.observation_features
-                ),
-                use_videos=True,  # MUST be True to include cameras!
-            ),
-            # Action features (target joint positions)
-            aggregate_pipeline_dataset_features(
-                pipeline=self.robot_action_processor,
-                initial_features=create_initial_features(
-                    action=self.robot.action_features
-                ),
-                use_videos=True,
-            ),
-        )
+        Returns:
+            raw: (6,) numpy array in lerobot's native space
+            sim_action: (6,) torch tensor in sim radians, on sim_device
 
-        policy_config = PreTrainedConfig.from_pretrained(name_or_path)
-        policy_config.pretrained_path = name_or_path
-        policy_config.device = self.device
+        Raises:
+            LeaderReadError: If the leader cannot be read after all retries.
+        """
+        action_dict = self._read_action_dict(max_retries, retry_delay)
+        raw = self.get_raw_action(action_dict)
+        sim_radians = self.raw_to_sim_radians(raw)
+        sim_action = torch.from_numpy(sim_radians).to(self.sim_device)
 
-        self.dataset_meta = DummyDatasetMeta(self.dataset_features, self.robot.name)
-
-        self.policy = make_policy(policy_config, ds_meta=self.dataset_meta)
-
-        print(f"[INFO]: Policy loaded")
-
-        self.preprocessor, self.postprocessor = make_pre_post_processors(
-            policy_cfg=policy_config,
-            pretrained_path=name_or_path,
-            dataset_stats={},  # No normalization stats (policy handles it)
-            preprocessor_overrides={
-                "device_processor": {"device": policy_config.device},
-            },
-        )
-
-        print(f"[INFO]: Preprocessor and postprocessor loaded")
-
-    def sim_obs_to_policy_processor(self, sim_observation: torch.Tensor, visual_obs: dict) -> dict:
-        # TODO: makes no sense to copy to host here, but this is whay predict_action expects
-
-        state: torch.Tensor = self.get_raw_actions_from_radians(sim_observation)
-
-        state_np = state.cpu().numpy()
-
-        sim_observation = {}
-        sim_observation["shoulder_pan.pos"] = state_np[0]
-        sim_observation["shoulder_lift.pos"] = state_np[1]
-        sim_observation["elbow_flex.pos"] = state_np[2]
-        sim_observation["wrist_flex.pos"] = state_np[3]
-        sim_observation["wrist_roll.pos"] = state_np[4]
-        sim_observation["gripper.pos"] = state_np[5]
-
-        for camera in self.cameras.keys():
-            img: torch.Tensor = (
-                visual_obs[f"rgb_{camera}"][0].clone()
+        if self._visualize:
+            self._step_count = getattr(self, "_step_count", 0) + 1
+            rr.set_time("step", sequence=self._step_count)
+            rr.log(
+                "joints/observations",
+                rr.Scalars(raw.tolist()),
+                rr.SeriesLines(names=self.joint_names),
             )
-            # need to rename camera to match policy/feature config
-            camera_name = camera
-            if self.rename_map:
-                camera_name = self.rename_map[camera]
-            sim_observation[camera_name] = img.cpu().detach().numpy()
+            action_vals = [action_dict[j] for j in self.SO101_JOINT_ORDER]
+            rr.log(
+                "joints/actions",
+                rr.Scalars(action_vals),
+                rr.SeriesLines(names=self.joint_names),
+            )
+            if visual_obs:
+                for key, tensor in visual_obs.items():
+                    if tensor.numel() > 0:
+                        chw = tensor[0].permute(2, 0, 1).contiguous()
+                        jpeg = encode_jpeg(chw, quality=85)
+                        rr.log(
+                            f"cameras/{key}",
+                            rr.EncodedImage(
+                                contents=jpeg.cpu().numpy().tobytes(),
+                                media_type="image/jpeg",
+                            ),
+                        )
 
-        obs_processed = self.robot_observation_processor(sim_observation)
-        observation_frame = build_dataset_frame(
-            self.dataset_features,  # Defines structure of observations/actions
-            obs_processed,  # Raw observation data
-            prefix=OBS_STR,  # Adds "observation." prefix to keys
-        )
-
-        return observation_frame
-
-    def predict_action(self, observation_frame: dict) -> dict:
-        action_values = predict_action(
-            observation=observation_frame,
-            policy=self.policy,
-            device=get_safe_torch_device(self.policy.config.device),
-            preprocessor=self.preprocessor,
-            postprocessor=self.postprocessor,
-            use_amp=self.policy.config.use_amp,
-            task="Pick up the vial and place it in the tray",
-            robot_type=self.robot.robot_type,
-        )
-        return action_values
-
-    def prediction_to_sim_processor(
-        self, action_values: dict, observation_frame: dict, log: bool = False
-    ) -> dict:
-        robot_action = make_robot_action(action_values, self.dataset_features)
-        robot_action_to_send = self.robot_action_processor((robot_action, None))
-
-        motor_actions = {
-            k: v for k, v in robot_action_to_send.items() if k.endswith(".pos")
-        }
-        sim_motor_actions: torch.Tensor = self.get_raw_actions_tensor(motor_actions)
-
-        if log:
-            log_rerun_data(observation=observation_frame, action=robot_action)
-
-        mapped_sim_motor_actions: torch.Tensor = self.get_mapped_actions_vectorized(
-            sim_motor_actions
-        )
-        return mapped_sim_motor_actions
-
-    # TODO: we should return a single object instead of a tuple
-    def real_to_sim_obs_processor(
-        self, sim_obs: torch.Tensor
-    ) -> tuple[torch.Tensor, torch.Tensor]:
-        real_action: torch.Tensor = self.get_raw_actions_tensor(sim_obs)
-        mapped_action: torch.Tensor = self.get_mapped_actions_vectorized(real_action)
-        return real_action, mapped_action
-
-    # TODO: we should return a single object instead of a tuple
-    def sim_to_real_dataset_processor(
-        self, policy_obs: torch.Tensor, visual_obs: dict
-    ) -> tuple[torch.Tensor, dict]:
-        real_obs = self.get_raw_actions_from_radians(policy_obs)
-
-        visual_buffers = {}
-        depth_buffers = {}
-        instance_id_seg_buffers = {}
-
-        for camera in self.cameras.keys():
-            visual_buffers[camera] = visual_obs[f"rgb_{camera}"][0]
-            depth_buffers[camera] = visual_obs[f"depth_{camera}"][0]
-            instance_id_seg_buffers[camera] = visual_obs[f"instance_id_seg_{camera}"][0][..., :3]
-
-        return real_obs, visual_buffers, depth_buffers, instance_id_seg_buffers
+        return raw, sim_action
 
 
-class GR00TRemotePolicy:
+class LeRobotPolicyServerClient:
+    """Drive the sim from a LeRobot async-inference policy server over gRPC.
+
+    Synchronous adapter around ``lerobot.async_inference.policy_server``: the
+    Newton env steps on the main thread (GPU / OVRtx), so rather than running
+    the reference :class:`RobotClient`'s two real-time threads we drive the
+    server in a request/response cadence (one observation -> one action chunk)
+    for deterministic eval.
+
+    The server is policy-agnostic. On :meth:`connect` we hand it a
+    ``RemotePolicyConfig`` (policy type, checkpoint id, the LeRobot feature
+    spec, ``actions_per_chunk``, device); the server runs
+    ``from_pretrained`` and builds the checkpoint's pre/post-processor pipeline.
+    We therefore send a *raw* observation (per-joint scalars in raw LeRobot
+    units + bare-camera-name RGB arrays + ``task``) and receive *absolute*
+    action vectors already in the dataset action space -- all modality packing,
+    normalization, image resizing and relative-action decoding is server-side.
+    """
+
     def __init__(
         self,
         robot_iface: LeRobotSO101Interface,
-        host: str = "localhost",
-        port: int = 5555,
-        action_horizon: int = 8,
-        lang_instruction: str = "Pick up the vial and place it in the tray",
+        camera_names: list[str],
+        pretrained_name_or_path: str,
+        policy_type: str = "groot",
+        server_address: str = "localhost:8080",
+        policy_device: str = "cuda",
+        actions_per_chunk: int = 16,
+        lang_instruction: str = "Pick up the vial and place it in the rack",
+        rename_map: dict | None = None,
+        camera_shape: tuple[int, int, int] = (480, 640, 3),
+        action_timeout_s: float = 30.0,
     ):
         self._iface = robot_iface
-        self._host = host
-        self._port = port
-        self._action_horizon = action_horizon
+        self._camera_names = camera_names
+        self._pretrained = pretrained_name_or_path
+        self._policy_type = policy_type
+        self._server_address = server_address
+        self._policy_device = policy_device
+        self._actions_per_chunk = actions_per_chunk
         self._lang_instruction = lang_instruction
+        # The server looks up image shapes before its rename processor runs.
+        camera_map = {}
+        for source, target in (rename_map or {}).items():
+            source = source.removeprefix("observation.images.")
+            target = target.removeprefix("observation.images.")
+            if source in camera_map and camera_map[source] != target:
+                raise ValueError(f"rename_map has conflicting targets for camera {source!r}")
+            camera_map[source] = target
+        if set(camera_map) - set(camera_names):
+            raise ValueError("rename_map sources must name active cameras")
+        self._policy_camera_names = {
+            camera: camera_map.get(camera, camera) for camera in camera_names
+        }
+        targets = list(self._policy_camera_names.values())
+        if len(set(targets)) != len(targets):
+            raise ValueError("rename_map must give each camera a distinct name")
+        if any(not name or "." in name or name == "task" for name in targets):
+            raise ValueError("rename_map targets must be bare camera names or observation.images.<name>")
+        self._camera_shape = camera_shape
+        self._action_timeout_s = action_timeout_s
+
         self._action_queue: deque = deque()
-        self._client = None
+        self._timestep = 0
+        self._channel = None
+        self._stub = None
+        self._pb2 = None
+
+    def _build_lerobot_features(self) -> dict:
+        """Describe the robot's obs features the way the server expects them.
+
+        Produces ``observation.state`` (names = SO101 joint order) plus one
+        ``observation.images.<cam>`` per camera, matching the checkpoint's
+        ``input_features``.
+        """
+        from lerobot.utils.constants import OBS_STR
+        from lerobot.utils.feature_utils import hw_to_dataset_features
+
+        hw_features: dict = {name: float for name in self._iface.SO101_JOINT_ORDER}
+        for camera in self._camera_names:
+            hw_features[self._policy_camera_names[camera]] = self._camera_shape
+        return hw_to_dataset_features(hw_features, OBS_STR, use_video=False)
 
     def connect(self):
-        """Connect to the GR00T policy server."""
-        from sim_to_real_so101.gr00t_client.server_client import PolicyClient
+        """Open the gRPC channel and hand the server its policy instructions."""
+        import grpc
+        from lerobot.async_inference.helpers import RemotePolicyConfig
+        from lerobot.transport import services_pb2, services_pb2_grpc
+        from lerobot.transport.utils import grpc_channel_options
 
-        print(f"[INFO]: Connecting to GR00T policy server at {self._host}:{self._port}...")
-        self._client = PolicyClient(host=self._host, port=self._port)
-        if not self._client.ping():
-            raise RuntimeError("Cannot connect to GR00T policy server!")
-        print("[INFO]: Policy server connected")
+        self._pb2 = services_pb2
+
+        print(f"[INFO]: Connecting to LeRobot policy server at {self._server_address}...")
+        self._channel = grpc.insecure_channel(self._server_address, grpc_channel_options())
+        self._stub = services_pb2_grpc.AsyncInferenceStub(self._channel)
+
+        # Handshake: Ready() flushes any prior server state, then we ship the
+        # policy spec so the server loads the checkpoint and its processors.
+        self._stub.Ready(services_pb2.Empty(), timeout=self._action_timeout_s)
+
+        lerobot_features = self._build_lerobot_features()
+        policy_config = RemotePolicyConfig(
+            policy_type=self._policy_type,
+            pretrained_name_or_path=self._pretrained,
+            lerobot_features=lerobot_features,
+            actions_per_chunk=self._actions_per_chunk,
+            device=self._policy_device,
+            rename_map={},
+        )
+        self._stub.SendPolicyInstructions(
+            services_pb2.PolicySetup(data=pickle.dumps(policy_config))
+        )
+        print(
+            f"[INFO]: Policy server loading '{self._pretrained}' "
+            f"(type={self._policy_type}, device={self._policy_device})"
+        )
 
     def reset(self):
-        """Reset server-side policy state and clear the local action buffer."""
-        self._client.reset()
+        """Flush server-side state and the local action buffer for a new episode."""
+        self._stub.Ready(self._pb2.Empty(), timeout=self._action_timeout_s)
         self._action_queue.clear()
+        self._timestep = 0
 
-    # ------------------------------------------------------------------
-    # Observation conversion
-    # ------------------------------------------------------------------
-
-    @staticmethod
-    def _add_batch_time_dims(obs: dict) -> dict:
-        """Recursively add one leading dimension to every leaf array/scalar.
-
-        GR00T expects (batch=1, time=1, ...).  Call twice to get both dims.
-        """
-        for key, val in obs.items():
-            if isinstance(val, np.ndarray):
-                obs[key] = val[np.newaxis, ...]
-            elif isinstance(val, dict):
-                obs[key] = GR00TRemotePolicy._add_batch_time_dims(val)
-            else:
-                obs[key] = [val]
-        return obs
-
-    def _sim_obs_to_groot_inputs(
+    def _build_raw_observation(
         self, joint_positions: torch.Tensor, visual_obs: dict
     ) -> dict:
-        """Convert Isaac Lab sim observations into the GR00T VLA input format.
+        """Assemble the raw observation dict the server's processor consumes.
 
-        Args:
-            joint_positions: Joint positions in sim radians, shape (6,).
-            visual_obs: Visual observation dict from env (e.g. rgb_ego, rgb_external_D455).
-
-        Returns:
-            Dict with ``video``, ``state``, and ``language`` keys,
-            each with (B=1, T=1) leading dimensions.
+        Per-joint scalar keys (``shoulder_pan.pos`` ...) in raw LeRobot units,
+        RGB arrays keyed by checkpoint camera names, and ``task``.
         """
-        state = self._iface.get_raw_actions_from_radians(joint_positions)
-        state_np = state.cpu().numpy().astype(np.float32)
+        radians = joint_positions.detach().cpu().numpy().astype(np.float32)
+        state_raw = self._iface.sim_radians_to_raw(radians).astype(np.float32)
 
-        rename = self._iface.rename_map
-        model_obs = {}
-
-        # Cameras → video dict
-        model_obs["video"] = {}
-        for camera in self._iface.cameras.keys():
-            img = visual_obs[f"rgb_{camera}"][0].cpu().numpy()
-            camera_name = rename[camera] if rename else camera
-            model_obs["video"][camera_name] = img
-
-        # Joint state (arm + gripper, matching GR00T convention)
-        model_obs["state"] = {
-            "single_arm": state_np[:5],
-            "gripper": state_np[5:6],
+        raw_obs: dict = {
+            name: float(state_raw[i])
+            for i, name in enumerate(self._iface.SO101_JOINT_ORDER)
         }
+        for camera in self._camera_names:
+            raw_obs[self._policy_camera_names[camera]] = visual_obs[f"rgb_{camera}"][0].cpu().numpy()
+        raw_obs["task"] = self._lang_instruction
+        return raw_obs
 
-        # Language instruction
-        model_obs["language"] = {
-            "annotation.human.task_description": self._lang_instruction,
-        }
+    def _query_action_chunk(self, joint_positions: torch.Tensor, visual_obs: dict):
+        """Send one observation and block for the resulting action chunk."""
+        from lerobot.async_inference.helpers import TimedObservation
+        from lerobot.transport.utils import send_bytes_in_chunks
 
-        # Add (B=1, T=1) leading dimensions
-        model_obs = self._add_batch_time_dims(model_obs)
-        model_obs = self._add_batch_time_dims(model_obs)
+        raw_obs = self._build_raw_observation(joint_positions, visual_obs)
+        # must_go=True bypasses the server's similarity / already-predicted
+        # filtering so every query is guaranteed to run inference.
+        timed_obs = TimedObservation(
+            timestamp=time.time(),
+            timestep=self._timestep,
+            observation=raw_obs,
+            must_go=True,
+        )
+        self._timestep += 1
 
-        return model_obs
+        obs_iter = send_bytes_in_chunks(
+            pickle.dumps(timed_obs),
+            self._pb2.Observation,
+            log_prefix="[EVAL] obs",
+            silent=True,
+        )
+        self._stub.SendObservations(obs_iter, timeout=self._action_timeout_s)
 
-    # ------------------------------------------------------------------
-    # Action decoding
-    # ------------------------------------------------------------------
-
-    def _decode_action_chunk(self, action_chunk: dict) -> list[dict[str, float]]:
-        """Decode a GR00T action chunk into per-timestep joint-name dicts.
-
-        Args:
-            action_chunk: Dict with ``single_arm`` (B, T, 5) and
-                ``gripper`` (B, T, 1) numpy arrays.
-
-        Returns:
-            List of dicts mapping joint name → float (real-robot degree space).
-        """
-        any_key = next(iter(action_chunk.keys()))
-        T = action_chunk[any_key].shape[1]
-        horizon = min(T, self._action_horizon)
-
-        joint_order = self._iface.SO101_JOINT_ORDER
-        actions_list = []
-        for t in range(horizon):
-            single_arm = action_chunk["single_arm"][0][t]  # (5,)
-            gripper = action_chunk["gripper"][0][t]          # (1,)
-            full = np.concatenate([single_arm, gripper], axis=0)  # (6,)
-            actions_list.append(
-                {name: float(full[i]) for i, name in enumerate(joint_order)}
-            )
-
-        return actions_list
-
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
+        deadline = time.monotonic() + self._action_timeout_s
+        while time.monotonic() < deadline:
+            actions = self._stub.GetActions(self._pb2.Empty(), timeout=max(0.01, deadline - time.monotonic()))
+            if len(actions.data) > 0:
+                return pickle.loads(actions.data)  # nosec B301 - trusted server
+        raise RuntimeError(
+            f"Policy server returned no actions within {self._action_timeout_s}s"
+        )
 
     def get_action(
-        self, joint_positions: torch.Tensor, visual_obs: dict, log: bool = False
+        self, joint_positions: torch.Tensor, visual_obs: dict
     ) -> torch.Tensor:
         """Return the next sim action as a radians tensor.
 
-        Manages the action buffer internally — queries the server only
-        when the buffer is empty, then pops one action per call.
-
-        Args:
-            joint_positions: Current joint positions in sim radians (6,).
-            visual_obs: Visual observation dict from env.
-            log: If True, send observation and action data to Rerun.
-
-        Returns:
-            Tensor of mapped joint actions in sim radians, ready
-            for ``env.step()``.
+        Queries the server only when the local buffer is empty (open-loop over
+        the returned chunk), then pops one action per call.
         """
         if len(self._action_queue) == 0:
-            model_input = self._sim_obs_to_groot_inputs(joint_positions, visual_obs)
-            action_chunk, _info = self._client.get_action(model_input)
-            decoded = self._decode_action_chunk(action_chunk)
-            self._action_queue.extend(decoded)
+            timed_actions = self._query_action_chunk(joint_positions, visual_obs)
+            for timed_action in timed_actions:
+                raw = (
+                    timed_action.get_action()
+                    .detach()
+                    .cpu()
+                    .numpy()
+                    .astype(np.float32)
+                )
+                sim_radians = self._iface.raw_to_sim_radians(raw)
+                self._action_queue.append(
+                    torch.from_numpy(sim_radians).to(self._iface.sim_device)
+                )
 
-        action_dict = self._action_queue.popleft()
-        raw_tensor = self._iface.get_raw_actions_tensor(action_dict)
-        sim_action = self._iface.get_mapped_actions_vectorized(raw_tensor)
+        return self._action_queue.popleft()
 
-        if log:
-            state = self._iface.get_raw_actions_from_radians(joint_positions)
-            state_np = state.cpu().numpy()
-            rename = self._iface.rename_map
-
-            obs_log = {}
-            for camera in self._iface.cameras.keys():
-                name = rename[camera] if rename else camera
-                obs_log[name] = visual_obs[f"rgb_{camera}"][0].cpu().numpy()
-            for i, joint in enumerate(self._iface.SO101_JOINT_ORDER):
-                obs_log[joint] = float(state_np[i])
-
-            log_rerun_data(observation=obs_log, action=action_dict)
-
-        return sim_action
-
-
-class DummyDatasetMeta:
-    def __init__(self, features, robot_type):
-        self.features = features
-        self.stats = {}
-        self.robot_type = robot_type
-
-
-if __name__ == "__main__":
-    lerobot_cfg = {"port": "/dev/ttyACM0", "id": "leader_arm_1"}
-    lerobot_interface = LeRobotSO101Interface(cfg=lerobot_cfg)
-    while True:
-        real_action = lerobot_interface.teleop_dev.get_action()
-        print(type(real_action))
-        print(real_action)
-        print(list(real_action.keys()))
+    def close(self):
+        """Close the gRPC channel."""
+        if self._channel is not None:
+            self._channel.close()
+            self._channel = None

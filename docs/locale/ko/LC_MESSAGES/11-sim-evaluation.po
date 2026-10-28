@@ -1,0 +1,337 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Sim Evaluation"
+msgstr "Simulation 평가"
+
+msgid "Simulated policy rollout with camera observations and joint signals."
+msgstr "Camera observation과 joint signal을 표시한 simulation policy rollout입니다."
+
+msgid "What Do I Need for This Module?"
+msgstr "이 Module에 필요한 준비물"
+
+msgid ""
+"Hands-on. You'll need the running `so101-workshop` container, an NVIDIA RTX GPU, and a compatible"
+" LeRobot GR00T 1.7 checkpoint."
+msgstr "실습입니다. 실행 중인 `so101-workshop` container, NVIDIA RTX GPU, 호환되는 LeRobot GR00T 1.7 checkpoint가 필요합니다."
+
+msgid ""
+"Evaluate your policy in Isaac Lab 3.0 with Newton physics and ovrtx cameras before deploying it "
+"to the physical robot."
+msgstr "실제 robot에 배포하기 전에 Newton physics와 ovrtx camera를 사용하는 Isaac Lab 3.0에서 policy를 평가합니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "Run simulation evaluation from one terminal in the workshop container."
+msgstr "Workshop container의 terminal 하나에서 simulation 평가 실행"
+
+msgid "Compare base and domain-randomized evaluation conditions."
+msgstr "기본 조건과 Domain Randomization 평가 조건 비교"
+
+msgid "Record grasp, placement, and failure behavior."
+msgstr "Grasp, placement, 실패 양상 기록"
+
+msgid ""
+"Success in sim does not guarantee success in real A strong simulation score is a useful starting "
+"point, but a higher sim score does not necessarily mean a better real-world policy. Test the same"
+" checkpoint on the physical robot and record the two results separately."
+msgstr ""
+"Simulation 성공이 실제 성공을 보장하지는 않습니다. 높은 simulation 점수는 유용한 출발점이지만 더 좋은 실제 policy를 의미하지는 않습니다. 같은 "
+"checkpoint를 실제 robot에서도 시험하고 두 결과를 별도로 기록하세요."
+
+msgid ""
+"Before running trials, check the starting conditions against the selected checkpoint’s training "
+"data. An evaluation task’s default reset is not proof that its starts match that dataset."
+msgstr ""
+"Trial 전에 선택한 checkpoint의 training data와 시작 조건을 비교하세요. Evaluation task의 기본 reset이 dataset의 시작 조건과 "
+"같다고 가정해서는 안 됩니다."
+
+msgid "Run Policy Evaluation"
+msgstr "Policy 평가 실행"
+
+msgid ""
+"**Use** the existing `so101-workshop` container terminal. Stop any active exercise with "
+"**Ctrl+C** and wait for the prompt."
+msgstr "기존 `so101-workshop` container terminal을 **사용**합니다. 실행 중인 실습을 **Ctrl+C**로 끝내고 prompt를 기다립니다."
+
+msgid "Start the Workshop Container"
+msgstr "Workshop Container 시작"
+
+msgid "If the container is not running, run this from a **host terminal**:"
+msgstr "Container가 꺼져 있다면 **host terminal**에서 다음을 실행합니다."
+
+msgid ""
+"The current `lerobot_eval` connects to a policy server. Start a fresh server for each policy in "
+"the background of this shell, leaving the prompt available for evaluation:"
+msgstr ""
+"현재 `lerobot_eval`은 policy server에 연결합니다. Policy마다 이 shell의 background에서 새 server를 시작해 평가용 prompt를"
+" 남겨 둡니다."
+
+msgid ""
+"Stop the policy server before switching policies Every time you finish evaluating a policy, use "
+"one of the [server shutdown options](#stop-evaluation) below **before starting the next policy**:"
+" run `kill`, `wait`, and `unset` in the same shell, or stop all policy servers in the container."
+msgstr ""
+"Policy를 바꾸기 전에 server를 종료하세요. 평가를 마칠 때마다 **다음 policy를 시작하기 전에** 아래 [server 종료 방법](#stop-"
+"evaluation) 중 하나를 사용합니다. 같은 shell에서 `kill`, `wait`, `unset`을 실행하거나 container 안의 모든 policy server를"
+" 종료합니다."
+
+msgid ""
+"Wait for `Policy server ready` before continuing. If readiness times out, inspect `tail -n 40 "
+"outputs/policy-server.log` and resolve the error before evaluating. The server log stays in the "
+"mounted `outputs/` directory. Keep `POLICY_SERVER_PID` in this shell for cleanup; do not start "
+"another server while this one is running."
+msgstr ""
+"`Policy server ready`를 기다린 뒤 진행합니다. Timeout이 나면 `tail -n 40 outputs/policy-server.log`를 확인해 오류를 "
+"해결하세요. Log는 mount된 `outputs/`에 남습니다. 정리를 위해 이 shell의 `POLICY_SERVER_PID`를 유지하고, 기존 server가 실행 중일 "
+"때 다른 server를 시작하지 마세요."
+
+msgid "At the same prompt, **set** your model repository or local checkpoint directory:"
+msgstr "같은 prompt에서 model repository 또는 local checkpoint directory를 **설정**합니다."
+
+msgid "What to Expect"
+msgstr "예상되는 동작"
+
+msgid ""
+"This model was trained on 500 state-machine demonstrations in simulation. Those demonstrations "
+"did not include returning after placement, so expect it to stop rather than repeat the task. "
+"Compare its behavior from the default starting pose with the dataset-derived start in the next "
+"run."
+msgstr ""
+"이 model은 simulation의 state-machine demonstration 500개로 학습했습니다. Placement 후 복귀 동작이 data에 없으므로 반복보다"
+" 정지하는 동작을 예상하세요. 기본 시작 pose에서의 동작을 다음 실행의 dataset-derived start와 비교합니다."
+
+msgid ""
+"For your own teleoperation model, use `your_hf_username/so101_teleop_vials_newton_GR00T17`. For "
+"the automated collection example, use `your_hf_username/so101_auto_vials_newton_GR00T17`. To "
+"evaluate a local checkpoint, set `MODEL_ID` to the absolute container path of your selected "
+"`pretrained_model` directory under `models/` or `outputs/train/`. The background server uses the "
+"same container filesystem and can read these mounts. See [Download a Compatible Policy](datasets-"
+"and-models.md#download-a-compatible-policy)."
+msgstr ""
+"직접 수집한 teleoperation model은 `your_hf_username/so101_teleop_vials_newton_GR00T17`, 자동 수집 예시는 "
+"`your_hf_username/so101_auto_vials_newton_GR00T17`을 사용합니다. Local checkpoint는 `models/` 또는 "
+"`outputs/train/` 아래에서 선택한 `pretrained_model` directory의 container 절대 경로로 `MODEL_ID`를 설정하세요. "
+"Background server는 같은 filesystem과 mount를 읽습니다. [Download a Compatible Policy](datasets-and-"
+"models.md#download-a-compatible-policy)를 참고하세요."
+
+msgid "**Run** ten episodes with both cameras, using the default starting pose:"
+msgstr "두 camera와 기본 시작 pose로 episode 10개를 **실행**합니다."
+
+msgid ""
+"Expect a Low Success Rate on this first run. This is a deliberate starting-pose comparison, where"
+" we start the robot in a pose that's out of distribution. The selected policy is expected to "
+"struggle from the default pose."
+msgstr ""
+"첫 실행에서는 낮은 성공률을 예상합니다. 일부러 distribution 밖의 pose에서 시작하는 비교이므로, 선택한 policy가 기본 pose에서 어려움을 겪을 것으로 "
+"예상됩니다."
+
+msgid ""
+"**Open** [http://localhost:8090](http://localhost:8090) to watch camera feeds and telemetry. With"
+" the page focused, **R** interrupts the current episode and resets the scene. Use only one "
+"browser tab connected to the viewer at a time."
+msgstr ""
+"[http://localhost:8090](http://localhost:8090)을 **열어** camera feed와 telemetry를 확인합니다. Page에 "
+"focus를 두고 **R**을 누르면 현재 episode를 중단하고 scene을 reset합니다. Viewer에는 tab 하나만 연결하세요."
+
+msgid ""
+"**Stop** the evaluation with **Ctrl+C** if it is still running, then **stop the policy server** "
+"in the same shell:"
+msgstr "평가가 실행 중이면 **Ctrl+C**로 **끝내고**, 같은 shell에서 **policy server도 종료**합니다."
+
+msgid "Or **stop all policy servers** in the container:"
+msgstr "또는 container의 **모든 policy server를 종료**합니다."
+
+msgid "Compare a Dataset-Derived Starting Pose"
+msgstr "Dataset-Derived Starting Pose 비교"
+
+msgid "**Restart** the policy server and wait for `Policy server ready`:"
+msgstr "Policy server를 **재시작**하고 `Policy server ready`를 기다립니다."
+
+msgid ""
+"**Run** the same evaluation with `--start_pose_dataset` added. Keep the model, task, seed, and "
+"episode count unchanged:"
+msgstr "같은 평가에 `--start_pose_dataset`을 추가해 **실행**합니다. Model, task, seed, episode 수는 유지하세요."
+
+msgid ""
+"The flag uses the mean joint positions at the start of episodes in the specified dataset, "
+"including gripper opening. Check the terminal's `[Start pose]` lines for the dataset name, mean, "
+"and standard deviation. This uses a dataset-derived pose rather than sampling a different "
+"recorded start each time; the mean alone does not guarantee coverage for every checkpoint."
+msgstr ""
+"이 flag는 지정한 dataset의 episode 시작 joint position 평균을 사용하며 gripper opening도 포함합니다. Terminal의 `[Start"
+" pose]`에서 dataset 이름, 평균, 표준편차를 확인하세요. 매번 기록된 시작 pose를 sampling하는 방식이 아니며, 평균 하나만으로 모든 "
+"checkpoint의 시작 조건을 포괄한다고 보장할 수 없습니다."
+
+msgid ""
+"**Compare** the two runs. For this workshop example, we expect a much higher success rate with "
+"the dataset-derived start. Did the grasp approach improve? What changed even though the policy "
+"weights stayed the same?"
+msgstr ""
+"두 실행을 **비교**하세요. 이 예시에서는 dataset-derived start에서 성공률이 크게 높아질 것으로 예상합니다. Grasp 접근이 나아졌나요? Policy "
+"weight는 같은데 무엇이 달라졌나요?"
+
+msgid "What Happens After the Release?"
+msgstr "Release 이후에는 어떻게 될까?"
+
+msgid "Notice that the policy does not return home after releasing the vial. Why might that be?"
+msgstr "Vial을 놓은 뒤 policy가 home으로 복귀하지 않습니다. 이유를 생각해 보세요."
+
+msgid "Why Doesn't the Robot Return Home?"
+msgstr "Robot이 Home으로 복귀하지 않는 이유"
+
+msgid ""
+"The state-machine demonstrations used for this model ended without returning home, so they did "
+"not teach the policy that part of the task. To teach a repeatable loop, include the movement "
+"after release back to a ready pose in the demonstrations, then train and evaluate that "
+"continuation. We'll explore this with the next models."
+msgstr ""
+"이 model의 state-machine demonstration은 home으로 돌아오지 않고 끝나서 해당 동작을 배우지 못했습니다. 반복 가능한 loop를 가르치려면 "
+"release 후 ready pose로 복귀하는 motion도 demonstration에 포함하고 학습·평가해야 합니다. 다음 model에서 이를 살펴봅니다."
+
+msgid ""
+"An evaluation reset is separate from this learned behavior: the simulator can reset after a "
+"placement without the policy having learned to move home."
+msgstr ""
+"Evaluation reset은 학습된 복귀 동작과 별개입니다. Policy가 home 복귀를 배우지 않았더라도 simulator는 placement 후 reset할 수 "
+"있습니다."
+
+msgid "Evaluate Without a Display"
+msgstr "Display 없이 평가"
+
+msgid "Show the evaluation command without a display"
+msgstr "Display 없는 평가 명령 보기"
+
+msgid ""
+"To repeat the dataset-derived-start evaluation without a display, **run** without `--browser-"
+"display`. Cameras and both presets remain required:"
+msgstr ""
+"Dataset-derived-start 평가를 display 없이 반복하려면 `--browser-display`를 빼고 **실행**합니다. Camera와 두 preset은 "
+"여전히 필요합니다."
+
+msgid "Check Camera Compatibility"
+msgstr "Camera 호환성 확인"
+
+msgid ""
+"Current observations use `wrist` and `external`, corresponding to `observation.images.wrist` and "
+"`observation.images.external` in LeRobot. A checkpoint trained with these names needs no rename "
+"map."
+msgstr ""
+"현재 observation은 `wrist`와 `external`을 사용하며, LeRobot의 `observation.images.wrist`와 "
+"`observation.images.external`에 대응합니다. 이 이름으로 학습한 checkpoint에는 rename map이 필요하지 않습니다."
+
+msgid ""
+"For a compatible older LeRobot checkpoint whose camera features are `ego` and `external_D455`, "
+"add `--rename_map '{\"wrist\":\"ego\",\"external\":\"external_D455\"}'`. The direction is "
+"**simulation camera name → checkpoint feature name**. Inspect the checkpoint before using a map. "
+"Renaming keys does not correct different camera poses, optics, joint conventions, or model "
+"formats."
+msgstr ""
+"Camera feature가 `ego`와 `external_D455`인 호환 가능한 이전 LeRobot checkpoint에는 `--rename_map "
+"'{\"wrist\":\"ego\",\"external\":\"external_D455\"}'`를 추가합니다. 방향은 **simulation camera name → "
+"checkpoint feature name**입니다. 적용 전에 checkpoint를 확인하세요. Key 이름 변경으로 camera pose, optics, joint 규약,"
+" model format 차이까지 해결되지는 않습니다."
+
+msgid "**Stop** any active evaluation client with **Ctrl+C** and **keep** the server running."
+msgstr "평가 client를 **Ctrl+C**로 **종료**하되 server는 **계속 실행**합니다."
+
+msgid "**Run** the same checkpoint under the DR evaluation task:"
+msgstr "같은 checkpoint를 DR evaluation task에서 **실행**합니다."
+
+msgid ""
+"See the [camera comparison](10-domain-randomization.md#test-domain-randomization) and [configured"
+" Domain Randomization ranges](10-domain-randomization.md#code-tour-domain-randomization-"
+"implementation). Use the same episode count and seed (`--seed`) when comparing checkpoints."
+msgstr ""
+"[Camera 비교](10-domain-randomization.md#test-domain-randomization)와 [Domain Randomization 설정 "
+"범위](10-domain-randomization.md#code-tour-domain-randomization-implementation)를 확인하세요. Checkpoint "
+"비교에는 같은 episode 수와 seed(`--seed`)를 사용합니다."
+
+msgid "Watch and Record Results"
+msgstr "결과 관찰과 기록"
+
+msgid "The terminal reports progress and grasp/placement events."
+msgstr "Terminal에 진행 상황과 grasp/placement event가 표시됩니다."
+
+msgid "Evaluation tasks reset on placement, timeout, or an unsafe rack state."
+msgstr "Evaluation task는 placement, timeout, unsafe rack state에서 reset됩니다."
+
+msgid "A trial counts as successful only when the task's success condition is met without a timeout."
+msgstr "Timeout 없이 task 성공 조건을 만족한 경우에만 성공으로 계산합니다."
+
+msgid "Safety resets alone do not count as successes."
+msgstr "Safety reset 자체는 성공이 아닙니다."
+
+msgid "Watch the rollouts as well as the summary to understand how the policy fails."
+msgstr "Summary와 함께 rollout도 관찰해 실패 양상을 이해하세요."
+
+msgid ""
+"**Record** the model, task ID, seed, episode count, action horizon, successful placements, and "
+"failure descriptions. Look for missed grasps, drops, rack collisions, and lighting sensitivity."
+msgstr ""
+"Model, task ID, seed, episode 수, action horizon, placement 성공 수, 실패 양상을 **기록**합니다. Grasp 누락, 낙하, "
+"rack 충돌, 조명 민감도를 살펴보세요."
+
+msgid ""
+"**Try another environment:** Run the same checkpoint in the base or DR environment, keeping the "
+"seed, episode count, and action horizon the same. How do the results change? Consider how "
+"differences from the environment used to collect its training data—such as lighting, materials, "
+"camera views, or object placement—might affect what the policy sees and how it behaves."
+msgstr ""
+"**다른 environment도 시험하세요:** 같은 seed, episode 수, action horizon으로 기본 또는 DR environment에서 실행합니다. 결과가"
+" 어떻게 달라지나요? Training data 수집 환경과의 조명, material, camera view, object 배치 차이가 policy의 입력과 동작에 미치는 "
+"영향을 생각해 보세요."
+
+msgid ""
+"The workshop control and camera cadence is 30 Hz. GPU contention or inference latency can affect "
+"observed rollout rate."
+msgstr ""
+"Workshop의 control 및 camera cadence는 30 Hz입니다. GPU 경합과 inference latency가 실제 rollout 속도에 영향을 줄 수 "
+"있습니다."
+
+msgid "Stop Evaluation"
+msgstr "평가 종료"
+
+msgid ""
+"**Press Ctrl+C** to stop a running evaluation and wait for the prompt. If all episodes have "
+"finished, the prompt is already available."
+msgstr "**Ctrl+C를 눌러** 실행 중인 평가를 끝내고 prompt를 기다립니다. 모든 episode가 끝났다면 이미 prompt로 돌아와 있습니다."
+
+msgid ""
+"**Stop** the background server in this same shell to free its GPU memory. Run these commands "
+"every time you finish with a policy, before evaluating another policy:"
+msgstr ""
+"같은 shell에서 background server를 **종료**해 GPU memory를 해제합니다. Policy 평가를 마칠 때마다 다음 policy를 평가하기 전에 이 "
+"명령을 실행하세요."
+
+msgid ""
+"**Keep** this terminal and the workshop container open. Before evaluating the next policy in "
+"simulation."
+msgstr "다음 simulation 평가를 위해 이 terminal과 workshop container는 **열어 둡니다**."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to [What Is Sim-to-Real?](03-sim-to-real.md) to explore why simulation and real-world "
+"results can differ."
+msgstr "[What Is Sim-to-Real?](03-sim-to-real.md)에서 simulation과 실제 결과가 달라지는 이유를 살펴보세요."
+

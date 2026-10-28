@@ -1,0 +1,275 @@
+# Korean translations for SO-101 Sim-to-Real Workshop.
+# Copyright (C) 2026 NVIDIA
+# This file is distributed under the same license as the SO-101 Sim-to-Real Workshop project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: SO-101 Sim-to-Real Workshop VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-28 06:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+msgid "Architecture Tour: Building the Robotics Application"
+msgstr "Architecture Tour: Robotics Application 구성"
+
+msgid ""
+"Camera orbit around the stationary SO-101 simulated workstation, with vials and rack inside the "
+"lightbox."
+msgstr "Lightbox 안의 vial과 rack, 고정된 SO-101 simulation workstation을 camera가 둘러보는 모습입니다."
+
+msgid ""
+"We've collected demonstrations in simulation. Now let's look at the code that makes that "
+"possible, before we evaluate a policy."
+msgstr "Simulation에서 demonstration을 수집했습니다. Policy 평가에 앞서 이를 가능하게 하는 code를 살펴봅니다."
+
+msgid "Learning Objectives"
+msgstr "학습 목표"
+
+msgid "**Explain** how Omniverse libraries, Newton, Isaac Lab, and LeRobot work together."
+msgstr "Omniverse libraries, Newton, Isaac Lab, LeRobot이 함께 동작하는 방식 **설명**"
+
+msgid "**Describe** how a robot learning simulation environment is structured."
+msgstr "Robot learning simulation environment의 구조 **설명**"
+
+msgid ""
+"**Trace** how configuration, sensors, reset events, observations, and recording connect in one "
+"control loop."
+msgstr "하나의 control loop에서 configuration, sensor, reset event, observation, recording이 연결되는 과정 **추적**"
+
+msgid "How the Pieces Fit Together"
+msgstr "구성 요소의 연결"
+
+msgid ""
+"We're building a custom robotics application with **Omniverse libraries, Newton, Isaac Lab, and "
+"LeRobot**. These libraries give you the building blocks to build the application you need. Here, "
+"we combine them for our robot, task, and learning workflow."
+msgstr ""
+"**Omniverse libraries, Newton, Isaac Lab, LeRobot**으로 custom robotics application을 만듭니다. 각 "
+"library는 필요한 application을 구성하는 기반을 제공하며, 여기서는 robot, task, learning workflow에 맞게 조합합니다."
+
+msgid ""
+"Workshop code connects LeRobot to Isaac Lab, which uses Newton physics and Omniverse rendering "
+"with USD assets. Joint state and camera images return as observations."
+msgstr ""
+"Workshop code가 LeRobot과 Isaac Lab을 연결합니다. Isaac Lab은 Newton physics와 USD asset 기반 Omniverse "
+"rendering을 사용하며, joint state와 camera image를 observation으로 반환합니다."
+
+msgid "Component"
+msgstr "구성 요소"
+
+msgid "What it does in this workshop"
+msgstr "이 Workshop에서의 역할"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Omniverse libraries**"
+msgstr "**Omniverse libraries**"
+
+msgid ""
+"ovstage manages the USD scene used for rendering, and ovrtx renders the wrist and external camera"
+" images. USD assets describe the robot, rack, vials, and lightbox."
+msgstr ""
+"ovstage는 rendering용 USD scene을 관리하고, ovrtx는 wrist와 external camera image를 렌더링합니다. USD asset은 "
+"robot, rack, vial, lightbox를 정의합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Newton**"
+msgstr "**Newton**"
+
+msgid ""
+"Advances the physics: robot motion, gravity, and contacts between the gripper, vials, and rack. "
+"This application uses its MJWarp solver."
+msgstr ""
+"Robot motion, gravity, gripper·vial·rack 사이의 contact 등 physics를 계산합니다. 이 application에서는 MJWarp "
+"solver를 사용합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Isaac Lab**"
+msgstr "**Isaac Lab**"
+
+msgid ""
+"Organizes the scene, actions, observations, reset events, and conditions that end an episode. It "
+"connects the physics and rendering backends to the task."
+msgstr ""
+"Scene, action, observation, reset event, episode 종료 조건을 구성하고 physics 및 rendering backend를 task와 "
+"연결합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**LeRobot**"
+msgstr "**LeRobot**"
+
+msgid ""
+"Provides robot and teleoperator interfaces, the demonstration dataset format, and policy training"
+" and inference tools. The workshop bridge converts between LeRobot joint values and simulation "
+"actions."
+msgstr ""
+"Robot 및 teleoperator interface, demonstration dataset format, policy 학습 및 inference 도구를 제공합니다. "
+"Workshop bridge가 LeRobot joint value와 simulation action 사이를 변환합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Workshop code**"
+msgstr "**Workshop code**"
+
+msgid ""
+"Defines the vial-to-rack task, connects teleoperation or a policy to the arm, records "
+"demonstrations, and reports evaluation results."
+msgstr "Vial-to-rack task를 정의하고 teleoperation 또는 policy를 arm에 연결하며, demonstration 기록과 평가 결과 보고를 수행합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Isaac Lab Environment Configuration"
+msgstr "Isaac Lab Environment Configuration"
+
+msgid ""
+"In Isaac Lab, a registered task identifies the configuration used to create a simulation "
+"environment. The `--task` flag selects which environment to load."
+msgstr ""
+"Isaac Lab의 등록된 task는 simulation environment 생성에 사용할 configuration을 지정합니다. `--task` flag로 "
+"environment를 선택합니다."
+
+msgid ""
+"These examples are **pseudocode**: they simplify class names, observation groups, and return "
+"values to show the architecture, rather than provide runnable scripts."
+msgstr ""
+"다음 예시는 **pseudocode**입니다. 실행용 script가 아니라 architecture를 설명하기 위해 class name, observation group, "
+"return value를 단순화했습니다."
+
+msgid "Environment configuration connects scene, simulation, and managers to the reset and step loop."
+msgstr "Environment configuration이 scene, simulation, manager를 reset 및 step loop에 연결합니다."
+
+msgid ""
+"Rewards are part of the environment interface; recording demonstrations does not use them to "
+"update a policy."
+msgstr "Reward는 environment interface의 일부지만, demonstration recording에서는 policy update에 사용하지 않습니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Camera Sensor"
+msgstr "Camera Sensor"
+
+msgid ""
+"The camera configuration selects image size, channels, update timing, and renderer. ovrtx renders"
+" the scene, and the images become observations for the policy or recorder."
+msgstr ""
+"Camera configuration은 image 크기, channel, update timing, renderer를 선택합니다. ovrtx가 scene을 렌더링하고 "
+"image는 policy 또는 recorder의 observation이 됩니다."
+
+msgid ""
+"Camera configuration and ovrtx rendering feed camera images into observations during the "
+"environment loop."
+msgstr "Environment loop에서 camera configuration과 ovrtx rendering을 거쳐 camera image가 observation으로 전달됩니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Source:** `source/sim_to_real_so101/tasks/task_env_cfg.py`"
+msgstr "**Source:** `source/sim_to_real_so101/tasks/task_env_cfg.py`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Reset Terms"
+msgstr "Reset Terms"
+
+msgid ""
+"A reset event calls a function with its configured parameters. Here, the reset function varies "
+"rack placement. It runs when an environment resets, rather than on every control step. The "
+"example ranges are in meters for position and radians for yaw."
+msgstr ""
+"Reset event는 설정한 parameter로 함수를 호출합니다. 여기서는 rack 배치를 변화시킵니다. 매 control step이 아니라 environment "
+"reset 시 실행되며, 예시 range의 position 단위는 meter, yaw는 radian입니다."
+
+msgid ""
+"Initial reset or episode ending triggers rack and vial randomization; normal steps continue "
+"without resetting."
+msgstr "초기 reset이나 episode 종료 시 rack과 vial을 randomize하고, 일반 step은 reset 없이 이어집니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Source:** `source/sim_to_real_so101/tasks/vials_to_rack_env_cfg.py`"
+msgstr "**Source:** `source/sim_to_real_so101/tasks/vials_to_rack_env_cfg.py`"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "Grasp Observation"
+msgstr "Grasp Observation"
+
+msgid ""
+"Observation terms can turn sensor readings into useful task signals. The workshop combines "
+"contact force with vial height to estimate whether a vial is grasped, then keeps that flag while "
+"contact persists. This is a progress signal, not proof of a stable grasp or successful placement."
+msgstr ""
+"Observation term은 sensor reading을 유용한 task signal로 바꿉니다. Workshop에서는 contact force와 vial height를 "
+"조합해 grasp 여부를 추정하고, contact가 유지되는 동안 flag를 유지합니다. 이는 진행 상황 signal이며 안정적인 grasp나 placement 성공을 "
+"증명하지는 않습니다."
+
+msgid ""
+"The observation manager uses contact sensor data to compute the vial-grasped signal for the "
+"running loop."
+msgstr "Observation manager가 contact sensor data를 사용해 실행 중인 loop의 vial-grasped signal을 계산합니다."
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "LeRobot Recorder"
+msgstr "LeRobot Recorder"
+
+msgid ""
+"During teleoperation, the leader supplies the action. Record the current images and joint state "
+"with that action **before** advancing simulation, so each observation is paired with the command "
+"applied next. The bridge separates simulation actions (radians) from dataset actions (arm degrees"
+" and gripper percent). It also converts observed joint state into dataset units before recording."
+msgstr ""
+"Teleoperation에서는 leader가 action을 제공합니다. Simulation을 진행하기 **전에** 현재 image와 joint state를 해당 action과"
+" 함께 기록해 observation과 다음 명령이 짝을 이루도록 합니다. Bridge는 simulation action(radian)과 dataset action(arm "
+"degree 및 gripper percent)을 구분하고, 관측된 joint state도 기록 전에 dataset 단위로 변환합니다."
+
+msgid ""
+"Read a leader action, record it with current joint state and camera images, then step the "
+"environment and pace the next iteration."
+msgstr ""
+"Leader action을 읽고 현재 joint state 및 camera image와 함께 기록한 뒤, environment step을 진행하고 다음 반복의 timing을 "
+"맞춥니다."
+
+msgid "**Pseudocode — illustrates the recording sequence.**"
+msgstr "**Pseudocode — Recording 순서를 설명합니다.**"
+
+#. Reviewed: retain original technical label, identifier, source title, or existing Korean.
+msgid "**Source:** `source/sim_to_real_so101/scripts/lerobot_agent.py`"
+msgstr "**Source:** `source/sim_to_real_so101/scripts/lerobot_agent.py`"
+
+msgid "Follow One Control Step"
+msgstr "하나의 Control Step 따라가기"
+
+msgid ""
+"Now trace how these building blocks work together in one control loop iteration. Start from "
+"`lerobot_agent.py`, called with the `--task` flag that selects the environment."
+msgstr ""
+"한 번의 control loop에서 구성 요소가 어떻게 함께 동작하는지 따라가 보세요. `--task` flag로 environment를 선택해 호출하는 "
+"`lerobot_agent.py`에서 시작합니다."
+
+msgid ""
+"During teleoperation, the leader supplies a command through the LeRobot interface, and the "
+"workshop bridge converts it to simulation joint commands. When recording is active, the recorder "
+"pairs the current camera images and joint state with the command about to be applied, in LeRobot "
+"format. Then `env.step(actions)` advances Newton physics through Isaac Lab, ovrtx renders the "
+"cameras, and Isaac Lab returns the observations for the next iteration."
+msgstr ""
+"Teleoperation에서는 leader가 LeRobot interface로 명령을 제공하고 workshop bridge가 simulation joint command로 "
+"변환합니다. Recording 중에는 현재 camera image 및 joint state를 곧 적용할 명령과 함께 LeRobot format으로 기록합니다. 이후 "
+"`env.step(actions)`가 Isaac Lab을 통해 Newton physics를 진행하고, ovrtx가 camera를 렌더링하며, Isaac Lab이 다음 반복의 "
+"observation을 반환합니다."
+
+msgid ""
+"During policy evaluation, the policy supplies actions instead of the leader. The same simulation "
+"scene and task checks tell us what happened."
+msgstr "Policy 평가에서는 leader 대신 policy가 action을 제공합니다. 같은 simulation scene과 task 검사를 사용해 결과를 확인합니다."
+
+msgid "What's Next?"
+msgstr "다음 단계"
+
+msgid ""
+"Continue to [Learning From Real Demonstrations With a State Machine](09-state-machine-"
+"learning.md) to explore automated collection guided by human examples."
+msgstr ""
+"[Learning From Real Demonstrations With a State Machine](09-state-machine-learning.md)에서 사람의 예시를 "
+"활용한 자동 수집을 살펴보세요."
+

@@ -25,7 +25,6 @@ node_modules/
 
 # Lock files
 poetry.lock
-uv.lock
 Pipfile.lock
 
 ### Build & Distribution ###
@@ -41,7 +40,7 @@ var/
 pip-wheel-metadata/
 share/python-wheels/
 develop-eggs/
-*.egg-info/
+*.egg-info
 .installed.cfg
 *.egg
 MANIFEST
@@ -91,7 +90,12 @@ celerybeat.pid
 ### IDE & Editor Config ###
 # VS Code
 .vscode/
+# Shared VS Code settings are available for version control.
+!.vscode
 .devcontainer/
+
+# Cursor
+.cursor/
 
 # JetBrains / PyCharm
 .idea/
@@ -138,7 +142,7 @@ profile_default/
 ipython_config.py
 
 # Sphinx
-docs/_build/
+_build/
 
 # MkDocs
 /site
@@ -172,7 +176,6 @@ outputs/
 *.pot
 
 # Dev folders
-.cache/*
 *.stl
 *.urdf
 *.xml
@@ -180,59 +183,41 @@ outputs/
 # C++
 **/cmake-build*/
 **/build*/
-**/*.so
 **/*.log*
 
 # Omniverse
 **/*.dmp
 **/.thumbs
 
-# No USD files allowed in the repo
+# Binary USD assets
 **/*.usdc
 **/*.usdz
 
-# Python
-.DS_Store
-**/*.egg-info/
-**/__pycache__/
-**/.pytest_cache/
-**/*.pyc
-**/*.pb
+# Protocol buffers
+*.pb
 
 # Docker/Singularity
 **/*.sif
 docker/cluster/exports/
 docker/.container.cfg
 
-# IDE
-**/.idea/
-**/.vscode/
-# Don't ignore the top-level .vscode directory as it is
-# used to configure VS Code settings
-!.vscode
-
 # Outputs
 **/output/*
-**/outputs/*
 **/videos/*
-**/wandb/*
 **/.neptune/*
 docker/artifacts/
 *.tmp
 
-# Doc Outputs
-**/docs/_build/*
+# Generated documentation
 **/generated/*
 
 # Isaac-Sim packman
 _isaac_sim*
 _repo
-_build
 .lastformat
 
 # RL-Games
 **/runs/*
-**/logs/*
 **/recordings/*
 
 # Pre-Trained Checkpoints
@@ -247,18 +232,36 @@ tests/
 # Docker history
 .isaac-lab-docker-history
 
-/datasets/*
-
 **/*.hdf5
 
 # eval results
 **/config_eval_results/*
 
-**/*.mp4
-
+*.mp4
+# Course videos are source assets stored in Git LFS.
+!/docs/images/**/*.mp4
+!/docs/_static/videos/**/*.mp4
 
 .claude/*
 
+# Crash dumps
+/core
+/core.[0-9]*
 real_robot/core
 
-docker/env
+imgui.ini
+
+# Local-only working notes with secrets; untracked on purpose.
+e2e.md
+
+models/
+
+# Local refactor instructions
+/source/sim_to_real_so101/perception-dr-refactor.md
+
+# Local DLI preparation evidence and preview state
+.local/
+runs/
+
+# Sphinx compiled translations (PO catalogs are source)
+docs/locale/**/*.mo

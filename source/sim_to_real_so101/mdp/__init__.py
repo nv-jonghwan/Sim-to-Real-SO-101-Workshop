@@ -12,7 +12,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""This sub-module contains the functions that are specific to the environment."""
+
+from isaaclab.envs.mdp import *
+
+from .commands import *
+from .gripper_protection import *
+from .obs import *
 from .resets import *
 from .terms import *
-from .obs import *
-from isaaclab.envs.mdp import *

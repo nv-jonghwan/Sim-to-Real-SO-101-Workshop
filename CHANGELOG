@@ -2,6 +2,717 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### Removed
+
+- `auto_reach_agent` and `zero_agent_mesure` CLI commands and scripts.
+
+### Added
+
+- State-machine learning lecture with real-to-sim motion comparisons, an example
+  agent prompt, and starting-pose, grasp-height, and pickup-timing lessons.
+
+- Consolidated simulation practice and recording into Simulation Teleoperation,
+  after Domain Randomization, retaining collection planning and optional scripted collection.
+
+- Expanded-DR teleoperation, evaluation, and state-machine tasks retain DR
+  appearance while sampling left/center/right racks and opposite-side floor
+  vials. XY sampling areas expand by 20%, rack centers remain at least 33 cm
+  from the base, and layouts require a clear reachable grasp/slot pair.
+  Exhausted layout searches reject only the affected environment's episode.
+
+
+### Fixed
+
+- Real-robot DAgger accepts `--start_pose_dataset` and reuses evaluation's
+  mean episode-start selection for both arms' reset targets.
+
+- Start-pose analysis reads complete local metadata and Parquet data without
+  contacting the Hub, including datasets downloaded without videos.
+
+- Workshop real-rollout hotkeys read only from the focused rollout terminal,
+  preventing typing in other applications from starting or scoring trials.
+- Learning-content commands match the Newton container launch and current
+  evaluation scoring. Dataset upload examples now include LeRobot version tags,
+  and the E2E real rollout defines its task instruction.
+
+- Newton uses SAH mesh BVH construction for both implicit and explicit presets
+  to avoid the reproduced cuBQL mesh-overlap CUDA fault in the pinned runtime.
+  CUDA graphs remain enabled.
+
+- Scripted vial insertion and placement checks follow the selected hole when
+  the rack moves. Carrying targets follow that hole until release is anchored;
+  release holds the fixed finger at its anchor before the open-jaw return.
+- Scripted arm IK accounts for joint bounds when distributing pose error among
+  joints, instead of relying on clipping the integrated target. Velocity and
+  acceleration limits remain in effect; infeasible placements still time out.
+
+- Simulation evaluation applies camera renaming to outgoing images and feature
+  descriptions before server-side resizing, allowing checkpoints with different
+  camera names (such as Johnny42's `front`) to use `--rename_map`.
+
+
+### Changed
+
+- Workshop rollout loads the policy once per session and resets inference state
+  between trials instead of reloading checkpoint weights after S/F/Right/N.
+  Live camera updates remain available while paused.
+
+- Rename the workshop `lerobot-rollout-v2` command to `lerobot-rollout`,
+  replacing the upstream executable when the workshop is installed after LeRobot.
+
+- **Breaking:** base vial assets directly include the foam, paper, and lightbox
+  material appearance; DR owns grouped material variation and the perception
+  lighting ranges. Regenerate base/DR datasets and retrain affected policies.
+- **Breaking:** base vial tasks include per-camera grading and explicit
+  `tonemap:operator = "none"`, bypassing OVRtx's default ACES approximation.
+  DR adds film grain and episode-fixed wrist blur (sigma 0.7–1.1 pixels) for
+  teleoperation, evaluation, and scripted collection. Vision-DR and Perception-DR task IDs are removed;
+  select the regular DR IDs. Regenerate datasets and retrain policies collected
+  with native DR camera processing. The shared configurable
+  `SO101OVRTXRenderer` keeps camera processing configurable.
+- Wrist lens and housing corrections are authored directly in the workshop
+  robot USD. Material override layers and `configure_perception_scene` are removed.
+
+- Sim evaluation and workshop real rollout accept optional `--start_pose_dataset`; their
+  reset pose is the average first-frame joint state across all dataset episodes.
+  Missing data is fetched without videos. The scripted start
+  pose lives in the state-machine configuration. Omitting the dataset logs a
+  warning and uses that scripted pose.
+
+- Perception-DR wrist blur samples sigma from 0.7–1.1 pixels instead of
+  1.1–1.8, centered on 0.9 pixels. Applies to teleop, scripted collection,
+  and evaluation; this changes their recorded and policy-input image distribution.
+
+- The workshop vial asset directly authors SDF collisions for its body and the
+  supplied beveled cap mesh; its primitive-derived mass distribution is fixed.
+  The workshop SO-101 override directly authors SDF collisions for the two
+  detailed claw meshes. Visible meshes and camera corrections are preserved.
+  Collision dynamics change; regenerate demonstrations for this
+  experimental configuration.
+
+- Newton/MJWarp contact capacity is 1024.
+
+- Vial static and dynamic friction are 0.20 and normal-contact `solref` is
+  `(0.008, 1.0)` for the candidate release-contact response.
+  Release improvement is unproven; regenerate demonstrations for these dynamics.
+
+- **Breaking:** scripted vial collection generates procedural paths from the
+  actual robot pose, vial geometry, and live rack slot instead of selecting a
+  stored demonstration trajectory. Seven phases use pooled timing, speed, grasp,
+  and opening measurements from all ten `sreetz-nv/so101_real_manual` episodes at
+  revision `975f14991f6d944f8ae418512998a66a0151e40a`. Continuous parameter sampling
+  and a shared pace factor vary attempts. Regenerate scripted datasets and
+  discard staging artifacts from earlier controllers.
+- A 30-frame settling period holds the actual starting pose; reach includes all
+  initial translation and wrist reorientation. Approach opening is sampled at
+  28–43%, and all procedural opening commands are capped at calibrated 50%.
+  Targets follow reachable vial and slot positions, including an upright rack's
+  yaw, with no fixed left/right transfer direction.
+- Procedural reach elevation follows the measured grasp-radius correlation.
+  Carry uses 30–55 mm clearance above insertion, a small inward curve to preserve
+  elbow bend, and measured tip-clearance gating. Approach screening includes the
+  rack and upright vials. World-up projection handles randomized robot-base tilt.
+- Scripted arm control uses a coupled five-joint solve for the jaw midpoint and
+  gripper's body-Y direction, bounded resolved-rate target integration, and
+  coordinated arm velocity and acceleration limits. The 0.20-rad target-lead bound
+  retains servo preload without allowing unbounded integration against contact.
+  Opening compensates the midpoint shift caused by the moving jaw while holding
+  the fixed finger near its release anchor. Contact gates confirm acquisition,
+  lift, tip engagement, seating, and clearance before return; acceptance requires
+  a valid upright placement through the completed return.
+- The internal motion action has seven components; recorded LeRobot actions
+  retain the canonical six joint targets, calibration, and observation timing.
+  Controller changes preserve the task's geometry, camera, rendering, actuator,
+  and contact configuration. The ten demonstrations supply motion priors;
+  model-derived poses and visual grasp estimates do not establish reliability
+  across unobserved layouts.
+- Non-finite state, Jacobian, or commands in scripted arm IK produce diagnostic
+  warnings, finite held targets, and isolated environment timeout resets.
+
+- The workshop wrist camera uses a visually fitted OpenCV fisheye lens and
+  camera-to-gripper transform, composed through a local USD correction layer.
+  The camera housing follows the same rigid mount correction. This changes
+  wrist images in collection and evaluation; regenerate datasets for this camera
+  configuration and keep training and evaluation on the same projection. The
+  fit is specific to the workshop camera and is not a validated calibration for
+  other robots.
+
+- Scripted release targets 0.52 rad instead of 0.65 rad, with opening speed
+  increased from 1.2 to 1.5 rad/s and acceleration from 4.0 to 5.0 rad/s².
+  Regenerate demonstrations for the narrower, faster release.
+
+- Scripted collection ends successful episodes 1.75 seconds after retraction
+  starts instead of waiting for the arm and gripper to reach home. Placement
+  confirmation and pulled-out-vial rejection still apply. This shortens recorded
+  episode tails; regenerate demonstrations to use the new ending.
+
+### Added
+- `lerobot_dagger`: HG-DAgger collection in simulation. A LeRobot policy drives
+  one Newton environment; the operator pauses, aligns the physical SO-101 leader
+  to the simulated arm, corrects, and hands back. Each correction is saved as
+  one LeRobot episode, encoded while recording in a separate writer process.
+  `--real` runs the same session on the physical follower; `--leader_follows`
+  makes the leader track the arm between corrections; `--demo_video` saves the
+  session as one video labelled with who controls the arm. The browser page
+  colours its control panel by who drives the arm and lists its keys in
+  Workflow and Safety columns, dimming keys the current phase ignores.
+  See `DAGGER.md`.
+- `lerobot-rollout-dagger`: the `lerobot_dagger --real` session inside LeRobot's
+  `lerobot-rollout`, which loads the policy in-process and connects the follower.
+  Controls, recording and the dataset format are unchanged. Resets go to the
+  retracted start pose of `lerobot-rollout-v2` and simulation evaluation.
+  Resets and exit move both arms along the safe path in step, each from its own
+  pose, with arms at up to 45 deg/s and grippers faster. `DAGGER.md` and the HG-DAgger
+  lesson use it for real collection; simulation keeps `lerobot_dagger`.
+
+- Compact `lerobot-rollout-v2` shortcut tables in the real-evaluation, co-training,
+  Cosmos, and quick-reference lessons, plus a sim-versus-real success reminder
+  beside the simulation benchmark.
+
+- Opt-in Perception-DR variants for vial teleop, scripted collection, and
+  evaluation. Visual-only USD sublayers supply matte foam, paper vial bodies,
+  and softer light-box illumination. Per-camera highlight and grain response
+  plus reset-time wrist blur are shared by display, recording, and inference.
+  These tasks introduce a different image distribution; existing task IDs and
+  physical geometry, calibration, and control are unchanged.
+
+- Standalone HG-DAgger module after co-training, with a hands-on guide to
+  teaching the leader rest pose, alignment, human takeovers, correction-only
+  recording, and real versus simulated resets. Includes a demonstration video,
+  control shortcuts, and guidance on training and autonomous evaluation.
+
+- Robot-base tilt DR: sample -3 to +6 degrees independently per environment
+  at reset, with positive tilt leaning toward the lightbox opening (world -X).
+  The fixed base pivots about its nominal position; physics, robot visuals,
+  and the attached wrist camera follow the pose. Applies to DR teleop,
+  scripted collection, and evaluation. Non-DR tasks retain their base pose.
+
+- Calibration checking for teleop arms with `--arm teleop`, separate leader
+  statistics, and `--static-only` file checks. Both reference sets use the
+  10 calibrations per arm from WowRobo robots calibrated for a live version
+  of this workshop. Zero-variance reference ranges warn when the checked
+  range differs.
+
+- Scripted approach, transfer, and return curves advance by travelled distance
+  with a shared cruise speed. Phase handoffs preserve target continuity;
+  insertion rounds the alignment/descent corner above the rack rim. Release
+  overlaps gentle opening, a 10-degree downward finger pitch, and 35 mm backward
+  withdrawal, joining the return curve with a matching horizontal tangent. Both claw
+  contact sensors gate retreat; unresolved releases reset after six seconds,
+  and pulling the vial above the opening rejects the episode. The release
+  opening is 0.52 rad. These trajectories change recorded actions;
+  regenerate demonstrations for this controller.
+  Release unloads the close target at the measured jaw angle and starts faster
+  opening, tilt, and withdrawal together, without a fixed opening lead or
+  settling delay. Transfer slows over its final 80 mm into a vertical insertion
+  tangent. Return carries the incoming wrist rate through a bounded cubic
+  posture curve and blends its speed over 60 mm; tighter handles reduce bowing.
+  Its shared position/posture clock slows with measured Cartesian tracking
+  error to reduce physical overshoot during wrist rotation.
+
+- Scripted recording encodes accepted episodes during simulation with two
+  background processes (`--encoding_workers` controls concurrency). Shutdown
+  merges finished LeRobot datasets in acceptance order without re-encoding
+  their videos. Collection requires fresh dataset and staging directories;
+  existing output is rejected at startup instead of resumed.
+
+- Scripted grasps descend with the jaws open at 0.4 rad until either jaw
+  contacts the mat, then hold the measured arm/wrist pose and close. A
+  task-local sensor filters mat contact against the two jaw bodies so contact
+  with the vial cannot end descent early. The descent target advances at
+  25 mm/s with a 65 mm travel bound and the six-second grasp timeout; closure
+  requires an open gripper and lateral alignment. Demonstration trajectories
+  change; collect fresh episodes for this controller.
+
+- Scripted vial collection uses the real-demo 0.65 rad approach wrist posture
+  and holds a -0.17 rad gripper target (about 2.1%) through grasp, transfer, and
+  insertion. These controller changes come from `codex/teleop-gripper-close-hold`;
+  its task-specific 0.6 N.m asset override is excluded so collection, teleop,
+  and evaluation share the STS model. Grasp acceptance waits for stable contact
+  and completion of the close command, allowing a held vial to block jaw travel.
+  Excess force during grasp can settle within the six-second grasp timeout;
+  sustained excess force during carrying still aborts. This changes scripted
+  trajectories and recorded actions; regenerate demonstrations for this behavior.
+
+- Provisional STS gripper overload protection shared by all workshop tasks.
+  The USD SysID gains, passive dynamics, and 3.35 N.m peak remain the source
+  parameters. The implicit gripper drive is capped at 50% of peak (1.675 N.m), then
+  at 20% (0.67 N.m) after 100 ms of blocked demand above 25% of peak.
+  Protection clears on reaching the requested position, a command away from
+  the blocked direction, or an environment reset. These are estimated servo
+  settings, not a hardware characterization. A Newton physics-step callback
+  updates the Newton and MJWarp effort ceilings without replacing the implicit
+  PD drive or disabling native actuators. This changes gripper dynamics;
+  regenerate demonstrations and reassess existing policy performance.
+  See [GRIPPER_PROTECTION.md](GRIPPER_PROTECTION.md) for assumptions and validation.
+
+- External-camera DR: reset-time tilt of +/-5 degrees and focal length of
+  97-100% of nominal, giving an equal or wider field of view. Applies to DR
+  teleop, scripted collection, and evaluation; the base task and wrist camera
+  retain their calibration. Multi-environment runs share one focal length,
+  sampled on full resets only because tiled OVRtx projections are shared.
+  Fresh DR recordings and evaluations therefore use a changed image distribution.
+
+- Shared gripper mapping with the existing 1485-tick default and an optional
+  `lerobot_eval --gripper_span_ticks` override. GR00T learning content includes
+  a short example for translating measured gripper scales without retraining.
+
+- Default measured-follower asset joint-zero override: provisional elbow flex
+  -6.4 degrees. Base tilt confounds the measured shoulder difference, so shoulder
+  and base orientation remain unchanged pending mounting-plane validation.
+  The local workshop USDA layer applies this correction to every task while the
+  upstream USD file and native-degree bridge remain unchanged. Joint coordinates
+  for a given physical pose change; regenerate datasets and models for this
+  configuration.
+
+### Removed
+- The unused `range_agent` sinusoidal joint-sweep command.
+
+### Fixed
+- Scripted insertion measures the vial bottom relative to its sampled grasp
+  frame: the bottom is 77 mm below that frame, not 17 mm. The rack's four USD
+  slot frames sit on the 73 mm opening rim instead of 27 mm above it. Insertion
+  depth and obstacle clearance use these corrected coordinates, avoiding
+  excessive descent and releasing after the actual tip enters the opening.
+- Shared Newton/MJWarp physics uses elliptic friction cones, `impratio=10`,
+  and solver tolerance `1e-10` to suppress loaded-grasp creep. Vial colliders
+  use a 6 ms, critically damped normal response and higher contact impedance
+  to limit jaw penetration. Their contact priority selects the vial's friction
+  and contact parameters instead of mixing with the robot's soft defaults,
+  reducing persistent jaw contact during release. Actuator gains, torque
+  protection, and joint calibration are unchanged.
+  These contact and insertion changes affect recorded trajectories and policy
+  dynamics; collect fresh demonstrations and reassess existing policies.
+- Scripted collection selects the nearest mat vial within 40 cm horizontally
+  of the robot base that has a clear rack slot. Environments with no eligible
+  vial reset after warmup, before approaching or grasping; out-of-range vials
+  cannot bypass selection through a nearest-vial fallback. Rack clearance is
+  also checked after grasping and during transfer/insertion. This changes target
+  selection and the demonstration distribution; regenerate scripted datasets.
+- Scripted rack insertion permits contact forces above 14 N while retaining
+  the shared STS torque protection and transfer force limit. An insertion
+  resets only its environment after three seconds without at least 0.5 mm
+  improvement in measured vial-tip distance to the insertion target. Commanded
+  trajectory progress does not count as physical progress. This admits
+  successful placements rejected by the force guard and changes the accepted
+  demonstration distribution; regenerate scripted datasets for this controller.
+- Scripted vial transfers accept recovered grasps after 100 ms of renewed
+  contact and allow stabilization within the existing rack-arrival timeout.
+  Brief force dips do not permanently invalidate a retained vial; sustained
+  contact loss still aborts the attempt. Confirmed placements tolerate up to
+  8 mm of release-position tracking error before retreat, while retaining the
+  settling, gripper-opening, and return-home requirements.
+- **Breaking:** gripper percentage uses a 130.5495-degree calibration
+  span and a fitted -12.5058-degree jaw-frame zero, in both directions, instead
+  of scaling across the USD's 110-degree travel range. Sim teleop, policy
+  observations/actions, and demonstration exports share this conversion.
+  The workshop USD sublayer extends gripper limits to -12.5058..118.0437 degrees
+  so the calibrated 0–100% interval is reachable instead of clipped at -10..100.
+  At calibrated 0%, visual jaw surfaces overlap by about 1–1.5 mm near the tips;
+  robot self-collision is disabled, and jaw-to-object collision remains active.
+  Arm degree units and the state machine's 0.05 rad physical grasp floor are
+  unchanged. Existing datasets/checkpoints encode different
+  gripper coordinates and must be regenerated/retrained for this contract;
+  existing artifacts are not rewritten. The 1485-tick span averages calibrations
+  from 10 different WowRobo robots, replacing the initial single-follower
+  1531-tick span. The jaw-frame zero retains the single-follower fit near
+  12.6–27.2% opening; physical gap accuracy with the averaged span and full
+  endpoint alignment remain unvalidated.
+- Teleop reset-camera refresh uses the pinned renderer's scene-state updates
+  without calling the unavailable cadence-reset API. Both camera images refresh
+  without advancing physics before recording begins.
+- Duplicate deprecated viewer settings are removed; browser disconnects no
+  longer print connection-reset tracebacks.
+- Local workshop USD layers rely on Isaac Lab's recursive dependency resolver
+  for remote sublayers, eliminating the SO-101-specific spawn callback.
+- Sequential reads of synchronized OVRtx cameras share one native render
+  submission. Reset observation computation therefore retains multi-camera
+  batching instead of blocking once per camera product.
+- Vials farther than one metre from their environment origin terminate and reset
+  only the affected environment before unbounded motion can destabilize
+  simulation.
+- Vial cap visual and collision height match the measured 12.77 mm reference.
+  The cap top and overall vial length stay fixed. This changes rendered cap
+  proportions and contact geometry; collect fresh demonstrations for this asset.
+- Vial body and cap visual/collision diameters match the measured physical
+  reference (28.9 mm body, 35.4 mm cap). Reset clearances include the cap's
+  full radius; the bottom collider retains the tip height. This changes grasp
+  contact and insertion clearance, so demonstrations must be collected again
+  for the corrected geometry. Existing datasets and models are not modified.
+- SO-101 arm values convert directly between LeRobot degrees and simulator
+  radians without range normalization.
+- Scripted vial recording pairs each observation with the post-IK, rate-limited
+  joint target written for the next control interval before decimated physics.
+  Capture observes the action-manager write without changing control behavior
+  and preserves terminal transitions only in successful episodes.
+- Scripted vial episodes open while shifting 10 mm toward the static-jaw side,
+  then wait a randomized settling period. After confirmed placement, a slow
+  curved retreat blends upward clearance into the homeward motion and keeps the
+  gripper open through the first half of the path. Successful episodes reset
+  only after returning home and closing, so demonstrations include recovery
+  actions instead of ending immediately at placement.
+- Teleop recording captures the current observation and owned RGB buffers before
+  applying its paired leader action. Reset observations are refreshed without
+  advancing physics; automatic resets discard active takes, and each take starts
+  its own capture cadence. Unsupported recording rates fail instead of silently
+  writing an incorrect dataset timebase. Existing datasets are not rewritten.
+- Vial approaches that stop improving after their path completes reset only
+  the affected environment after two seconds. Grasps without confirmed contact
+  reset after six seconds, with explicit stall/timeout diagnostics.
+- Vial-controller arm targets are limited after IK at each physics step, with
+  braking toward the goal and authored joint limits. Cartesian and wrist
+  command limiters preserve acceleration bounds when goals move or reverse.
+  Sustained grasp loss aborts the transfer without waiting for rack arrival.
+- State-machine slot selection checks neighboring vial geometry against the
+  gripper/wrist insertion footprint in robot coordinates. A blocked descent
+  holds its command and resets only the affected environment.
+- All workshop environments inherit the shared Isaac Lab seed configuration.
+  Entry points delegate seeding to Isaac Lab instead of setting individual RNGs;
+  the state machine receives the resolved environment seed for Warp sampling.
+  Policy evaluation honors the shared default unless its seed is overridden.
+- Vial transfers blend orientation feedback into both wrist joints throughout
+  the lift, avoiding the fixed-roll motion and abrupt correction near the rack.
+- Grasp-force regulation bounds the persistent gripper target during grasp,
+  transfer, and insertion to prevent accumulation outside the configured
+  0.05-0.65 rad jaw range.
+- Real-robot utilities import LeRobot 0.6.0's unified `so_follower` module;
+  the calibration checker uses that robot's calibration directory.
+- Rack safety containment now uses environment-local coordinates, preventing
+  cloned state-machine environments from resetting immediately when
+  `--num_envs` is greater than one.
+- The vials state machine now continues regulating grasp force during transfer
+  and insertion instead of freezing the gripper target after initial grasp.
+
+### Changed
+- The mat is a kinematic rigid object reset with Isaac Lab's
+  `reset_root_state_uniform`. Its visual and collision poses follow the same
+  native update path, retaining the base ±0.1 rad and DR ±0.3 rad yaw ranges.
+  The custom mat reset and USD pose cache are removed. Seeded reset sequences
+  and mat contacts change; regenerate demonstrations for this configuration.
+- MJWarp line search permits up to 50 iterations for contact-heavy workshop
+  steps. Converged steps exit early; difficult vial and rack contacts no longer
+  flood the runtime with solver-limit diagnostics.
+- Browser streaming validates the camera tensor's indexed CUDA device. A
+  reusable CUDA frame buffer and stream/event synchronization hand frames to
+  ovstream without host synchronization.
+- Scripted vial grasps close three times faster after descent when the jaw
+  midpoint is within 15 mm of the grasp target and no 1 N contact has occurred.
+  First contact latches the controller back to its existing force regulation
+  for the rest of the grasp; each episode clears the latch.
+- The workshop image uses a multi-stage build with a CUDA 13 base runtime.
+  Python packages supply their pinned CUDA libraries; compiler tooling, package
+  caches, cloned repository history, upstream documentation, and upstream tests
+  remain outside the runtime image.
+- Isaac Lab pin advanced to develop (`1e520e9d5cb4`), including OVRtx 0.5 and
+  OVStage 0.2. The workshop uses upstream per-camera render products, GPU
+  hierarchy computation, and OVStage 0.2 asset-path writes while retaining its
+  runtime domain-randomization mirror and ambient-fill override.
+- Isaac Lab groups due cameras by renderer and submits their OVRtx products in
+  one native step while retaining independent output buffers and update
+  periods.
+- OVRtx driver shader caches use Isaac Lab's native `OVRTX_SHADER_CACHE_PATH`
+  redirection. Driver and package caches persist in separate, versioned
+  directories under the mounted OVRtx cache, preserving warmed shaders across
+  fresh containers without reusing incompatible data after renderer upgrades.
+  Shipped cache files seed missing entries without overwriting warmed files.
+- Vials-task friction, contact stiffness/damping, and MuJoCo contact settings
+  use shared native material/collision configs; vial colliders retain
+  `condim=6`.
+- Vials author their 20 g mass with native
+  `MassCfg` instead of startup events. Inertia is computed for that mass,
+  reducing it to approximately 20.6% of the retained geometry-derived inertia
+  and changing vial rotational dynamics.
+- Vial phase goals and transitions live together, with shared command smoothing
+  and centralized motion limits. Controller state and debug output omit transient
+  measurements and duplicate success flags; episode acceptance uses the task's
+  confirmed-placement termination.
+- Vial state-machine motion rates are 20% lower, with a 25-second episode
+  horizon. Each environment samples 0-3 cm of extra transfer clearance per
+  episode; partial resets preserve other environments' sampled heights.
+  Initial reach uses a 0.16 m/s command limit, 0.632 m/s² acceleration limit,
+  and 1.24 rad/s wrist limit independently of transfer motion.
+- Removed obsolete dependency compatibility paths for the controlled workshop
+  container: LeRobot uses its 0.6.0 feature API, and visual reset terms use
+  the pinned Isaac Lab static-asset and workshop renderer interfaces directly.
+  Browser CLI settings and pynput imports use the container's required setup.
+- Vial state-machine trajectories, scene geometry, contact checks, wrist DLS,
+  observations, placement history, and physical reset poses use native Warp
+  arrays and kernels. Torch remains at Isaac Lab manager/arm-IK interfaces
+  and in recording, display, and simple command adapters. Motion limits and
+  joint conventions are unchanged; Warp/NumPy sampling changes seeded random
+  sequences. Grasp and placement history belongs to each environment instance.
+- Initial pose configurations call Warp's built-in `quat_rpy` directly.
+- Removed the unused workshop `mdp/rewards.py`; active auto-reach rewards come
+  from Isaac Lab.
+- Visual reset transforms use OpenUSD's `Gf.Matrix4d` quaternion conversion,
+  and environment path expansion uses Isaac Lab's cloner utilities.
+- Isaac Lab `develop` pin advanced to `336bfcd59d0c` for the SO-101 SysID asset
+  (isaac-sim/IsaacLab#7483). OVRtx `0.4.1.364340` and OVStage `0.1.1.355824`
+  are unchanged. The range also turns OVRtx shadows off by default in RTX
+  Minimal mode, which does not affect the workshop's path-traced `rgb` cameras.
+- **Breaking:** the robot now spawns the public
+  `Robots_Multiphysics/RobotStudio/so101_new_calib_SysID/so101_new_calib.usda`
+  asset, replacing the temporary `isaac-dev` URI, and resolves its actuator
+  model from the `physics` variant instead of the workshop's per-joint gains.
+  That variant authors the AnchorBench system-identification fit: effort limit
+  3.35 N·m, velocity limit 30 rad/s, per-joint stiffness 14.7-68.3 (was 10-33),
+  and per-joint damping, armature, friction, dynamic friction, and viscous
+  friction that were previously unset. Prim
+  paths, joint limits, masses, inertias, and joint ordering are unchanged, so
+  the authored joint ranges and `SO101_JOINT_ORDER` still hold — but the plant
+  is different. **Datasets recorded and policies fine-tuned before this
+  change are off-distribution and should be re-recorded and retrained.**
+- `soft_joint_pos_limit_factor` is pinned to `1.0`. Upstream moved its default
+  to `0.98`, which would clamp the authored rest pose (`shoulder_lift` sits on
+  its stop by design) and shrink every teleop range by 2%.
+- The SysID asset resolves ~15 authored convex-hull collision proxies on the
+  robot that a broken reference path previously suppressed. Contact count is
+  higher; `nconmax=512` and the grasp thresholds need re-validation.
+- Rack SDF cooking now uses Isaac Lab's
+  `NewtonSDFCollisionPropertiesCfg` instead of a workshop MODEL_INIT hook.
+  Newton handles the rack's open mesh through its winding-number SDF path, so
+  the local trimesh repair pipeline and mesh-approximation override API were
+  removed.
+- Vial-task contact stiffness, damping, friction, and MuJoCo impedance remain
+  scoped to the vial, rack, mat, and lightbox. The robot retains its
+  USD-authored materials and instanceable geometry.
+- Renamed the wrist and external camera entities, observations, browser feeds,
+  and LeRobot features from `ego` / `external_D455` to `wrist` / `external`.
+  New datasets therefore use `observation.images.wrist` and
+  `observation.images.external`; older checkpoints require the eval rename map
+  `{"wrist":"ego","external":"external_D455"}`.
+
+## 30-08-26 /1
+
+### Changed
+- Isaac Lab `develop` pin advanced to `4f154633e603` and now supplies the
+  compatible OVRtx `0.4.1.364340` and OVStage `0.1.1.355824` packages.
+- OVRtx scene ownership and cloning now use OVStage. Runtime light, transform,
+  and HDRI domain-randomization writes target every clone-plan environment and
+  every active renderer backend through OVStage.
+- Ego and external cameras now share one native OVRtx backend. The renderer
+  batches one stable tiled render product per camera in a single native step,
+  preserving independent projections without the two-backend first-frame
+  deadlock or per-frame relationship rebuilds.
+- Camera configuration now selects the workshop renderer directly through
+  `OVRTXRendererCfg.class_type`. `utils/ovrtx` holds the renderer
+  (`renderer.py`) and its OVStage attribute writes (`ovstage_writes.py`).
+- `SO101OVRTXRenderer` sets `ISAAC_LAB_OVRTX_USE_OVSTAGE=1` and
+  `ISAAC_LAB_OVRTX_READ_GPU_TRANSFORMS=0` itself, so the backend flags it
+  depends on no longer have to be supplied by the container environment.
+- Each camera render product now authors `deviceIds` from the Warp device, so
+  its render-var buffers are allocated where the consuming kernels run.
+- The OVRtx step advances by the camera update period rather than a fixed
+  60 Hz, matching the 30 Hz cadence the workshop tasks actually render at.
+  Cameras sharing the renderer must now agree on `update_period`.
+- Per-tile DLSS history resets on environment reset were dropped after visual
+  inspection showed no pre-reset bleed without them.
+- Browser streaming and its static client assets now live together under
+  `utils/ovstream`. The display is WebRTC-only; the CPU-readback MJPEG
+  fallback and its duplicate browser path were removed.
+- Robot-color domain randomization now uses Isaac Lab's renderer-native
+  `VisualMaterialCfg` pipeline for the printed SO-101 materials, while the
+  motor and rack materials are registered to preserve their authored look
+  across OVStage clones.
+- Camera observations and fixed vial masses now use Isaac Lab's built-in
+  `image` and `randomize_rigid_body_mass` terms. Unused camera DR terms and
+  redundant shared-renderer cleanup bookkeeping were removed.
+
+### Fixed
+- Environment-local mat, camera, and light transforms no longer reset their
+  inherited transform stack.
+- Reset-time mat rotation now honors the resetting environment IDs instead of
+  moving every cloned mat when any one environment resets.
+- Runtime HDRI swaps recreate the OVStage asset column with `ASSET_STRING`
+  values, so texture changes reach detached renderer stages. The global dome
+  light changes only on full-scene resets, not when one environment resets.
+- Light-box exposure randomization is scoped to the resetting environments.
+- Robot material randomization applies one color consistently to all printed
+  materials in each environment.
+- Shared camera rendering publishes pending visual-material writes before the
+  native render step, preventing fallback-yellow robot materials.
+- Shared camera rendering disables OVRtx GPU transform reads, preventing
+  geometry streaming from corrupting one of the camera products.
+- SO-101 collision meshes use convex hulls instead of the asset's authored
+  convex decomposition, avoiding thousands of unnecessary robot collision
+  pieces while preserving the rack SDF and primitive vial colliders. The
+  reduced contact load allows `nconmax` to decrease from 1024 to 512.
+- The vials state machine fills rear rack slots before front slots and masks a
+  rear slot when its paired front slot is occupied, avoiding obstructed
+  lowering paths through an existing vial.
+
+## 16-08-26 /1
+
+### Fixed
+- Newton collision capacity now auto-sizes with the configured environment
+  count instead of failing when multi-environment contact limits exceed the
+  previous single-environment allocation.
+- Light-box walls/base and the mat now use separate `visual` and `collision`
+  meshes so static surfaces appear in the Newton visualizer. Collision meshes
+  use USD guide purpose and remain excluded from OVRtx rendering.
+
+### Changed
+- Environment spacing reduced from 4 m to 1 m for a more compact multi-env
+  layout.
+
+## 15-08-26 /1
+
+### Changed
+- Robot configuration now derives from Isaac Lab's `SO101_CFG` and loads the
+  multiphysics `so101_new_calib.usda` asset with explicit `Robot=robot`,
+  `Sensor=sensors`, and `Physics=physics` variants.
+- Simulation joint names now match the canonical LeRobot names
+  (`shoulder_pan` through `gripper`); the asset's authored articulation order
+  matches the existing dataset and checkpoint feature order.
+- The ego camera now binds to the calibrated `wowrobo_2MP_camera` authored by
+  the asset's sensor variant instead of duplicating its pose and OpenCV
+  intrinsics in Python.
+- Workshop-specific measured rest pose, per-joint actuator tuning, Newton
+  contact settings, moving-jaw contact sensing, and robot-color DR are
+  preserved on the upstream asset.
+- The upstream adapter's post-spawn callback normalizes the authored ego-camera
+  transform scale and de-instances nested visual/material references in the
+  in-memory stage root layer. Isaac Lab cloning preserves those root-layer
+  opinions without requiring renderer-stage preparation.
+- The ego camera's previous `(0.001, 5.0)` clipping range is restored to avoid
+  slicing nearby grasped objects, and robot-color updates now include the
+  sensor payload's separate printed-plastic material so the camera mount
+  matches the rest of the arm.
+- The external task view now uses a standalone pinhole camera with the D455
+  pose and workshop optics. Loading the public Isaac 6.0 D455 asset caused
+  delayed dynamic-geometry corruption in OVRtx even when rendering through a
+  separate camera, so the unused sensor body is intentionally not composed.
+- Repository guidance now uses the standard `AGENTS.md` filename, and camera
+  descriptions consistently identify the standalone external camera.
+
+### Removed
+- Standalone local SO-101 definition and `SO-ARM101-USD-Newton-CH.usd`,
+  superseded by the Isaac Lab-derived adapter and multiphysics asset.
+- Vendored `assets/usd/sensors/rsd455.usd`.
+
+## 14-08-26 /1
+
+### Changed
+- Isaac Lab `develop` pin advanced to `c8876fc81a8a` with ovrtx 0.4.x.
+- Camera commands no longer use the removed ovrtx 0.3 `libcarb.so`
+  `LD_PRELOAD` workaround.
+- Light-box RectLight dimensions are authored with explicit USD `width` and
+  `height` attributes instead of transform scale, matching the original Isaac
+  Sim setup and avoiding renderer-version-dependent light sizing.
+- Light-box RectLight exposure is calibrated to `2.0` (with intensity `100`) to
+  preserve the ovrtx 0.3 workshop brightness after ovrtx 0.4 corrected
+  transform-derived RectLight sizing; DR tasks randomize its exposure over
+  `(-2.0, 2.0)`.
+- Ego-camera calibration now uses Isaac Lab's native
+  `OpenCvPinholeDistortionCfg` while preserving the existing intrinsics and
+  distortion coefficients.
+- The workshop OVRtx renderer patch now delegates scene initialization and
+  camera updates to the current upstream implementation while retaining the
+  per-camera backend, ambient-fill, multi-backend partition, and DR-mirroring
+  behavior still specific to this workshop.
+- Sky-light DR once again samples the bundled HDRIs and mirrors runtime
+  asset-path changes into every OVRtx camera backend.
+
+### Removed
+- Private `OpenCvPinholeCameraCfg` spawner, superseded by Isaac Lab #6608.
+
+## 15-07-26 /2
+
+### Changed
+- OVRtx renderer patch simplified to one render product per camera and renamed
+  `MultiCamOVRTXRenderer` → `SO101OVRTXRenderer` (module
+  `utils/ovrtx_multicam.py` → `utils/so101_ovrtx_renderer.py`, env var
+  `NO_MULTICAM` → `NO_OVRTX_PATCH`). Dropped the dead multi-camera tiling path
+  (offset kernels, tile-offset / global-cols machinery, cross-camera frame
+  cache) now that each camera binds its own backend, and folded in upstream's
+  raise-instead-of-swallow behavior on render/binding failures. Kept the
+  ambient-fill fix, deferred DR write-queue, and multi-backend scene-partition
+  guard.
+
+### Removed
+- `tools/ovrtx_multicam_freeze_repro.py` — the tiled multi-camera freeze it
+  guarded no longer exists (one render product per camera).
+
+## 15-07-26 /1
+
+### Changed
+- Ego (gripper) camera now uses the calibrated OpenCV pinhole model of the real
+  SO-101 wrist camera instead of a plain USD pinhole. The projection is authored
+  as an `OmniLensDistortionOpenCvPinholeAPI` on the camera prim — OVRtx honors it
+  natively, so `fx/fy/cx/cy` + `k1/k2/k3/p1/p2` distortion drive the render — and
+  the ego camera pose was retuned to match. Changes the recorded ego RGB, so
+  datasets and policies from the old pinhole no longer match.
+
+### Added
+- `sim/opencv_pinhole_camera.py`: `OpenCvPinholeCameraCfg` + spawner that layers
+  the OpenCV lens-distortion API onto a pinhole camera; `apply_lens_distortion`
+  toggles the distortion coefficients.
+
+## 14-07-26 /1
+
+Bulk summary of the sim-to-real end-to-end work landed since the develop-pin
+migration (record → push → GR00T fine-tune → eval, in sim and on the real robot).
+
+### Added
+- GR00T policy evaluation in sim: `Newton-So101-Teleop-Vials-To-Rack-Eval-v0`
+  / `-DR-Eval-v0` tasks with success termination, run against a remote GR00T
+  policy server via `lerobot_eval`.
+- LeRobot dataset recording ported to the Newton module (RGB video + joint
+  state/action) with `--repo_id` / `--repo_root` / `--task_name` and Hub push.
+- Browser sensor display over ovstream WebRTC (`--browser-display`): live camera
+  video, rolling joint/action plots, per-camera FPS, a recording indicator, and
+  a "saving — do not close" guard.
+- Real-robot + GR00T inference Docker container, with a bundled policy server.
+- Per-camera OVRtx FOV (one render product per camera) and external-camera
+  orientation domain randomization.
+
+### Changed
+- Renamed the workshop package `sim_to_real_so101_newton` → `sim_to_real_so101`
+  and de-suffixed the console scripts (`list_envs`, `zero_agent`, `random_agent`,
+  `range_agent`, `lerobot_agent`, `lerobot_eval`).
+- Sim Docker image migrated to the Kit-less Newton stack; installation
+  streamlined and bumped to LeRobot 0.6.0.
+- `.dockerignore` now excludes the runtime-mounted `datasets/`, `outputs/`, and
+  `models/` directories from the Docker build context.
+
+### Removed
+- PhysX support: the physics preset now defaults to Newton (no `physx` preset),
+  and PhysX-only configuration was dropped.
+- Debug / diagnostic envs and their `tools/` monitors (the Cartpole build-proof
+  and the vial physics-isolation harnesses).
+- GLFW sensor display, superseded by the browser display.
+
+## 21-06-26 /2
+
+### Fixed
+- OVRtx light-box exposure regression: `isaaclab_ov`'s render scope baked a
+  full-strength ambient fill (`omni:rtx:rt:ambientLight:intensity = 1.0`) that
+  lit the whole scene independently of the authored lights and blew out the
+  light-box. `MultiCamOVRTXRenderer` now zeroes that attribute in the generated
+  render-scope USD, so illumination comes only from the authored RectLight.
+
+### Changed
+- Light-box asset switched from binary `lightbox-simple.usd` to re-authored
+  text `lightbox-simple.usda`.
+- Light-box `randomize_light_exposure` DR is now a no-op range `(0, 0)` (the
+  earlier ~10x dial-down is no longer needed after the ambient-light fix);
+  sky-light exposure DR range retuned to `(-3.0, 3.0)`.
+
+## 21-06-26 /1
+
+### Changed
+- Newton port now targets Isaac Lab `develop` (pinned at `01de15e155`) with
+  ovrtx 0.3.0, using the develop `launch_simulation` API.
+
+### Fixed
+- Robot link visuals are de-instanced in the SO-ARM101 USD so the moving arm
+  renders correctly in the OVRtx cameras (ovrtx 0.3.0 does not transform
+  USD-instanced geometry at runtime).
+- `list_envs` and the `Newton-Vial-Drop-Only-v0` env no longer crash on
+  the Kit-less develop runtime.
+
 ## 29-11-25 /1
 
 ## Changed
@@ -85,3 +796,8 @@ All notable changes to this project will be documented in this file.
 ### Dependencies
 - lerobot[feetech]==0.3.3
 - ffmpeg=7.1.1
+
+- Docs: add an organizer-only workshop preparation reference for caching the base model and all three policies used in the event lessons, with the README's Hugging Face cache mount.
+- Docs: add an interactive HG-DAgger state map illustrating demonstration coverage, policy drift, human takeover, recovery, and saved correction examples.
+
+- Docs: add an interactive GR00T training-update diagram and batch/target count explorer; collapse the training parameter reference into a dropdown.
