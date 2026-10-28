@@ -23,15 +23,6 @@ msgstr ""
 msgid "CODEX"
 msgstr "CODEX"
 
-#: docs/01-codex.md:3
-msgid ""
-"Use Codex throughout today’s workshop to understand the course, find the right command, follow an"
-" exercise, and discuss what you observe. The repository includes student skills that connect "
-"questions and hands-on work to the actual lesson documents."
-msgstr ""
-"오늘 과정에서는 Codex를 활용해 교재를 이해하고, 필요한 명령을 찾고, 실습을 진행하며 관찰한 결과를 함께 살펴봅니다. 저장소에는 질문과 실습을 실제 교재로 연결하는 "
-"학생용 스킬을 준비했습니다."
-
 #: docs/01-codex.md:5
 msgid ""
 "Ask in Korean and keep technical names such as Physical AI, GR00T, Co-Training and HG-DAgger in "
@@ -45,15 +36,6 @@ msgstr ""
 msgid "Choose your starting point"
 msgstr "사용 환경 선택하기"
 
-#: docs/01-codex.md:9
-msgid ""
-"The same nine course skills support both the ChatGPT desktop app and Codex CLI. Open the workshop"
-" folder once, then ask naturally. Skill names are optional; the agent selects relevant "
-"instructions from the question and available skills."
-msgstr ""
-"같은 수업용 스킬 9개를 ChatGPT desktop app과 Codex CLI에서 활용합니다. 수업 폴더를 연결한 뒤에는 평소처럼 질문하면 됩니다. 스킬 이름은 생략해도 "
-"되며, agent가 질문과 사용 가능한 스킬을 바탕으로 관련 지침을 선택합니다."
-
 #: docs/01-codex.md
 msgid "Interface"
 msgstr "화면"
@@ -61,10 +43,6 @@ msgstr "화면"
 #: docs/01-codex.md
 msgid "Start here"
 msgstr "시작 방법"
-
-#: docs/01-codex.md
-msgid "Optional skill selection"
-msgstr "스킬 직접 선택 — 선택 사항"
 
 #: docs/01-codex.md
 msgid "ChatGPT app · Codex"
@@ -75,10 +53,6 @@ msgid "Open the local workshop project"
 msgstr "로컬 수업 project 열기"
 
 #: docs/01-codex.md
-msgid "`$so101-dli`"
-msgstr "`$so101-dli`"
-
-#: docs/01-codex.md
 msgid "Codex CLI"
 msgstr "Codex CLI"
 
@@ -87,29 +61,8 @@ msgid "Run `codex` in the workshop directory"
 msgstr "수업 폴더에서 `codex` 실행"
 
 #: docs/01-codex.md
-msgid "`/skills` or `$so101-dli`"
-msgstr "`/skills` 또는 `$so101-dli`"
-
-#: docs/01-codex.md
 msgid "ChatGPT app · Work"
 msgstr "ChatGPT app · Work"
-
-#: docs/01-codex.md
-msgid "Use a project with local file access when available"
-msgstr "로컬 파일 접근이 가능한 project 사용"
-
-#: docs/01-codex.md
-msgid "`@so101-dli` when listed"
-msgstr "목록에 표시되면 `@so101-dli`"
-
-#: docs/01-codex.md:17
-msgid ""
-"The mention syntax follows the [official Skills & Plugins guide](https://learn.chatgpt.com/docs"
-"/skills-and-plugins). Natural-language questions work without a mention when the relevant skills "
-"are available."
-msgstr ""
-"직접 선택할 때의 표기는 [공식 Skills & Plugins 안내](https://learn.chatgpt.com/docs/skills-and-plugins)를 따릅니다. "
-"관련 스킬이 준비되어 있으면 이름을 지정하지 않고 자연어로 질문할 수 있습니다."
 
 #: docs/01-codex.md:19
 msgid "Option A: ChatGPT app"
@@ -141,12 +94,6 @@ msgstr ""
 "이번 수업에서는 **Work in → This computer / Local**을 선택하고 `aidayseoul2026` branch의 준비된 checkout을 사용합니다. "
 "채팅과 Workshop Container가 같은 수업 폴더를 사용하도록 맞춥니다."
 
-#: docs/01-codex.md:29
-msgid ""
-"Open **Skills** in the sidebar to check the course skills, then start a chat in this project. Ask"
-" the connection-check question below once, followed by your lesson question."
-msgstr "Sidebar의 **Skills**에서 수업용 스킬을 확인하고 이 project 안에서 채팅을 시작합니다. 아래 연결 확인 질문을 한 번 입력한 뒤 교재에 대해 질문합니다."
-
 #: docs/01-codex.md:31
 msgid ""
 "Folder selection is described in [Projects and chats](https://learn.chatgpt.com/docs/projects); "
@@ -173,15 +120,6 @@ msgstr ""
 "workspace 설정에 따라 다릅니다. 같은 연결 확인 질문으로 시작하세요. [Use ChatGPT](https://learn.chatgpt.com/docs/use-"
 "chatgpt)에서 자세한 내용을 확인할 수 있습니다."
 
-#: docs/01-codex.md:44
-msgid ""
-"Ask naturally after the files are accessible. If `so101-dli` is listed in the skill selector, you"
-" can also select it with `@`. If it is missing, ask the agent to read the repository’s skill file"
-" directly, or open the same folder in Codex."
-msgstr ""
-"파일에 접근할 수 있으면 자연어로 질문합니다. 스킬 선택 목록에 `so101-dli`가 표시되면 `@`로 직접 선택할 수도 있습니다. 보이지 않으면 저장소의 스킬 파일을 직접"
-" 읽어 달라고 요청하거나, 같은 폴더를 Codex에서 엽니다."
-
 #: docs/01-codex.md:46
 msgid ""
 "For ordinary web/mobile Chat without local folder access, attach the relevant lesson and ask "
@@ -205,47 +143,9 @@ msgstr ""
 "준비된 CLI를 사용합니다. 설치가 필요하면 [공식 Codex CLI 안내](https://learn.chatgpt.com/docs/codex/cli)를 따릅니다. Host "
 "terminal에서 수업 폴더로 이동하고 Codex를 시작합니다."
 
-#: docs/01-codex.md:59
-msgid ""
-"Confirm branch `aidayseoul2026` and complete sign-in if prompted. Enter your question at the "
-"Codex prompt. For an optional explicit choice, use `/skills` or `$so101-dli`."
-msgstr ""
-"Branch가 `aidayseoul2026`인지 확인하고, 로그인 안내가 나오면 완료합니다. Codex 입력창에 질문을 입력합니다. 스킬을 직접 선택하려면 `/skills` "
-"또는 `$so101-dli`를 사용합니다."
-
 #: docs/01-codex.md:61
 msgid "Set up the course skills"
 msgstr "수업용 스킬 설정하기"
-
-#: docs/01-codex.md:63
-msgid ""
-"The repository stores the instructions in `skills/` and links the nine student skills under "
-"`.agents/skills/`. Codex discovers these project skills from the checkout. Keep the folder "
-"structure intact so each skill can read its lesson references. No personal-folder copy is needed."
-" See the [official skills guide](https://learn.chatgpt.com/docs/build-skills)."
-msgstr ""
-"스킬 원문은 `skills/`에 있고, `.agents/skills/`에서 학생용 스킬 9개로 연결합니다. Codex는 이 checkout에서 project 스킬을 찾습니다."
-" 각 스킬이 교재 참조를 읽을 수 있도록 폴더 구조를 유지하세요. 개인 폴더로 따로 복사할 필요는 없습니다. [공식 스킬 "
-"안내](https://learn.chatgpt.com/docs/build-skills)를 참고하세요."
-
-#: docs/01-codex.md:65
-msgid ""
-"Automatic selection is enabled by default. The repository’s `AGENTS.md` directs ordinary student "
-"questions to the relevant course skill; the skill then reads the lesson before answering. A "
-"single-topic request uses its specialist, while a comparison across lessons uses course Q&A."
-msgstr ""
-"자동 선택은 기본으로 허용되어 있습니다. 저장소의 `AGENTS.md`는 학생의 일반 질문에 맞는 수업 스킬을 선택하도록 안내하고, 선택된 스킬은 교재를 읽은 뒤 답합니다. "
-"한 주제의 요청에는 해당 전문 스킬을, 여러 교재를 연결하는 질문에는 전체 과정 Q&A 스킬을 사용합니다."
-
-#: docs/01-codex.md:67
-msgid ""
-"If a skill is missing, check the primary folder and `.agents/skills/` links, then reopen the chat"
-" or restart the app/CLI. Use the connection-check prompt to confirm access. Selecting a skill "
-"does not grant additional file access or authorize robot motion; those depend on the current "
-"environment and request."
-msgstr ""
-"스킬이 보이지 않으면 기본 폴더와 `.agents/skills/` 링크를 확인하고 채팅을 다시 열거나 app/CLI를 다시 시작합니다. 연결 확인 질문으로 파일 접근을 "
-"확인하세요. 스킬 선택만으로 추가 파일 접근이나 로봇 동작이 허용되는 것은 아니며, 현재 환경과 요청 범위에 따라 진행합니다."
 
 #: docs/01-codex.md:69
 msgid "What the course skills cover"
@@ -355,20 +255,6 @@ msgid ""
 msgstr ""
 "Codex가 `docs/seoul-workshop-schedule.md`를 읽고 시간·주제·소요 시간·진행자를 표로 제시하는지 확인합니다. 입장·휴식·점심이 포함되고 모든 "
 "시간이 KST 기준인지도 확인합니다. 답변을 [오늘의 일정](seoul-workshop-schedule.md)과 비교하세요."
-
-#: docs/01-codex.md:95
-msgid "Optional: choose a skill explicitly"
-msgstr "선택 사항: 스킬 직접 지정하기"
-
-#: docs/01-codex.md:97
-msgid ""
-"Use this only when you want to choose the skill yourself. In the ChatGPT app’s Codex view or "
-"Codex CLI:"
-msgstr "직접 스킬을 고르고 싶을 때만 사용합니다. ChatGPT app의 Codex 화면 또는 Codex CLI에서는 다음과 같이 입력합니다."
-
-#: docs/01-codex.md:103
-msgid "In ChatGPT Work, select the available skill with `@`, then ask:"
-msgstr "ChatGPT Work에서는 사용 가능한 스킬을 `@`로 선택한 뒤 질문합니다."
 
 #: docs/01-codex.md:109
 msgid ""
@@ -647,3 +533,201 @@ msgstr ""
 "오류가 발생하면 실행한 명령, Host/Container 중 실행 위치, 관련 오류 메시지를 함께 알려 주세요. Codex가 "
 "[Troubleshooting](troubleshooting.md)과 연결해 원인을 살펴볼 수 있습니다. 실제 장비를 움직이기 전에는 강사의 안전 안내를 따르고 station"
 " 준비 상태를 확인합니다."
+
+#: docs/01-codex.md:3
+msgid ""
+"Use Codex throughout the workshop to prepare the environment, understand the course, follow an "
+"exercise, and discuss observations. Instructors, TAs and students use the same repository and the"
+" same skill files under `skills/`."
+msgstr "강사·TA·학생은 같은 repository와 `skills/`의 공통 스킬로 환경을 준비하고, 교재를 이해하고, 실습을 진행하며 관찰 결과를 함께 검토합니다."
+
+#: docs/01-codex.md
+msgid "Common skill file"
+msgstr "공통 스킬 파일"
+
+#: docs/01-codex.md
+msgid "`skills/so101-dli/SKILL.md`"
+msgstr "`skills/so101-dli/SKILL.md`"
+
+#: docs/01-codex.md
+msgid "Use a project with local file access"
+msgstr "로컬 파일에 접근할 수 있는 project 사용"
+
+#: docs/01-codex.md:27
+msgid ""
+"Start a chat in this project and ask the connection-check question below, followed by your setup "
+"or lesson request. The repository instructions read the canonical skill files directly."
+msgstr "이 project에서 채팅을 시작하고 아래 연결 확인 질문 후 환경설정이나 수업 질문을 입력합니다. Repository 지침이 공통 스킬 원문을 직접 읽도록 안내합니다."
+
+#: docs/01-codex.md:42
+msgid ""
+"After confirming file access, ask naturally or name the canonical skill file directly. This "
+"workflow does not require a role-specific skill installation or a skill-selector entry."
+msgstr "파일 접근을 확인한 뒤 자연스럽게 질문하거나 공통 스킬 파일을 직접 지정합니다. 역할별 스킬 설치나 스킬 선택기에 항목을 추가하는 과정은 필요하지 않습니다."
+
+#: docs/01-codex.md:57
+msgid ""
+"Confirm branch `aidayseoul2026` and complete sign-in if prompted. Enter a natural-language "
+"request or ask Codex to read `skills/so101-dli/SKILL.md` first."
+msgstr ""
+"Branch가 `aidayseoul2026`인지 확인하고 필요한 로그인을 마칩니다. 자연어로 요청하거나 먼저 `skills/so101-dli/SKILL.md`를 읽도록 "
+"요청합니다."
+
+#: docs/01-codex.md:61
+msgid ""
+"All course skills live in `skills/`. `AGENTS.md` tells the agent which canonical file to read for"
+" a setup request or lesson question. Keep the folder structure intact so relative lesson "
+"references work. No symlinks, personal-folder copies or role-specific activation are needed."
+msgstr ""
+"모든 수업 스킬은 `skills/`에 있습니다. `AGENTS.md`는 환경설정이나 수업 질문에 맞는 스킬 원문을 읽도록 안내합니다. 교재의 상대 경로를 유지하도록 폴더 "
+"구조를 보존합니다. Symlink, 개인 폴더 복사, 역할별 활성화는 필요하지 않습니다."
+
+#: docs/01-codex.md:63
+msgid ""
+"The skill-selector UI may not list these plain folders. Use the connection-check prompt to verify"
+" access to `AGENTS.md` and the requested `SKILL.md`; direct file reading is the course workflow."
+msgstr ""
+"스킬 선택기 UI에는 이 폴더들이 표시되지 않을 수 있습니다. 연결 확인 질문으로 `AGENTS.md`와 필요한 `SKILL.md`를 읽을 수 있는지 확인합니다. 이 수업은 "
+"원문 파일을 직접 읽는 방식으로 진행합니다."
+
+#: docs/01-codex.md:65
+msgid ""
+"If files cannot be read, check the selected project folder and local file access. A skill request"
+" does not itself grant additional permissions or establish robot readiness."
+msgstr "파일을 읽을 수 없으면 선택한 project 폴더와 로컬 파일 접근을 확인합니다. 스킬 요청 자체가 추가 권한이나 robot 준비 상태를 보장하지는 않습니다."
+
+#: docs/01-codex.md
+msgid "`so101-dli-prepare`"
+msgstr "`so101-dli-prepare`"
+
+#: docs/01-codex.md
+msgid "`so101-dli-docs`"
+msgstr "`so101-dli-docs`"
+
+#: docs/01-codex.md:85
+msgid "Choose the setup document profile"
+msgstr "환경설정 문서 profile 선택하기"
+
+#: docs/01-codex.md:87
+msgid ""
+"For a new setup, an unqualified request selects student documents (`event`). Select `instructor` "
+"documents only when explicitly requested. The operator being an Instructor or TA does not change "
+"this default. Both profiles use the same installation workflow, models, datasets and skills."
+msgstr ""
+"새 환경설정 요청에 별도 언급이 없으면 학생용 문서(`event`)를 선택합니다. Instructor용을 명시한 경우에만 `instructor` 문서를 선택합니다. 작업자가 "
+"Instructor나 TA라는 이유로 기본값이 바뀌지 않습니다. 두 profile은 같은 설치 절차, model, dataset, 스킬을 사용합니다."
+
+#: docs/01-codex.md
+msgid "Request"
+msgstr "요청"
+
+#: docs/01-codex.md
+msgid "Document profile"
+msgstr "문서 profile"
+
+#: docs/01-codex.md
+msgid "`환경설정을 해줘`"
+msgstr "`환경설정을 해줘`"
+
+#: docs/01-codex.md
+msgid "Student (`event`)"
+msgstr "학생용 (`event`)"
+
+#: docs/01-codex.md
+msgid "`Instructor용으로 환경설정을 해줘`"
+msgstr "`Instructor용으로 환경설정을 해줘`"
+
+#: docs/01-codex.md
+msgid "Instructor (`instructor`)"
+msgstr "Instructor용 (`instructor`)"
+
+#: docs/01-codex.md:94
+msgid ""
+"The agent reads `skills/so101-dli-prepare/SKILL.md`, records the selected profile and proceeds "
+"through installation, document build and preview. Asking for an explanation or a plan does not "
+"execute those steps."
+msgstr ""
+"Agent는 `skills/so101-dli-prepare/SKILL.md`를 읽고 선택한 profile을 기록한 뒤 설치, 문서 빌드, preview를 진행합니다. 설명이나"
+" 계획만 요청한 경우에는 실행하지 않습니다."
+
+#: docs/01-codex.md:106
+msgid "Optional: name the file directly"
+msgstr "선택 사항: 파일을 직접 지정하기"
+
+#: docs/01-codex.md:9
+msgid ""
+"Open the shared workshop folder and ask naturally. `AGENTS.md` routes the request to the relevant"
+" `skills/<name>/SKILL.md` file. Everyone uses the same files."
+msgstr ""
+"공통 workshop 폴더를 열고 자연스럽게 질문합니다. `AGENTS.md`가 요청에 맞는 `skills/<name>/SKILL.md`를 읽도록 안내합니다. 모두 같은 "
+"파일을 사용합니다."
+
+#: docs/01-codex.md
+msgid "Environment installation, checks and resume"
+msgstr "환경 설치·점검·재개"
+
+#: docs/01-codex.md
+msgid "Build and serve the course documentation"
+msgstr "수업 문서 빌드와 preview"
+
+#: docs/_includes/student-environment-setup.md:2
+msgid "Environment setup"
+msgstr "환경설정"
+
+#: docs/_includes/student-environment-setup.md:4
+msgid ""
+"Ask `환경설정을 해줘` in the shared workshop project. The agent reads `AGENTS.md` and `skills/so101-dli-"
+"prepare/SKILL.md`, checks the existing installation, and follows the preparation guide. The same "
+"skill files support installation, course questions and exercises."
+msgstr ""
+"공통 workshop project에서 `환경설정을 해줘`라고 요청합니다. Agent는 `AGENTS.md`와 `skills/so101-dli-"
+"prepare/SKILL.md`를 읽고 기존 설치를 확인한 뒤 준비 문서를 따라 진행합니다. 같은 스킬 파일로 설치와 수업 질문·실습을 지원합니다."
+
+#: docs/_includes/student-environment-setup.md:6
+msgid "A read-only plan shows the installation checkpoints and commands without executing them:"
+msgstr "읽기 전용 계획 도구는 설치 단계와 명령을 보여주며 실제로 실행하지 않습니다."
+
+#: docs/_includes/student-environment-setup.md:12
+msgid ""
+"Record the agreed source commit, actual model/dataset paths, commands, logs and next action under"
+" `runs/setup/<station>/`. Reuse verified installations and downloads when resuming. Permission "
+"errors and untested runtime checks remain unknown."
+msgstr ""
+"합의한 source commit, 실제 model·dataset 경로, 명령·로그와 다음 작업을 `runs/setup/<station>/`에 기록합니다. 재개할 때는 검증한 "
+"설치·다운로드를 재사용합니다. Permission 오류나 검증하지 않은 runtime 항목은 미확인으로 남깁니다."
+
+#: docs/_includes/student-environment-setup.md:14
+msgid "Build and open the course guide"
+msgstr "교재를 빌드하고 열기"
+
+#: docs/_includes/student-environment-setup.md:16
+msgid ""
+"Run these commands on the Host from the repository root after preparing the locked documentation "
+"dependencies and Git LFS media. Documentation does not require the robot Container or GPU."
+msgstr ""
+"문서용 고정 dependency와 Git LFS media를 준비한 뒤 Host의 repository root에서 아래 명령을 실행합니다. 문서에는 robot "
+"Container나 GPU가 필요하지 않습니다."
+
+#: docs/_includes/student-environment-setup.md:24
+msgid ""
+"The build prepares both languages and opens the Korean guide first. Check the actual LAN address "
+"and choose an available port for the preview:"
+msgstr "두 언어의 문서를 준비하고 한국어 교재를 먼저 엽니다. 실제 사내 IP를 확인하고 사용 가능한 preview 포트를 선택합니다."
+
+#: docs/_includes/student-environment-setup.md:31
+msgid ""
+"Use the verified URL reported by the preview. Keep the requested preview running; its PID, "
+"command and log are recorded locally. Use `preview.py stop` to stop that owned preview. This is "
+"background execution, not boot autostart."
+msgstr ""
+"Preview가 보고한 URL의 실제 응답을 확인해 사용합니다. 사용자가 볼 preview는 유지하며 PID·실행 명령·로그는 로컬에 기록됩니다. 해당 preview를 중지할"
+" 때는 `preview.py stop`을 사용합니다. 백그라운드 실행이며 재부팅 후 자동 시작은 아닙니다."
+
+#: docs/_includes/student-environment-setup.md:33
+msgid ""
+"Software preparation and robot operation are separate checks. Confirm the current operator and "
+"station readiness before powered robot exercises; a model cache or connection message does not "
+"establish successful motion."
+msgstr ""
+"Software 준비와 robot 동작은 따로 점검합니다. 전원을 켜는 robot 실습 전에는 현재 작업자와 station 준비 상태를 확인합니다. Model cache나 "
+"연결 메시지만으로 실제 동작 성공을 판정하지 않습니다."

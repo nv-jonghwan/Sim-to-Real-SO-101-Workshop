@@ -8,6 +8,11 @@ import {fileURLToPath} from 'node:url';
 const repo=resolve(dirname(fileURLToPath(import.meta.url)),'../../..');
 await mkdir(repo+'/.local',{recursive:true});
 const base=process.argv[2] || 'http://127.0.0.1:8095';
+const profileAt=process.argv.indexOf('--profile');
+const guideProfile=profileAt<0?'student':process.argv[profileAt+1];
+if(!['student','instructor','all'].includes(guideProfile))throw new Error('Invalid document profile');
+const audiences=guideProfile==='all'?['event','learner','instructor']:[guideProfile==='instructor'?'instructor':'event'];
+const prefixes=audiences.flatMap(a=>['/ko/'+a+'/html/','/'+a+'/html/']);
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 const profile=await mkdtemp(join(tmpdir(),'so101-interactive-chrome-'));
 const chrome=spawn(process.env.CHROME || '/usr/bin/google-chrome',['--headless=new','--disable-gpu','--remote-debugging-port=0',`--user-data-dir=${profile}`,'--no-first-run','--no-default-browser-check','--window-size=1440,1000','about:blank'],{stdio:'ignore'});
@@ -30,7 +35,7 @@ try{
   const source=await readFile(repo+'/docs/'+name,'utf8');
   if(source.includes('_static/interactive/')||source.includes('_includes/wrist-image-comparison'))pages.push(name.replace(/\.md$/,'.html'));
  }
- for(const prefix of ['/ko/event/html/','/ko/learner/html/','/ko/instructor/html/','/event/html/','/learner/html/','/instructor/html/']){
+ for(const prefix of prefixes){
   const korean=prefix.startsWith('/ko/');const context={prefix,pages:0,diagrams:0,selections:0,dynamicChecks:[]};report.contexts.push(context);
   for(const page of pages){
    await navigate(prefix+page);context.pages++;

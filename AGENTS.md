@@ -455,36 +455,35 @@ indent on shell continuations. Omit args with working defaults
 (`--port`, `--robot_id`) unless the user is overriding them.
 
 
-## AI Days Seoul student course support
+## AI Days Seoul shared course skills
 
-Student requests may be ordinary Korean or English, without a skill mention.
-Choose and read the matching student skill before answering or running an exercise;
-do not require the student to type a skill name. For a single-topic request, use
-the specialist listed in `skills/so101-dli/SKILL.md`; use course Q&A for broad or
-cross-lesson questions. Read only relevant skills and lesson sections. If skill
-discovery is unavailable but files are accessible, read the canonical `skills/`
-file directly. If file access is missing, explain the missing project connection.
+The same checkout and canonical `skills/<name>/SKILL.md` files are used on every
+station. Read the relevant canonical skill directly; this repository does not
+require skill symlinks, personal-folder copies or role-specific activation.
+Do not claim that the skill-selector UI automatically lists arbitrary folders.
+Natural Korean or English requests need no skill mention.
 
-For course navigation or the next exercise, use `skills/so101-dli/SKILL.md`.
-For questions across the whole course, use `skills/so101-dli-qa/SKILL.md` and read
-the relevant lesson before answering. Use `docs/seoul-workshop-schedule.md` for
-“오늘의 일정이 뭐야?” and show its detailed schedule as a Korean Markdown table,
-including time, topic, duration and instructor. A schedule or Q&A request does
-not start containers, GPU jobs or robot movement. Student skills are linked
-under `.agents/skills/`; see `docs/01-codex.md` for setup and examples.
+For course navigation read `skills/so101-dli/SKILL.md`; for cross-lesson Q&A use
+`skills/so101-dli-qa/SKILL.md`; for one lesson read its specialist as listed in
+the router. Read the current lesson before answering or performing an exercise.
+For schedule questions read `docs/seoul-workshop-schedule.md` and return its
+detailed rows in Korean, including time, topic, duration, instructor, arrival,
+breaks, lunch and the 17:15 end in KST. A Q&A request does not start workloads.
 
-Use this fork's `aidayseoul2026` branch unless the user selects another baseline,
-and record the exact commit for exercises. Use the HF account authorized for
-the current station and its organization policy. Never print credentials.
+For requests such as "환경설정해줘", "설치해줘" or DLI Laptop setup, read
+`skills/so101-dli-prepare/SKILL.md` and the preparation guide. Use the same
+installation checkpoints and assets on student and instructor computers.
+For a new setup, default to profile `student` (classroom docs audience `event`).
+Select `instructor` only when the user explicitly asks for Instructor용 setup or
+documents. The operator being a TA/instructor does not select that profile.
+State the selected profile before executing; no extra confirmation is required
+for this default. Record it and retain it while continuing the same setup.
+Use `skills/so101-dli-docs/SKILL.md` to build and serve only the selected guide.
+An explicit change of profile changes document selection, not the shared skills
+or verified runtime installation. Maintainer builds of all guides are explicit.
 
-## Instructor station preparation
-
-For instructor/TA requests to install, prepare, audit or resume a DLI Laptop,
-read `skills/so101-dli-prepare/SKILL.md` and the current
-`docs/2026-10-28-seoul-preparation.md`. Route guide builds and previews to
-`skills/so101-dli-docs/SKILL.md`. These canonical skills work without discovery
-links. The default `.agents/skills` remains the nine student skills; optional
-instructor activation is documented in the preparation guide and README.
-Freeze the requested commit, preserve existing installations and use ignored
-`runs/setup/<station>/` for evidence and the next unmet checkpoint. Updating a
-skill or answering a setup question does not start an installation or exercise.
+Use this fork's selected `aidayseoul2026` commit; record the exact baseline,
+Host/image identity and checkpoint evidence under ignored `runs/setup/<station>/`.
+Preserve current installations and resume valid work. A skill/document update or
+setup explanation does not itself authorize an installation or robot motion.
+Use the authorized station HF account and organization policy; never print tokens.

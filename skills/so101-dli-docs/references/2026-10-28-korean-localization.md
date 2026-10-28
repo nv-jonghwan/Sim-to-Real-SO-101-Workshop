@@ -58,7 +58,7 @@ When English changes:
    raw include and JavaScript-generated status against `interactive.json`.
 4. Run `localization.py check` and build both languages with warnings as errors.
    The check compares inline-code values and Markdown link destinations.
-5. Run `.venv/bin/python skills/so101-dli-docs/scripts/verify_html.py`. Compare rendered code blocks between languages, local links and anchors,
+5. Run `.venv/bin/python skills/so101-dli-docs/scripts/verify_html.py --profile all`. Compare rendered code blocks between languages, local links and anchors,
    original heading anchors, language switches and audience differences. Check
    Korean navigation, images, lazy iframe loading and video playback in a browser.
    Click every interactive hotspot, use keyboard selection and reset, and change
@@ -69,7 +69,7 @@ When English changes:
 For the full interaction check, use Node.js 22+ and Google Chrome:
 
 ```bash
-node skills/so101-dli-docs/scripts/verify_interactive.mjs http://127.0.0.1:8095
+node skills/so101-dli-docs/scripts/verify_interactive.mjs http://127.0.0.1:8095 --profile all
 ```
 
 It starts and cleans up its own headless Chrome profile. Evidence is saved in

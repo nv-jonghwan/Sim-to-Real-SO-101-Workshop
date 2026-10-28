@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../.." && pwd)
-mode=${1:-both}
+mode=${1:-event}
 language=${2:-all}
 case "$mode" in learner|event|instructor|both|all) ;; *) echo 'Usage: build.sh [learner|event|instructor|both|all] [en|ko|all]' >&2; exit 2 ;; esac
 case "$language" in en|ko|all) ;; *) echo 'Usage: build.sh [learner|event|instructor|both|all] [en|ko|all]' >&2; exit 2 ;; esac

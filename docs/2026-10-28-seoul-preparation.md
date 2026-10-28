@@ -1,6 +1,6 @@
 # DLI준비와 진행
 
-행사 전날의 셋업과 당일 운영을 위한 발표자·TA 안내입니다. 전날에는 장비 조립과 사전 점검을 마치고, 당일에는 참가자가 준비된 station에서 calibration과 실습을 시작할 수 있도록 합니다.
+전날 준비할 설치·장비 셋업과 당일 운영 안내입니다. 같은 repo와 공통 스킬로 환경을 준비합니다. 전날 장비 조립과 사전 점검을 마쳐 당일 참가자가 calibration과 실습을 시작할 수 있도록 합니다.
 
 [오늘의 일정](seoul-workshop-schedule.md) · [Workspace 사용](07-using-workspace.md) · [Dataset과 Model](datasets-and-models.md#download-models-for-the-workshop-container) · [Troubleshooting](troubleshooting.md)
 
@@ -162,7 +162,7 @@ df -h
 
 ### 2. Host software와 NVIDIA Container Toolkit을 준비합니다
 
-Git·Git LFS, Docker Engine, 교재의 CUDA Toolkit과 NVIDIA Container Toolkit을 준비합니다. Docker는 [Ubuntu 설치 안내](https://docs.docker.com/engine/install/ubuntu/), NVIDIA Container Toolkit은 [공식 설치 안내](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)를 따릅니다. 수업에 사용할 계정으로 Docker 명령을 실행할 수 있는지 확인합니다.
+Git·Git LFS, Docker Engine과 NVIDIA Container Toolkit을 준비합니다. CUDA 13 실행 환경은 workshop Container에서 제공하므로 Host CUDA Toolkit의 별도 설치는 이 Container 실행 절차의 필수 조건이 아닙니다. Docker는 [Ubuntu 설치 안내](https://docs.docker.com/engine/install/ubuntu/), NVIDIA Container Toolkit은 [공식 설치 안내](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)를 따릅니다. 수업에 사용할 계정으로 Docker 명령을 실행할 수 있는지 확인합니다.
 
 ```bash
 sudo apt-get update
@@ -327,10 +327,12 @@ zero_agent --task Newton-So101-Teleop-Vials-To-Rack-v0 --cameras all presets=new
 
 ## 저장소의 실행 스킬
 
-저장소의 `skills/`에는 학생이 전체 교재에 대해 질문하고 수업 실습을 단계별로 진행하는 데 사용하는 스킬을 포함합니다. 설정과 사용 예시는 [CODEX](01-codex.md)를 참고하세요.
+저장소의 `skills/`에는 환경 설치부터 수업 질문과 실습까지 함께 사용하는 공통 스킬이 있습니다. `AGENTS.md`를 통해 필요한 `SKILL.md`를 직접 읽습니다. 설정과 사용 예시는 [CODEX](01-codex.md)를 참고하세요.
 
 | 스킬 | 사용하는 시점 |
 |---|---|
+| `so101-dli-prepare` | 공통 환경 설치·점검·재개 |
+| `so101-dli-docs` | 수업 문서의 빌드와 preview |
 | `so101-dli` | 오늘의 일정과 교재에 따라 다음 학생 실습 단계 선택 |
 | `so101-dli-qa` | 전체 교재의 개념·명령·오류 Q&A |
 | `so101-dli-gr00t` | VLA·GR00T·post-training·Co-Training 학습 |
@@ -343,9 +345,16 @@ zero_agent --task Newton-So101-Teleop-Vials-To-Rack-v0 --cameras all presets=new
 
 실행 요청 예시: “`skills/so101-dli/SKILL.md`를 읽고, 교재의 calibration 실습부터 한 단계씩 진행해 주세요.”
 
+::::{audience} student
+
+:::{include} _includes/student-environment-setup.md
+:::
+
+::::
+
 ::::{audience} instructor
 
-:::{include} _includes/seoul-instructor-skills.md
+:::{include} _includes/seoul-setup-skills.md
 :::
 
 ::::

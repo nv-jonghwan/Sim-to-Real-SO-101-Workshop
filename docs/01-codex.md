@@ -1,20 +1,18 @@
 # CODEX
 
-Use Codex throughout today’s workshop to understand the course, find the right command, follow an exercise, and discuss what you observe. The repository includes student skills that connect questions and hands-on work to the actual lesson documents.
+Use Codex throughout the workshop to prepare the environment, understand the course, follow an exercise, and discuss observations. Instructors, TAs and students use the same repository and the same skill files under `skills/`.
 
 Ask in Korean and keep technical names such as Physical AI, GR00T, Co-Training and HG-DAgger in English. A course question can be answered from the documents; physical exercises follow the instructor’s sequence and the readiness of your station.
 
 ## Choose your starting point
 
-The same nine course skills support both the ChatGPT desktop app and Codex CLI. Open the workshop folder once, then ask naturally. Skill names are optional; the agent selects relevant instructions from the question and available skills.
+Open the shared workshop folder and ask naturally. `AGENTS.md` routes the request to the relevant `skills/<name>/SKILL.md` file. Everyone uses the same files.
 
-| Interface | Start here | Optional skill selection |
+| Interface | Start here | Common skill file |
 |---|---|---|
-| ChatGPT app · Codex | Open the local workshop project | `$so101-dli` |
-| Codex CLI | Run `codex` in the workshop directory | `/skills` or `$so101-dli` |
-| ChatGPT app · Work | Use a project with local file access when available | `@so101-dli` when listed |
-
-The mention syntax follows the [official Skills & Plugins guide](https://learn.chatgpt.com/docs/skills-and-plugins). Natural-language questions work without a mention when the relevant skills are available.
+| ChatGPT app · Codex | Open the local workshop project | `skills/so101-dli/SKILL.md` |
+| Codex CLI | Run `codex` in the workshop directory | `skills/so101-dli/SKILL.md` |
+| ChatGPT app · Work | Use a project with local file access | `skills/so101-dli/SKILL.md` |
 
 ## Option A: ChatGPT app
 
@@ -26,7 +24,7 @@ The mention syntax follows the [official Skills & Plugins guide](https://learn.c
 
 3. For this workshop, choose **Work in → This computer / Local** and use the prepared checkout on branch `aidayseoul2026`. This keeps the chat aligned with the folder mounted in the workshop Container.
 
-4. Open **Skills** in the sidebar to check the course skills, then start a chat in this project. Ask the connection-check question below once, followed by your lesson question.
+4. Start a chat in this project and ask the connection-check question below, followed by your setup or lesson request. The repository instructions read the canonical skill files directly.
 
 Folder selection is described in [Projects and chats](https://learn.chatgpt.com/docs/projects); execution choices are described in [Codex environments](https://learn.chatgpt.com/docs/environments/modes). A cloud environment needs its own files and tools; it does not automatically receive the laptop’s USB devices, running Container or GPU.
 
@@ -41,7 +39,7 @@ AGENTS.md, skills/so101-dli/SKILL.md, docs/seoul-workshop-schedule.md를 읽을 
 
 If you prefer the ChatGPT interface, select **ChatGPT → Work** and use a project that can access the local workshop folder. Availability depends on the account and workspace. Start with the same connection check. See [Use ChatGPT](https://learn.chatgpt.com/docs/use-chatgpt).
 
-Ask naturally after the files are accessible. If `so101-dli` is listed in the skill selector, you can also select it with `@`. If it is missing, ask the agent to read the repository’s skill file directly, or open the same folder in Codex.
+After confirming file access, ask naturally or name the canonical skill file directly. This workflow does not require a role-specific skill installation or a skill-selector entry.
 
 For ordinary web/mobile Chat without local folder access, attach the relevant lesson and ask questions about it. A GitHub link alone does not install these repository skills or connect the classroom robot. This course distributes local skill folders; it has no separately published ChatGPT plugin.
 
@@ -56,20 +54,22 @@ codex --version
 codex
 ```
 
-Confirm branch `aidayseoul2026` and complete sign-in if prompted. Enter your question at the Codex prompt. For an optional explicit choice, use `/skills` or `$so101-dli`.
+Confirm branch `aidayseoul2026` and complete sign-in if prompted. Enter a natural-language request or ask Codex to read `skills/so101-dli/SKILL.md` first.
 
 ## Set up the course skills
 
-The repository stores the instructions in `skills/` and links the nine student skills under `.agents/skills/`. Codex discovers these project skills from the checkout. Keep the folder structure intact so each skill can read its lesson references. No personal-folder copy is needed. See the [official skills guide](https://learn.chatgpt.com/docs/build-skills).
+All course skills live in `skills/`. `AGENTS.md` tells the agent which canonical file to read for a setup request or lesson question. Keep the folder structure intact so relative lesson references work. No symlinks, personal-folder copies or role-specific activation are needed.
 
-Automatic selection is enabled by default. The repository’s `AGENTS.md` directs ordinary student questions to the relevant course skill; the skill then reads the lesson before answering. A single-topic request uses its specialist, while a comparison across lessons uses course Q&A.
+The skill-selector UI may not list these plain folders. Use the connection-check prompt to verify access to `AGENTS.md` and the requested `SKILL.md`; direct file reading is the course workflow.
 
-If a skill is missing, check the primary folder and `.agents/skills/` links, then reopen the chat or restart the app/CLI. Use the connection-check prompt to confirm access. Selecting a skill does not grant additional file access or authorize robot motion; those depend on the current environment and request.
+If files cannot be read, check the selected project folder and local file access. A skill request does not itself grant additional permissions or establish robot readiness.
 
 ## What the course skills cover
 
 | Skill | When to use it |
 |---|---|
+| `so101-dli-prepare` | Environment installation, checks and resume |
+| `so101-dli-docs` | Build and serve the course documentation |
 | `so101-dli` | Today’s schedule, lesson navigation and the next exercise |
 | `so101-dli-qa` | Questions and explanations across the complete course |
 | `so101-dli-hardware` | Workspace checks, calibration, cameras and Real Teleop |
@@ -82,6 +82,20 @@ If a skill is missing, check the primary folder and `.agents/skills/` links, the
 
 The skills read the current lesson Markdown, Korean catalogs, interactive explanations and relevant code. Ask for a source section when you want to relate an answer back to the lesson.
 
+::::{audience} student
+
+:::{include} _includes/student-environment-setup.md
+:::
+
+::::
+
+::::{audience} instructor
+
+:::{include} _includes/instructor-setup-profile.md
+:::
+
+::::
+
 ## First example: ask for today’s schedule
 
 After opening the workshop folder in the app or CLI, enter this question without a skill name.
@@ -92,18 +106,10 @@ After opening the workshop folder in the app or CLI, enter this question without
 
 Codex should read `docs/seoul-workshop-schedule.md` and return a table with the time, topic, duration and instructor. It should include arrival, breaks and lunch, and state that all times are KST. Compare the answer with [Today’s Schedule](seoul-workshop-schedule.md).
 
-### Optional: choose a skill explicitly
-
-Use this only when you want to choose the skill yourself. In the ChatGPT app’s Codex view or Codex CLI:
+### Optional: name the file directly
 
 ```text
-$so101-dli 오늘의 일정이 뭐야? 시간, 주제, 소요 시간, 진행자를 표로 보여줘.
-```
-
-In ChatGPT Work, select the available skill with `@`, then ask:
-
-```text
-@so101-dli 오늘의 일정이 뭐야? 시간, 주제, 소요 시간, 진행자를 표로 보여줘.
+skills/so101-dli/SKILL.md를 읽고 오늘의 일정을 시간, 주제, 소요 시간, 진행자 표로 보여줘.
 ```
 
 Check that teaching begins at 09:00, lunch is 12:45–13:45 and the conclusion ends at 17:15. Use each detailed session row for its instructor. This exercise reads documents and does not need to start a robot or simulation.

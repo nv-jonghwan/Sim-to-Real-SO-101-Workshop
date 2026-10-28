@@ -6,7 +6,7 @@ Welcome to this workshop on sim-to-real transfer for the SO-101 robot!
 
 This repository contains the assets and code to accompany this [learning content](https://docs.nvidia.com/learning/physical-ai/sim-to-real-so-101/latest/index.html).
 
-This fork’s `aidayseoul2026` branch contains the AI Day Seoul 2026 course snapshot, Korean documentation, schedule and nine student skills for hands-on exercises and whole-course Q&A. Students can start with [CODEX](docs/01-codex.md) and [Today’s Schedule](docs/seoul-workshop-schedule.md). Instructor setup is covered separately in [DLI preparation and RTX Laptop setup](docs/2026-10-28-seoul-preparation.md). The public upstream repository remains available at [isaac-sim/Sim-to-Real-SO-101-Workshop](https://github.com/isaac-sim/Sim-to-Real-SO-101-Workshop).
+This fork’s `aidayseoul2026` branch contains the AI Day Seoul 2026 course snapshot, Korean documentation, schedule and shared setup and course skills for environment preparation, hands-on exercises and whole-course Q&A. Students can start with [CODEX](docs/01-codex.md) and [Today’s Schedule](docs/seoul-workshop-schedule.md). Instructor setup is covered separately in [DLI preparation and RTX Laptop setup](docs/2026-10-28-seoul-preparation.md). The public upstream repository remains available at [isaac-sim/Sim-to-Real-SO-101-Workshop](https://github.com/isaac-sim/Sim-to-Real-SO-101-Workshop).
 
 Documentation builds use the `sphinx-nvlearning` extension from NVIDIA’s internal GitLab and require authorized access. This documentation dependency is separate from the workshop Docker runtime.
 
@@ -357,153 +357,105 @@ python /workspace/Sim-to-Real-SO-101-Workshop/docker/scripts/so101_calibration_s
 
 ---
 
-## Building the Learning Content
+## Shared environment setup and course skills
 
-The course source is in `docs/`. Run these authoring commands from the repository root on the host; the robot workshop container is not needed to build or preview the documentation.
+Instructors, TAs and students clone the same `aidayseoul2026` checkout and use
+its canonical `skills/<name>/SKILL.md` files. `AGENTS.md` routes natural-language
+requests to those files directly. No skill symlinks, personal copies or
+role-specific activation are needed; the skill-selector UI is not required.
 
-### Configuration
+Use [so101-dli-prepare](skills/so101-dli-prepare/SKILL.md) for the common Host,
+Container, models/datasets, precision, runtime checks and handover workflow.
+Read [DLI preparation](docs/2026-10-28-seoul-preparation.md) for the current steps.
+The requested document profile is the only role selection:
 
-The learning content uses MyST substitutions. See [docs/conf.py](docs/conf.py) for their definitions.
+| New setup request | Profile | Documents |
+|---|---|---|
+| `환경설정을 해줘` without an Instructor request | `student` (default) | Classroom `event` |
+| `Instructor용으로 환경설정을 해줘` | `instructor` | Instructor |
 
-### uv
-
-This repository uses [uv](https://docs.astral.sh/uv/) for documentation dependency management. [Install uv](https://docs.astral.sh/uv/getting-started/installation/) before following the build instructions below. `uv run` prepares the project's Python environment and dependencies.
-
-### Git LFS
-
-Images, videos, and USD assets use Git Large File Storage. Install Git LFS and initialize it before cloning the repository:
-
-```bash
-git lfs install
-```
-
-If you already cloned the repository without downloading its large files, fetch them before building:
-
-```bash
-git lfs pull
-```
-
-### Build and Preview
-
-1. **Build** the HTML learning content:
+Being an Instructor/TA performing day-before installation does not select
+instructor documents. Both profiles use the same skills and runtime assets.
+State and record the selection; reuse it when continuing the same setup. A
+profile change reuses a validated runtime and changes document selection.
 
 ```bash
-uv run sphinx-build -M html docs/ docs/_build/
+python3 skills/so101-dli-prepare/scripts/setup_plan.py
+python3 skills/so101-dli-prepare/scripts/setup_plan.py --profile instructor
 ```
 
-2. In the same terminal, **serve** the generated pages:
-
-```bash
-uv run python -m http.server 8000 -d docs/_build/html/
-```
-
-3. **Open** [http://localhost:8000](http://localhost:8000) in your browser. **Press Ctrl+C** in the terminal to stop the preview before rebuilding.
-
-To delete the generated build cache, rebuild, and serve the result in one command:
-
-```bash
-rm -rf docs/_build && uv run sphinx-build -M html docs/ docs/_build/ && uv run python -m http.server 8000 -d docs/_build/html/
-```
-
-### Learner, Event and Instructor Builds
-
-The default build includes the full self-paced course, with workspace assembly
-and software installation in the main lesson sequence. Add `-t event` to build
-the event version: it uses prepared-station instructions and moves those two
-setup lessons to **Setup References**, after the main course. The setup pages
-remain available through direct links and search.
-
-Build each version into a separate directory so their pages and build caches
-stay separate:
-
-```bash
-uv run sphinx-build -M html docs/ docs/_build/learner/ -W --keep-going
-uv run sphinx-build -M html docs/ docs/_build/event/ -t event -W --keep-going
-uv run sphinx-build -M html docs/ docs/_build/instructor/ -t event -t instructor -W --keep-going
-```
-
-The event build is the student classroom guide. The instructor build adds
-**셋업 담당과 진행 순서** to **DLI준비와 진행**. This section is excluded from
-student HTML, navigation, search and copied sources; its text is kept in an
-instructor-only include. Language switches stay within the selected guide.
-Use `{audience} instructor` around instructor-only includes.
-
-Preview the learner version on port 8000 or the event version on port 8001:
-
-```bash
-uv run python -m http.server 8000 -d docs/_build/learner/html/
-uv run python -m http.server 8001 -d docs/_build/event/html/
-```
-
-Each server occupies its terminal; stop it before starting the other, or use
-separate terminals to compare both versions.
-
-Open the [event preview](http://localhost:8001) or the
-[learner preview](http://localhost:8000) in your browser. After editing the
-content, rerun the matching build command and refresh the page.
-
-To show a section only in the learner build, wrap it in the course's MyST `audience` directive:
-
-````markdown
-:::{audience} learner
-
-Learner-only instructions go here.
-
-:::
-````
-
-For event-only instructions, use `{audience} event`. Content outside these blocks
-appears in every build. These blocks can include headings, commands, and nested
-directives; only the selected audience is parsed. Use more colons on an outer
-fence when nesting directives.
-The setup navigation is selected through `setup_lessons` and `setup_references`
-in `docs/conf.py` and inserted into `docs/index.md`; add or move whole setup pages
-there. Keep links and "What's Next?" instructions consistent with both versions.
-
-### Model Cards in Lessons
-
-Whenever learning content asks learners to roll out a specific model, include
-its model card beside the rollout instructions, including in quick references.
-Keep one HTML card per policy in `docs/_includes/model-cards/` and reuse it:
-
-````markdown
-```{raw} html
-:file: _includes/model-cards/sim-vision-20k.html
-```
-````
-
-For a new policy, copy one of these cards and update the Hugging Face links,
-episode counts, and training details from its published metadata. Mark each data
-source with `is-active` and the visible label `✓ Used`; leave unused sources gray
-with `— Not used`. For sim + real data, activate the relevant simulation source
-and **Real data**.
-Shared icons and styling live in `docs/_static/model-card-icons.svg` and
-`docs/_static/model-cards.css`.
-
-## Contributions
-We are not currently accepting contributions for this project.
-
-For maintainer validation, see the small [workshop test suite](source/sim_to_real_so101/test/README.md).
-
-### Instructor setup skills
-
-The nine student skills remain linked under `.agents/skills/` by default.
-Instructor provisioning uses [so101-dli-prepare](skills/so101-dli-prepare/SKILL.md);
-guide builds use [so101-dli-docs](skills/so101-dli-docs/SKILL.md).
-Read the canonical skill directly, or enable both optional project links:
-
-```bash
-python3 skills/so101-dli-prepare/scripts/instructor_skills.py
-```
-
-Use `--disable` to remove only those links. This does not install packages,
-download assets or start the robot. Follow the Instructor guide for the current
-installation sequence, frozen source revision and `runs/setup/<station>/`
-evidence/resume record. A setup question or skill activation does not authorize
-a workstation installation.
+These commands print plans and execute no installation. The plan builds both languages and initially opens the Korean guide; pass the verified LAN address, available port and agreed commit when
+known. Keep source/image/model revisions, selected profile, checkpoint evidence
+and the next action in ignored `runs/setup/<station>/progress.md`.
 
 ```bash
 python3 skills/so101-dli-prepare/scripts/preflight.py --repo . --expected-revision <agreed-commit> --output runs/setup/laptop-01/preflight.json
-bash skills/so101-dli-docs/scripts/build.sh event ko
-bash skills/so101-dli-docs/scripts/build.sh instructor ko
 ```
+
+## Building and previewing the learning content
+
+Use the common [documentation skill](skills/so101-dli-docs/SKILL.md) on the Host.
+It does not require the robot Container or GPU. Git LFS documentation media must
+be hydrated. The locked Sphinx dependency `sphinx-nvlearning` requires authorized
+NVIDIA GitLab access; do not replace it with a stub.
+
+From the repository root, prepare the documentation environment and build the
+selected profile. The helper defaults to student `event` documents; a plain
+Sphinx invocation without course tags remains the optional self-paced learner
+build, so use this helper for classroom installation.
+
+```bash
+uv sync --frozen
+bash skills/so101-dli-docs/scripts/build.sh event all
+```
+
+For an explicitly requested Instructor installation, use:
+
+```bash
+bash skills/so101-dli-docs/scripts/build.sh instructor all
+```
+
+The setup-team and document-profile instructions are included only in
+Instructor HTML, navigation and search. Student guides do not advertise the
+Instructor build; source copying and source links are disabled for those guides. Outputs are separate: `docs/_build/ko/event/html` and
+`docs/_build/ko/instructor/html`. Both languages are built; language switches stay inside the selected guide.
+
+Choose one preview matching the setup profile. Replace `<verified-LAN-IP>` with
+the station's actual interface address and use a free port. The preview serves
+only its selected guide, even when other build outputs remain on disk.
+
+```bash
+python3 skills/so101-dli-docs/scripts/preview.py start --profile student --bind <verified-LAN-IP> --port 8095
+python3 skills/so101-dli-docs/scripts/preview.py start --profile instructor --bind <verified-LAN-IP> --port 8095
+```
+
+Use only one of these start commands on a given port. An existing owned preview
+with a different profile/address is reported instead of being silently reused.
+Status reports actual URLs and the PID; its log is `.local/docs-preview.log`.
+It remains running after terminal exit and is not configured for boot autostart.
+
+```bash
+python3 skills/so101-dli-docs/scripts/preview.py status
+python3 skills/so101-dli-docs/scripts/preview.py stop
+```
+
+The student URL is `http://<verified-LAN-IP>:8095/ko/event/html/index.html`;
+the Instructor URL is `http://<verified-LAN-IP>:8095/ko/instructor/html/index.html`.
+Verify the actual HTTP response and desktop browser; keep a requested preview
+running. No public tunnel or firewall change is part of setup.
+
+### Explicit maintainer builds
+
+The optional `learner` guide includes self-paced assembly/software lessons.
+For document maintenance and verification, explicitly build all six outputs and
+use an all-guides preview. These are not the default station setup.
+
+```bash
+bash skills/so101-dli-docs/scripts/build.sh all all
+python3 skills/so101-dli-docs/scripts/verify_html.py --profile all
+python3 skills/so101-dli-docs/scripts/preview.py start --profile all --bind <verified-LAN-IP> --port 8095
+```
+
+The MyST `audience` directive supports `learner`, `event`, `student` and `instructor`.
+Instructor includes the event lesson flow and the instructor-only setup-team
+include. Content outside audience blocks is shared by the selected guides.

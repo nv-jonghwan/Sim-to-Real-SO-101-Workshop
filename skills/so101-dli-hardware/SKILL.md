@@ -17,7 +17,7 @@ Start with the assembled classroom station. Follow the workspace lesson to
 check light, rack/vial placement, camera view, clamps and cable clearance. Keep
 the laptop outside the leader movement area. Refer assembly or PC deployment
 issues to the TA; guide the student through calibration and Teleop themselves.
-For an instructor/TA provisioning a station, use
+For station installation or provisioning, use
 [so101-dli-prepare](../so101-dli-prepare/SKILL.md) before hardware qualification.
 
 Before powered robot operation establish the operator's presence, clear motion

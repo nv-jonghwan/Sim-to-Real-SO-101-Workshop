@@ -8,6 +8,7 @@
 
 
 import importlib.metadata
+import shutil
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / "_ext"))
@@ -46,6 +47,8 @@ myst_links_external_new_tab = True
 myst_heading_anchors = 3
 
 event_build = tags.has("event") or tags.has("instructor")
+html_copy_source = tags.has("instructor")
+html_show_sourcelink = tags.has("instructor")
 if event_build:
     exclude_patterns.append('02-how-to-take-this-course.md')
 else:
@@ -133,7 +136,7 @@ html_theme_options = {
 
 if event_build:
     html_theme_options["extra_footer"].add(
-        '<small><a href="workshop-preparation.html">Instructor setup</a></small>'
+        '<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>'
     )
 
 
@@ -145,12 +148,15 @@ class Audience(SphinxDirective):
 
     def run(self):
         audience = self.arguments[0]
-        if audience not in {"learner", "event", "instructor"}:
-            raise self.error("audience must be 'learner', 'event' or 'instructor'")
+        if audience not in {"learner", "event", "student", "instructor"}:
+            raise self.error("audience must be 'learner', 'event', 'student' or 'instructor'")
         instructor = self.env.app.tags.has("instructor")
         selected = "event" if self.env.app.tags.has("event") or instructor else "learner"
         if audience == "instructor":
             if not instructor:
+                return []
+        elif audience == "student":
+            if instructor:
                 return []
         elif audience != selected:
             return []
@@ -170,6 +176,15 @@ def remove_presenter_page_from_learner(app, exception):
         path.unlink(missing_ok=True)
 
 
+def remove_student_sources(app, exception):
+    """Remove generated source copies from non-instructor HTML outputs."""
+    if exception is None and app.builder.format == "html" and not app.tags.has("instructor"):
+        source = Path(app.outdir) / "_sources"
+        if source.exists():
+            shutil.rmtree(source)
+
+
 def setup(app: Sphinx):
     app.add_directive("audience", Audience)
     app.connect("build-finished", remove_presenter_page_from_learner)
+    app.connect("build-finished", remove_student_sources)

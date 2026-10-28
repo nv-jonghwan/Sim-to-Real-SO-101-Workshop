@@ -2,9 +2,10 @@ from pathlib import Path
 from html.parser import HTMLParser
 from urllib.parse import urlsplit,unquote
 import json
+import argparse
 class Page(HTMLParser):
  def __init__(self,path):
-  super().__init__(convert_charrefs=True);self.ids=set();self.links=[];self.pre=[];self.depth=0;self.anchors=[];self.language=None
+  super().__init__(convert_charrefs=True);self.ids=set();self.links=[];self.text=[];self.pre=[];self.depth=0;self.anchors=[];self.language=None
   self.feed(path.read_text())
  def handle_starttag(self,tag,attrs):
   a=dict(attrs)
@@ -18,14 +19,21 @@ class Page(HTMLParser):
  def handle_endtag(self,tag):
   if tag=='pre':self.depth-=1
  def handle_data(self,data):
+  self.text.append(data)
   if self.depth:self.pre[-1]+=data
+parser=argparse.ArgumentParser(description="Verify selected document outputs and audience separation")
+parser.add_argument('--profile', choices=['student','instructor','all'], default='student')
+args=parser.parse_args()
+audiences = ['learner','event','instructor'] if args.profile == 'all' else ['instructor' if args.profile == 'instructor' else 'event']
 root=Path(__file__).resolve().parents[3];build=root/'docs/_build';cache={};errors=[];code_blocks=0;links=0;pages=0
 
 def page(path):
  if path not in cache:cache[path]=Page(path)
  return cache[path]
-for audience in ['learner','event','instructor']:
+for audience in audiences:
  en=build/audience/'html';ko=build/'ko'/audience/'html'
+ if not (en/'index.html').is_file() or not (ko/'index.html').is_file():
+  errors.append(['missing-selected-guide',audience,'Build both languages for the selected guide']);continue
  for p in sorted(ko.rglob('*.html')):
   if p.name=='webpack-macros.html':continue
   pages+=1;doc=page(p)
@@ -52,11 +60,14 @@ for audience in ['learner','event','instructor']:
 import pickle
 from sphinx.search import js_index
 instructor_markers = ('셋업 담당과 진행 순서', '양승학', '배수연')
+private_build_markers = ('Instructor용', '강사용', 'instructor/html', '--profile instructor', 'build.sh instructor', 'choose-the-setup-document-profile')
 audience_checks = 0
 for prefix in ('', 'ko/'):
- for audience in ('learner', 'event', 'instructor'):
+ for audience in audiences:
   output = build / (prefix + audience)
   html = output / 'html'
+  if not (html / 'index.html').is_file():
+   continue
   instructor = audience == 'instructor'
   preparation = html / '2026-10-28-seoul-preparation.html'
   if instructor:
@@ -65,18 +76,26 @@ for prefix in ('', 'ko/'):
     if marker not in text:
      errors.append(['instructor-section-missing', prefix + audience, marker])
   else:
+   if (html / '_sources').exists():
+    errors.append(['student-source-copies-exposed', prefix + audience])
    for path in html.rglob('*'):
     if path.is_file() and path.suffix in ('.html', '.txt'):
      text = path.read_text()
-     for marker in instructor_markers:
+     if path.suffix == '.html':
+      text += '\n' + ' '.join(''.join(page(path).text).split())
+     for marker in instructor_markers + private_build_markers:
       if marker in text:
        errors.append(['instructor-text-in-student-output', str(path.relative_to(build)), marker])
    for path in (output / 'doctrees').glob('*.doctree'):
     text = pickle.loads(path.read_bytes()).astext()
-    for marker in instructor_markers:
+    for marker in instructor_markers + private_build_markers:
      if marker in text:
       errors.append(['instructor-text-in-student-doctree', str(path.relative_to(build)), marker])
   search = json.dumps(js_index.loads((html / 'searchindex.js').read_text()), ensure_ascii=False)
+  if not instructor:
+   for marker in private_build_markers:
+    if marker in search:
+     errors.append(['instructor-build-disclosed-in-student-search', prefix + audience, marker])
   for marker in ('양승학', '배수연'):
    if (marker in search) != instructor:
     errors.append(['wrong-instructor-search-visibility', prefix + audience, marker])

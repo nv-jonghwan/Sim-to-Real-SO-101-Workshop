@@ -35,11 +35,24 @@ def owned(state):
     return start == state["start_ticks"] and str(Path(__file__).resolve()).encode() in cmd and b"_serve" in cmd
 
 
+def guide_names(profile):
+    if profile == "all":
+        return ("learner", "event", "instructor", "ko/learner", "ko/event", "ko/instructor")
+    audience = "instructor" if profile == "instructor" else "event"
+    return (audience, "ko/" + audience)
+
+
 class Handler(http.server.SimpleHTTPRequestHandler):
+    def __init__(self, *args, profile="student", **kwargs):
+        self.profile = profile
+        super().__init__(*args, **kwargs)
+
     def translate_path(self, path):
         candidate = Path(super().translate_path(path)).resolve()
         requested = unquote(urlsplit(path).path)
-        if not candidate.is_relative_to(ROOT.resolve()) or any(p.startswith(".") for p in Path(requested).parts if p not in ("/", ".")):
+        selected = any(candidate.is_relative_to((ROOT / name / "html").resolve())
+                       for name in guide_names(self.profile))
+        if not selected or not candidate.is_relative_to(ROOT.resolve()) or any(p.startswith(".") for p in Path(requested).parts if p not in ("/", ".")):
             return str(ROOT / "__forbidden__")
         return str(candidate)
 
@@ -48,9 +61,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         return None
 
 
-def preview_urls(bind, port):
+def preview_urls(bind, port, profile="student"):
     return {name: f"http://{bind}:{port}/{name}/html/index.html"
-            for name in ("learner", "event", "instructor", "ko/learner", "ko/event", "ko/instructor")
+            for name in guide_names(profile)
             if (ROOT / name / "html/index.html").is_file()}
 
 
@@ -59,9 +72,10 @@ def main():
     parser.add_argument("action", choices=["start", "status", "stop", "_serve"])
     parser.add_argument("--bind", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8095)
+    parser.add_argument("--profile", choices=["student", "instructor", "all"], default="student")
     args = parser.parse_args()
     if args.action == "_serve":
-        handler = functools.partial(Handler, directory=str(ROOT))
+        handler = functools.partial(Handler, directory=str(ROOT), profile=args.profile)
         with http.server.ThreadingHTTPServer((args.bind, args.port), handler) as server:
             server.serve_forever()
         return
@@ -71,7 +85,8 @@ def main():
         state = json.loads(STATE.read_text()) if STATE.exists() else None
         active = owned(state)
         if state:
-            state["urls"] = preview_urls(state["bind"], state["port"])
+            state["profile"] = state.get("profile", "all")
+            state["urls"] = preview_urls(state["bind"], state["port"], state["profile"])
         if args.action == "status":
             print(json.dumps({"active": active, "state": state}, indent=2))
             return
@@ -90,19 +105,21 @@ def main():
                 print("No matching live preview; no process signaled.")
             return
         if active:
+            if (state["profile"], state["bind"], state["port"]) != (args.profile, args.bind, args.port):
+                sys.exit("An owned preview uses a different profile/address; coordinate its scoped stop before replacement.")
             print(json.dumps({"already_running": True, **state}, indent=2))
             return
-        if not preview_urls(args.bind, args.port):
+        if not preview_urls(args.bind, args.port, args.profile):
             sys.exit("Build a course guide before serving.")
         with (STATE.parent / "docs-preview.log").open("ab") as log:
-            proc = subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "_serve", "--bind", args.bind, "--port", str(args.port)],
+            proc = subprocess.Popen([sys.executable, str(Path(__file__).resolve()), "_serve", "--bind", args.bind, "--port", str(args.port), "--profile", args.profile],
                                     stdin=subprocess.DEVNULL, stdout=log, stderr=log, start_new_session=True)
         time.sleep(.5)
         if proc.poll() is not None:
             sys.exit("Preview failed to bind; inspect .local/docs-preview.log. Existing service left unchanged.")
         start, _ = identity(proc.pid)
-        state = {"pid": proc.pid, "start_ticks": start, "bind": args.bind, "port": args.port, "root": str(ROOT),
-                 "urls": preview_urls(args.bind, args.port)}
+        state = {"pid": proc.pid, "start_ticks": start, "bind": args.bind, "port": args.port, "root": str(ROOT), "profile": args.profile,
+                 "urls": preview_urls(args.bind, args.port, args.profile)}
         STATE.write_text(json.dumps(state, indent=2) + "\n")
         print(json.dumps(state, indent=2))
 

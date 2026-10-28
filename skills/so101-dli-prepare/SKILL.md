@@ -1,6 +1,6 @@
 ---
 name: so101-dli-prepare
-description: Prepare or resume an instructor's SO-101 DLI station installation, including Host prerequisites, Container, lesson models and datasets, precision, and demonstrated readiness. Use for classroom provisioning, not ordinary student exercises.
+description: Prepare or resume SO-101 DLI environment setup on any station, including Host prerequisites, Container, lesson models and datasets, precision, and demonstrated readiness. Use for installation and classroom provisioning; select instructor documents only on an explicit request, otherwise student documents.
 ---
 
 # Prepare and hand over a DLI station
@@ -17,6 +17,29 @@ setup request means perform the authorized installation and verification steps,
 continuing until complete or a concrete prerequisite is missing. Do not treat a
 skill update, guide build or inventory request as authorization to install,
 download, restart Docker, run GPU workloads or move robots.
+
+## Select the document profile from the request
+
+Every station uses this same skill and installation workflow. For a new setup,
+"환경설정을 해줘" or an unqualified installation request selects `student`.
+"Instructor용으로 환경설정을 해줘" selects `instructor`. Do not infer the
+profile from the operator being a TA/instructor, the day before the event,
+existing instructor output or who cloned the repository. State the selected
+profile and proceed; do not require a role confirmation for the student default.
+Retain that selection when resuming the same setup; change it when requested.
+
+Use the read-only planner to obtain consistent commands (the default is student):
+
+```bash
+python3 <repo>/skills/so101-dli-prepare/scripts/setup_plan.py --repo <repo>
+python3 <repo>/skills/so101-dli-prepare/scripts/setup_plan.py --repo <repo> --profile instructor
+```
+
+Pass the chosen language, baseline commit, verified LAN address and available
+port when known. The planner executes nothing. For `student`, build `event`
+documents; for `instructor`, build `instructor` documents. The runtime, model
+inventory and shared skills are identical. Do not activate, install or copy a
+separate skill set for either profile.
 
 ## Choose the station and freeze the source
 
@@ -73,30 +96,34 @@ For each checkpoint record its result and continue to the next unmet step:
    blobs may serve other experiments: use a separate local policy directory or
    overlay with valid processor/base paths rather than rewriting shared blobs.
    Preserve intentionally selected FP32 experiments.
-5. **Runtime demonstration:** in the verified Container follow the guide's
+5. **Documentation and preview:** use
+   [docs](../so101-dli-docs/SKILL.md) for the selected profile only. Prepare the
+   locked documentation environment with `uv sync --frozen`, then run the
+   planner's selected build and preview commands.
+   The setup-team section belongs only in instructor output. Verify actual
+   remote browser URLs and media when requested. Leave requested previews
+   running and record lifecycle information; docs do not require the robot
+   Container or GPU.
+6. **Runtime demonstration:** in the verified Container follow the guide's
    physics-only check, then wrist/external rendering, then use
    [evaluation](../so101-dli-evaluate/SKILL.md) for a bounded policy load and
    inference check. Check GPU memory/port owners before allocation; keep the
    exact owned PID, command, log and scoped cleanup. A socket or import alone
    does not pass inference. Record observed output and failures separately.
-6. **Hardware and representative rehearsal:** use
+7. **Hardware and representative rehearsal:** use
    [hardware](../so101-dli-hardware/SKILL.md) for device identities, two independent
-   camera images, calibration and supervised Real Teleop. Require current
-   operator readiness before motor commands. Use
+   camera images, calibration and supervised Real Teleop. An environment installation request does not start motor operation. Perform
+   powered checks only for a requested hardware exercise with current operator
+   readiness; report missing hardware qualification separately from installation. Use
    [HG-DAgger](../so101-dli-dagger/SKILL.md) before its representative rehearsal;
    its leader moves under power even with a simulated follower. A normal exit
    may move arms. Do not infer physical readiness from another chat.
-7. **Documentation and handover:** use
-   [docs](../so101-dli-docs/SKILL.md) for student `event` and `instructor` guides.
-   The setup-team section belongs only in instructor output. Verify actual
-   remote browser URLs and media when requested. Leave requested previews
-   running and record lifecycle information; docs do not require the robot
-   Container or GPU.
 
 ## Keep evidence and resume
 
 Use ignored `runs/setup/<station>/progress.md` with the agreed source commit,
-Host/image identity, exact paths/revisions, commands/logs, each checkpoint's
+selected document profile/language, Host/image identity, exact paths/revisions,
+commands/logs, each checkpoint's
 `pending`, `passed`, `failed` or `unknown` state, and the next action. Preserve
 previous evidence; use a fresh report filename on each audit. Never store tokens.
 
@@ -106,13 +133,3 @@ installs or downloads. Cache presence must not be promoted to runtime success.
 Report source, Host prerequisites, assets, runtime/inference, hardware and docs
 separately; finish with the first unmet checkpoint, owner and evidence needed.
 Installation completion and a fully qualified robot station are separate claims.
-
-Instructor activation is optional and leaves the nine student links intact:
-
-```bash
-python3 <repo>/skills/so101-dli-prepare/scripts/instructor_skills.py --repo <repo>
-```
-
-This adds only `so101-dli-prepare` and `so101-dli-docs` project links. It does not
-install packages or grant execution permissions. `--disable` removes only these
-owned links. Directly reading the canonical skill works without activation.

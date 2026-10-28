@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 import subprocess
 import tempfile
+import shutil
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -16,7 +18,7 @@ def load(name):
 
 
 preflight = load("preflight")
-links = load("instructor_skills")
+plans = load("setup_plan")
 
 
 class PreparationTests(unittest.TestCase):
@@ -77,39 +79,71 @@ class PreparationTests(unittest.TestCase):
             (root / "docs/workshop-preparation.md").write_text('hf download owner/new-model\n## Download Starting-Pose Data\n  owner/new-data \\\n')
             self.assertEqual(preflight.course_assets(root), (["owner/new-model"], ["owner/new-data"]))
 
-    def test_activation_is_idempotent_and_preserves_student_links(self):
+    def test_default_setup_selects_only_student_documents(self):
         with tempfile.TemporaryDirectory() as tmp:
-            repo = Path(tmp)
-            folder = repo / ".agents/skills"
-            folder.mkdir(parents=True)
-            student = folder / "so101-dli"
-            student.symlink_to("../../skills/so101-dli")
-            for name in links.NAMES:
-                path = repo / "skills" / name
-                path.mkdir(parents=True)
-                (path / "SKILL.md").write_text('fixture')
-            links.configure(repo)
-            links.configure(repo)
-            self.assertEqual(len(list(folder.iterdir())), 3)
-            links.configure(repo, disable=True)
-            self.assertEqual(list(folder.iterdir()), [student])
-            self.assertEqual(student.readlink(), Path("../../skills/so101-dli"))
+            plan = plans.build_plan(tmp)
+            self.assertEqual(plan["profile"], "student")
+            self.assertEqual(plan["document_audience"], "event")
+            self.assertEqual(plan["document_build_command"][-2:], ["event", "all"])
+            self.assertIn("/ko/event/", plan["guide_path"])
+            self.assertIn("student", plan["preview_command"])
+            self.assertFalse(plan["executed"])
+            self.assertEqual(list(Path(tmp).iterdir()), [])
 
-    def test_activation_conflict_changes_nothing(self):
+    def test_explicit_instructor_uses_the_same_installation_checkpoints(self):
+        student = plans.build_plan(".")
+        instructor = plans.build_plan(".", profile="instructor", language="en")
+        self.assertEqual(student["checkpoints"], instructor["checkpoints"])
+        self.assertEqual(student["preflight_command"], instructor["preflight_command"])
+        self.assertEqual(instructor["document_build_command"][-2:], ["instructor", "en"])
+        self.assertIn("instructor", instructor["preview_command"])
+        self.assertEqual(instructor["guide_path"], "/instructor/html/index.html")
+
+    def test_build_default_executes_student_only(self):
         with tempfile.TemporaryDirectory() as tmp:
             repo = Path(tmp)
-            for name in links.NAMES:
-                path = repo / "skills" / name
-                path.mkdir(parents=True)
-                (path / "SKILL.md").write_text('fixture')
-            folder = repo / ".agents/skills"
-            folder.mkdir(parents=True)
-            conflict = folder / links.NAMES[1]
-            conflict.write_text('user-owned')
-            with self.assertRaises(ValueError):
-                links.configure(repo)
-            self.assertFalse((folder / links.NAMES[0]).is_symlink())
-            self.assertEqual(conflict.read_text(), 'user-owned')
+            tools = repo / "skills/so101-dli-docs/scripts"
+            tools.mkdir(parents=True)
+            original = Path(__file__).parents[2] / "so101-dli-docs/scripts/build.sh"
+            shutil.copyfile(original, tools / "build.sh")
+            (tools / "localization.py").write_text('pass')
+            (repo / ".venv/bin").mkdir(parents=True)
+            (repo / ".venv/bin/python").symlink_to(sys.executable)
+            stub = repo / ".venv/bin/sphinx-build"
+            stub.write_text('#!' + sys.executable + '\nimport json,sys\nfrom pathlib import Path\nwith (Path(__file__).parents[2]/"calls.jsonl").open("a") as f:f.write(json.dumps(sys.argv[1:])+"\\n")\n')
+            stub.chmod(0o755)
+            subprocess.run(["bash", str(tools / "build.sh")], check=True, capture_output=True)
+            calls = [json.loads(line) for line in (repo / "calls.jsonl").read_text().splitlines()]
+            self.assertEqual(len(calls), 2)
+            self.assertEqual({call[3] for call in calls}, {"docs/_build/event", "docs/_build/ko/event"})
+            (repo / "calls.jsonl").unlink()
+            subprocess.run(["bash", str(tools / "build.sh"), "instructor", "all"], check=True, capture_output=True)
+            calls = [json.loads(line) for line in (repo / "calls.jsonl").read_text().splitlines()]
+            self.assertEqual(len(calls), 2)
+            self.assertTrue(all(call[3].endswith("instructor") for call in calls))
+            self.assertTrue(all("-t" in call and "instructor" in call for call in calls))
+
+    def test_student_preview_blocks_leftover_instructor_files(self):
+        spec = importlib.util.spec_from_file_location("preview", Path(__file__).parents[2] / "so101-dli-docs/scripts/preview.py")
+        preview = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(preview)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for audience in ("event", "instructor"):
+                for prefix in ("", "ko/"):
+                    path = root / (prefix + audience) / "html"
+                    path.mkdir(parents=True)
+                    (path / "index.html").write_text(audience)
+            with patch.object(preview, "ROOT", root):
+                handler = preview.Handler.__new__(preview.Handler)
+                handler.directory = str(root)
+                handler.profile = "student"
+                self.assertEqual(handler.translate_path("/ko/event/html/index.html"), str(root / "ko/event/html/index.html"))
+                self.assertEqual(handler.translate_path("/ko/instructor/html/index.html"), str(root / "__forbidden__"))
+                handler.profile = "instructor"
+                self.assertEqual(handler.translate_path("/ko/instructor/html/index.html"), str(root / "ko/instructor/html/index.html"))
+                self.assertEqual(handler.translate_path("/ko/event/html/index.html"), str(root / "__forbidden__"))
+                self.assertEqual(set(preview.preview_urls("10.0.0.1", 8095, "student")), {"event", "ko/event"})
 
 
 if __name__ == "__main__":
