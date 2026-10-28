@@ -476,3 +476,15 @@ under `.agents/skills/`; see `docs/01-codex.md` for setup and examples.
 Use this fork's `aidayseoul2026` branch unless the user selects another baseline,
 and record the exact commit for exercises. Use the HF account authorized for
 the current station and its organization policy. Never print credentials.
+
+## Instructor station preparation
+
+For instructor/TA requests to install, prepare, audit or resume a DLI Laptop,
+read `skills/so101-dli-prepare/SKILL.md` and the current
+`docs/2026-10-28-seoul-preparation.md`. Route guide builds and previews to
+`skills/so101-dli-docs/SKILL.md`. These canonical skills work without discovery
+links. The default `.agents/skills` remains the nine student skills; optional
+instructor activation is documented in the preparation guide and README.
+Freeze the requested commit, preserve existing installations and use ignored
+`runs/setup/<station>/` for evidence and the next unmet checkpoint. Updating a
+skill or answering a setup question does not start an installation or exercise.

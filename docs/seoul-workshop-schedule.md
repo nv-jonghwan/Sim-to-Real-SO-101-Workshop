@@ -9,8 +9,8 @@ We will follow the schedule below for the **AI Day Seoul 2026 DLI workshop**. Al
 | Instructor | Sessions |
 | --- | --- |
 | **Jonghwan Lee** | **09:00–12:45** · Morning sessions and Q&A |
-| **Hogun Kee** | **13:55–15:40** · Sim-to-Real Gap through HG-DAgger |
-| **Jihyeon Ryu** | **13:45–17:15** · Cosmos through Conclusion |
+| **Hogun Kee** | **13:45–15:40** · Recap and Sim-to-Real Gap through HG-DAgger |
+| **Jihyeon Ryu** | **15:50–17:15** · Cosmos through Conclusion |
 
 ## Morning · 09:00–12:45
 
@@ -43,7 +43,7 @@ Select a topic to open its course materials.
 
 | Session | Time | Topic | Duration | Type | Instructor | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Return | 13:45–13:55 | **Welcome back, recap & Q&A** | 10 min | Recap + Q&A | Jihyeon Ryu | — |
+| Return | 13:45–13:55 | **Welcome back, recap & Q&A** | 10 min | Recap + Q&A | Hogun Kee | — |
 | PM 1 | 13:55–14:10 | [**Sim2Real and The Reality Gap**](03-sim-to-real.md) | 15 min | Lecture | Hogun Kee | — |
 | PM 2 | 14:10–14:40 | [**Real Robot Rollouts with sim-only data**](12-real-evaluation.md) | 30 min | Demo + hands-on | Hogun Kee | — |
 | PM 3 | 14:40–15:10 | [**Co-Training theory**](13-strategy2-cotraining.md) and [**practice**](13-cotraining-practice.md) | 30 min | Demo + hands-on | Hogun Kee | Includes a Real → Real model. |

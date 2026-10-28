@@ -2,20 +2,11 @@
 
 행사 전날의 셋업과 당일 운영을 위한 발표자·TA 안내입니다. 전날에는 장비 조립과 사전 점검을 마치고, 당일에는 참가자가 준비된 station에서 calibration과 실습을 시작할 수 있도록 합니다.
 
-[오늘의 일정](seoul-workshop-schedule.md) · [장비 조립 안내](05-building-workspace.md) · [수업 자산 준비](workshop-preparation.md) · [Troubleshooting](troubleshooting.md)
+[오늘의 일정](seoul-workshop-schedule.md) · [Workspace 사용](07-using-workspace.md) · [Dataset과 Model](datasets-and-models.md#download-models-for-the-workshop-container) · [Troubleshooting](troubleshooting.md)
 
 ## 전날 셋업: 로봇 실습 환경 구성
 
 공개 교재의 [Build Your Robot Lab](https://docs.nvidia.com/learning/physical-ai/sim-to-real-so-101/latest/05-building-workspace.html)을 바탕으로, 현재 행사용 교재에 맞춰 **작업대 조립 → 장비 연결 → calibration → Teleop 점검** 순서로 준비합니다. Lightbox의 크기와 색상, 조명, camera view, rack과 vial의 배치를 simulation과 맞추는 것이 핵심입니다. 모든 station을 같은 기준으로 구성하면 수업 중 문제의 원인을 확인하기가 쉬워집니다.
-
-### 완성된 station의 기준 모습
-
-```{figure} images/so101_workspace.jpg
-:alt: 흰색 lightbox 안에 SO-101 follower, 왼쪽의 노란 rack, 오른쪽 pickup 영역의 검은 mat, external camera와 상단 조명이 배치된 기준 사진.
-:width: 100%
-
-Lightbox 내부의 기준 배치입니다. 열린 앞면에서 바라볼 때 rack은 왼쪽, pickup 영역은 오른쪽입니다. Leader와 참가자 PC는 사진 밖의 별도 공간에 배치합니다.
-```
 
 (desk-layout-reference)=
 ### 데스크 전체 배치: Laptop·Leader·Follower
@@ -39,6 +30,15 @@ Lightbox 내부의 기준 배치입니다. 열린 앞면에서 바라볼 때 rac
 :::{important}
 **5 ft(약 1.52 m)는 2인 station 전체 폭의 최소 배치 예시**입니다. 작업대 깊이나 arm 주변의 안전 여유를 뜻하지 않습니다. 실제 배치는 이보다 여유 있게 구성하고, HG-DAgger 시연 전에 leader의 가동 범위와 Laptop 간격, 참가자 뒤쪽 통로를 다시 확인합니다.
 :::
+
+### 완성된 station의 기준 모습
+
+```{figure} images/so101_workspace.jpg
+:alt: 흰색 lightbox 안에 SO-101 follower, 왼쪽의 노란 rack, 오른쪽 pickup 영역의 검은 mat, external camera와 상단 조명이 배치된 기준 사진.
+:width: 100%
+
+Lightbox 내부의 기준 배치입니다. 열린 앞면에서 바라볼 때 rack은 왼쪽, pickup 영역은 오른쪽입니다. Leader와 참가자 PC는 사진 밖의 별도 공간에 배치합니다.
+```
 
 ### Station 한 세트의 구성
 
@@ -288,29 +288,12 @@ zero_agent --task Newton-So101-Teleop-Vials-To-Rack-v0 --cameras all presets=new
 | Robot | 두 arm·두 camera의 연결, calibration과 짧은 Real Teleop를 확인했습니다. |
 | 인계 | 미완료 항목과 담당자·조치 계획을 강사·TA에게 전달했습니다. 준비되지 않은 station은 구분해 표시합니다. |
 
-## 셋업 담당과 진행 순서
+::::{audience} instructor
 
-셋업은 **리더스 4명(양승학님 외 3명)**과 **한국 인프라 1명(배수연님)**, 총 5명이 담당합니다. 아래 세부 역할은 현장에서 작업을 나누기 위한 분담안입니다.
+:::{include} _includes/seoul-setup-team.md
+:::
 
-| 담당 | 주요 작업 |
-|---|---|
-| 리더스 4명 · 양승학님 외 3명 | 장비 입고·구성품 확인, lightbox 조립, robot·camera·조명 설치, clamp 고정, cable 정리, station별 물리 배치 점검 |
-| 한국 인프라 1명 · 배수연님 | 참가자 PC의 수업 환경·자산 사전 준비, 전원·네트워크 연결 점검, 실습 실행 확인, 문제 station의 조치 현황 정리 |
-| 셋업 담당 공동 · 강사/TA와 인수 확인 | 대표 station dry run, 전체 station 점검 결과 확인, 미완료 항목의 보완·교체 판단, 당일 지원 방식 공유 |
-
-### 전날 셋업 순서와 완료 기준
-
-| 순서 | 수행할 작업 | 완료 기준 |
-|---|---|---|
-| 1. 입고와 분류 | Robot, camera, clamp, 전원, cable, lightbox 부품, mat, rack, vial을 확인하고 station별로 한 세트씩 묶습니다. | 누락·파손과 보완할 물품이 확인되어 있고, robot과 cable에 식별 label이 붙어 있습니다. |
-| 2. 기준 station 구성 | 한 station을 먼저 조립해 위 사진과 배치 기준에 맞춥니다. Leader 동작 범위, PC 위치, 뒤쪽 통로도 함께 확인합니다. | 강사/TA와 기준 배치를 확인한 뒤 같은 방식으로 나머지 station을 설치할 수 있습니다. |
-| 3. 전체 station 설치 | Lightbox와 조명, arm, wrist/external camera를 고정하고 cable을 정리합니다. | Clamp 간섭이나 cable 걸림이 없고 두 camera가 흔들리지 않습니다. |
-| 4. 수업 환경 사전 준비 | 행사용 `aidayseoul2026` 기준으로 교재와 실행 환경을 맞추고, container·simulation asset·lesson model·필요 dataset을 준비합니다. | 모델의 config·processor 파일과 시작 자세에 필요한 dataset까지 준비되어 있으며, 수업 중 큰 다운로드나 build를 기다리지 않습니다. |
-| 5. Station별 기본 점검 | Leader/follower 연결을 구분하고 두 camera preview, calibration 상태, 짧은 real teleop를 확인합니다. 참가자가 사용할 PC에서 교재와 실습 화면도 엽니다. | Arm 방향·gripper 반응과 두 영상이 정상입니다. 재점검이 필요한 station은 별도로 표시합니다. |
-| 6. 대표 station dry run | 여러 대표 station에서 **Real Teleop → Sim Teleop → Sim Policy Inference → Real Policy Inference**를 확인하고 HG-DAgger의 제어권 전환까지 시연합니다. | 실제로 실행한 결과와 남은 문제를 강사/TA가 확인합니다. 연결 성공 메시지만으로 동작 점검을 마치지 않습니다. |
-| 7. TA 리허설과 인계 | Calibration, camera·port 확인, policy server 종료, HG-DAgger leader 이동, 오류 발생 시 지원 요청 순서를 함께 연습합니다. | TA가 주요 실습을 직접 수행했고, 미완료 station과 담당자·조치 계획이 공유되어 있습니다. |
-
-준비물에는 zip tie, cable cutter, 정밀 screwdriver, tape, label 도구, 여분의 USB·전원 cable을 포함합니다. PC 내장 webcam은 robot camera와 혼동하지 않도록 식별하거나 가립니다. 전날 점검을 마친 뒤에는 arm을 안정된 자세로 두고 전원을 정리하며, **lightbox 조명을 밤새 켜두지 않습니다**.
+::::
 
 ## 운영 중 짚어야 할 포인트
 
@@ -359,3 +342,10 @@ zero_agent --task Newton-So101-Teleop-Vials-To-Rack-v0 --cameras all presets=new
 | `so101-dli-dagger` | HG-DAgger 시연, correction 수집·저장·검토 |
 
 실행 요청 예시: “`skills/so101-dli/SKILL.md`를 읽고, 교재의 calibration 실습부터 한 단계씩 진행해 주세요.”
+
+::::{audience} instructor
+
+:::{include} _includes/seoul-instructor-skills.md
+:::
+
+::::

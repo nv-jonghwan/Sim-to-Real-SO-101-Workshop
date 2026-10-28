@@ -64,8 +64,8 @@ msgid "**Hogun Kee**"
 msgstr "**Hogun Kee**"
 
 #: docs/seoul-workshop-schedule.md
-msgid "**13:55–15:40** · Sim-to-Real Gap through HG-DAgger"
-msgstr "**13:55–15:40** · Sim-to-Real Gap부터 HG-DAgger까지"
+msgid "**13:45–15:40** · Recap and Sim-to-Real Gap through HG-DAgger"
+msgstr "**13:45–15:40** · 오전 내용 정리 및 Sim-to-Real Gap부터 HG-DAgger까지"
 
 #. Retain supplied technical/session labels and instructor names.
 #: docs/seoul-workshop-schedule.md
@@ -73,8 +73,8 @@ msgid "**Jihyeon Ryu**"
 msgstr "**Jihyeon Ryu**"
 
 #: docs/seoul-workshop-schedule.md
-msgid "**13:45–17:15** · Cosmos through Conclusion"
-msgstr "**13:45–17:15** · Cosmos부터 마무리까지"
+msgid "**15:50–17:15** · Cosmos through Conclusion"
+msgstr "**15:50–17:15** · Cosmos부터 마무리까지"
 
 #: docs/seoul-workshop-schedule.md:15
 msgid "Morning · 09:00–12:45"

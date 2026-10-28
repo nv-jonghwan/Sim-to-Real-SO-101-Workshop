@@ -405,7 +405,7 @@ To delete the generated build cache, rebuild, and serve the result in one comman
 rm -rf docs/_build && uv run sphinx-build -M html docs/ docs/_build/ && uv run python -m http.server 8000 -d docs/_build/html/
 ```
 
-### Learner and Event Builds
+### Learner, Event and Instructor Builds
 
 The default build includes the full self-paced course, with workspace assembly
 and software installation in the main lesson sequence. Add `-t event` to build
@@ -419,7 +419,14 @@ stay separate:
 ```bash
 uv run sphinx-build -M html docs/ docs/_build/learner/ -W --keep-going
 uv run sphinx-build -M html docs/ docs/_build/event/ -t event -W --keep-going
+uv run sphinx-build -M html docs/ docs/_build/instructor/ -t event -t instructor -W --keep-going
 ```
+
+The event build is the student classroom guide. The instructor build adds
+**셋업 담당과 진행 순서** to **DLI준비와 진행**. This section is excluded from
+student HTML, navigation, search and copied sources; its text is kept in an
+instructor-only include. Language switches stay within the selected guide.
+Use `{audience} instructor` around instructor-only includes.
 
 Preview the learner version on port 8000 or the event version on port 8001:
 
@@ -446,7 +453,7 @@ Learner-only instructions go here.
 ````
 
 For event-only instructions, use `{audience} event`. Content outside these blocks
-appears in both builds. These blocks can include headings, commands, and nested
+appears in every build. These blocks can include headings, commands, and nested
 directives; only the selected audience is parsed. Use more colons on an outer
 fence when nesting directives.
 The setup navigation is selected through `setup_lessons` and `setup_references`
@@ -477,3 +484,26 @@ Shared icons and styling live in `docs/_static/model-card-icons.svg` and
 We are not currently accepting contributions for this project.
 
 For maintainer validation, see the small [workshop test suite](source/sim_to_real_so101/test/README.md).
+
+### Instructor setup skills
+
+The nine student skills remain linked under `.agents/skills/` by default.
+Instructor provisioning uses [so101-dli-prepare](skills/so101-dli-prepare/SKILL.md);
+guide builds use [so101-dli-docs](skills/so101-dli-docs/SKILL.md).
+Read the canonical skill directly, or enable both optional project links:
+
+```bash
+python3 skills/so101-dli-prepare/scripts/instructor_skills.py
+```
+
+Use `--disable` to remove only those links. This does not install packages,
+download assets or start the robot. Follow the Instructor guide for the current
+installation sequence, frozen source revision and `runs/setup/<station>/`
+evidence/resume record. A setup question or skill activation does not authorize
+a workstation installation.
+
+```bash
+python3 skills/so101-dli-prepare/scripts/preflight.py --repo . --expected-revision <agreed-commit> --output runs/setup/laptop-01/preflight.json
+bash skills/so101-dli-docs/scripts/build.sh event ko
+bash skills/so101-dli-docs/scripts/build.sh instructor ko
+```

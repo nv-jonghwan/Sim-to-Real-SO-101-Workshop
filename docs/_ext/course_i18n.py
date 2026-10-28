@@ -35,7 +35,7 @@ class RestoreHeadingSlugs(SphinxTransform):
 
 
 def page_context(app, pagename, templatename, context, doctree):
-    audience = 'event' if app.tags.has('event') else 'learner'
+    audience = 'instructor' if app.tags.has('instructor') else 'event' if app.tags.has('event') else 'learner'
     korean = app.config.language == 'ko'
     # Both languages retain identical page names. Also works for genindex/search.
     context['course_language_href'] = ('../../../' if korean else '../../ko/') + audience + '/html/' + pagename + '.html'

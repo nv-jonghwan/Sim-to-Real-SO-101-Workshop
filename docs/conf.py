@@ -45,7 +45,7 @@ myst_number_code_blocks = ['python', 'py', 'usda', 'usd']
 myst_links_external_new_tab = True
 myst_heading_anchors = 3
 
-event_build = tags.has("event")
+event_build = tags.has("event") or tags.has("instructor")
 if event_build:
     exclude_patterns.append('02-how-to-take-this-course.md')
 else:
@@ -145,17 +145,21 @@ class Audience(SphinxDirective):
 
     def run(self):
         audience = self.arguments[0]
-        if audience not in {"learner", "event"}:
-            raise self.error("audience must be 'learner' or 'event'")
-        selected = "event" if self.env.app.tags.has("event") else "learner"
-        if audience != selected:
+        if audience not in {"learner", "event", "instructor"}:
+            raise self.error("audience must be 'learner', 'event' or 'instructor'")
+        instructor = self.env.app.tags.has("instructor")
+        selected = "event" if self.env.app.tags.has("event") or instructor else "learner"
+        if audience == "instructor":
+            if not instructor:
+                return []
+        elif audience != selected:
             return []
         return self.parse_content_to_nodes(allow_section_headings=True)
 
 
 def remove_presenter_page_from_learner(app, exception):
     """Keep the presenter page out of incremental learner HTML builds."""
-    if exception is not None or app.tags.has("event") or app.builder.format != "html":
+    if exception is not None or app.tags.has("event") or app.tags.has("instructor") or app.builder.format != "html":
         return
     name = "2026-10-28-seoul-preparation"
     for path in (

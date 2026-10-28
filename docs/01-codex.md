@@ -126,7 +126,7 @@ A read-only Codex run with the question above produced the 22-row schedule below
 | 12:15–12:35 | Sim Evaluation | 20분 | Jonghwan Lee |
 | 12:35–12:45 | Q&A | 10분 | Jonghwan Lee |
 | 12:45–13:45 | Lunch | 60분 | — |
-| 13:45–13:55 | 오후 시작, 오전 내용 정리 및 Q&A | 10분 | Jihyeon Ryu |
+| 13:45–13:55 | 오후 시작, 오전 내용 정리 및 Q&A | 10분 | Hogun Kee |
 | 13:55–14:10 | Sim-to-Real Gap | 15분 | Hogun Kee |
 | 14:10–14:40 | Real Robot Rollouts with sim-only data | 30분 | Hogun Kee |
 | 14:40–15:10 | Co-Training theory and practice | 30분 | Hogun Kee |
