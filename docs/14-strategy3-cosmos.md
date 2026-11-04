@@ -33,7 +33,7 @@ By the end of this session, you'll be able to:
 
 In Strategy 1, you used domain randomization to vary configured simulation parameters. Generative augmentation adds another way to vary scene appearance. 
 
-For example, Cosmos 3 video transfer can use a source video and structural controls such as depth or segmentation to generate visual variations. This complements the variations you create in the simulator. [NVIDIA Cosmos 3 transfer examples](https://github.com/NVIDIA/cosmos/tree/main/cookbooks/cosmos3/generator/transfer)
+For example, Cosmos 3 video transfer can use a source video and structural controls such as depth or segmentation to generate visual variations. This complements the variations you create in the simulator. [NVIDIA Cosmos 3 transfer examples](https://github.com/NVIDIA/cosmos-framework/tree/main/.agents/skills/cookbooks/cosmos3/generator/transfer)
 
 ## What Is Cosmos?
 
@@ -67,7 +67,7 @@ For an optional exploration, inspect the research examples and identify which in
 
 ### How Cosmos Works
 
-Consider the video augmentation workflow below. Cosmos 3 uses a prompt and controls such as edges, blur, depth, or segmentation to guide video generation. [NVIDIA Cosmos 3 transfer examples](https://github.com/NVIDIA/cosmos/tree/main/cookbooks/cosmos3/generator/transfer)
+Consider the video augmentation workflow below. Cosmos 3 uses a prompt and controls such as edges, blur, depth, or segmentation to guide video generation. [NVIDIA Cosmos 3 transfer examples](https://github.com/NVIDIA/cosmos-framework/tree/main/.agents/skills/cookbooks/cosmos3/generator/transfer)
 
 ````{only} html
 ```{raw} html
@@ -103,7 +103,7 @@ Compare the rack holes, vial positions, and gripper shape. Which controls keep t
 
 ::::::{dropdown} Reference: reproduce a Cosmos 3 augmentation
 
-Start with [NVIDIA's Cosmos 3 transfer notebook for Diffusers](https://github.com/NVIDIA/cosmos/blob/main/cookbooks/cosmos3/generator/transfer/run_video_transfer_with_diffusers.ipynb) for setup and control-video examples.
+Start with [NVIDIA's Cosmos 3 transfer notebook for Diffusers](https://github.com/NVIDIA/cosmos-framework/blob/main/.agents/skills/cookbooks/cosmos3/generator/transfer/run_video_transfer_with_diffusers.ipynb) for setup and control-video examples.
 
 In one SO-101 trial, we prepared an edge-control video from an external-camera clip and prompted Cosmos to change the surrounding laboratory. We used `nvidia/Cosmos3-Nano`, 121 frames at 640 × 480 and 30 FPS, 50 diffusion steps, prompt guidance 3.0, control guidance 1.5, and seed 2026. The result also changed unintended objects, so compare each generated clip with its source before using it for training.
 
@@ -180,5 +180,5 @@ Reject examples that move the vial, change a grasp, or alter contact timing in a
 - [NVIDIA Cosmos](https://www.nvidia.com/en-us/ai/cosmos/) — Omnimodel overview and use cases
 - [Cosmos 3 documentation](https://docs.nvidia.com/cosmos/latest/cosmos3/index.html) — Model family, installation, and inference guides
 - [Cosmos 3 research](https://research.nvidia.com/labs/cosmos-lab/cosmos3/) — Examples of reasoning, world prediction, and action modeling
-- [Cosmos 3 video transfer](https://github.com/NVIDIA/cosmos/tree/main/cookbooks/cosmos3/generator/transfer) — Controlled video generation for augmentation
+- [Cosmos 3 video transfer](https://github.com/NVIDIA/cosmos-framework/tree/main/.agents/skills/cookbooks/cosmos3/generator/transfer) — Controlled video generation for augmentation
 - [Cosmos Cookbook](https://nvidia-cosmos.github.io/cosmos-cookbook/) — Recipes and examples for Cosmos world foundation models
