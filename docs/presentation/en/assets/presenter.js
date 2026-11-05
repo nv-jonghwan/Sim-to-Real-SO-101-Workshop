@@ -26,17 +26,25 @@
     return '<!doctype html>'+d.documentElement.outerHTML;
   }
   function resizePreviews(){
-    const side=$('.presenter-side');
+    const workspace=$('.presenter-workspace'),side=$('.presenter-side');
+    // Measure the reference layout before assigning the freed width to the script.
+    workspace.style.removeProperty('grid-template-columns');
     side.style.setProperty('--preview-scrollbar',(side.offsetWidth-side.clientWidth)+'px');
-    // Reduce only the current preview to 80% of its previous rendered size.
     const nextWidth=nextFrame.parentElement.getBoundingClientRect().width;
-    const availableWidth=side.clientWidth-parseFloat(getComputedStyle(side).paddingRight||0)-2;
+    const sideStyle=getComputedStyle(side);
+    const padding=parseFloat(sideStyle.paddingLeft||0)+parseFloat(sideStyle.paddingRight||0);
+    const availableWidth=side.clientWidth-padding-2;
     const currentWidth=Math.min(nextWidth*1.5,availableWidth)*0.8;
     $('.current-card').style.width=(currentWidth+2)+'px';
+    if(getComputedStyle(workspace).display==='grid'){
+      const chrome=side.offsetWidth-side.clientWidth+padding;
+      const previewWidth=Math.max(currentWidth+2,$('.next-card').getBoundingClientRect().width);
+      workspace.style.gridTemplateColumns=`minmax(0,1fr) ${Math.ceil(previewWidth+chrome)}px`;
+    }
     for(const f of [currentFrame,nextFrame])f.style.transform=`scale(${f.parentElement.getBoundingClientRect().width/1600})`;
   }
   const previewResize=new ResizeObserver(resizePreviews);
-  for(const element of [$('.presenter-side'),currentFrame.parentElement,nextFrame.parentElement])previewResize.observe(element);
+  previewResize.observe($('.presenter-workspace'));
   window.addEventListener('resize',resizePreviews);
   const scriptScroll=$('#script-scroll');
   // Leave room below the last card so it can use the same reading position.
