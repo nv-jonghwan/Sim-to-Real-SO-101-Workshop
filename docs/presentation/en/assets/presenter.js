@@ -28,9 +28,11 @@
   function resizePreviews(){
     const side=$('.presenter-side');
     side.style.setProperty('--preview-scrollbar',(side.offsetWidth-side.clientWidth)+'px');
-    // Reserve space for the larger current slide; the next slide keeps its own width.
+    // Reduce only the current preview to 80% of its previous rendered size.
     const nextWidth=nextFrame.parentElement.getBoundingClientRect().width;
-    $('.current-card').style.width=(nextWidth*1.5+2)+'px';
+    const availableWidth=side.clientWidth-parseFloat(getComputedStyle(side).paddingRight||0)-2;
+    const currentWidth=Math.min(nextWidth*1.5,availableWidth)*0.8;
+    $('.current-card').style.width=(currentWidth+2)+'px';
     for(const f of [currentFrame,nextFrame])f.style.transform=`scale(${f.parentElement.getBoundingClientRect().width/1600})`;
   }
   const previewResize=new ResizeObserver(resizePreviews);
