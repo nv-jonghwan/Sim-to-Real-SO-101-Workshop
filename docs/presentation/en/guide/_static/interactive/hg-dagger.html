@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HG-DAgger: policy attempts, human corrections, and offline updates</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* Show the selected explanation without a term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+/* The illustrated workflow uses one column in narrow course articles. */
+main { max-width: 900px; padding: 6px 0; }
+.layout { gap: 10px; }
+svg { font-family: var(--diagram-font); }
+.marker { font-size: 16px; font-weight: 700; fill: var(--diagram-accent-text); letter-spacing: .3px; }
+.label { font-size: 25px; font-weight: 700; fill: var(--diagram-text); }
+.step-number { font-size: 25px; font-weight: 700; fill: var(--diagram-accent-text); }
+.caption { font-size: 20px; fill: var(--diagram-muted); }
+.minor { font-size: 18px; fill: var(--diagram-muted); }
+.line, .accent-line, .arrow { fill: none; stroke: var(--diagram-line); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.accent-line { stroke: var(--diagram-accent-text); }
+.arrow { marker-end: url(#arrow); }
+.paper { fill: var(--diagram-bg); stroke: var(--diagram-line); stroke-width: 2.2; stroke-linejoin: round; }
+.scene-back { fill: var(--diagram-surface); stroke: var(--diagram-border); stroke-width: 1.8; }
+.chip-body { fill: var(--diagram-tint); stroke: var(--diagram-accent-text); stroke-width: 2.6; }
+.accent-fill { fill: var(--diagram-accent-text); }
+.muted-fill { fill: var(--diagram-muted); }
+.mobile-connectors { display: none; }
+.definition + .definition { margin-top: 24px; }
+.is-enhanced .definition { margin-top: 0; }
+.definition a { color: var(--diagram-accent-text); text-underline-offset: 3px; }
+.definition a:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 3px; }
+.compact .stage-1 { transform: translate(20px, 48px); }
+.compact .stage-2 { transform: translate(20px, 334px); }
+.compact .stage-3 { transform: translate(20px, 620px); }
+.compact .stage-4 { transform: translate(20px, 906px); }
+.compact .stage-5 { transform: translate(20px, 1192px); }
+.compact .desktop-connectors { display: none; }
+.compact .mobile-connectors { display: block; }
+
+</style>
+<link rel="stylesheet" href="diagram-layout.css">
+</head>
+<body>
+<main id="interactive-learning-diagram">
+<div class="layout">
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" id="workflow-svg" viewBox="0 0 760 928" width="760" height="928" role="group" aria-labelledby="workflow-title workflow-desc"><title id="workflow-title">HG-DAgger: policy attempts, human corrections, and offline updates</title><desc id="workflow-desc">Watch the states reached by the policy, pause and align the leader, record human corrections, post-train offline, then reevaluate without assistance.</desc><defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="var(--diagram-line)" stroke-width="2"/></marker></defs><text class="marker" x="20" y="24" text-anchor="start">HG-DAGGER</text><g class="desktop-connectors" aria-hidden="true"><path class="arrow" d="M365 178 H393"/><path class="arrow" d="M570 306 V325 H190 V343"/><path class="arrow" d="M365 482 H393"/><path class="arrow" d="M570 610 V632 H380 V647"/></g><g class="mobile-connectors" aria-hidden="true"><path class="arrow" d="M190 308 V327"/><path class="arrow" d="M190 594 V613"/><path class="arrow" d="M190 880 V899"/><path class="arrow" d="M190 1166 V1185"/></g><g class="stage stage-1" transform="translate(20 48)"><text class="step-number" x="16" y="28" text-anchor="start">1</text><text class="label" x="48" y="28" text-anchor="start">Watch the policy</text><g transform="translate(36 49) scale(1)"><path class="accent-line" stroke-width="7" d="M20 100 V75 L50 35 L92 54 L115 24"/><circle class="paper" cx="20" cy="75" r="8"/><circle class="paper" cx="50" cy="35" r="8"/><circle class="paper" cx="92" cy="54" r="7"/><path class="line" d="M8 106 H37 M108 18 L121 30 M117 26 L129 18 L135 25 M117 26 L108 38 L114 43"/></g><g transform="translate(210 153) rotate(-20)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><g transform="translate(236 144) scale(1)"><path class="paper" d="M0 14 L12 0 H75 L86 14 V34 H0 Z"/><path class="line" d="M0 14 H86"/><ellipse class="accent-line" cx="23" cy="8" rx="7" ry="3"/><ellipse class="accent-line" cx="43" cy="8" rx="7" ry="3"/><ellipse class="accent-line" cx="63" cy="8" rx="7" ry="3"/></g><path class="line" stroke-dasharray="5 5" d="M177 109 Q193 78 210 109"/><text class="label" x="213" y="83" text-anchor="middle">?</text><text class="caption" x="170" y="231" text-anchor="middle">Find states needing help</text><a class="hotspot" data-term="attempt" href="#definition-attempt" tabindex="0" role="button" aria-label="1. Watch the policy" aria-controls="definition-attempt" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="250" rx="12"/></a></g><g class="stage stage-2" transform="translate(400 48)"><text class="step-number" x="16" y="28" text-anchor="start">2</text><text class="label" x="48" y="28" text-anchor="start">Pause and align</text><g transform="translate(26 50) scale(0.9)"><path class="line" stroke-width="7" d="M20 100 V75 L50 35 L92 54 L115 24"/><circle class="paper" cx="20" cy="75" r="8"/><circle class="paper" cx="50" cy="35" r="8"/><circle class="paper" cx="92" cy="54" r="7"/><path class="line" d="M8 106 H37 M108 18 L121 30 M117 26 L129 18 L135 25 M117 26 L108 38 L114 43"/></g><g transform="translate(188 50) scale(0.9)"><path class="accent-line" stroke-width="7" d="M20 100 V75 L50 35 L92 54 L115 24"/><circle class="paper" cx="20" cy="75" r="8"/><circle class="paper" cx="50" cy="35" r="8"/><circle class="paper" cx="92" cy="54" r="7"/><path class="line" d="M8 106 H37 M108 18 L121 30 M117 26 L129 18 L135 25 M117 26 L108 38 L114 43"/></g><path class="accent-line" stroke-dasharray="5 5" d="M125 70 H218 M76 85 H214"/><text class="minor" x="88" y="181" text-anchor="middle">Leader</text><text class="minor" x="257" y="181" text-anchor="middle">Follower</text><text class="caption" x="170" y="231" text-anchor="middle">Align before human takeover</text><a class="hotspot" data-term="align" href="#definition-align" tabindex="0" role="button" aria-label="2. Pause and align" aria-controls="definition-align" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="250" rx="12"/></a></g><g class="stage stage-3" transform="translate(20 352)"><text class="step-number" x="16" y="28" text-anchor="start">3</text><text class="label" x="48" y="28" text-anchor="start">Record a correction</text><g transform="translate(24 45) scale(0.95)"><path class="accent-line" stroke-width="7" d="M20 100 V75 L50 35 L92 54 L115 24"/><circle class="paper" cx="20" cy="75" r="8"/><circle class="paper" cx="50" cy="35" r="8"/><circle class="paper" cx="92" cy="54" r="7"/><path class="line" d="M8 106 H37 M108 18 L121 30 M117 26 L129 18 L135 25 M117 26 L108 38 L114 43"/></g><g transform="translate(178 120) rotate(0)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><path class="accent-line" d="M166 77 L174 65 L182 77 M174 66 V101"/><g transform="translate(218 91) scale(0.78)"><path class="paper" d="M0 0 H120 V92 H0 Z"/><path class="line" d="M0 15 H120 M0 78 H120 M40 15 V78 M80 15 V78"/><path class="line" d="M8 5 H16 M8 86 H16"/><path class="line" d="M28 5 H36 M28 86 H36"/><path class="line" d="M48 5 H56 M48 86 H56"/><path class="line" d="M68 5 H76 M68 86 H76"/><path class="line" d="M88 5 H96 M88 86 H96"/><path class="line" d="M108 5 H116 M108 86 H116"/><g transform="translate(20 42) rotate(-30)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><g transform="translate(60 42) rotate(0)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><g transform="translate(100 42) rotate(35)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g></g><text class="caption" x="170" y="231" text-anchor="middle">Save purposeful human motion</text><a class="hotspot" data-term="correct" href="#definition-correct" tabindex="0" role="button" aria-label="3. Record a correction" aria-controls="definition-correct" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="250" rx="12"/></a></g><g class="stage stage-4" transform="translate(400 352)"><text class="step-number" x="16" y="28" text-anchor="start">4</text><text class="label" x="48" y="28" text-anchor="start">Post-train offline</text><g transform="translate(16 106) scale(0.63)"><path class="paper" d="M0 0 H120 V92 H0 Z"/><path class="line" d="M0 15 H120 M0 78 H120 M40 15 V78 M80 15 V78"/><path class="line" d="M8 5 H16 M8 86 H16"/><path class="line" d="M28 5 H36 M28 86 H36"/><path class="line" d="M48 5 H56 M48 86 H56"/><path class="line" d="M68 5 H76 M68 86 H76"/><path class="line" d="M88 5 H96 M88 86 H96"/><path class="line" d="M108 5 H116 M108 86 H116"/><g transform="translate(20 42) rotate(-30)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><g transform="translate(60 42) rotate(0)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><g transform="translate(100 42) rotate(35)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g></g><g transform="translate(40 66) scale(0.63)"><path class="paper" d="M0 0 H120 V92 H0 Z"/><path class="line" d="M0 15 H120 M0 78 H120 M40 15 V78 M80 15 V78"/><path class="line" d="M8 5 H16 M8 86 H16"/><path class="line" d="M28 5 H36 M28 86 H36"/><path class="line" d="M48 5 H56 M48 86 H56"/><path class="line" d="M68 5 H76 M68 86 H76"/><path class="line" d="M88 5 H96 M88 86 H96"/><path class="line" d="M108 5 H116 M108 86 H116"/><g transform="translate(20 42) rotate(-30)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><g transform="translate(60 42) rotate(0)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><g transform="translate(100 42) rotate(35)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g></g><path class="arrow" d="M130 119 H164"/><g transform="translate(189 63) scale(1)"><rect class="chip-body" x="15" y="15" width="80" height="80" rx="10"/><path class="line" d="M30 3 V15 M30 95 V107 M3 30 H15 M95 30 H107"/><path class="line" d="M55 3 V15 M55 95 V107 M3 55 H15 M95 55 H107"/><path class="line" d="M80 3 V15 M80 95 V107 M3 80 H15 M95 80 H107"/><path class="accent-line" d="M36 37 L55 32 L76 49 L56 73 L34 67 Z M36 37 L56 73 M34 67 L76 49 M55 32 L56 73"/><circle class="accent-fill" cx="36" cy="37" r="4"/><circle class="accent-fill" cx="55" cy="32" r="4"/><circle class="accent-fill" cx="76" cy="49" r="4"/><circle class="accent-fill" cx="56" cy="73" r="4"/><circle class="accent-fill" cx="34" cy="67" r="4"/></g><text class="minor" x="83" y="190" text-anchor="middle">Demos + corrections</text><text class="caption" x="170" y="231" text-anchor="middle">Original demos + corrections</text><a class="hotspot" data-term="offline" href="#definition-offline" tabindex="0" role="button" aria-label="4. Post-train offline" aria-controls="definition-offline" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="250" rx="12"/></a></g><g class="stage stage-5" transform="translate(210 656)"><text class="step-number" x="16" y="28" text-anchor="start">5</text><text class="label" x="48" y="28" text-anchor="start">Reevaluate unaided</text><g transform="translate(24 69) scale(0.78)"><path class="scene-back" d="M0 0 H145 V95 H0 Z"/><path class="line" d="M8 79 H136 M14 14 H35 M14 20 H28"/><g transform="translate(14 49) scale(1)"><path class="paper" d="M0 14 L12 0 H75 L86 14 V34 H0 Z"/><path class="line" d="M0 14 H86"/><ellipse class="accent-line" cx="23" cy="8" rx="7" ry="3"/><ellipse class="accent-line" cx="43" cy="8" rx="7" ry="3"/><ellipse class="accent-line" cx="63" cy="8" rx="7" ry="3"/></g><g transform="translate(115 60) rotate(0)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><circle class="muted-fill" cx="124" cy="18" r="8"/></g><g transform="translate(211 56) scale(0.9)"><path class="accent-line" stroke-width="7" d="M20 100 V75 L50 35 L92 54 L115 24"/><circle class="paper" cx="20" cy="75" r="8"/><circle class="paper" cx="50" cy="35" r="8"/><circle class="paper" cx="92" cy="54" r="7"/><path class="line" d="M8 106 H37 M108 18 L121 30 M117 26 L129 18 L135 25 M117 26 L108 38 L114 43"/></g><g transform="translate(318 148) rotate(0)"><path class="paper" d="M-8 -18 H8 V14 L0 24 L-8 14 Z"/><path class="accent-line" d="M-10 -19 H10 M-8 -14 H8"/></g><text class="minor" x="81" y="178" text-anchor="middle">Simulation</text><text class="minor" x="265" y="178" text-anchor="middle">Real robot</text><path class="line" d="M46 188 H121 M226 188 H301"/><text class="caption" x="170" y="231" text-anchor="middle">Next round: remaining failures</text><a class="hotspot" data-term="autonomous" href="#definition-autonomous" tabindex="0" role="button" aria-label="5. Reevaluate unaided" aria-controls="definition-autonomous" aria-expanded="false"><rect class="hit-area" x="0" y="0" width="340" height="250" rx="12"/></a></g></svg></div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt">Select a step or object for its explanation.</p>
+<article class="definition" id="definition-attempt" data-definition="attempt" aria-labelledby="heading-attempt"><h2 id="heading-attempt">1. Watch the policy</h2><p>A policy can reach states that successful demonstrations rarely show: a missed grasp, an awkward approach, or a partial lift. HG-DAgger collects a useful human action at those policy-visited states. Observe the failure before deciding what correction to demonstrate.</p><p><a href="../../14-hg-dagger.html#what-is-hg-dagger" target="_top">Understand the correction loop</a></p></article>
+<article class="definition" id="definition-align" data-definition="align" aria-labelledby="heading-align"><h2 id="heading-align">2. Pause and align</h2><p>Pause policy control and align the leader with the follower before a correction. The physical leader moves under motor power during startup, alignment, resets, and exit, including with a simulated follower. Keep its path clear and support it before releasing torque. Follow the lesson's alignment controls and wait for correction_ready.</p><p><a href="../../14-hg-dagger-practice.html#align-correct-and-hand-back" target="_top">Follow the safe handoff sequence</a></p></article>
+<article class="definition" id="definition-correct" data-definition="correct" aria-labelledby="heading-correct"><h2 id="heading-correct">3. Record a correction</h2><p>Guide a useful grasp, lift, or placement and save the correction. The workshop records saved human correction segments, not the preceding autonomous attempt, pause, or alignment. Return control to the policy when appropriate. The policy weights stay fixed throughout collection.</p><p><a href="../../14-hg-dagger-practice.html#what-gets-recorded" target="_top">Check what becomes a training episode</a></p></article>
+<article class="definition" id="definition-offline" data-definition="offline" aria-labelledby="heading-offline"><h2 id="heading-offline">4. Post-train offline</h2><p>Review corrections, combine them with original demonstrations, and run a separate post-training job. Keeping examples of motions that already work helps test whether the updated policy retains those skills. Corrections supply action targets; this collection process does not update weights online or run reinforcement learning.</p></article>
+<article class="definition" id="definition-autonomous" data-definition="autonomous" aria-labelledby="heading-autonomous"><h2 id="heading-autonomous">5. Reevaluate unaided</h2><p>Evaluate the updated policy without human help. Assisted collection successes are not autonomous evaluation successes. Use compatible inputs and the documented horizon, verify training-data start coverage and the achieved pose, and test new vial positions. Record the full task outcome and whether earlier skills still work.</p><p><a href="../../14-hg-dagger-practice.html#evaluate-the-updated-policy" target="_top">Evaluate the updated policy</a></p></article>
+</section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+<script>
+(() => {
+  const svg = document.getElementById('workflow-svg');
+  const narrow = matchMedia('(max-width: 539px)');
+  const fit = () => {
+    svg.classList.toggle('compact', narrow.matches);
+    svg.setAttribute('width', narrow.matches ? '380' : '760');
+    svg.setAttribute('height', narrow.matches ? '1480' : '928');
+    svg.setAttribute('viewBox', narrow.matches ? '0 0 380 1480' : '0 0 760 928');
+  };
+  narrow.addEventListener('change', fit);
+  fit();
+})();
+</script>
+</body>
+</html>

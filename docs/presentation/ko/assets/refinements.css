@@ -1,0 +1,10 @@
+.interactive #slide-content .source-block{height:100%}
+.interactive #slide-content iframe{height:100%!important;min-height:600px;flex:none}
+.interactive #slide-content figure{height:100%}
+.lesson-content .code-tools button{font-size:17px;line-height:1.4}
+.lesson-content pre{white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal}
+.lesson-content .detail-launch{font-size:26px}
+.lesson-content img{max-width:100%!important;max-height:550px;height:auto;object-fit:contain}
+.lesson-content p>img{display:block;margin-inline:auto}
+.lesson-content .sd-row{margin-left:0!important;margin-right:0!important}
+@media(max-width:900px){.interactive #slide-content .source-block{height:auto}.interactive #slide-content iframe{height:680px!important;min-height:0}.lesson-content .code-tools button{font-size:12px}.lesson-content .detail-launch{font-size:17px}}

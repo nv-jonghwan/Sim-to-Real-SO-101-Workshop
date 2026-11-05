@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>AI Days Seoul 2026 · DLI Presentation</title>
+  <link rel="icon" href="guide/_static/nvidia-logo-horiz-rgb-blk-for-screen.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="guide/_static/pygments.css">
+  <link rel="stylesheet" href="guide/_static/sphinx-design.min.css">
+  <link rel="stylesheet" href="guide/_static/image-comparison.css">
+  <link rel="stylesheet" href="guide/_static/groot-hyperparameters.css">
+  <link rel="stylesheet" href="guide/_static/model-cards.css">
+  <link rel="stylesheet" href="assets/presentation.css">
+  <link rel="stylesheet" href="assets/refinements.css">
+  <link rel="stylesheet" href="assets/concepts.css">
+  <link rel="stylesheet" href="assets/presenter.css">
+  <link rel="stylesheet" href="guide/_static/module-types.css">
+  <script src="assets/course-concepts.js" defer></script>
+  <script src="assets/portable-content.js" defer></script>
+  <script src="assets/presentation-concepts.js" defer></script>
+  <script src="assets/presenter-script.js" defer></script>
+  <script src="assets/presenter-controls.js" defer></script>
+  <script src="assets/presenter.js" defer></script>
+</head>
+<body>
+  <header class="app-bar">
+    <a class="brand" href="#cover" aria-label="표지로 이동"><img src="guide/_static/nvidia-logo-horiz-rgb-blk-for-screen.svg" alt="NVIDIA"><span>AI DAYS SEOUL 2026 <i> / </i> DLI</span></a>
+    <div class="app-actions"><a data-language-switch href="../en/index.html" lang="en" style="color:inherit;text-decoration:none;font-size:13px;padding:6px">English</a>
+      <button id="agenda-button" title="목차와 검색 (G)">목차 <kbd>G</kbd></button>
+      <button id="presenter-button" title="별도 발표자 창 (P)">발표자 창 <kbd>P</kbd></button>
+      <button id="fullscreen-button" title="전체화면 (F)">전체화면 <kbd>F</kbd></button>
+      <button id="help-button" class="round" aria-label="조작 도움말">?</button>
+    </div>
+  </header>
+  <main id="workspace" aria-label="발표자료">
+    <div id="stage-wrap"><section id="stage" aria-live="polite"></section></div>
+    <aside id="console" hidden>
+      <div class="console-heading"><span class="eyebrow">PRESENTER VIEW</span><h2 id="console-title">발표자 보기</h2><p id="connection">발표 창에 연결 중</p></div>
+      <div class="console-clock"><span id="wall-clock"></span><span>KST</span></div>
+      <div class="console-next"><span class="eyebrow">UP NEXT</span><h3 id="next-title"></h3><p id="next-session"></p><button id="console-next-button">다음 장표로 이동</button></div>
+      <div class="console-body"><div class="eyebrow">CURRENT LESSON · 원문</div><div id="console-notes" class="lesson-content"></div></div>
+    </aside>
+  </main>
+  <footer class="control-bar">
+    <button id="session-button" class="session-button" title="세션 선택"><span id="session-label"></span><span class="session-details"><span id="session-time"></span><span id="session-instructor" hidden></span></span></button>
+    <div class="navigation"><button id="previous-button" class="arrow" aria-label="이전 장표"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button><label class="page-label"><input id="page-number" type="number" min="1" aria-label="장표 번호"><span id="page-total"></span></label><button id="next-button" class="arrow" aria-label="다음 장표"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></div>
+    <div class="footer-tools"><button id="timer-button" title="발표 경과 시간 시작·일시정지"><span class="timer-dot"></span><span id="timer">00:00</span></button><button id="reset-timer" title="타이머 초기화" aria-label="타이머 초기화">Reset</button><a id="source-link" target="_blank" rel="noopener">교재 열기 <kbd>O</kbd></a></div>
+    <div id="progress" aria-hidden="true"></div>
+  </footer>
+  <dialog id="agenda-dialog" class="agenda-dialog"><div class="dialog-top"><div><span class="eyebrow">TODAY’S SCHEDULE · KST</span><h2>오늘의 일정</h2></div><button data-close class="close-button" aria-label="목차 닫기">닫기 <kbd>Esc</kbd></button></div><div class="agenda-toolbar"><input id="search" type="search" placeholder="제목·교재 내용으로 찾기" aria-label="장표 검색"><button id="reference-button">참고 자료</button></div><div id="agenda-list"></div></dialog>
+  <dialog id="reading-dialog" class="reading-dialog"><div class="dialog-top"><div><span class="eyebrow">COURSE REFERENCE</span><h2 id="reading-title" tabindex="-1"></h2></div><div class="reading-controls"><button id="reading-back" hidden>← 이전 설명</button><a id="reading-source" target="_blank" rel="noopener">교재 원문 ↗</a><button data-close class="close-button">닫기 <kbd>Esc</kbd></button></div></div><div id="reading-body" class="lesson-content"></div></dialog>
+  <dialog id="objectives-dialog" class="objectives-dialog" aria-labelledby="objectives-title" aria-describedby="objectives-chapter">
+    <header class="objectives-heading"><div><p id="objectives-chapter"></p><h2 id="objectives-title" tabindex="-1">학습 목표</h2></div><button class="objectives-close" data-close-objectives aria-label="학습 목표 닫기"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+    <div id="objectives-body" class="lesson-content" tabindex="0" role="region" aria-label="이 장의 학습 목표"></div>
+    <footer class="objectives-footer"><button data-close-objectives>닫기 <kbd>Esc</kbd></button></footer>
+  </dialog>
+  <dialog id="help-dialog" class="help-dialog"><div class="dialog-top"><h2>발표 조작</h2><button data-close class="close-button">닫기 <kbd>Esc</kbd></button></div><dl><dt><kbd>←</kbd> <kbd>→</kbd> / <kbd>Page Up</kbd> <kbd>Page Down</kbd></dt><dd>이전·다음 장표</dd><dt><kbd>Space</kbd> / <kbd>Shift + Space</kbd></dt><dd>다음·이전 장표</dd><dt><kbd>G</kbd></dt><dd>일정·목차·전체 내용 검색</dd><dt><kbd>P</kbd></dt><dd>별도 발표자 창 — 같은 브라우저에서 장표·선택 항목 동기화</dd><dt><kbd>F</kbd></dt><dd>전체화면 켜기·끄기</dd><dt><kbd>B</kbd></dt><dd>화면 잠시 가리기·복원</dd><dt><kbd>D</kbd></dt><dd>현재 장표의 전체 설명과 실습 명령 펼치기</dd><dt><kbd>O</kbd></dt><dd>현재 교재 원문 열기</dd><dt><kbd>Home</kbd> / <kbd>End</kbd></dt><dd>표지·본 과정의 마지막 장표</dd></dl><p>도표 안에서는 마우스·키보드로 원래 interactive 기능을 사용할 수 있습니다. 도표에 키보드 포커스가 있으면 바깥 여백을 클릭한 뒤 장표를 넘기세요.</p><p>동영상은 직접 재생하며, 장표를 떠나면 정지합니다. 같은 주제는 탭과 단계 메뉴로 전환합니다. 각 장의 첫 장표에서 학습 목표를 열고, 본문의 명령 버튼으로 실습 명령을 확인합니다.</p></dialog>
+  <button id="blank-screen" hidden aria-label="클릭하여 발표 화면 복원"><span>AI DAYS SEOUL 2026 <i>·</i> DLI</span></button>
+  <div id="toast" role="status"></div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{
+  "task": "Newton-So101-Teleop-Vials-To-Rack-Perception-DR-v0",
+  "source_commit": "7a04aca656e270a7a5d063de411cb5694f293b56",
+  "capture_date": "2026-10-07",
+  "seed": 42,
+  "sim_degrees": [
+    -3.2527475357055664,
+    -102.5054931640625,
+    96.96703338623047,
+    29.67032814025879,
+    -90.24176025390625,
+    -7.341606616973877
+  ],
+  "physics_steps": 120,
+  "disabled_reset_events": [
+    "reset_robot_base_tilt",
+    "reset_mat_rotation",
+    "reset_external_camera"
+  ],
+  "wrist_response": {
+    "omni:rtx:post:grade:enabled": true,
+    "omni:rtx:post:grade:gain": [
+      1.18,
+      1.18,
+      1.182
+    ],
+    "omni:rtx:post:grade:gamma": [
+      1.12,
+      1.12,
+      1.12
+    ],
+    "omni:rtx:post:grade:saturation": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "omni:rtx:post:tvNoise:enabled": true,
+    "omni:rtx:post:tvNoise:filmGrain:enabled": true,
+    "omni:rtx:post:tvNoise:filmGrain:amount": 0.015,
+    "omni:rtx:post:tvNoise:filmGrain:size": 0.25,
+    "omni:rtx:post:tvNoise:colorAmount": 0.1,
+    "omni:rtx:post:tvNoise:lumAmount": 1.0,
+    "omni:rtx:post:tonemap:operator": "none"
+  },
+  "wrist_blur_sigma_range_px": [
+    0.9,
+    0.9
+  ],
+  "lens": "authored intrinsics and mount",
+  "observation_equals_saved_rgb": true,
+  "note": "Saved native joint angles from the September 28 reference; nominal base and mat. Rack starts at saved simulation pose and settles under current physics. Real layout is not measured; loose-vial arrangement differs. Appearance DR retains task defaults except wrist blur, fixed to sigma 0.9 pixels for this illustration.",
+  "sha256": {
+    "real.jpg": "ae09882447c5ddecc8d0aa8a13e3477c8aa4535bf963faaf8b02fbe5dbfed2db",
+    "sim-perception-dr.png": "4583c1a4203bc8ee918479e99e57b16af0e95ecd6745722fc3d3d6befa03cb8d"
+  },
+  "rack_pose_before_settling_xyzw": [
+    [
+      0.20010322332382202,
+      0.08961168676614761,
+      0.05999999865889549,
+      0.0,
+      0.0,
+      -0.24517498910427094,
+      0.9694788455963135
+    ]
+  ]
+}

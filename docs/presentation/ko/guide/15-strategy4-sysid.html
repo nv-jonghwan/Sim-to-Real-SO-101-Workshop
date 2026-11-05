@@ -1,0 +1,524 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '15-strategy4-sysid';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<link href="15-explore.html" rel="next" title="탐색과 실험"/>
+<link href="14-strategy3-cosmos.html" rel="prev" title="Sim-to-Real 전략 4: Cosmos로 Dataset 증강"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">과정 개요</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">SO-101 Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Dataset과 Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/15-strategy4-sysid.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="sim-to-real-strategy-5-system-identification-with-anchorbench">
+<h1>Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification<a class="headerlink" href="#sim-to-real-strategy-5-system-identification-with-anchorbench" title="Link to this heading">#</a></h1>
+<div class="course-module-type course-module-type--lecture">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="3"></rect>
+<path d="M16 21v4m-6 4 6-4 6 4M11 9h9m-9 2 3.5 4m6.5-4-3.5 4"></path>
+<circle cx="9" cy="9" r="2"></circle>
+<circle cx="22" cy="9" r="2"></circle>
+<circle cx="16" cy="16" r="2"></circle>
+</svg>
+<span>Lecture</span>
+</div>
+<a class="reference internal image-reference" href="_images/sysid-actuator-comparison-banner.png"><img alt="왼쪽 SysID actuator와 오른쪽 original actuator의 SO-101 paired trial입니다. 둘 다 실패했으며 SysID는 rack을, original은 vial grasp를 놓쳤습니다." src="_images/sysid-actuator-comparison-banner.png" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">이 Module에 필요한 준비물</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Video와 공개된 비교로 System Identification을 설명합니다. 연결된 robot이나 실행 중인 workshop container는 필요하지 않습니다.</p>
+</div>
+</details><p>같은 joint command라도 simulation과 hardware의 motion이 다를 수 있습니다. **System Identification (SysId)**은 측정된 동작에서 model parameter를 추정해 simulation이 실제 system을 더 잘 표현하도록 합니다. <a class="reference external" href="https://github.com/NVIDIA/anchor-bench" rel="noreferer noopener" target="_blank">AnchorBench</a> SysID layer 유무에 따른 SO-101 motion과 policy 동작의 차이를 비교합니다.</p>
+<section id="learning-objectives">
+<h2>학습 목표<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>측정한 robot motion을 System Identification에 사용하는 방법 설명</p></li>
+<li><p>Baseline, fitted, measured motion의 차이 파악</p></li>
+<li><p>동일한 action과 초기 조건이 중요한 이유 설명</p></li>
+<li><p>Actuator-model 검증과 후속 policy 평가 구분</p></li>
+</ul>
+</section>
+<section id="from-measurements-to-a-simulation-model">
+<h2>측정에서 Simulation Model로<a class="headerlink" href="#from-measurements-to-a-simulation-model" title="Link to this heading">#</a></h2>
+<p>Position-controlled joint의 응답은 target angle만으로 결정되지 않습니다. Drive stiffness, damping, effort limit, armature, friction이 tracking과 settling에 영향을 줍니다. SysId는 이런 parameter를 조정해 simulation motion과 실제 측정의 차이를 줄입니다.</p>
+<p>정보가 풍부한 motion을 기록하고 일부로 model을 fitting한 뒤 fitting에 쓰지 않은 motion으로 검증합니다. 좋은 fit은 조정에 쓰지 않은 동작도 설명해야 합니다. Policy 성공은 추가 시험이며 motion tracking 개선만으로 pick-and-place 성능 향상이 입증되지는 않습니다.</p>
+<figure>
+<iframe class="interactive-learning-diagram" loading="lazy" src="_static/interactive/system-identification.html" style="display:block; width:100%; height:600px; border:0;" title="Measure physical motion, fit a simulation model, then validate motion and policy behavior"></iframe>
+</figure></section>
+<section id="anchor-lab-and-anchorbench">
+<h2>Anchor-Lab and AnchorBench<a class="headerlink" href="#anchor-lab-and-anchorbench" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://huggingface.co/datasets/nvidia/Anchor-Lab" rel="noreferer noopener" target="_blank">NVIDIA Anchor-Lab</a>은 SO-101 arm과 H1/G1 humanoid의 실제 실험에서 얻은 timestamp 포함 측정 자료입니다. SO-101에는 frequency sweep, backlash 검출 motion, workspace sweep이 포함됩니다. 각 motion은 응답의 다른 특성을 드러내며 simulation model의 calibration과 검증 기준을 제공합니다.</p>
+<p><a class="reference external" href="https://huggingface.co/VigneshBhavan/so101-newton-actuator-ab-paired-checkpoints" rel="noreferer noopener" target="_blank">SO-101 AnchorBench 비교</a>는 fitted actuator parameter를 policy-learning workflow에서 연구하는 예시입니다. Baseline/fitted profile, paired policy checkpoint, 재현 안내, 비교 video를 제공합니다. <a class="reference external" href="https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-paired-demos" rel="noreferer noopener" target="_blank">Paired demonstration</a>은 command와 scene을 맞춰 actuator model 효과를 분리합니다.</p>
+<p>공개 bundle은 fitted profile과 재현 기록을 제공하지만 Anchor-Lab telemetry로 새 AnchorBench model을 fitting하는 전체 명령 순서는 포함하지 않습니다.</p>
+</section>
+<section id="teleop-comparison-default-and-sysid-assets">
+<h2>Teleoperation 비교: Default와 SysID Asset<a class="headerlink" href="#teleop-comparison-default-and-sysid-assets" title="Link to this heading">#</a></h2>
+<p>제대로 조정되지 않은 robot asset은 실제 robot과 다르게 움직일 수 있습니다. Default SO-101, fitted SysID layer 적용 asset, 실제 측정 motion을 겹쳐 차이로 actuation gap을 보여줍니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>색상</p></th>
+<th class="head"><p>의미</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Yellow</strong></p></td>
+<td><p>Default USD asset</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Red</strong></p></td>
+<td><p>Default USD asset 위에 SysID USD layer 적용</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Light blue</strong></p></td>
+<td><p>실제로 제어 중인 SO-101에서 읽은 joint value. Readback에 약간의 추가 지연이 있습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Simulation motion이 light-blue hardware readback을 얼마나 잘 따르는지 비교하세요. Timing을 해석할 때 readback delay도 고려해야 하며, 모든 지연이 actuator model 때문은 아닙니다.</p>
+<figure style="margin: 1.5rem auto;">
+<video aria-describedby="teleop-sysid-comparison-caption" aria-label="SO-101 teleop comparison of default USD, SysID USD layer, and measured hardware motion" controls="" height="720" playsinline="" preload="metadata" style="width: 100%; height: auto;" width="1280">
+<source src="_static/videos/so101-teleop-sysid-comparison.mp4" type="video/mp4"/>
+<a href="_static/videos/so101-teleop-sysid-comparison.mp4">Download the SO-101 teleop and SysID comparison.</a>
+</video>
+<figcaption id="teleop-sysid-comparison-caption">Yellow: default USD. Red: SysID USD layer over the default asset. Light blue: measured hardware readback, with additional delay.</figcaption>
+</figure></section>
+<section id="example-sysid-motion-chirp-sweep">
+<h2>SysID Motion 예시: Chirp Sweep<a class="headerlink" href="#example-sysid-motion-chirp-sweep" title="Link to this heading">#</a></h2>
+<p>Chirp sweep은 진동 명령의 frequency를 점차 바꿉니다. 진행에 따른 measured motion의 lag, amplitude, settling을 보세요. 하나의 정적 pose로는 이런 응답 차이를 볼 수 없습니다.</p>
+<figure style="margin: 1.5rem auto;">
+<video aria-label="Chirp Sweep: SO-101 system identification motion" controls="" height="720" playsinline="" preload="metadata" style="width: 100%; height: auto;" width="1280">
+<source src="_static/videos/chirp-sweep.mp4" type="video/mp4"/>
+<a href="_static/videos/chirp-sweep.mp4">Download the Chirp Sweep SysID motion example.</a>
+</video>
+</figure><figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/chirp-sweep-joint-response.png"><img alt="Frequency 증가에 따른 commanded trajectory(점선)와 motor encoder 측정(실선)의 6개 joint-response plot입니다. Arm position 단위는 degree, gripper opening은 percent입니다." src="_images/chirp-sweep-joint-response.png" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">위 chirp sweep의 joint 응답입니다. 진동이 빨라질 때 측정 motion이 늦거나 amplitude가 작아지는 구간을 보세요.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="workshop-comparison-sysid-and-original-actuators">
+<h2>Workshop 비교: SysId와 Original Actuator<a class="headerlink" href="#workshop-comparison-sysid-and-original-actuators" title="Link to this heading">#</a></h2>
+<p>왼쪽 SysId와 오른쪽 original actuator의 paired trial 10개입니다. 5배속으로 재생됩니다.</p>
+<p>이 policy는 task를 견고하게 수행할 정도로 학습되지 않았지만 vial로 접근할 때의 실패를 보여줍니다. Gripper가 grasp 가능한 위치에 도달하는지 집중해서 보세요. Approach 실패와 grasp 또는 placement 문제를 구분합니다.</p>
+<figure style="margin: 1.5rem auto;">
+<video aria-describedby="sysid-comparison-caption" aria-label="SO-101 comparison with SysId and original actuators" controls="" height="610" playsinline="" preload="metadata" style="width: 100%; height: auto;" width="1920">
+<source src="_static/videos/sysid_vs_original_10_pairs_5x.mp4" type="video/mp4"/>
+<a href="_static/videos/sysid_vs_original_10_pairs_5x.mp4">Download the SysId and original actuator comparison.</a>
+</video>
+<figcaption id="sysid-comparison-caption">SysId actuators (left) and original actuators (right).</figcaption>
+</figure><section id="simulation-evaluation-results">
+<h3>Simulation 평가 결과<a class="headerlink" href="#simulation-evaluation-results" title="Link to this heading">#</a></h3>
+<p>별도의 simulation 비교에서 두 policy를 두 actuator profile로 각각 평가했습니다. 각 셀은 같은 scene reset, 16-action execution horizon, 30초 trial limit으로 실행한 <strong>100 trial</strong> 중 placement 성공 수입니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Policy Training Data</p></th>
+<th class="head"><p>SysID Actuator로 평가</p></th>
+<th class="head"><p>Original Actuator로 평가</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>SysID Actuator로 수집</p></td>
+<td><p><strong>96/100 (96%)</strong></p></td>
+<td><p><strong>86/100 (86%)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Original Actuator로 수집</p></td>
+<td><p><strong>57/100 (57%)</strong></p></td>
+<td><p><strong>49/100 (49%)</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>SysID data로 학습한 policy는 두 profile 모두에서 더 좋은 성능을 보였습니다. 같은 policy의 평가 actuator를 original에서 SysID로 바꾸면 성공률이 <strong>10 percentage points</strong> 높아졌습니다.</p>
+<p>SysID가 항상 이런 결과를 내는 것은 아닙니다. 이처럼 큰 simulation 차이는 original model의 tuning이 충분하지 않았을 가능성을 시사합니다.</p>
+</section>
+</section>
+<section id="key-takeaways">
+<h2>핵심 내용<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>SysId는 실제 측정으로 simulation parameter를 추정합니다.</p></li>
+<li><p>Timing, 단위, motion coverage가 fit의 의미를 좌우합니다.</p></li>
+<li><p>조건을 맞춘 demonstration으로 actuator profile의 효과를 분리합니다.</p></li>
+<li><p>Motion model 정확도와 후속 task 성능을 모두 검증하세요.</p></li>
+</ul>
+</section>
+<section id="resources">
+<h2>참고 자료<a class="headerlink" href="#resources" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://huggingface.co/datasets/nvidia/Anchor-Lab" rel="noreferer noopener" target="_blank">Anchor-Lab measurements</a></p></li>
+<li><p><a class="reference external" href="https://huggingface.co/VigneshBhavan/so101-newton-actuator-ab-paired-checkpoints/blob/123b6cbc48f7bb948397cb0ad5b9dac8a4ab38d8/reproduction/README.md" rel="noreferer noopener" target="_blank">SO-101 Profile과 재현 안내</a></p></li>
+<li><p><a class="reference external" href="https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-paired-demos" rel="noreferer noopener" target="_blank">Paired demonstrations</a></p></li>
+</ul>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>다음 단계</h2>
+<p>목차 순서에 따라 다음 페이지로 이동하세요:
+    <a class="reference internal course-next-link" href="15-explore.html">탐색과 실험</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="14-strategy3-cosmos.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">이전</p>
+<p class="prev-next-title">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</p>
+</div>
+</a>
+<a class="right-next" href="15-explore.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">다음</p>
+<p class="prev-next-title">탐색과 실험</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">학습 목표</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-measurements-to-a-simulation-model">측정에서 Simulation Model로</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#anchor-lab-and-anchorbench">Anchor-Lab and AnchorBench</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teleop-comparison-default-and-sysid-assets">Teleoperation 비교: Default와 SysID Asset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-sysid-motion-chirp-sweep">SysID Motion 예시: Chirp Sweep</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workshop-comparison-sysid-and-original-actuators">Workshop 비교: SysId와 Original Actuator</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-evaluation-results">Simulation 평가 결과</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">핵심 내용</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resources">참고 자료</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

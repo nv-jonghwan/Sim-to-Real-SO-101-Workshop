@@ -1,0 +1,46 @@
+/* Keep the SVG width stable while the parent iframe catches up with content. */
+:root {
+  scrollbar-gutter: stable;
+}
+
+/* Keep the screen-reader announcement inside the measured content bounds. */
+#selection-status {
+  margin: 0;
+}
+
+/* Reserve the tallest explanation at the current width so selection does not
+   resize the iframe or move the surrounding lesson. */
+.is-enhanced .explanations {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.is-enhanced .definition,
+.is-enhanced #empty-prompt {
+  grid-area: 1 / 1;
+  min-width: 0;
+  margin-top: 0;
+}
+
+.is-enhanced .definition[hidden],
+.is-enhanced #empty-prompt[hidden] {
+  display: block;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media print {
+  .is-enhanced .explanations {
+    display: block;
+  }
+
+  .is-enhanced .definition[hidden] {
+    visibility: visible;
+  }
+
+  .is-enhanced #empty-prompt,
+  .is-enhanced #empty-prompt[hidden] {
+    display: none;
+  }
+}

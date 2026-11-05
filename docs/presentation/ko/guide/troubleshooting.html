@@ -1,0 +1,763 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Troubleshooting Guide — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = 'troubleshooting';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<link href="datasets-and-models.html" rel="prev" title="Dataset과 Model"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">과정 개요</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">SO-101 Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Dataset과 Model</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Troubleshooting Guide</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/troubleshooting.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="troubleshooting-guide">
+<h1>Troubleshooting Guide<a class="headerlink" href="#troubleshooting-guide" title="Link to this heading">#</a></h1>
+<a class="course-banner reference internal image-reference" href="_images/rerun_viewer.png"><img alt="Robot 동작을 점검하는 Rerun camera view와 joint plot입니다." class="course-banner" src="_images/rerun_viewer.png" style="width: 100%;"/>
+</a>
+<p>과정 전체의 troubleshooting 안내를 한곳에 모았습니다.</p>
+<p>모든 명령은 Python environment가 활성화된 하나의 <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container에서 실행합니다. <a class="reference internal" href="06-get-the-code.html#start-the-workshop-container"><span class="std std-ref">Get the Code</span></a>의 terminal을 계속 사용하고 각 실습을 종료한 뒤 다음을 시작하세요. 추가 shell은 선택 사항입니다. <a class="reference internal" href="06-get-the-code.html#container-shell-recovery"><span class="std std-ref">Container shell recovery</span></a>를 참고하세요.</p>
+<section id="hardware-issues">
+<h2>Hardware 문제<a class="headerlink" href="#hardware-issues" title="Link to this heading">#</a></h2>
+<section id="first-thing-to-try">
+<h3>먼저 시도할 방법<a class="headerlink" href="#first-thing-to-try" title="Link to this heading">#</a></h3>
+<p>전원 cable을 분리했다가 다시 연결하세요. 다음 명령이 실행되지 않으면 한 번 더 반복합니다. 해결되지 않으면 아래 절차를 진행하세요.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Robot이 응답하지 않음</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text">USB 연결을 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text">Power LED가 켜졌는지 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text">다른 USB port를 <strong>시험</strong>합니다.</p></li>
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container에서 <code class="docutils literal notranslate"><span class="pre">lerobot-find-port</span></code>를 <strong>실행</strong>해 올바른 port인지 확인합니다.</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Port를 찾지 못하거나 /dev/ttyACM* 접근 권한 오류</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">lerobot-find-port</span></code>가 port를 찾지 못하거나 permission denied가 발생하면:</p>
+<p class="sd-card-text">먼저 USB 연결과 문서에 나온 <code class="docutils literal notranslate"><span class="pre">/dev</span></code> mount, <code class="docutils literal notranslate"><span class="pre">--privileged</span></code> 옵션으로 container를 시작했는지 확인합니다. Device를 다시 연결한 뒤 같은 prompt에서 <code class="docutils literal notranslate"><span class="pre">lerobot-find-port</span></code>를 재실행하세요.</p>
+<p class="sd-card-text">계속 권한 오류가 나고 host 수정이 필요하면:</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">현재 실습을 <strong>중단</strong>하고 main container shell을 <strong>종료</strong>해 host prompt로 돌아갑니다. 문서의 <code class="docutils literal notranslate"><span class="pre">--rm</span></code> 실행 방식에서는 container가 종료·제거되지만 mount된 파일은 유지됩니다.</p></li>
+<li><p class="sd-card-text"><strong>Host</strong>에서 확인한 연결 serial port에만 read/write 권한을 <strong>부여</strong>합니다. 아래 경로는 예시입니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">666</span><span class="w"> </span>/dev/ttyACM0
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">666</span><span class="w"> </span>/dev/ttyACM1
+</pre></div>
+</div>
+<p class="sd-card-text">Device 재연결 시 권한이 초기화되므로 필요하면 USB를 다시 연결한 뒤 명령을 반복합니다.</p>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text">지속적인 <strong>host</strong> 접근이 필요하면 사용자를 <code class="docutils literal notranslate"><span class="pre">dialout</span></code> group(camera는 <code class="docutils literal notranslate"><span class="pre">video</span></code>)에 <strong>추가</strong>하고 logout/login합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>dialout<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span>
+sudo<span class="w"> </span>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>video<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text"><a class="reference internal" href="06-get-the-code.html#start-the-workshop-container"><span class="std std-ref">Get the Code</span></a>에 따라 container를 <strong>재시작</strong>하고 port와 저장 설정을 확인합니다.</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">전원 미연결(All Motors Missing)</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">모든 motor가 없다는 다음 오류가 보이면:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Missing</span> <span class="n">motor</span> <span class="n">IDs</span><span class="p">:</span>
+  <span class="o">-</span> <span class="mi">1</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+  <span class="o">-</span> <span class="mi">2</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+  <span class="o">-</span> <span class="mi">3</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+  <span class="o">-</span> <span class="mi">4</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+  <span class="o">-</span> <span class="mi">5</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+  <span class="o">-</span> <span class="mi">6</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+
+<span class="n">Full</span> <span class="n">expected</span> <span class="n">motor</span> <span class="nb">list</span> <span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">model_number</span><span class="p">):</span>
+<span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">777</span><span class="p">}</span>
+
+<span class="n">Full</span> <span class="n">found</span> <span class="n">motor</span> <span class="nb">list</span> <span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">model_number</span><span class="p">):</span>
+<span class="p">{}</span>
+</pre></div>
+</div>
+<p class="sd-card-text">Robot의 <strong>전원이 연결되지 않았다는 뜻</strong>입니다. USB는 통신을 제공하지만 motor에는 별도 전원이 필요합니다.</p>
+<p class="sd-card-text"><strong>해결 방법:</strong></p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">Follower robot에 12V 전원을 <strong>연결</strong>합니다.</p></li>
+<li><p class="sd-card-text">Power LED를 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text">명령을 <strong>재시도</strong>합니다.</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Motor 하나의 연결 끊김</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Motor 하나가 없다는 오류가 보이면:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Full</span> <span class="n">expected</span> <span class="n">motor</span> <span class="nb">list</span> <span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">model_number</span><span class="p">):</span>
+<span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">777</span><span class="p">}</span>
+
+<span class="n">Full</span> <span class="n">found</span> <span class="n">motor</span> <span class="nb">list</span> <span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">model_number</span><span class="p">):</span>
+<span class="p">{</span><span class="mi">2</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">777</span><span class="p">}</span>
+</pre></div>
+</div>
+<p class="sd-card-text">Motor 1이 연결되지 않았거나 통신하지 않는 상태입니다. 갑자기 발생했다면 전원을 다시 켜는 것만으로 해결될 수 있습니다.</p>
+<p class="sd-card-text"><strong>해결 방법:</strong></p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Power cycle</strong>: 전원 cable을 분리 후 재연결합니다.</p></li>
+<li><p class="sd-card-text">해결되지 않으면 <strong>motor cable</strong>이 느슨한지 확인합니다.</p></li>
+<li><p class="sd-card-text">누락된 motor의 cable을 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text">Motor는 daisy chain으로 연결되어 한 곳의 느슨한 연결이 뒤쪽 motor에도 영향을 줄 수 있습니다.</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Motor 연결 오류</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">다음 오류가 보이면:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ConnectionError: Failed to write 'Torque_Enable' on id_=2 with '1' after 1 tries. [TxRxResult] There is no status packet!
+</pre></div>
+</div>
+<p class="sd-card-text">특정 motor와 통신에 실패한 상태입니다.</p>
+<p class="sd-card-text"><strong>해결 방법:</strong></p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>전원 확인</strong>: Follower의 12V 전원이 연결되고 LED가 켜졌는지 확인합니다.</p></li>
+<li><p class="sd-card-text"><strong>USB 확인</strong>: Cable 양쪽이 단단히 연결되었는지 확인합니다.</p></li>
+<li><p class="sd-card-text"><strong>Motor 재시작</strong>: 전원을 분리했다가 다시 연결합니다.</p></li>
+<li><p class="sd-card-text"><strong>Motor ID 확인</strong>: 해당 ID motor의 연결이 느슨할 수 있습니다.</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Calibration 실패</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text">Robot port가 실제 robot의 robot.id와 대응하는지 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text">정확한 calibration pose인지 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text">Motor가 자유롭게 움직이는지 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text">초기 pose에서 joint가 limit에 있지 않은지 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text"><strong>실제 End Stop까지 이동</strong> — Range sweep에서는 <strong>wrist roll을 제외한</strong> 각 joint를 cable이나 장애물이 아닌 mechanical end stop까지 움직입니다. Wrist-roll range는 LeRobot이 자동 지정합니다. Link 사이에 끼인 cable이나 cable과의 충돌은 잘못된 min/max를 만들 수 있으므로 실제 limit까지 도달하도록 배선을 확인하세요.</p></li>
+</ol>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/calibration_cable_snag.gif"><img alt="Joint 근처 cable 배선을 보여주는 SO-101 arm 부분입니다." src="_images/calibration_cable_snag.gif" style="width: 400px;"/>
+</a>
+</figure>
+<ol class="arabic simple" start="6">
+<li><p class="sd-card-text">1단계부터 calibration을 <strong>다시 실행</strong>합니다.</p></li>
+</ol>
+</div>
+</details></section>
+</section>
+<section id="camera-issues">
+<h2>Camera 문제<a class="headerlink" href="#camera-issues" title="Link to this heading">#</a></h2>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Image가 어둡거나 없음</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Camera feed가 매우 어둡거나 검다면:</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Lens cap 확인</strong> — Cap을 제거했는지 확인하세요. 어둡거나 없는 feed의 흔한 원인입니다.</p></li>
+<li><p class="sd-card-text">Camera 전원과 연결을 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code>에서 <code class="docutils literal notranslate"><span class="pre">lerobot-find-cameras</span> <span class="pre">opencv</span></code>를 <strong>실행</strong>해 인식을 확인합니다.</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Camera Index 변경</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Camera를 분리하거나 다시 연결하면 index가 바뀔 수 있습니다.</p>
+<p class="sd-card-text"><strong>해결 방법:</strong></p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code>에서 <code class="docutils literal notranslate"><span class="pre">lerobot-find-cameras</span> <span class="pre">opencv</span></code>로 현재 index를 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text">새 index로 configuration을 <strong>갱신</strong>합니다.</p></li>
+<li><p class="sd-card-text">Capture test image로 <strong>검증</strong>합니다.</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Image가 흐리거나 Focus가 맞지 않음</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Feed가 흐리거나 policy가 세부 시각 정보를 처리하기 어려워하면:</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Focus 확인</strong> — Camera lens의 초점을 맞춥니다.</p></li>
+<li><p class="sd-card-text">얼룩이나 먼지가 있으면 lens를 <strong>닦습니다</strong>.</p></li>
+<li><p class="sd-card-text">Camera가 고정되어 진동하지 않는지 <strong>확인</strong>합니다.</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">잘못된 Camera Feed</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Policy가 잘못된 시각 입력을 받으면:</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">Camera 할당이 예상과 같은지 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text">Wrist와 external camera가 올바르게 구분되었는지 <strong>확인</strong>합니다.</p></li>
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">lerobot-find-cameras</span> <span class="pre">opencv</span></code>를 <strong>다시 실행</strong>해 index를 확인합니다.</p></li>
+</ol>
+</div>
+</details></section>
+<section id="policy-deployment-issues">
+<h2>Policy 배포 문제<a class="headerlink" href="#policy-deployment-issues" title="Link to this heading">#</a></h2>
+<section id="cuda-out-of-memory">
+<h3>CUDA Out of Memory<a class="headerlink" href="#cuda-out-of-memory" title="Link to this heading">#</a></h3>
+<p>Workshop 평가에서 가장 흔한 원인은 종료하지 않은 추가 policy server의 GPU memory 점유입니다. <strong>Ctrl+C</strong>로 평가를 끝내고 workshop container 안에서 다음 명령으로 해당 LeRobot policy server를 모두 종료합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<p>Server 종료 후 <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code>로 memory를 확인합니다. <a class="reference internal" href="11-sim-evaluation.html#stop-evaluation"><span class="std std-ref">시작 및 readiness 명령</span></a>으로 server 하나만 시작하세요. Policy 평가를 마치고 다음 것을 시작하기 전에 항상 <a class="reference internal" href="11-sim-evaluation.html#stop-evaluation"><span class="std std-ref">server를 종료</span></a>합니다.</p>
+</section>
+<section id="inference-is-slow">
+<h3>Inference가 느림<a class="headerlink" href="#inference-is-slow" title="Link to this heading">#</a></h3>
+<p>실제 inference가 느리면 simulation policy server를 종료했는지 확인하세요. 여전히 GPU를 사용할 수 있습니다. Server를 시작한 terminal에서 실행합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span>
+<span class="nb">wait</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="nb">unset</span><span class="w"> </span>POLICY_SERVER_PID
+</pre></div>
+</div>
+<p>또는 container의 <strong>모든 policy server를 종료</strong>합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<p>다른 terminal에서 시작한 server라면 그곳에서 종료하세요.</p>
+</section>
+<section id="compare-simulated-and-real-camera-images">
+<span id="so101-wrist-perception-gap"></span><h3>Simulation과 실제 Camera Image 비교<a class="headerlink" href="#compare-simulated-and-real-camera-images" title="Link to this heading">#</a></h3>
+<p>편집하지 않은 640 × 480 frame 두 개로 simulation dataset에서 실제 workstation으로 옮길 때 policy가 겪는 시각적 차이를 보여줍니다.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Sim/Real Camera 비교 예시와 한계 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/perception-gap-sim-wrist-20260924.png"><img alt="Orange gripper finger, yellow rack, 어두운 mat 위의 매끈한 white vial이 보이는 simulation wrist camera입니다." src="_images/perception-gap-sim-wrist-20260924.png" style="width: 640px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Simulation.</strong> <a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_newton_dr500_20260923" rel="noreferer noopener" target="_blank"><code class="docutils literal notranslate"><span class="pre">sreetz-nv/so101_newton_dr500_20260923</span></code></a>의 episode 0 첫 wrist frame입니다. Dataset revision은 <code class="docutils literal notranslate"><span class="pre">a08882a61870706727c153beec6ae10ec6747146</span></code>입니다.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/perception-gap-real-wrist-20260924.png"><img alt="더 밝은 orange gripper, 일부 yellow rack, blue-gray mat, image 가장자리의 표면 질감 있는 white vial이 보이는 실제 wrist camera입니다." src="_images/perception-gap-real-wrist-20260924.png" style="width: 640px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Real hardware.</strong> 2026년 9월 24일, 640 × 480 및 MJPEG 30 FPS 설정으로 capture한 SO-101 wrist frame입니다.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p class="sd-card-text">실제 image는 gripper와 rack highlight가 밝아 세부가 덜 보입니다. Mat는 dark gray보다 blue-gray에 가깝고, 실제 vial에는 simulation의 매끈한 vial과 달리 질감과 주름이 있습니다. Transfer 실패를 조사할 때 lighting, exposure, color response, material을 확인할 이유가 됩니다.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p class="sd-card-text">두 frame의 arm pose, gripper opening, vial 배치는 다릅니다. Perception gap을 보여주는 예시이며 <strong>camera calibration 시험이 아닙니다</strong>. FoV 오류, sensor dynamic range, policy 실패 원인을 입증하지 않습니다.</p>
+</div>
+<p class="sd-card-text">통제된 비교에는 실제로 측정한 joint pose를 simulation에 재현하고 vial/rack 배치를 맞추며 실제 exposure와 white balance를 기록합니다. Simulation을 바꾸기 전에 결과 image를 비교하세요. Camera response 조정은 수집과 평가 image에 모두 적용한 뒤 실제 성능에 미치는 영향을 시험합니다.</p>
+</div>
+</details></section>
+<section id="overlay-saved-wrist-images-to-inspect-alignment">
+<span id="wrist-image-alignment"></span><h3>저장 Wrist Image를 겹쳐 정렬 확인<a class="headerlink" href="#overlay-saved-wrist-images-to-inspect-alignment" title="Link to this heading">#</a></h3>
+<p><a class="reference internal" href="03-sim-to-real.html#perception-gap-comparison"><span class="std std-ref">What Is Sim-to-Real?의 interactive 비교</span></a>로 image를 겹치고 simulation opacity를 조절하거나 나란히 비교할 수 있습니다. 아래는 다른 image pair입니다.</p>
+<section id="alternate-pair-robot-confirmed-level">
+<h4>다른 Pair: Robot 수평 확인<a class="headerlink" href="#alternate-pair-robot-confirmed-level" title="Link to this heading">#</a></h4>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Image Pair와 Capture 조건 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">2026년 9월 28일 capture한 두 번째 pair에서는 operator가 실제 base의 수평을 확인하고 rack을 눈으로 맞췄습니다. Simulation은 이 비교에서 capture한 encoder pose, elbow asset correction, 측정 lens intrinsics와 distortion을 사용합니다. 원래 camera mount를 유지하고 후보 offset은 적용하지 않았습니다. Rack은 physics로 안정된 뒤 capture했지만 loose vial은 조금씩 움직여 정렬 기준으로 사용할 수 없습니다.</p>
+<section aria-labelledby="wrist-level-comparison-title" class="image-comparison">
+<h4 id="wrist-level-comparison-title">다른 이미지 쌍: 로봇의 수평 확인 완료</h4>
+<div class="image-comparison-controls" hidden="">
+<label>View <select data-control="mode"><option value="overlay">Overlay</option><option value="side">Side by side</option><option value="real">Real only</option><option value="sim">Sim only</option></select></label>
+<label>Sim opacity <input aria-label="Simulation opacity" data-control="opacity" max="100" min="0" type="range" value="50"/><output data-control="value">50%</output></label>
+<button data-control="toggle" type="button">Real / sim 전환</button>
+<button data-control="reset" type="button">예시 초기화</button>
+<label>Load real image <input accept="image/png,image/jpeg,image/webp" data-control="real-file" type="file"/></label>
+<label>Load sim image <input accept="image/png,image/jpeg,image/webp" data-control="sim-file" type="file"/></label>
+</div>
+<p aria-live="polite" class="image-comparison-status" role="status">왼쪽은 real 이미지, 오른쪽은 simulation입니다. 두 이미지 모두 640 × 480입니다.</p>
+<div class="image-comparison-stage" data-mode="side">
+<figure data-image="real"><img alt="Real wrist image with the robot base confirmed level and a yellow rack aligned by eye; a calibration target stands behind the rack." height="480" src="_static/wrist-comparison/real-level.jpg" width="640"/><figcaption>Real — base confirmed level</figcaption></figure>
+<figure data-image="sim"><img alt="Simulated wrist image at the captured arm joint angles, with the rack settled, using measured lens parameters and the original camera mount." height="480" src="_static/wrist-comparison/sim-level.png" width="640"/><figcaption>Simulation — measured lens, original mount</figcaption></figure>
+</div>
+<p>이 예시는 vial-to-rack task에서 simulation과 실제 환경 사이의 perceptual difference를 보여 줍니다. <strong>어떤 차이가 보이나요?</strong></p>
+<noscript><p>Opacity slider와 로컬 이미지 선택을 사용하려면 JavaScript를 활성화하세요. JavaScript 없이도 저장된 예시 이미지 두 장은 볼 수 있습니다.</p></noscript>
+</section>
+<p class="sd-card-text">Rack corner, hole, gripper 윤곽은 훨씬 잘 맞지만 밝기, highlight, 표면 detail은 여전히 다릅니다. 실제 scene에는 simulation에 없는 calibration target도 있습니다. Rack 위치를 독립적으로 측정하지 않았고 lens parameter와 scene 정렬이 첫 pair와 달라 정성적 예시일 뿐입니다. Base 수평 효과만을 분리하거나 camera mount calibration을 입증하지 않습니다.</p>
+</div>
+</details></section>
+</section>
+<section id="the-arm-reaches-where-there-is-no-vial">
+<h3>Arm이 Vial 없는 곳으로 향함<a class="headerlink" href="#the-arm-reaches-where-there-is-no-vial" title="Link to this heading">#</a></h3>
+<p><strong>Observation, prediction, motion이 처음 어긋나는 지점</strong>을 찾으세요.</p>
+<ol class="arabic simple">
+<li><p><strong>실패한 Pickup 하나를 재검토하세요.</strong> Camera image, 실제 GR00T 입력 image, 예측 action, 실행 motion을 비교합니다. Model 입력에 vial이 보이나요?</p></li>
+<li><p><strong>Simulation에서 Vial만 옮기세요.</strong> Arm과 camera는 고정합니다. 예측된 reach가 vial을 따라가나요?</p>
+<ul class="simple">
+<li><p>Vial을 옮겨도 같은 reach라면 visual conditioning이나 학습된 position bias를 조사합니다.</p></li>
+<li><p>따라가지만 일정하게 빗나가면 calibration과 action conversion을 확인합니다.</p></li>
+</ul>
+</li>
+<li><p><strong>Action Pipeline을 확인하세요.</strong> Joint 순서, 단위, normalization, relative-action decoding을 확인하고 상대 action을 두 번 변환하지 않는지 검증합니다.</p></li>
+<li><p><strong>더 자주 Replan해 보세요.</strong> Model과 scene을 유지하고 16, 8, 4개 action 실행 후 새 prediction을 요청하는 경우를 비교합니다.</p></li>
+<li><p><strong>실패 구간의 Data를 보완하세요.</strong> Vial 위치, 시작 pose, recovery 접근을 다양하게 한 성공 demonstration을 추가하고 학습에 없는 배치로 시험합니다.</p></li>
+</ol>
+<p><strong>한 번에 한 요인만 바꾸세요.</strong> 같은 scene을 반복하고 잘못된 위치로 향한 reach와 성공 pickup을 모두 기록합니다. 통제된 시험 전에는 각 설명을 가설로 다룹니다.</p>
+</section>
+<section id="test-policy-inputs-with-fixed-or-dummy-observations">
+<h3>Fixed 또는 “Dummy” Observation으로 Policy 입력 시험<a class="headerlink" href="#test-policy-inputs-with-fixed-or-dummy-observations" title="Link to this heading">#</a></h3>
+<p>실제 robot에 prediction을 보내지 않고 offline으로 진단합니다. 두 camera image, 측정 joint state, task instruction이 있는 유효한 저장 observation을 사용하세요. 저장 preprocessing/postprocessing을 유지해 feature 이름, image 변환, normalization, relative-action decoding을 배포와 맞춥니다.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Offline Fixed-Observation 진단 절차 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text">Raw camera frame, 대응 joint state, 실제 preprocessed model input을 저장합니다. Camera 할당, frame 최신성, color 순서, resize, crop을 확인하세요. Live viewer만으로 실제 model 입력을 알 수는 없습니다.</p></li>
+<li><p class="sd-card-text">고정 observation으로 반복 예측하되 trial 사이의 queued action chunk를 reset합니다. 비교 전에 seed를 고정하거나 충분히 반복해 prediction 변동을 측정하세요.</p></li>
+<li><p class="sd-card-text">입력 하나씩 바꿉니다. 의미 있는 시각 시험은 같은 arm/camera pose에서 vial 위치만 다른 두 scene을 렌더링하는 것입니다. Joint state와 task text를 고정하고 decoded action chunk를 비교합니다.</p></li>
+<li><p class="sd-card-text">추가 진단으로 camera 하나를 같은 shape/type의 constant image로 바꾸고 나머지 입력은 유지합니다. 비현실적인 “dummy” 입력은 camera 민감도를 드러낼 수 있지만 비슷한 prediction만으로 vision을 무시한다고 단정할 수는 없습니다. 다른 camera, joint state, 학습된 action prior가 지배적일 수 있습니다.</p></li>
+</ol>
+<p class="sd-card-text">먼저 offline prediction을 비교합니다. Simulation rollout에서는 조건 사이 environment와 policy queued action을 모두 reset하세요. Pose와 배치 일치의 중요성은 <a class="reference internal" href="#so101-wrist-perception-gap">perception-gap 예시</a>를 확인하세요.</p>
+</div>
+</details></section>
+<section id="replay-a-recorded-episode-on-the-physical-arm">
+<h3>실제 Arm에서 기록 Episode Replay<a class="headerlink" href="#replay-a-recorded-episode-on-the-physical-arm" title="Link to this heading">#</a></h3>
+<p>Recorded-action replay는 policy prediction을 우회해 저장된 joint command가 유사한 실제 trajectory를 만드는지 확인합니다. Policy의 visual reasoning이나 closed-loop recovery를 시험하지는 않습니다.</p>
+<ol class="arabic simple">
+<li><p>Dataset viewer에서 짧은 episode를 검토하고 robot, calibration, joint 순서·단위, action 규약, recording FPS를 확인합니다. Workshop action은 처음 5개 joint가 native degree, gripper가 percent입니다. 기록된 absolute action을 직접 사용하고 policy의 relative-action decoding을 적용하지 마세요.</p></li>
+<li><p>Episode 시작 joint state와 실제 측정을 비교하고 감독하에 위치를 맞춥니다. Replay가 collision-aware한 시작점 이동을 제공하지는 않습니다. 첫 motion 검사에서는 loose object를 치우고 정지 control 곁에 있으세요.</p></li>
+<li><p>Container에서 dataset과 calibration된 follower ID로 설치된 LeRobot replay 명령을 실행합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-replay<span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span>/dev/ttyACM0<span class="w"> </span>--robot.id<span class="o">=</span>&lt;follower_id&gt;<span class="w"> </span>--robot.use_degrees<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--dataset.repo_id<span class="o">=</span>&lt;hf_user/dataset_name&gt;<span class="w"> </span>--dataset.root<span class="o">=</span>./datasets/&lt;hf_user/dataset_name&gt;<span class="w"> </span>--dataset.episode<span class="o">=</span><span class="m">0</span><span class="w"> </span>--play_sounds<span class="o">=</span><span class="nb">false</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Trajectory가 벗어나면 <strong>Ctrl+C</strong>로 중단하세요. 정량 비교에는 별도 logging으로 실제 joint state와 camera view를 기록해야 하며 replay 명령 자체는 비교 observation을 저장하지 않습니다. 명령뿐 아니라 episode의 <strong>observed joint states</strong>와 비교하세요. Lag와 contact 때문에 명령과 측정은 다를 수 있습니다.</p></li>
+<li><p>Recorded command는 같은 motion을 재현하지만 policy rollout은 못 한다면 입력, prediction, action-chunk 실행을 조사합니다. Replay도 다르면 재학습 전에 calibration, joint/gripper mapping, actuator response, mounting, contact를 확인하세요.</p></li>
+</ol>
+<p>Simulation episode도 수집 당시 asset geometry와 joint offset에 의존합니다. 숫자상 joint value가 같다고 실제 pose까지 같다고 볼 수 없습니다. 정적인 camera 비교에서는 실제 arm을 움직이지 않고 encoder를 읽어 simulation에 pose를 재현하세요.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">한 번은 되었지만 일관되지 않음</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><strong>가능한 원인:</strong> Distribution shift</p>
+<p class="sd-card-text"><strong>해결 방법:</strong></p>
+<ul class="simple">
+<li><p class="sd-card-text">Trial 사이 초기 조건이 달라지는지 확인</p></li>
+<li><p class="sd-card-text">Camera가 안정적으로 고정되고 위치가 바뀌지 않았는지 확인</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Grasp가 항상 같은 양만큼 빗나감</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><strong>가능한 원인:</strong> Calibration 또는 camera 위치</p>
+<p class="sd-card-text"><strong>해결 방법:</strong></p>
+<ul class="simple">
+<li><p class="sd-card-text">Robot calibration 재실행</p></li>
+<li><p class="sd-card-text">Camera 위치 확인</p></li>
+<li><p class="sd-card-text">Workspace가 학습 조건과 맞는지 확인</p></li>
+</ul>
+</div>
+</details></section>
+</section>
+<section id="simulation-and-display-issues">
+<h2>Simulation과 Display 문제<a class="headerlink" href="#simulation-and-display-issues" title="Link to this heading">#</a></h2>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Simulation Camera Image가 없음</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--cameras</span> <span class="pre">all</span> <span class="pre">presets=newton,ovrtx_renderer</span></code>를 명시하세요. <code class="docutils literal notranslate"><span class="pre">--cameras</span> <span class="pre">none</span></code>은 의도적으로 image를 끕니다. ovrtx 첫 실행은 cache 준비에 몇 분이 걸릴 수 있습니다.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Browser가 비거나 Control이 동작하지 않음</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--browser-display</span></code>로 실행하고 host에서 <code class="docutils literal notranslate"><span class="pre">http://localhost:8090</span></code>을 엽니다. Keyboard control을 위해 browser에 focus를 두세요. Recording mode의 <strong>Space</strong>는 시작/저장, <strong>C</strong>는 폐기, <strong>R</strong>은 폐기/reset입니다. Viewer에는 tab 하나만 연결합니다.</p>
+<p class="sd-card-text">문서의 host networking을 사용하세요. Display port는 8090, 49100, 47998이며 같은 port의 다른 session을 종료합니다. <code class="docutils literal notranslate"><span class="pre">--browser-display</span></code>와 <code class="docutils literal notranslate"><span class="pre">--rerun</span></code>은 함께 사용할 수 없고 Rerun/headless에는 recording keyboard control이 없습니다.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Policy Server 또는 Checkpoint 오류</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">같은 container terminal에서 <a class="reference internal" href="11-sim-evaluation.html#run-policy-evaluation"><span class="std std-ref">Sim Evaluation</span></a>의 background server 시작과 readiness 검사를 따릅니다. Client는 <code class="docutils literal notranslate"><span class="pre">--server_address</span> <span class="pre">localhost:8080</span></code>을 사용합니다.</p>
+<p class="sd-card-text">Timeout이나 연결 실패 시 <code class="docutils literal notranslate"><span class="pre">tail</span> <span class="pre">-n</span> <span class="pre">40</span> <span class="pre">outputs/policy-server.log</span></code>를 확인하고 오류를 해결한 뒤 재시도하세요. 같은 port에 중복 server를 띄우지 마세요. 평가 후 <a class="reference internal" href="11-sim-evaluation.html#stop-evaluation"><span class="std std-ref">server cleanup</span></a>을 수행합니다.</p>
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code>가 configuration과 processor를 포함한 LeRobot GR00T 1.7 policy인지, server가 해당 local 경로나 Hub repo에 접근 가능한지 확인합니다. Rename map은 feature 이름만 처리합니다. <a class="reference internal" href="datasets-and-models.html#checkpoint-compatibility"><span class="std std-ref">Checkpoint Compatibility</span></a>를 참고하세요.</p>
+</div>
+</details></section>
+<section id="dataset-and-recording-issues">
+<h2>Dataset과 Recording 문제<a class="headerlink" href="#dataset-and-recording-issues" title="Link to this heading">#</a></h2>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">자동 수집 Dataset이 아직 Export되지 않음</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">vials_state_machine</span> <span class="pre">--record</span></code>는 성공 episode를 임시 저장하고 <code class="docutils literal notranslate"><span class="pre">--num_episodes</span></code>에 도달하면 LeRobot dataset을 조립합니다. 목표는 시도 횟수가 아닌 성공 episode 수입니다. Terminal 수집 수를 보고 최종 export를 기다린 뒤 <code class="docutils literal notranslate"><span class="pre">lerobot-dataset-viz</span></code>나 upload를 실행하세요. 조기 중단 시 완성되지 않은 임시 episode만 남을 수 있습니다.</p>
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--cameras</span> <span class="pre">all</span> <span class="pre">presets=newton,ovrtx_renderer</span></code>로 두 camera를 켜고 <code class="docutils literal notranslate"><span class="pre">--repo_id</span></code>, <code class="docutils literal notranslate"><span class="pre">--task_name</span></code>을 지정합니다. <a class="reference internal" href="08-simulation-teleoperation.html#optional-automated-data-collection"><span class="std std-ref">Automated Data Collection</span></a>을 확인하세요.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Local Recording Dataset을 학습에서 찾지 못함</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">실습의 <code class="docutils literal notranslate"><span class="pre">lerobot-train</span></code>은 Hub ID로 dataset을 선택합니다. 학습 전에 <code class="docutils literal notranslate"><span class="pre">./datasets/&lt;repo_id&gt;</span></code>를 검토하고 같은 dataset repo에 upload하세요. 새 shell에서는 <code class="docutils literal notranslate"><span class="pre">HF_USER</span></code>, <code class="docutils literal notranslate"><span class="pre">DATASET_NAME</span></code>, 파생 training variable을 다시 설정해야 합니다. 일반 <code class="docutils literal notranslate"><span class="pre">export</span></code>는 shell 간 유지되지 않습니다.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Dataset이 이미 존재함</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Simulation recording 경로는 <code class="docutils literal notranslate"><span class="pre">datasets/&lt;repo_id&gt;</span></code>입니다. <code class="docutils literal notranslate"><span class="pre">--resume</span></code>으로 추가하거나 다른 <code class="docutils literal notranslate"><span class="pre">--repo_id</span></code>로 새 수집을 시작하세요. 실제 recording은 <code class="docutils literal notranslate"><span class="pre">--dataset.repo_id</span></code>, <code class="docutils literal notranslate"><span class="pre">--dataset.root</span></code>를 사용합니다. 경로 변경 전에 기존 episode를 확인하고 보존합니다.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Dataset의 Image 또는 마지막 Episode가 없음</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">두 camera와 renderer preset으로 기록합니다. Saving 표시가 사라지고 terminal에 각 episode 저장 완료가 나올 때까지 기다리세요. Container 종료 전에 <strong>Ctrl+C</strong> shutdown을 끝까지 기다립니다.</p>
+<p class="sd-card-text">같은 repo ID와 <code class="docutils literal notranslate"><span class="pre">--root</span> <span class="pre">./datasets/&lt;repo_id&gt;</span></code>로 <code class="docutils literal notranslate"><span class="pre">lerobot-dataset-viz</span></code>를 실행해 저장 data를 확인합니다.</p>
+</div>
+</details></section>
+<section id="getting-help">
+<h2>도움받기<a class="headerlink" href="#getting-help" title="Link to this heading">#</a></h2>
+<p>문제가 계속되면:</p>
+<ol class="arabic simple">
+<li><p><strong>이 안내에서</strong> 해당 error message를 찾아보세요.</p></li>
+<li><p><strong>Power cycle</strong>로 일시적인 문제를 해결해 보세요.</p></li>
+<li><p>시각 입력이 이상하면 <strong>camera 탐지를 다시 실행</strong>하세요.</p></li>
+<li><p>문제가 남으면 위 <strong>진단 절차를 반복</strong>하세요.</p></li>
+</ol>
+</section>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="datasets-and-models.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">이전</p>
+<p class="prev-next-title">Dataset과 Model</p>
+</div>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-issues">Hardware 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#first-thing-to-try">먼저 시도할 방법</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#camera-issues">Camera 문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-deployment-issues">Policy 배포 문제</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cuda-out-of-memory">CUDA Out of Memory</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inference-is-slow">Inference가 느림</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-simulated-and-real-camera-images">Simulation과 실제 Camera Image 비교</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlay-saved-wrist-images-to-inspect-alignment">저장 Wrist Image를 겹쳐 정렬 확인</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#alternate-pair-robot-confirmed-level">다른 Pair: Robot 수평 확인</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-arm-reaches-where-there-is-no-vial">Arm이 Vial 없는 곳으로 향함</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-policy-inputs-with-fixed-or-dummy-observations">Fixed 또는 “Dummy” Observation으로 Policy 입력 시험</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#replay-a-recorded-episode-on-the-physical-arm">실제 Arm에서 기록 Episode Replay</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-and-display-issues">Simulation과 Display 문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-and-recording-issues">Dataset과 Recording 문제</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-help">도움받기</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

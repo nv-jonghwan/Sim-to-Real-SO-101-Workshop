@@ -265,3 +265,7 @@ runs/
 
 # Sphinx compiled translations (PO catalogs are source)
 docs/locale/**/*.mo
+
+# Portable English/Korean presentation media are stored in Git LFS.
+!/docs/presentation/**/videos/**
+!/docs/presentation/**/*.mp4

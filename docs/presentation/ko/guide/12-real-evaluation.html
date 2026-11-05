@@ -1,0 +1,981 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>실제 Robot 평가 — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '12-real-evaluation';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<link href="13-strategy2-cotraining.html" rel="next" title="Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training"/>
+<link href="12-debugging-sim-to-real.html" rel="prev" title="Sim-to-Real 문제 Debugging"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">과정 개요</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">SO-101 Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Dataset과 Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">실제 Robot 평가</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/12-real-evaluation.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="real-evaluation">
+<h1>실제 Robot 평가<a class="headerlink" href="#real-evaluation" title="Link to this heading">#</a></h1>
+<div class="course-module-type">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M11 17V8a2 2 0 0 1 4 0v6a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v2a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-3c-2 0-4-1-5-3l-5-7a2 2 0 0 1 3-2l1 1"></path>
+<path d="M15 14v5m4-4v4m4-2v3M5 9H3m4-5L5.5 2.5M19 5l1.5-1.5"></path>
+</svg>
+<span>Hands-on</span>
+</div>
+<a class="course-banner reference internal image-reference" href="_images/so101_vial_to_rack_task.gif"><img alt="실제 SO-101이 vial-to-rack task를 수행합니다." class="course-banner" src="_images/so101_vial_to_rack_task.gif" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">이 Module에 필요한 준비물</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">실습입니다. Calibration된 follower, camera 두 대, 조립한 workspace, 실행 중인 <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container, simulation에서 평가한 checkpoint가 필요합니다.</p>
+</div>
+</details><section id="learning-objectives">
+<h2>학습 목표<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>실제 robot에서 sim-only와 real-only data로 학습한 policy를 비교해 Sim-to-Real gap을 살펴봅니다.</p></li>
+<li><p>State-machine 및 human teleoperation 등 서로 다른 simulation data로 학습한 policy를 비교합니다.</p></li>
+<li><p>State-machine data의 overfitting이 robustness를 제한하고 demonstration의 motion pattern과 정지 행동을 반복하게 하는 방식을 이해합니다.</p></li>
+</ul>
+</section>
+<section id="workspace-prep">
+<span id="id1"></span><h2>Workspace 준비<a class="headerlink" href="#workspace-prep" title="Link to this heading">#</a></h2>
+<p>실행 전에 <a class="reference internal" href="08-operating-so101.html#id1"><span class="std std-ref">Safety</span></a> 절차를 확인하세요.</p>
+<ol class="arabic simple">
+<li><p>Mat에 vial 1–3개를 <strong>놓고</strong> rack을 기준 위치에 배치합니다.</p></li>
+<li><p>수집 시 camera view와 <a class="reference internal" href="05-building-workspace.html#set-up-the-light"><span class="std std-ref">lightbox 설정</span></a>을 <strong>맞춥니다</strong>.</p></li>
+</ol>
+</section>
+<section id="run-the-first-policy-trained-on-sim-only-data">
+<span id="run-the-first-policy"></span><span id="run-the-policy"></span><h2>첫 번째 Policy: Sim-Only Data로 학습<a class="headerlink" href="#run-the-first-policy-trained-on-sim-only-data" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="11-sim-evaluation.html#stop-evaluation"><span class="std std-ref">Simulation 평가와 background server를 종료</span></a>한 뒤 같은 container terminal에서 <strong>계속</strong>합니다.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Container Shell 재접속</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">실행 중인 workshop container에 다시 접속하려면 <strong>host</strong> terminal에서 다음을 실행합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>so101-workshop<span class="w"> </span>bash
+</pre></div>
+</div>
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code>의 <code class="docutils literal notranslate"><span class="pre">NAMES</span></code>에서 <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code>을 찾아 실행 여부를 확인합니다. 이미 container prompt에 있다면 건너뜁니다.</p>
+</div>
+</details><ol class="arabic simple" start="2">
+<li><p>Container에서 simulation에 사용한 model을 <strong>선택</strong>합니다. 확인한 camera index를 재사용하세요.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929
+<span class="nb">export</span><span class="w"> </span><span class="nv">TASK_INSTRUCTION</span><span class="o">=</span><span class="s2">"Pick up the vial and place it in the rack"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ROBOT_CAMERAS</span><span class="o">=</span><span class="s2">"{ wrist: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_GRIPPER</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG}, external: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_EXTERNAL</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG} }"</span>
+</pre></div>
+</div>
+<article aria-label="Vision-trainable 20k model card" class="course-model-card">
+<div class="model-card-header">
+<div>
+<p class="model-card-family">GR00T 1.7 · SO-101</p>
+<h3 class="model-card-title">Vision-trainable 20k</h3>
+<p class="model-card-purpose">Sim-only baseline</p>
+</div>
+<a aria-label="Open Vision-trainable 20k on Hugging Face (new tab)" class="model-card-hub" href="https://huggingface.co/sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="model-card-face">🤗</span> Hugging Face <span aria-hidden="true">↗</span></a>
+</div>
+<p class="model-card-episodes"><span><strong>500</strong> episodes</span><span class="model-card-composition">500 state-machine demonstrations</span></p>
+<ul aria-label="Post-training data sources" class="model-card-sources">
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="9" rx="3" width="9" x="3" y="3"></rect>
+<rect height="9" rx="3" width="9" x="20" y="20"></rect>
+<path d="M12 7.5h8a4.5 4.5 0 0 1 4.5 4.5v4m-3-3 3 3 3-3M20 24.5h-8a4.5 4.5 0 0 1-4.5-4.5v-4m-3 3 3-3 3 3"></path>
+<path d="M6 7.5h3m-1.5-1.5v3m15 15.5 1.4 1.4 2.6-2.8"></path>
+</svg>
+<span class="model-card-source-name">State machine</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="4"></rect>
+<path d="M11 28h10m-5-6v6M9 17l4-6 5 5 5-8m-3 0h3v3"></path>
+<circle cx="9" cy="17" r="1"></circle>
+<path d="M6 7h1m2 0h1"></path>
+</svg>
+<span class="model-card-source-name">Sim teleop</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M5 28h22M9 28v-5h10v5M13 23l-4-9 8-7m2 0 6 6m-1 3 3 1 2-3M9 15l9 6"></path>
+<circle cx="9" cy="12" r="3"></circle>
+<circle cx="19" cy="6" r="3"></circle>
+<circle cx="25" cy="14" r="2"></circle>
+</svg>
+<span class="model-card-source-name">Real data</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+</ul>
+<p class="model-card-training">20,000 updates · Batch 32 · Learning rate 1e-4<br/>Vision trainable · Language frozen · <a href="https://huggingface.co/sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929/blob/bbfef9eaecc7a7654f42aaa4ceb95245bb140a53/README.md" rel="noopener noreferrer" target="_blank">Training details ↗</a></p>
+<p class="model-card-datasets">Training data: <a href="https://huggingface.co/datasets/sreetz-nv/so101_newton_dr500_20260923" rel="noopener noreferrer" target="_blank">500 state-machine demos ↗</a></p>
+</article>
+<section id="what-to-expect">
+<h3>예상되는 동작<a class="headerlink" href="#what-to-expect" title="Link to this heading">#</a></h3>
+<p>Simulation의 state-machine demonstration 500개로 학습했으며 teleoperation이나 실제 demonstration은 포함하지 않았습니다.</p>
+<p>“Return to home” demonstration이 없어 episode 끝에서 vial을 놓은 위치에 머뭅니다. 특정 vial 위치에 편향되고 motion 다양성이 부족한 overfitting이 있습니다.</p>
+<div class="admonition important">
+<p class="admonition-title">중요</p>
+<p>State-machine demonstration의 특정 grasp와 vial 위치에 overfit되었으므로 실제 robot에서는 낮은 성공률을 예상합니다.</p>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">선택 사항: 먼저 Simulation에서 시험</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text">실제 rollout을 <strong>종료</strong>한 뒤 같은 container terminal을 사용합니다. <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code>와 task instruction은 유지합니다.</p></li>
+<li><p class="sd-card-text">아래 simulation policy server를 <strong>시작</strong>하거나 이미 실행 중이면 재사용합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>outputs
+python<span class="w"> </span>-m<span class="w"> </span>lerobot.async_inference.policy_server<span class="w"> </span>--host<span class="o">=</span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="o">=</span><span class="m">8080</span><span class="w"> </span>--fps<span class="o">=</span><span class="m">30</span><span class="w"> </span>--inference_latency<span class="o">=</span><span class="m">0</span><span class="w"> </span>&gt;<span class="w"> </span>outputs/policy-server.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span><span class="w"> </span><span class="nv">POLICY_SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import grpc; grpc.channel_ready_future(grpc.insecure_channel('localhost:8080')).result(timeout=60); print('Policy server ready')"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">Policy</span> <span class="pre">server</span> <span class="pre">ready</span></code>를 <strong>기다린 뒤</strong> 평가를 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot_eval<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span>--browser-display<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer<span class="w"> </span>--server_address<span class="w"> </span>localhost:8080<span class="w"> </span>--pretrained_name_or_path<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy_type<span class="w"> </span>groot<span class="w"> </span>--policy_device<span class="w"> </span>cuda<span class="w"> </span>--start_pose_dataset<span class="w"> </span>sreetz-nv/so101_newton_dr500_20260923<span class="w"> </span>--action_horizon<span class="w"> </span><span class="m">16</span><span class="w"> </span>--num_episodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">76000</span><span class="w"> </span>--lang_instruction<span class="w"> </span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text"><a class="reference external" href="http://localhost:8090" rel="noreferer noopener" target="_blank">http://localhost:8090</a>을 <strong>엽니다</strong>. Viewer에는 browser tab 하나만 연결하세요.</p></li>
+<li><p class="sd-card-text">실제 policy를 실행하기 전에 background server를 <strong>종료</strong>합니다. 평가가 실행 중이면 먼저 <strong>Ctrl+C</strong>를 누르세요.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span>
+<span class="nb">wait</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="nb">unset</span><span class="w"> </span>POLICY_SERVER_PID
+</pre></div>
+</div>
+<p class="sd-card-text">또는 container의 <strong>모든 policy server를 종료</strong>합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<p class="sd-card-text">다른 terminal의 server를 재사용했다면 해당 terminal에서 종료합니다. 아래 실제 rollout은 policy를 직접 로드합니다.</p>
+</div>
+</details><ol class="arabic simple" start="3">
+<li><p>실제 robot에서 interactive rollout을 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-rollout<span class="w"> </span>--strategy.type<span class="o">=</span>workshop<span class="w"> </span>--policy.path<span class="o">=</span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy.base_model_path<span class="o">=</span>nvidia/GR00T-N1.7-3B<span class="w"> </span>--policy.n_action_steps<span class="o">=</span><span class="m">16</span><span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_PORT</span><span class="s2">"</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_ID</span><span class="s2">"</span><span class="w"> </span>--robot.use_degrees<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--robot.cameras<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_CAMERAS</span><span class="s2">"</span><span class="w"> </span>--task<span class="o">=</span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span><span class="w"> </span>--device<span class="o">=</span>cuda<span class="w"> </span>--display_data<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--inference.type<span class="o">=</span>rtc<span class="w"> </span>--inference.rtc.enabled<span class="o">=</span><span class="nb">false</span><span class="w"> </span>--inference.rtc.execution_horizon<span class="o">=</span><span class="m">16</span><span class="w"> </span>--inference.queue_threshold<span class="o">=</span><span class="m">0</span><span class="w"> </span>--start_pose_dataset<span class="o">=</span>sreetz-nv/so101_newton_dr500_20260923
+</pre></div>
+</div>
+<div class="admonition-rollout-controls admonition">
+<p class="admonition-title">Rollout Control</p>
+<p>시작 시 arm이 workshop 시작 pose로 움직인 뒤 <strong>P</strong>를 기다립니다. Rollout terminal에 focus를 두세요. Key는 대소문자를 구분하지 않습니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>동작</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>P</strong></p></td>
+<td><p><strong>P for policy:</strong> 첫 trial 또는 다음 trial을 시작합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>S / F</strong></p></td>
+<td><p>성공/실패를 기록하고 시작 pose로 복귀한 뒤 일시 정지합니다.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>N / →</strong></p></td>
+<td><p><strong>N for next:</strong> Trial을 폐기하고 시작 pose로 복귀한 뒤 일시 정지합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Q / Esc</strong></p></td>
+<td><p><strong>Q for Quit:</strong> 종료하며 미완료 trial은 폐기합니다.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Ctrl+C</strong></p></td>
+<td><p>Rollout을 중단하고 cleanup을 실행합니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>소품을 옮기기 전에 <code class="docutils literal notranslate"><span class="pre">Paused</span></code>를 기다리세요. 종료할 때도 cleanup과 복귀 동작이 끝난 뒤 arm을 만집니다.</p>
+<p>Model 비교 시 terminal에 표시되는 첫 action 지연과 평가한 trial 중 성공 수를 기록하세요.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<p>첫 rollout에서 camera 구도를 확인하세요. <strong>P</strong>를 누르기 전에 external preview에 <strong>rack 대부분과 robot 일부</strong>, vial pickup area가 보이는지 확인합니다. Camera 각도를 이미 맞췄다면 robot이 paused일 때 소품을 화면 안으로 옮기세요. FoV가 좁아 소품 위치가 중요합니다. Policy가 잘 동작하지 않으면 model을 바꾸기 전에 구도부터 확인하세요.</p>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">명령 Flag 이해</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Policy 반환 길이는 <code class="docutils literal notranslate"><span class="pre">--policy.n_action_steps=16</span></code>, 별도의 RTC 설정은 <code class="docutils literal notranslate"><span class="pre">--inference.rtc.execution_horizon=16</span></code>을 사용합니다. 각 model의 training data에 맞는 instruction을 사용하세요. Async inference engine을 선택하되 RTC compensation은 끕니다.</p>
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">--robot.use_degrees=true</span></code>는 arm joint를 degree로 유지해 기록된 state/action과 맞춥니다. Gripper는 percent 규약을 사용합니다.</p>
+<p class="sd-card-text">Arm은 <code class="docutils literal notranslate"><span class="pre">sreetz-nv/so101_newton_dr500_20260923</span></code>의 평균 episode-start pose로 자동 이동한 뒤 <strong>P</strong>를 기다립니다. 시작 중 경로를 비우세요. Terminal에 dataset-derived 평균과 표준편차가 표시됩니다. <strong>P를 누르기 전에</strong> 실제 pose를 확인하세요. 평균 계산만으로 시작 조건 일치가 입증되지는 않습니다.</p>
+<p class="sd-card-text">Starting pose는 초기 camera view, 도달 가능한 motion, GR00T relative action의 trajectory를 결정합니다. Training-start distribution 밖이면 weight와 무관하게 유능한 policy도 실패할 수 있습니다. 비교 전에 실제 pose와 현재 gripper calibration을 확인하세요. Offset이 필요하거나 distribution과 다르다면 matched evaluation이 아닌 out-of-distribution test로 표시합니다.</p>
+<p class="sd-card-text">첫 action을 보낼 때 <code class="docutils literal notranslate"><span class="pre">Waiting</span> <span class="pre">|</span> <span class="pre">first</span> <span class="pre">policy</span> <span class="pre">action</span></code> 다음에 <code class="docutils literal notranslate"><span class="pre">Running</span> <span class="pre">|</span> <span class="pre">first</span> <span class="pre">policy</span> <span class="pre">action</span> <span class="pre">after</span> <span class="pre">...</span> <span class="pre">s</span></code>가 표시됩니다. 기본 <code class="docutils literal notranslate"><span class="pre">workshop</span></code> strategy는 <strong>Q</strong>, <strong>Esc</strong>, <strong>Ctrl+C</strong>까지 실행하며 <code class="docutils literal notranslate"><span class="pre">--duration</span></code>은 무시합니다.</p>
+</div>
+</details></section>
+</section>
+<section id="run-the-second-policy">
+<h2>두 번째 Policy 실행<a class="headerlink" href="#run-the-second-policy" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Q</strong>, <strong>Esc</strong>, <strong>Ctrl+C</strong>로 첫 rollout을 <strong>종료</strong>하고 cleanup을 기다립니다.</p></li>
+<li><p>Simulation teleoperation만으로 학습한 policy를 <strong>선택</strong>합니다. 검증한 wrist 및 external camera 설정은 유지하세요.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>liorbenhorin-nv/so101_sim_manual_perception_newton_20261008_GR00T17_20k
+<span class="nb">export</span><span class="w"> </span><span class="nv">TASK_INSTRUCTION</span><span class="o">=</span><span class="s2">"Pick up the vial and place it in the rack"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ROBOT_CAMERAS</span><span class="o">=</span><span class="s2">"{ wrist: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_GRIPPER</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG}, external: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_EXTERNAL</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG} }"</span>
+</pre></div>
+</div>
+<article aria-label="Sim teleop 75 model card" class="course-model-card">
+<div class="model-card-header">
+<div>
+<p class="model-card-family">GR00T 1.7 · SO-101</p>
+<h3 class="model-card-title">Sim teleop 75</h3>
+<p class="model-card-purpose">Simulated teleoperation only</p>
+</div>
+<a aria-label="Open Sim teleop 75 on Hugging Face (new tab)" class="model-card-hub" href="https://huggingface.co/liorbenhorin-nv/so101_sim_manual_perception_newton_20261008_GR00T17_20k" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="model-card-face">🤗</span> Hugging Face <span aria-hidden="true">↗</span></a>
+</div>
+<p class="model-card-episodes"><span><strong>75</strong> episodes</span><span class="model-card-composition">75 simulated teleoperation demonstrations</span></p>
+<ul aria-label="Post-training data sources" class="model-card-sources">
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="9" rx="3" width="9" x="3" y="3"></rect>
+<rect height="9" rx="3" width="9" x="20" y="20"></rect>
+<path d="M12 7.5h8a4.5 4.5 0 0 1 4.5 4.5v4m-3-3 3 3 3-3M20 24.5h-8a4.5 4.5 0 0 1-4.5-4.5v-4m-3 3 3-3 3 3"></path>
+<path d="M6 7.5h3m-1.5-1.5v3m15 15.5 1.4 1.4 2.6-2.8"></path>
+</svg>
+<span class="model-card-source-name">State machine</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="4"></rect>
+<path d="M11 28h10m-5-6v6M9 17l4-6 5 5 5-8m-3 0h3v3"></path>
+<circle cx="9" cy="17" r="1"></circle>
+<path d="M6 7h1m2 0h1"></path>
+</svg>
+<span class="model-card-source-name">Sim teleop</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M5 28h22M9 28v-5h10v5M13 23l-4-9 8-7m2 0 6 6m-1 3 3 1 2-3M9 15l9 6"></path>
+<circle cx="9" cy="12" r="3"></circle>
+<circle cx="19" cy="6" r="3"></circle>
+<circle cx="25" cy="14" r="2"></circle>
+</svg>
+<span class="model-card-source-name">Real data</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+</ul>
+<p class="model-card-training">20,000 updates · Global batch 64 · Learning rate 1e-4<br/>Vision trainable · Language frozen · <a href="https://huggingface.co/liorbenhorin-nv/so101_sim_manual_perception_newton_20261008_GR00T17_20k/blob/main/README.md" rel="noopener noreferrer" target="_blank">Training details ↗</a></p>
+<p class="model-card-datasets">Training data: <a href="https://huggingface.co/datasets/sreetz-nv/so101_sim_manual_perception_newton_20261008" rel="noopener noreferrer" target="_blank">75 sim-teleop demos ↗</a></p>
+</article>
+<section id="id2">
+<h3>예상되는 동작<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>Simulation의 human teleoperation demonstration 75개로 학습한 model입니다. 첫 policy보다 data 양은 훨씬 적지만 motion 다양성이 있어 더 견고한 model을 만들 수 있습니다. Data 품질이 중요합니다.</p>
+<p>이 demonstration은 vial을 놓은 뒤 robot을 시작 pose 근처로 돌려보내 반복 동작을 만듭니다. Robot이 vial을 계속 집는지 관찰하세요. Simulation에서는 placement 시 일찍 종료하므로 이 동작이 보이지 않습니다. 첫 policy와 비교하세요.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">선택 사항: 먼저 Simulation에서 시험</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text">실제 rollout을 <strong>종료</strong>한 뒤 같은 container terminal을 사용합니다. <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code>와 task instruction은 유지합니다.</p></li>
+<li><p class="sd-card-text">아래 simulation policy server를 <strong>시작</strong>하거나 이미 실행 중이면 재사용합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>outputs
+python<span class="w"> </span>-m<span class="w"> </span>lerobot.async_inference.policy_server<span class="w"> </span>--host<span class="o">=</span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="o">=</span><span class="m">8080</span><span class="w"> </span>--fps<span class="o">=</span><span class="m">30</span><span class="w"> </span>--inference_latency<span class="o">=</span><span class="m">0</span><span class="w"> </span>&gt;<span class="w"> </span>outputs/policy-server.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span><span class="w"> </span><span class="nv">POLICY_SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import grpc; grpc.channel_ready_future(grpc.insecure_channel('localhost:8080')).result(timeout=60); print('Policy server ready')"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">Policy</span> <span class="pre">server</span> <span class="pre">ready</span></code>를 <strong>기다린 뒤</strong> 평가를 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot_eval<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span>--browser-display<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer<span class="w"> </span>--server_address<span class="w"> </span>localhost:8080<span class="w"> </span>--pretrained_name_or_path<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy_type<span class="w"> </span>groot<span class="w"> </span>--policy_device<span class="w"> </span>cuda<span class="w"> </span>--start_pose_dataset<span class="w"> </span>sreetz-nv/so101_sim_manual_perception_newton_20261008<span class="w"> </span>--action_horizon<span class="w"> </span><span class="m">16</span><span class="w"> </span>--num_episodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">42</span><span class="w"> </span>--lang_instruction<span class="w"> </span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text"><a class="reference external" href="http://localhost:8090" rel="noreferer noopener" target="_blank">http://localhost:8090</a>을 <strong>엽니다</strong>. Viewer에는 browser tab 하나만 연결하세요.</p></li>
+<li><p class="sd-card-text">실제 policy를 실행하기 전에 background server를 <strong>종료</strong>합니다. 평가가 실행 중이면 먼저 <strong>Ctrl+C</strong>를 누르세요.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span>
+<span class="nb">wait</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="nb">unset</span><span class="w"> </span>POLICY_SERVER_PID
+</pre></div>
+</div>
+<p class="sd-card-text">또는 container의 <strong>모든 policy server를 종료</strong>합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<p class="sd-card-text">다른 terminal의 server를 재사용했다면 해당 terminal에서 종료합니다. 아래 실제 rollout은 policy를 직접 로드합니다.</p>
+</div>
+</details><ol class="arabic simple" start="3">
+<li><p>두 번째 policy를 실제 robot에서 <strong>실행</strong>합니다. 시작 시 이 dataset의 평균 starting pose로 움직이므로 경로를 비우고 <strong>P</strong> 전에 실제 pose를 확인하세요.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-rollout<span class="w"> </span>--strategy.type<span class="o">=</span>workshop<span class="w"> </span>--policy.path<span class="o">=</span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy.base_model_path<span class="o">=</span>nvidia/GR00T-N1.7-3B<span class="w"> </span>--policy.n_action_steps<span class="o">=</span><span class="m">16</span><span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_PORT</span><span class="s2">"</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_ID</span><span class="s2">"</span><span class="w"> </span>--robot.use_degrees<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--robot.cameras<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_CAMERAS</span><span class="s2">"</span><span class="w"> </span>--task<span class="o">=</span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span><span class="w"> </span>--device<span class="o">=</span>cuda<span class="w"> </span>--display_data<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--inference.type<span class="o">=</span>rtc<span class="w"> </span>--inference.rtc.enabled<span class="o">=</span><span class="nb">false</span><span class="w"> </span>--inference.rtc.execution_horizon<span class="o">=</span><span class="m">16</span><span class="w"> </span>--inference.queue_threshold<span class="o">=</span><span class="m">0</span><span class="w"> </span>--start_pose_dataset<span class="o">=</span>sreetz-nv/so101_sim_manual_perception_newton_20261008
+</pre></div>
+</div>
+<div class="admonition-rollout-controls admonition">
+<p class="admonition-title">Rollout Control</p>
+<p>시작 시 arm이 workshop 시작 pose로 움직인 뒤 <strong>P</strong>를 기다립니다. Rollout terminal에 focus를 두세요. Key는 대소문자를 구분하지 않습니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>동작</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>P</strong></p></td>
+<td><p><strong>P for policy:</strong> 첫 trial 또는 다음 trial을 시작합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>S / F</strong></p></td>
+<td><p>성공/실패를 기록하고 시작 pose로 복귀한 뒤 일시 정지합니다.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>N / →</strong></p></td>
+<td><p><strong>N for next:</strong> Trial을 폐기하고 시작 pose로 복귀한 뒤 일시 정지합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Q / Esc</strong></p></td>
+<td><p><strong>Q for Quit:</strong> 종료하며 미완료 trial은 폐기합니다.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Ctrl+C</strong></p></td>
+<td><p>Rollout을 중단하고 cleanup을 실행합니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>소품을 옮기기 전에 <code class="docutils literal notranslate"><span class="pre">Paused</span></code>를 기다리세요. 종료할 때도 cleanup과 복귀 동작이 끝난 뒤 arm을 만집니다.</p>
+<p>Model 비교 시 terminal에 표시되는 첫 action 지연과 평가한 trial 중 성공 수를 기록하세요.</p>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>Placement 이후를 관찰하세요.</strong> 복귀하지 않는 첫 policy와 ready pose로 돌아가 다음 vial을 시도하는 두 번째 policy를 비교합니다. 계속 움직이는 동안 경로를 비우고 위 control로 채점하거나 종료하세요.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">선택 사항: State-Machine-Only i1 시험</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text">이전 rollout을 <strong>종료</strong>하고 cleanup 후 다음 model을 <strong>선택</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>liorbenhorin-nv/so101_vision_dr_i1_GR00T17_20261013
+<span class="nb">export</span><span class="w"> </span><span class="nv">TASK_INSTRUCTION</span><span class="o">=</span><span class="s2">"Pick up the vial and place it in the rack"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ROBOT_CAMERAS</span><span class="o">=</span><span class="s2">"{ wrist: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_GRIPPER</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG}, external: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_EXTERNAL</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG} }"</span>
+</pre></div>
+</div>
+<article aria-label="i1 · State-machine only model card" class="course-model-card">
+<div class="model-card-header">
+<div>
+<p class="model-card-family">GR00T 1.7 · SO-101</p>
+<h3 class="model-card-title">i1 · State-machine only</h3>
+<p class="model-card-purpose">State-machine simulation policy</p>
+</div>
+<a aria-label="Open i1 · State-machine only on Hugging Face (new tab)" class="model-card-hub" href="https://huggingface.co/liorbenhorin-nv/so101_vision_dr_i1_GR00T17_20261013" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="model-card-face">🤗</span> Hugging Face <span aria-hidden="true">↗</span></a>
+</div>
+<p class="model-card-episodes"><span><strong>125</strong> episodes</span><span class="model-card-composition">125 state-machine sim</span></p>
+<ul aria-label="Post-training data sources" class="model-card-sources">
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="9" rx="3" width="9" x="3" y="3"></rect>
+<rect height="9" rx="3" width="9" x="20" y="20"></rect>
+<path d="M12 7.5h8a4.5 4.5 0 0 1 4.5 4.5v4m-3-3 3 3 3-3M20 24.5h-8a4.5 4.5 0 0 1-4.5-4.5v-4m-3 3 3-3 3 3"></path>
+<path d="M6 7.5h3m-1.5-1.5v3m15 15.5 1.4 1.4 2.6-2.8"></path>
+</svg>
+<span class="model-card-source-name">State machine</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="4"></rect>
+<path d="M11 28h10m-5-6v6M9 17l4-6 5 5 5-8m-3 0h3v3"></path>
+<circle cx="9" cy="17" r="1"></circle>
+<path d="M6 7h1m2 0h1"></path>
+</svg>
+<span class="model-card-source-name">Sim teleop</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M5 28h22M9 28v-5h10v5M13 23l-4-9 8-7m2 0 6 6m-1 3 3 1 2-3M9 15l9 6"></path>
+<circle cx="9" cy="12" r="3"></circle>
+<circle cx="19" cy="6" r="3"></circle>
+<circle cx="25" cy="14" r="2"></circle>
+</svg>
+<span class="model-card-source-name">Real data</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+</ul>
+<p class="model-card-training">20,000 updates · Batch 32 · 32-action training window<br/>Vision trainable · Language frozen · <a href="https://huggingface.co/liorbenhorin-nv/so101_vision_dr_i1_GR00T17_20261013/blob/main/README.md">Training details ↗</a></p>
+<p class="model-card-datasets">Training data: <a href="https://huggingface.co/datasets/liorbenhorin-nv/so101_vials_procedural_left_125ep_20261013" rel="noopener noreferrer" target="_blank">125 state-machine demos ↗</a></p>
+</article>
+<p class="rubric" id="id3">What to Expect</p>
+<p class="sd-card-text">Teleoperation demonstration을 모방하도록 만든 state machine의 simulation demonstration 125개로 학습했습니다. 실제 시험에서는 <strong>20회 중 8회(40%)</strong> 성공했습니다. Grasp 누락, rack-slot 정렬 오류, placement 후 동작을 관찰하세요.</p>
+<p class="sd-card-text">이 명령은 해당 model의 state-machine training dataset 초기 pose를 사용합니다. <strong>P</strong> 전에 실제 시작 pose를 확인하세요.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">선택 사항: 먼저 Simulation에서 시험</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text">실제 rollout을 <strong>종료</strong>한 뒤 같은 container terminal을 사용합니다. <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code>와 task instruction은 유지합니다.</p></li>
+<li><p class="sd-card-text">아래 simulation policy server를 <strong>시작</strong>하거나 이미 실행 중이면 재사용합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>outputs
+python<span class="w"> </span>-m<span class="w"> </span>lerobot.async_inference.policy_server<span class="w"> </span>--host<span class="o">=</span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="o">=</span><span class="m">8080</span><span class="w"> </span>--fps<span class="o">=</span><span class="m">30</span><span class="w"> </span>--inference_latency<span class="o">=</span><span class="m">0</span><span class="w"> </span>&gt;<span class="w"> </span>outputs/policy-server.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span><span class="w"> </span><span class="nv">POLICY_SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import grpc; grpc.channel_ready_future(grpc.insecure_channel('localhost:8080')).result(timeout=60); print('Policy server ready')"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">Policy</span> <span class="pre">server</span> <span class="pre">ready</span></code>를 <strong>기다린 뒤</strong> 평가를 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot_eval<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span>--browser-display<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer<span class="w"> </span>--server_address<span class="w"> </span>localhost:8080<span class="w"> </span>--pretrained_name_or_path<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy_type<span class="w"> </span>groot<span class="w"> </span>--policy_device<span class="w"> </span>cuda<span class="w"> </span>--start_pose_dataset<span class="w"> </span>liorbenhorin-nv/so101_vials_procedural_left_125ep_20261013<span class="w"> </span>--action_horizon<span class="w"> </span><span class="m">16</span><span class="w"> </span>--num_episodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">76000</span><span class="w"> </span>--lang_instruction<span class="w"> </span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text"><a class="reference external" href="http://localhost:8090" rel="noreferer noopener" target="_blank">http://localhost:8090</a>을 <strong>엽니다</strong>. Viewer에는 browser tab 하나만 연결하세요.</p></li>
+<li><p class="sd-card-text">실제 policy를 실행하기 전에 background server를 <strong>종료</strong>합니다. 평가가 실행 중이면 먼저 <strong>Ctrl+C</strong>를 누르세요.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span>
+<span class="nb">wait</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="nb">unset</span><span class="w"> </span>POLICY_SERVER_PID
+</pre></div>
+</div>
+<p class="sd-card-text">또는 container의 <strong>모든 policy server를 종료</strong>합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<p class="sd-card-text">다른 terminal의 server를 재사용했다면 해당 terminal에서 종료합니다. 아래 실제 rollout은 policy를 직접 로드합니다.</p>
+</div>
+</details><ol class="arabic simple" start="2">
+<li><p class="sd-card-text">실제 robot에서 policy를 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-rollout<span class="w"> </span>--strategy.type<span class="o">=</span>workshop<span class="w"> </span>--policy.path<span class="o">=</span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy.base_model_path<span class="o">=</span>nvidia/GR00T-N1.7-3B<span class="w"> </span>--policy.n_action_steps<span class="o">=</span><span class="m">16</span><span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_PORT</span><span class="s2">"</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_ID</span><span class="s2">"</span><span class="w"> </span>--robot.use_degrees<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--robot.cameras<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_CAMERAS</span><span class="s2">"</span><span class="w"> </span>--task<span class="o">=</span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span><span class="w"> </span>--device<span class="o">=</span>cuda<span class="w"> </span>--display_data<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--inference.type<span class="o">=</span>rtc<span class="w"> </span>--inference.rtc.enabled<span class="o">=</span><span class="nb">false</span><span class="w"> </span>--inference.rtc.execution_horizon<span class="o">=</span><span class="m">16</span><span class="w"> </span>--inference.queue_threshold<span class="o">=</span><span class="m">0</span><span class="w"> </span>--start_pose_dataset<span class="o">=</span>liorbenhorin-nv/so101_vials_procedural_left_125ep_20261013
+</pre></div>
+</div>
+<div class="admonition-rollout-controls admonition">
+<p class="admonition-title">Rollout Control</p>
+<p class="sd-card-text">시작 시 arm이 workshop 시작 pose로 움직인 뒤 <strong>P</strong>를 기다립니다. Rollout terminal에 focus를 두세요. Key는 대소문자를 구분하지 않습니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">Key</p></th>
+<th class="head"><p class="sd-card-text">동작</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><strong>P</strong></p></td>
+<td><p class="sd-card-text"><strong>P for policy:</strong> 첫 trial 또는 다음 trial을 시작합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><strong>S / F</strong></p></td>
+<td><p class="sd-card-text">성공/실패를 기록하고 시작 pose로 복귀한 뒤 일시 정지합니다.</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><strong>N / →</strong></p></td>
+<td><p class="sd-card-text"><strong>N for next:</strong> Trial을 폐기하고 시작 pose로 복귀한 뒤 일시 정지합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><strong>Q / Esc</strong></p></td>
+<td><p class="sd-card-text"><strong>Q for Quit:</strong> 종료하며 미완료 trial은 폐기합니다.</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><strong>Ctrl+C</strong></p></td>
+<td><p class="sd-card-text">Rollout을 중단하고 cleanup을 실행합니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text">소품을 옮기기 전에 <code class="docutils literal notranslate"><span class="pre">Paused</span></code>를 기다리세요. 종료할 때도 cleanup과 복귀 동작이 끝난 뒤 arm을 만집니다.</p>
+<p class="sd-card-text">Model 비교 시 terminal에 표시되는 첫 action 지연과 평가한 trial 중 성공 수를 기록하세요.</p>
+</div>
+</div>
+</details></section>
+</section>
+<section id="optional-compare-johnny42-trained-on-real-data">
+<span id="johnny42-real-rollout"></span><h2>선택 사항: 실제 Data로 학습한 Johnny42 비교<a class="headerlink" href="#optional-compare-johnny42-trained-on-real-data" title="Link to this heading">#</a></h2>
+<p><a class="reference internal" href="datasets-and-models.html#johnny42-real-to-real-reference"><span class="std std-ref">Johnny42</span></a>는 <strong>simulation이 아닌 실제 robot demonstration 50개</strong>로 학습했습니다. 이전 rollout을 종료하고 cleanup 후 아래 model, instruction, camera 설정을 지정하세요. 검증한 camera index를 재사용합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>sreetz-nv/so101-clean-up-vials-into-rack-50-groot-n17-relact-bs64-20k-20260628_johnny_42
+<span class="nb">export</span><span class="w"> </span><span class="nv">TASK_INSTRUCTION</span><span class="o">=</span><span class="s2">"Pick up the vials and put them in the yellow rack"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ROBOT_CAMERAS</span><span class="o">=</span><span class="s2">"{ wrist: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_GRIPPER</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG}, front: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_EXTERNAL</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG} }"</span>
+</pre></div>
+</div>
+<article aria-label="Johnny42 model card" class="course-model-card">
+<div class="model-card-header">
+<div>
+<p class="model-card-family">GR00T 1.7 · SO-101</p>
+<h3 class="model-card-title">Johnny42</h3>
+<p class="model-card-purpose">Real-to-real reference</p>
+</div>
+<a aria-label="Open Johnny42 on Hugging Face (new tab)" class="model-card-hub" href="https://huggingface.co/sreetz-nv/so101-clean-up-vials-into-rack-50-groot-n17-relact-bs64-20k-20260628_johnny_42" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="model-card-face">🤗</span> Hugging Face <span aria-hidden="true">↗</span></a>
+</div>
+<p class="model-card-episodes"><span><strong>50</strong> episodes</span><span class="model-card-composition">50 real demonstrations</span></p>
+<ul aria-label="Post-training data sources" class="model-card-sources">
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="9" rx="3" width="9" x="3" y="3"></rect>
+<rect height="9" rx="3" width="9" x="20" y="20"></rect>
+<path d="M12 7.5h8a4.5 4.5 0 0 1 4.5 4.5v4m-3-3 3 3 3-3M20 24.5h-8a4.5 4.5 0 0 1-4.5-4.5v-4m-3 3 3-3 3 3"></path>
+<path d="M6 7.5h3m-1.5-1.5v3m15 15.5 1.4 1.4 2.6-2.8"></path>
+</svg>
+<span class="model-card-source-name">State machine</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="4"></rect>
+<path d="M11 28h10m-5-6v6M9 17l4-6 5 5 5-8m-3 0h3v3"></path>
+<circle cx="9" cy="17" r="1"></circle>
+<path d="M6 7h1m2 0h1"></path>
+</svg>
+<span class="model-card-source-name">Sim teleop</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M5 28h22M9 28v-5h10v5M13 23l-4-9 8-7m2 0 6 6m-1 3 3 1 2-3M9 15l9 6"></path>
+<circle cx="9" cy="12" r="3"></circle>
+<circle cx="19" cy="6" r="3"></circle>
+<circle cx="25" cy="14" r="2"></circle>
+</svg>
+<span class="model-card-source-name">Real data</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+</ul>
+<p class="model-card-training">20,000 updates · Batch 64 · Learning rate 1e-4<br/>Vision frozen · Language frozen · <a href="https://huggingface.co/sreetz-nv/so101-clean-up-vials-into-rack-50-groot-n17-relact-bs64-20k-20260628_johnny_42/blob/981f41e4f5b4dda47c6583de502dcac258bf5312/README.md" rel="noopener noreferrer" target="_blank">Training details ↗</a></p>
+<p class="model-card-datasets">Training data: <a href="https://huggingface.co/datasets/sreetz-nv/so101-clean-up-vials-into-rack-50_20260628_131121" rel="noopener noreferrer" target="_blank">50 real demos ↗</a></p>
+</article>
+<section id="id4">
+<h3>예상되는 동작<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>실제 demonstration 50개로 학습한 model입니다. 본인의 station에서 simulation 기반 policy와 비교하세요.</p>
+<p>Camera 이름 표준화 이전에 수집한 data여서 external camera 이름이 <code class="docutils literal notranslate"><span class="pre">front</span></code>입니다. 이후 다른 model rollout의 <code class="docutils literal notranslate"><span class="pre">ROBOT_CAMERAS</span></code> export를 실행해 <code class="docutils literal notranslate"><span class="pre">external</span></code>로 되돌리세요.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">선택 사항: 먼저 Simulation에서 시험</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text">실제 rollout을 <strong>종료</strong>한 뒤 같은 container terminal을 사용합니다. <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code>와 task instruction은 유지합니다.</p></li>
+<li><p class="sd-card-text">아래 simulation policy server를 <strong>시작</strong>하거나 이미 실행 중이면 재사용합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>outputs
+python<span class="w"> </span>-m<span class="w"> </span>lerobot.async_inference.policy_server<span class="w"> </span>--host<span class="o">=</span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="o">=</span><span class="m">8080</span><span class="w"> </span>--fps<span class="o">=</span><span class="m">30</span><span class="w"> </span>--inference_latency<span class="o">=</span><span class="m">0</span><span class="w"> </span>&gt;<span class="w"> </span>outputs/policy-server.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span><span class="w"> </span><span class="nv">POLICY_SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import grpc; grpc.channel_ready_future(grpc.insecure_channel('localhost:8080')).result(timeout=60); print('Policy server ready')"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">Policy</span> <span class="pre">server</span> <span class="pre">ready</span></code>를 <strong>기다린 뒤</strong> 평가를 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot_eval<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span>--browser-display<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer<span class="w"> </span>--server_address<span class="w"> </span>localhost:8080<span class="w"> </span>--pretrained_name_or_path<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy_type<span class="w"> </span>groot<span class="w"> </span>--policy_device<span class="w"> </span>cuda<span class="w"> </span>--start_pose_dataset<span class="w"> </span>sreetz-nv/so101-clean-up-vials-into-rack-50_20260628_131121<span class="w"> </span>--action_horizon<span class="w"> </span><span class="m">16</span><span class="w"> </span>--num_episodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">76000</span><span class="w"> </span>--lang_instruction<span class="w"> </span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span><span class="w"> </span>--rename_map<span class="w"> </span><span class="s1">'{"external":"front"}'</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text"><a class="reference external" href="http://localhost:8090" rel="noreferer noopener" target="_blank">http://localhost:8090</a>을 <strong>엽니다</strong>. Viewer에는 browser tab 하나만 연결하세요.</p></li>
+<li><p class="sd-card-text">실제 policy를 실행하기 전에 background server를 <strong>종료</strong>합니다. 평가가 실행 중이면 먼저 <strong>Ctrl+C</strong>를 누르세요.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span>
+<span class="nb">wait</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="nb">unset</span><span class="w"> </span>POLICY_SERVER_PID
+</pre></div>
+</div>
+<p class="sd-card-text">또는 container의 <strong>모든 policy server를 종료</strong>합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<p class="sd-card-text">다른 terminal의 server를 재사용했다면 해당 terminal에서 종료합니다. 아래 실제 rollout은 policy를 직접 로드합니다.</p>
+</div>
+</details><p>같은 model로 <strong>실제 평가를 실행</strong>합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-rollout<span class="w"> </span>--strategy.type<span class="o">=</span>workshop<span class="w"> </span>--policy.path<span class="o">=</span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy.base_model_path<span class="o">=</span>nvidia/GR00T-N1.7-3B<span class="w"> </span>--policy.n_action_steps<span class="o">=</span><span class="m">16</span><span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_PORT</span><span class="s2">"</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_ID</span><span class="s2">"</span><span class="w"> </span>--robot.use_degrees<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--robot.cameras<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_CAMERAS</span><span class="s2">"</span><span class="w"> </span>--task<span class="o">=</span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span><span class="w"> </span>--device<span class="o">=</span>cuda<span class="w"> </span>--display_data<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--inference.type<span class="o">=</span>rtc<span class="w"> </span>--inference.rtc.enabled<span class="o">=</span><span class="nb">false</span><span class="w"> </span>--inference.rtc.execution_horizon<span class="o">=</span><span class="m">16</span><span class="w"> </span>--inference.queue_threshold<span class="o">=</span><span class="m">0</span><span class="w"> </span>--start_pose_dataset<span class="o">=</span>sreetz-nv/so101-clean-up-vials-into-rack-50_20260628_131121
+</pre></div>
+</div>
+<div class="admonition-rollout-controls admonition">
+<p class="admonition-title">Rollout Control</p>
+<p>시작 시 arm이 workshop 시작 pose로 움직인 뒤 <strong>P</strong>를 기다립니다. Rollout terminal에 focus를 두세요. Key는 대소문자를 구분하지 않습니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>동작</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>P</strong></p></td>
+<td><p><strong>P for policy:</strong> 첫 trial 또는 다음 trial을 시작합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>S / F</strong></p></td>
+<td><p>성공/실패를 기록하고 시작 pose로 복귀한 뒤 일시 정지합니다.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>N / →</strong></p></td>
+<td><p><strong>N for next:</strong> Trial을 폐기하고 시작 pose로 복귀한 뒤 일시 정지합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Q / Esc</strong></p></td>
+<td><p><strong>Q for Quit:</strong> 종료하며 미완료 trial은 폐기합니다.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Ctrl+C</strong></p></td>
+<td><p>Rollout을 중단하고 cleanup을 실행합니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>소품을 옮기기 전에 <code class="docutils literal notranslate"><span class="pre">Paused</span></code>를 기다리세요. 종료할 때도 cleanup과 복귀 동작이 끝난 뒤 arm을 만집니다.</p>
+<p>Model 비교 시 terminal에 표시되는 첫 action 지연과 평가한 trial 중 성공 수를 기록하세요.</p>
+</div>
+</section>
+</section>
+<section id="key-takeaways">
+<h2>핵심 내용<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>특정 grasp와 vial 위치에 overfit되면 simulation 성공률은 높아도 실제 성능은 안정적이지 않을 수 있습니다.</p></li>
+<li><p>첫 policy의 state-machine demonstration에는 release 후 복귀가 없어 완전한 반복 loop를 배우지 못했습니다.</p></li>
+<li><p>두 번째 policy의 teleoperation demonstration은 placement 후 동작까지 포함합니다. Ready pose 복귀와 다음 pickup으로 이어지는지 관찰하세요.</p></li>
+<li><p>학습된 복귀와 <strong>S/F</strong> 또는 <strong>N</strong> 뒤 rollout controller의 homing은 다릅니다. Trial을 끝내기 전에 policy 자체의 동작을 비교하세요.</p></li>
+<li><p>각 policy의 training data에 시작 pose를 맞추고 관찰한 행동을 기록합니다.</p></li>
+</ul>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>다음 단계</h2>
+<p>목차 순서에 따라 다음 페이지로 이동하세요:
+    <a class="reference internal course-next-link" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="12-debugging-sim-to-real.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">이전</p>
+<p class="prev-next-title">Sim-to-Real 문제 Debugging</p>
+</div>
+</a>
+<a class="right-next" href="13-strategy2-cotraining.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">다음</p>
+<p class="prev-next-title">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">학습 목표</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workspace-prep">Workspace 준비</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-first-policy-trained-on-sim-only-data">첫 번째 Policy: Sim-Only Data로 학습</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-expect">예상되는 동작</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-second-policy">두 번째 Policy 실행</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">예상되는 동작</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-compare-johnny42-trained-on-real-data">선택 사항: 실제 Data로 학습한 Johnny42 비교</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">예상되는 동작</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">핵심 내용</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

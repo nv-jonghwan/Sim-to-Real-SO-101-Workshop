@@ -1,0 +1,457 @@
+/* Teaching screens: related ideas share one canvas; original procedures live in the drawer. */
+.concept-screen .slide-header{padding:30.6px 60px 19.8px;min-height:115.2px}
+.concept-screen .slide-header h1{font-size:var(--dli-slide-title-size);line-height:1.22;letter-spacing:-.028em}
+.concept-screen .slide-kicker{font-size:16px;margin-bottom:12px;letter-spacing:.035em;text-transform:none}
+.slide-heading-meta{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:10.8px;min-height:28px}
+.concept-screen .slide-heading-meta .slide-kicker{margin-bottom:0;min-width:0}
+/* Keep a bottom rule without reserving a metadata row inside the slide. */
+.concept-screen::after{content:'';position:absolute;left:60px;right:60px;bottom:12px;border-top:1px solid var(--line);pointer-events:none}
+.teaching-type{display:inline-flex;align-items:center;justify-content:center;flex:none;border:1px solid #cbd3c1;border-radius:6px;padding:5px 15px;font-size:17px;font-weight:500;line-height:1;white-space:nowrap;background:#f1f3ee;color:#37432e;letter-spacing:.015em}
+.teaching-type--practice{background:#76b900;color:#122000;border-color:#76b900}
+.teaching-type--reference{background:#fff;color:#65705b}
+.full-lesson-button{margin-left:auto;font-size:18px;font-weight:500;padding:10px 16px;color:#3f6400;border-radius:4px;background:#f1f5e9}
+.full-lesson-button span{margin-left:12px}
+.source-outline-button{margin-left:auto;font-size:17px;color:#4d642f;white-space:nowrap;padding:10px 12px}
+.source-outline-button+.full-lesson-button{margin-left:0}
+.concept-tabs{display:flex;gap:6px;margin:0 60px 21.6px;border-bottom:1px solid #dce1d7;flex:none;min-height:45px}
+.concept-tabs button{position:relative;padding:9px 19.8px 12.6px;font-size:19.8px;font-weight:500;color:#68715f;white-space:nowrap}
+.concept-tabs button:hover{background:#f2f7e9;color:#243118}
+.concept-tabs button.selected{color:#1e2b13;background:#eff5e4}
+.concept-tabs button.selected:after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:4px;background:#76b900}
+.concept-screen #slide-content{margin:0 60px 22px;padding:0;overflow:hidden;min-height:0;display:flex;flex-direction:column}
+.teaching-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;height:100%;min-height:0}
+.teaching-grid.count-1{grid-template-columns:1fr}
+.teaching-grid.count-2{grid-template-columns:repeat(2,minmax(0,1fr));gap:42px}
+.teaching-grid.count-4{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:24px}
+.teaching-grid.count-5,.teaching-grid.count-6{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:24px}
+.teaching-grid.count-5{grid-template-columns:repeat(6,minmax(0,1fr))}
+.teaching-grid.count-5>.teaching-card{grid-column:span 2}
+.teaching-grid.count-5>.teaching-card:nth-child(n+4){grid-column:span 3}
+.teaching-card{display:flex;flex-direction:column;min-height:0;padding:28px 28px 18px;background:#f4f6f0;border-top:4px solid #76b900}
+.card-heading{display:flex;gap:16px;align-items:baseline;margin-bottom:25px;flex:none}
+.card-heading .step-number{font-size:19px;font-weight:500;color:#6b8b35;letter-spacing:.04em}
+.card-heading h2{font-size:28px;margin:0;line-height:1.25;letter-spacing:-.02em;word-break:keep-all}
+.card-body{flex:1;min-height:0;overflow:hidden;font-size:25px;line-height:1.55;word-break:keep-all;overflow-wrap:anywhere}
+.card-body .card-lead{font-size:inherit;margin:0 0 18px}
+.card-body .teaching-points{font-size:inherit}
+.card-body.compact{font-size:23px;line-height:1.45}
+.card-body.dense{font-size:21px;line-height:1.4}
+.count-4 .teaching-card,.count-5 .teaching-card,.count-6 .teaching-card{padding:21px 25px 13px}
+.count-4 .card-heading,.count-5 .card-heading,.count-6 .card-heading{margin-bottom:14px}
+.count-4 .card-body,.count-5 .card-body,.count-6 .card-body{font-size:23px;line-height:1.5}
+.count-4 .card-body.compact,.count-5 .card-body.compact,.count-6 .card-body.compact{font-size:21px;line-height:1.4}
+.count-4 .card-body.dense,.count-5 .card-body.dense,.count-6 .card-body.dense{font-size:20px;line-height:1.35}
+.pane-actions{display:flex;align-items:center;gap:16px;flex:none;border-top:1px solid #d6dfcb;margin-top:16px}
+.supplement-button{flex:none;font-size:17px!important;font-weight:500;color:#466c13;padding:9px 0;white-space:nowrap}
+.supplement-button:hover{color:#182d00;text-decoration:underline}
+.concept-notes .pane-actions{margin-top:25px}
+.text-focus .pane-actions{max-width:530px}
+.teaching-points{list-style:none!important;margin:0!important;padding:0!important}
+.teaching-points li{position:relative;margin:0 0 17px!important;padding:0 0 0 23px!important;font-size:inherit;line-height:inherit}
+.teaching-points li:before{content:'';position:absolute;left:0;top:.58em;width:7px;height:7px;background:#76b900}
+.teaching-points li:last-child{margin-bottom:0!important}
+.visual-layout{display:grid;grid-template-columns:minmax(0,6.5fr) minmax(0,3.5fr);gap:32px;height:100%;min-height:0}
+.visual-layout.visual-only{grid-template-columns:minmax(0,1fr)}
+.visual-stage{min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:#f7f8f5;padding:10px 18px 14px}
+.visual-stage>img,.visual-stage>video{display:block;max-width:100%!important;max-height:calc(100% - 56px)!important;width:auto;height:auto!important;object-fit:contain;object-position:center top;margin:0;min-height:0;flex:0 1 auto;cursor:zoom-in}
+.visual-stage>video{cursor:auto}
+.concept-notes{display:flex;flex-direction:column;justify-content:center;min-height:0;overflow:hidden;font-size:25px;line-height:1.55;padding:10px 0}
+.topic-label{color:#4c710c;font-size:18px;font-weight:500;letter-spacing:.035em;margin-bottom:20px;display:block}
+.focus-lead{font-size:28px;line-height:1.5;letter-spacing:-.012em;margin-bottom:26px!important}
+.concept-notes.compact{font-size:23px;line-height:1.45}
+.concept-notes.compact .focus-lead{font-size:25px;line-height:1.45}
+.concept-notes.dense{font-size:21px;line-height:1.4}
+.concept-notes.dense .focus-lead{font-size:23px;line-height:1.4}
+.media-picker{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px;flex:none;max-width:100%}
+.media-picker button{padding:7px 14px;font-size:17px!important;color:#5a6552;border:1px solid #dbe3d2;border-radius:4px;white-space:nowrap}
+.media-picker button.selected{background:#e4efcf;color:#254600;border-color:#9cbf60}
+.diagram-stage{flex:1;min-height:0;display:flex}
+.diagram-stage>iframe,.diagram-stage .embedded-widget{display:block;width:100%!important;height:100%!important;min-height:0!important;flex:1;border:0}
+#stage .diagram-stage>iframe{height:100%!important;min-height:0!important}
+.diagram-canvas>.media-picker{margin-top:4px}
+.compare-media{height:210px;flex:none;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.compare-media img{max-width:100%;max-height:210px!important;object-fit:contain}
+.compare .card-body{font-size:23px;line-height:1.4}
+.compare .card-heading{margin-bottom:15px}
+.compare .card-body .card-lead{margin-bottom:8px}
+.compare .card-body li{margin-bottom:10px!important}
+.text-focus{padding:32px 48px 24px;background:#f5f7f0;border-left:5px solid #76b900;min-height:0;max-height:100%;font-size:31px;line-height:1.65;overflow:hidden;display:flex;flex-direction:column}
+.text-focus .focus-lead{font-size:36px;max-width:1280px;line-height:1.5}
+.text-focus .teaching-points{font-size:inherit;max-width:1280px}
+.text-focus.compact{font-size:28px;line-height:1.5}
+.text-focus.compact .focus-lead{font-size:31px}
+.text-focus.dense{font-size:25px;line-height:1.45}
+.text-focus.dense .focus-lead{font-size:28px}
+.text-focus table{font-size:23px;line-height:1.45}
+.text-focus table td,.text-focus table th{padding:12px 16px}
+.teaching-card .safety-point{font-weight:700}
+.reference .card-heading h2{font-size:25px}
+.reference .card-body{font-size:22px}
+.reference .teaching-card{border-color:#b2c397}
+#reading-body h3{padding-top:14px;border-top:1px solid #dce1d7}
+#reading-body>h3:first-child{border:0;padding-top:0}
+#reading-body iframe{min-height:600px;width:100%}
+.reading-controls{display:flex;align-items:center;gap:14px;flex:none;font-size:16px}
+.reading-dialog[open]{display:flex;flex-direction:column;overflow:hidden}
+.reading-dialog .dialog-top{flex:none}
+.reading-dialog #reading-body{flex:1;min-height:0}
+.reading-controls a,.reading-controls>button{color:#456823;white-space:nowrap}
+#reading-title:focus{outline:none}
+.reading-intro{font-size:18px;color:#66715d}
+.source-outline{list-style:none!important;padding:0!important;margin:20px 0!important}
+.source-outline>li{padding:14px 0!important;margin:0!important;border-bottom:1px solid #dde5d2}
+.source-heading-row{display:flex;gap:18px;align-items:center;justify-content:space-between}
+.source-heading-row>button:first-child{font-size:21px;font-weight:500;text-align:left;padding:8px 0;color:#263f14}
+.source-heading-row>button:first-child:hover{text-decoration:underline}
+.source-heading-row .reveal-pane{font-size:14px;background:#edf4e3;white-space:nowrap;padding:8px 12px;border-radius:4px}
+.source-level-3 .source-heading-row{padding-left:22px}
+.source-level-4 .source-heading-row{padding-left:44px}
+.source-popup-list{display:grid;gap:8px;margin:8px 0}
+.source-popup-list:empty{display:none}
+.source-popup-list button{display:flex;justify-content:space-between;gap:18px;align-items:center;background:#f0f5e8;padding:15px 18px;text-align:left;font-size:19px;border-left:3px solid #76b900}
+.source-popup-list small{font-size:14px;color:#55743b;flex:none}
+.source-popup-list button:hover{background:#e3edcf}
+.card-body{display:flex;flex-direction:column;font-size:22px;line-height:1.5}
+.count-4 .card-body,.count-5 .card-body,.count-6 .card-body{font-size:21px;line-height:1.45}
+.concept-notes{justify-content:flex-start;font-size:23px;line-height:1.5}
+.concept-notes .topic-label{margin-bottom:14px;flex:none}
+.concept-notes .pane-actions{margin-top:12px}
+.text-focus{flex:1;max-height:none;font-size:28px;line-height:1.55}
+.explanation-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;flex:none}
+.pane-explanation{display:flex;flex-direction:column;min-height:0;flex:1;overflow:hidden}
+.explanation-scroll{min-height:0;flex:1;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#99ae7b transparent;padding-right:10px;word-break:keep-all;overflow-wrap:anywhere}
+.explanation-scroll p{margin:0 0 16px}
+.explanation-scroll ul,.explanation-scroll ol{margin:12px 0 18px;padding-left:1.2em}
+.explanation-scroll li{margin:8px 0}
+.explanation-scroll li p{margin:0}
+.explanation-scroll li::marker{color:#5a8e00}
+.explanation-scroll figure{margin:12px 0;text-align:left}
+.explanation-scroll figcaption{font-size:.85em;line-height:1.45;margin:8px 0 16px}
+.explanation-scroll .admonition{padding:12px 16px;margin:12px 0;font-size:inherit}
+.explanation-scroll .highlight,.explanation-scroll [class^="highlight-"]{margin:8px 0}
+.explanation-scroll h2,.explanation-scroll h3,.explanation-scroll h4{font-size:1.05em;margin:18px 0 12px}
+.explanation-scroll table{font-size:.82em;line-height:1.5;margin:0;min-width:0}
+.explanation-scroll table th,.explanation-scroll table td{padding:10px 12px}
+.source-inline-table{max-width:100%;overflow:auto;margin:12px 0}
+.source-inline-table table p{margin:0}
+#stage[data-slide="topic--16-conclusion--1"] .text-focus{padding:22px 36px 16px}
+#stage[data-slide="topic--16-conclusion--1"] .text-focus .topic-label{margin-bottom:10px}
+#stage[data-slide="topic--16-conclusion--1"] .text-focus table{font-size:21px;line-height:1.4}
+#stage[data-slide="topic--16-conclusion--1"] .text-focus td,#stage[data-slide="topic--16-conclusion--1"] .text-focus th{padding:8px 12px}
+.explanation-scroll .source-disclosure,.explanation-scroll .source-block-launch,.explanation-scroll .source-media-launch{display:block;text-align:left;font-size:.82em;padding:8px 12px;margin:9px 0;background:#e9f0de;color:#3c5d17;border-left:3px solid #76b900;line-height:1.45;width:100%}
+.explanation-navigation{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none;margin-top:10px;border-top:1px solid #dce5d1;padding-top:5px;min-height:32px;color:#567431}
+.explanation-navigation.single-page{display:none}
+.explanation-navigation button{font-size:22px!important;line-height:1;padding:2px 12px}
+.explanation-position{font-size:14px;line-height:1.25;text-align:center}
+.compare .compare-media{height:160px}
+.compare .compare-media img{max-height:160px!important}
+@media(max-width:900px){
+ .card-body,.count-4 .card-body,.count-5 .card-body,.count-6 .card-body,.concept-notes,.text-focus{font-size:18px}
+ .pane-explanation{min-height:180px;max-height:65dvh;flex:none}
+ .explanation-scroll{flex:1}
+ .pane-actions{gap:12px}
+ .supplement-button{font-size:14px!important}
+ .source-outline-button{font-size:13px;padding:8px}
+ .reading-dialog .dialog-top{flex-wrap:wrap}
+ .reading-controls{font-size:13px;gap:12px;width:100%;justify-content:flex-end}
+ .source-heading-row>button:first-child{font-size:18px}
+ .source-heading-row{gap:12px}
+ .source-popup-list button{font-size:16px;flex-wrap:wrap;gap:7px}
+ .concept-screen .slide-header{padding:25.2px 24px 18px;min-height:0}
+ .concept-screen .slide-kicker{font-size:11px}
+ .slide-heading-meta{gap:12px}
+ .teaching-type{font-size:12px;padding:6px 10px}
+ .concept-tabs{margin:0 24px 18px;overflow-x:auto;min-height:44px}
+ .concept-tabs button{font-size:14.4px;padding:8.1px 12.6px}
+ .concept-screen #slide-content{margin:0 24px 24px;overflow:visible}
+ .concept-screen::after{left:24px;right:24px}
+ .teaching-grid,.teaching-grid.count-1,.teaching-grid.count-2,.teaching-grid.count-4,.teaching-grid.count-5,.teaching-grid.count-6{display:grid;grid-template-columns:1fr;grid-template-rows:none;gap:18px;height:auto}
+ .teaching-grid.count-5>.teaching-card,.teaching-grid.count-5>.teaching-card:nth-child(n+4){grid-column:auto}
+ .teaching-card,.count-4 .teaching-card,.count-5 .teaching-card,.count-6 .teaching-card{padding:20px}
+ .card-heading{margin-bottom:18px}
+ .card-heading h2,.reference .card-heading h2{font-size:23px}
+ .card-body,.count-4 .card-body,.count-5 .card-body,.count-6 .card-body,.reference .card-body{font-size:18px;overflow:visible}
+ .visual-layout{display:flex;flex-direction:column;height:auto;gap:20px}
+ .visual-stage{min-height:240px;padding:10px}
+ .visual-stage>img,.visual-stage>video{flex:none;max-height:400px!important;max-width:100%}
+ .concept-notes{font-size:18px;overflow:visible}
+ .focus-lead{font-size:22px}
+ .topic-label{font-size:15px;margin-bottom:12px}
+ .diagram-stage{height:670px;min-height:670px;flex:none}
+ .full-lesson-button{font-size:13px;padding:8px}
+ .text-focus{padding:25px;font-size:21px;overflow:visible;max-height:none}
+ .text-focus .focus-lead{font-size:24px}
+}
+/* Original course badges retain their SVG, tint and rounded outline. */
+.slide-heading-meta .course-module-type{margin:0;flex:none;zoom:1.1}
+.concept-screen .slide-id{margin-left:auto}
+.media-caption{font-size:15px;line-height:1.4;color:#69715f;text-align:center;min-height:21px;flex:none;margin:8px 0 0;max-width:100%}
+.visual-stage>img,.visual-stage>video{max-height:calc(100% - 100px)!important}
+.diagram-canvas>.media-caption{margin-top:6px}
+.card-gallery{flex:none;margin-bottom:18px}
+.card-gallery .compare-media{margin-bottom:0}
+.card-gallery .compare-media video{height:160px;max-width:100%;object-fit:contain}
+.card-gallery .media-caption{font-size:13px}
+.card-gallery .media-picker{margin-top:6px}
+.source-supplement{border-left:3px solid #bdd78d;padding-left:18px;margin:24px 0}
+.source-supplement>h4{color:#365b0b}
+.explanation-scroll figure:empty,.explanation-scroll p:empty{display:none}
+.step-layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:36px;height:100%;min-height:0}
+.step-rail{display:flex;flex-direction:column;gap:10.8px;overflow:auto;min-height:0;padding:2px}
+.step-rail button{display:flex;gap:14px;align-items:center;min-height:68.4px;padding:18px 19.8px;text-align:left;border:1px solid #dce3d3;border-radius:9px;background:#f6f8f2;color:#59654d;font-size:20.7px;line-height:1.25;flex:none;transition:background .15s,border-color .15s}
+.step-rail button:hover{background:#edf4e2;border-color:#a6c476}
+.step-rail button.selected{background:#e9f3d9;color:#254500;border-color:#76b900;box-shadow:inset 4px 0 #76b900;font-weight:500}
+.step-rail button:focus-visible{outline:3px solid #577f21;outline-offset:2px}
+.rail-number{font-size:16.2px;color:#759347;font-weight:500;flex:none}
+.rail-arrow{margin-left:auto;color:#6d922f;opacity:0}
+.selected .rail-arrow{opacity:1}
+.step-panel{display:flex;flex-direction:column;min-height:0;min-width:0;background:#f7f9f3;border-radius:10px;padding:30px 38px 20px;border:1px solid #e1e7d9;font-size:26px;line-height:1.55;overflow:hidden}
+.lesson-content .step-panel>h2{font-size:30px;margin:0 0 20px;color:#263b15;flex:none}
+/* Keep the first source content at the same top inset on every rail selection. */
+#slide-content :is(.explanation-scroll,.diagram-prose) [data-prose-leading]{margin-block-start:0}
+@media(max-width:900px){
+ .step-layout{grid-template-columns:1fr;gap:18px;height:auto}
+ .step-rail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7.2px;overflow:visible}
+ .step-rail button{font-size:14.4px;min-height:55.8px;padding:10.8px;gap:8px}
+ .rail-number{font-size:11.7px}.rail-arrow{display:none}
+ .step-panel{font-size:18px;padding:22px;min-height:350px}
+ .lesson-content .step-panel>h2{font-size:24px;margin-bottom:16px}
+ .media-caption{font-size:12px}
+ .slide-heading-meta .course-module-type{font-size:.7rem;padding:.3rem .5rem;gap:.3rem}
+ .slide-heading-meta .course-module-type svg{width:1.5rem;height:1.5rem}
+}
+/* Session metadata lives in the control bar, leaving the slide for content. */
+.control-bar .session-button{display:flex;flex-direction:column;align-items:flex-start;min-width:0;gap:3px;padding:5px 8px;line-height:1.25}
+#session-label{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:14.4px;color:#b7d495;white-space:nowrap}
+.control-bar .session-button .session-details{display:flex;align-items:center;gap:10px;max-width:100%;margin:0;color:#e0e8d8;font-size:17.28px}
+.control-bar .session-button .session-details span{font-size:inherit;color:inherit;margin:0;white-space:nowrap}
+#session-instructor::before{content:'·';margin-right:10px;color:#8c9b80}
+#session-instructor[hidden]{display:none}
+/* Equal side columns keep slide controls at the viewport's horizontal center. */
+.control-bar{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.control-bar>.session-button{justify-self:start;max-width:100%}
+.control-bar>.navigation{justify-self:center}
+.control-bar>.footer-tools{justify-self:end;min-width:0;max-width:100%}
+.control-bar .page-label{font-size:15.6px}
+.control-bar .page-label input{font-size:19.2px}
+.control-bar .footer-tools{font-size:14.4px}
+.control-bar .footer-tools button{font-size:16.8px}
+.control-bar .footer-tools #reset-timer{font-size:13.2px}
+@media(max-width:900px){
+ .control-bar .session-button{max-width:100%;min-width:0;padding:2px 0}
+ #session-label{font-size:12px}
+ .control-bar .session-button .session-details{flex-direction:column;align-items:flex-start;gap:2px;font-size:13.2px}
+ #session-instructor::before{display:none}
+ .control-bar .page-label{font-size:12px}
+ .control-bar .page-label input{font-size:16.8px}
+ .control-bar .footer-tools :is(button,a){font-size:13.2px}
+ .control-bar .footer-tools a{max-width:none;white-space:nowrap}
+ .control-bar>.footer-tools{flex-wrap:wrap;justify-content:flex-end;gap:0 3px}
+ .control-bar .footer-tools :is(button,a){padding:4px}
+}
+/* Chapter objectives are available beside the original course-type badge. */
+.slide-header-actions{display:flex;align-items:center;gap:14px;flex:none}
+.objectives-button{display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid #cbd8ba;border-radius:.7rem;background:#fff;color:#496723;font-size:15px;font-weight:500;line-height:1.3;white-space:nowrap}
+.objectives-button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
+.objectives-button:hover,.objectives-button[aria-expanded="true"]{background:#eef5e4;border-color:#76b900;color:#2d5100}
+.objectives-button:focus-visible{outline:3px solid #76b900;outline-offset:3px}
+.objectives-dialog{box-sizing:border-box;width:min(920px,calc(100vw - 64px));max-width:none;max-height:calc(100dvh - 80px);margin:auto;padding:0;border:1px solid #d5dfc9;border-radius:16px;background:#fff;color:#15220d;box-shadow:0 24px 90px #14230040;overflow:hidden}
+.objectives-dialog[open]{display:flex;flex-direction:column}
+.objectives-dialog::backdrop{background:#16200d70;backdrop-filter:blur(3px)}
+.objectives-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:30px 38px 24px;border-top:5px solid #76b900;border-bottom:1px solid #e1e7d8;flex:none}
+#objectives-chapter{font-size:15px;line-height:1.4;margin:0 0 10px;color:#63734f}
+#objectives-title{font-size:32px;line-height:1.2;margin:0;outline:none}
+.objectives-close{display:grid;place-items:center;width:36px;height:36px;border-radius:6px;color:#5a6a47;flex:none}
+.objectives-close:hover{background:#eef4e6}
+.objectives-close svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+#objectives-body{padding:24px 38px;overflow:auto;min-height:0;font-size:23px;line-height:1.55;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#9aad7e transparent}
+#objectives-body p{margin:0 0 18px}
+#objectives-body ul,#objectives-body ol{margin:0;padding-left:1.3em}
+#objectives-body li{padding-left:5px;margin:14px 0}
+#objectives-body li::marker{color:#76b900}
+#objectives-body li p{margin:0}
+.objectives-footer{display:flex;justify-content:flex-end;padding:12px 30px;border-top:1px solid #e1e7d8;flex:none}
+.objectives-footer button{padding:10px 16px;border-radius:6px;font-size:15px;color:#4b6b24;background:#eff5e6}
+.objectives-footer kbd{margin-left:8px;font-size:11px;color:#687b50}
+@media(max-width:900px){
+ .slide-heading-meta{flex-wrap:wrap;row-gap:12px}
+ .slide-header-actions{margin-left:auto;gap:8px}
+ .objectives-button{font-size:12px;padding:6px 9px;gap:6px}
+ .objectives-button svg{width:18px;height:18px}
+ .objectives-dialog{width:calc(100vw - 28px);max-height:calc(100dvh - 32px);border-radius:12px}
+ .objectives-heading{padding:22px 23px 18px;gap:12px}
+ #objectives-chapter{font-size:12px}
+ #objectives-title{font-size:26px}
+ #objectives-body{font-size:18px;padding:22px 23px}
+ .objectives-footer{padding:10px 17px}
+}
+.source-supplement.source-example{border:0;padding:0;margin:20px 0}
+.source-example>h4{margin:0}
+.source-example-link{display:inline-flex;align-items:center;gap:12px;padding:11px 15px;text-align:left;border:1px solid #c5d8a8;border-radius:6px;background:#eef5e4;color:#3c6014;font:inherit;line-height:1.4}
+.source-example-link::after{content:'↗';font-size:.9em;flex:none}
+.source-example-link:hover{background:#e2efcc;border-color:#76b900;text-decoration:underline}
+.source-example-link:focus-visible{outline:3px solid #76b900;outline-offset:3px}
+/* Full-width interactive media and its complete prose share one scroll area. */
+.diagram-reading{min-height:0;flex:1}
+.diagram-flow{padding-right:8px}
+.diagram-reading .diagram-stage{height:540px;min-height:0;flex:none}
+.diagram-prose{font-size:25px;line-height:1.55;padding:30px 36px 18px;border-top:1px solid #dce5d1;background:#f6f8f2;margin-top:22px}
+.reading-dialog.source-detail-mode{width:min(980px,calc(100vw - 48px));border-radius:14px;max-height:90dvh}
+.reading-dialog.report-detail-mode{width:min(1260px,calc(100vw - 48px))}
+.report-detail-mode #reading-body pre{max-height:none}
+.source-detail-mode .dialog-top{border-top:5px solid #76b900;padding:24px 30px;align-items:flex-start}
+.source-detail-mode .dialog-top .eyebrow,.source-detail-mode #reading-source{display:none}
+.source-detail-mode #reading-body{font-size:22px;line-height:1.6}
+.source-detail-mode #reading-body .sd-summary-content{padding:0}
+.source-detail-mode #reading-body li{margin:13px 0}
+@media(max-width:900px){
+ .diagram-reading{max-height:none;min-height:0;flex:none}
+ .diagram-reading>.diagram-flow{overflow:visible;flex:none}
+ .diagram-prose{font-size:18px;padding:22px 16px;margin-top:20px}
+ .source-detail-mode .dialog-top{padding:18px 20px}
+ .source-detail-mode .dialog-top h2{font-size:22px}
+ .source-detail-mode #reading-body{font-size:17px;padding:20px}
+}
+/* The challenge explanation fits the presentation canvas without a text crop. */
+#stage[data-slide="topic--01-overview--2"] .text-focus{padding-top:24px;padding-bottom:16px}
+
+/* Explain with the original section title; short labels remain in navigation. */
+.topic-label.source-section-title,.diagram-prose>.source-section-title{font-size:22px;line-height:1.35;font-weight:500;letter-spacing:0;color:#4c710c;margin:0 0 14px;word-break:keep-all;overflow-wrap:anywhere;flex:none}
+
+.source-detail-mode #reading-body table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;font-size:17.1px;line-height:1.5}
+.source-detail-mode #reading-body th,.source-detail-mode #reading-body td{padding:14px 16px;border:1px solid #d8e1cd;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.source-detail-mode #reading-body th{background:#edf4e3;color:#34540e;font-weight:700}
+.source-detail-mode #reading-body th:first-child{width:22%}
+.source-detail-mode #reading-body td p,.source-detail-mode #reading-body th p{margin:0}
+@media(max-width:600px){.source-detail-mode #reading-body table{font-size:11.7px}.source-detail-mode #reading-body th,.source-detail-mode #reading-body td{padding:9px 7px}}
+
+#stage[data-slide="topic--16-conclusion--1"] .text-focus table{font-size:17.01px}
+
+/* Photos/videos use 5:5; slide captures and diagrams use the default 6.5:3.5. */
+.visual-layout[data-media-layout="balanced"]:not(.visual-only){grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.visual-layout[data-media-layout="narrow"]:not(.visual-only){grid-template-columns:minmax(0,3.5fr) minmax(0,6.5fr)}
+.visual-layout[data-media-layout="40-60"]:not(.visual-only){grid-template-columns:minmax(0,4fr) minmax(0,6fr)}
+
+/* Quiet, high-contrast interstitials close the course before its references. */
+.closing-screen{position:relative;width:100%;height:100%;padding:80px 96px;background:#080c06;color:#fff;display:flex;flex-direction:column;justify-content:center;overflow:hidden;border-bottom:7px solid #76b900}
+.closing-eyebrow{position:absolute;top:76px;left:96px;color:#a9c77d;font-size:22px;font-weight:500;letter-spacing:.12em}
+.closing-copy{padding-bottom:30px}
+.closing-accent{width:100px;height:8px;background:#76b900;margin-bottom:34px}
+#stage .closing-screen h1{font-size:148px;line-height:1.08;font-weight:700;letter-spacing:-.035em;color:#fff;margin:0}
+.closing-copy p{font-size:38px;line-height:1.4;color:#cbd1c4;margin:25px 0 0}
+.closing-footer{position:absolute;bottom:58px;left:96px;right:96px;display:flex;align-items:flex-end;justify-content:space-between;gap:28px;font-size:19px;color:#a9b3a1}
+.closing-footer img{width:190px;height:auto;flex:none}
+@media(max-width:900px){
+ .closing-screen{height:auto;min-height:calc(100dvh - 150px);padding:112px 28px 132px}
+ .closing-eyebrow{top:34px;left:28px;right:28px;font-size:13px;line-height:1.6}
+ #stage .closing-screen h1{font-size:clamp(62px,15vw,104px)}
+ .closing-copy{padding-bottom:0}
+ .closing-accent{width:64px;height:5px;margin-bottom:25px}
+ .closing-copy p{font-size:23px;margin-top:20px}
+ .closing-footer{left:28px;right:28px;bottom:28px;flex-wrap:wrap;font-size:12px;gap:18px}
+ .closing-footer img{width:120px}
+}
+
+/* Course-wide typography: Simulation body size; explanation titles +5%. */
+:root{--dli-content-font-scale:.9;--dli-prose-size:calc(23px * var(--dli-content-font-scale));--dli-explanation-title-size:calc(var(--dli-prose-size) * 1.05);--dli-slide-title-size:34.02px;--dli-explanation-title-color:#4c710c}
+#stage h1{font-size:var(--dli-slide-title-size)}
+.explanation-scroll:not(.diagram-flow),.diagram-prose,#reading-body,.source-detail-mode #reading-body,#objectives-body{font-size:var(--dli-prose-size)}
+:is(.explanation-scroll,#reading-body,#objectives-body) :is(p,li):not(:where(table *,button *,summary *,figure *,pre *,.course-model-card *,.admonition-title)){font-size:var(--dli-prose-size)}
+#slide-content :is(h1,h2,h3,h4,h5,h6,.admonition-title,.sd-card-title),
+#reading-body :is(h1,h2,h3,h4,h5,h6,.admonition-title,.sd-card-title),
+#objectives-body :is(h1,h2,h3,h4,h5,h6,.admonition-title,.sd-card-title),
+#objectives-title,#reading-title,dialog .dialog-top h2{font-size:var(--dli-explanation-title-size);color:var(--dli-explanation-title-color);font-weight:700}
+:is(#slide-content,#reading-body,#objectives-body) :is(h1,h2,h3,h4,h5,h6,.admonition-title,.sd-card-title) :is(a,button){color:inherit;font-weight:inherit}
+/* Message blocks use the same typography at 90% of prose and heading sizes. */
+:is(#slide-content,#reading-body,#objectives-body,#console-notes) .admonition,
+:is(#slide-content,#reading-body,#objectives-body,#console-notes) .admonition :is(p,li){font-family:var(--font);font-size:calc(var(--dli-prose-size) * .9)}
+:is(#slide-content,#reading-body,#objectives-body,#console-notes) .admonition .admonition-title{font-family:var(--font);font-size:calc(var(--dli-explanation-title-size) * .9);color:var(--dli-explanation-title-color);font-weight:700}
+@media(max-width:900px){:root{--dli-prose-size:calc(18px * var(--dli-content-font-scale));--dli-slide-title-size:23.49px}}
+
+/* Command/output readers also shrink by 10% from the previous version. */
+#reading-body pre{font-size:27.54px;white-space:pre-wrap;overflow-wrap:anywhere}
+#reading-body pre code{white-space:inherit}
+#reading-body .prompt-examples{margin:0;padding-left:1.35em;list-style:disc;font:inherit}
+#reading-body .prompt-examples li{margin:0 0 18px;padding-left:5px}
+#reading-body .prompt-examples li::marker{color:#76b900}
+@media(max-width:900px){#reading-body pre{font-size:21.06px}}
+
+.source-table-link{text-decoration:underline;text-underline-offset:.2em;text-decoration-thickness:1px}
+.source-table-link::after{content:' ↗';font-size:.85em}
+.source-table-link:hover{color:#284800}
+.explanation-scroll .source-heading-link{display:block;margin:18px 0 12px;padding:0;border:0;background:none;text-align:left;font:inherit;font-size:var(--dli-explanation-title-size);font-weight:700;color:var(--dli-explanation-title-color);text-decoration:underline;text-underline-offset:.2em;text-decoration-thickness:1px}
+.source-heading-link:hover{color:#284800}
+.source-heading-link:focus-visible{outline:3px solid #76b900;outline-offset:4px}
+.table-detail-mode #reading-body table{font-size:var(--dli-prose-size);table-layout:fixed;min-width:0}
+.table-detail-mode #reading-body th:first-child{width:36%}
+.table-detail-mode #reading-body :is(th,td){overflow-wrap:anywhere}
+
+/* Student prompts are readable in place, without an operator command popup. */
+.lesson-content .student-prompt{margin:12px 0 18px;padding:12px 18px;border-left:4px solid #76b900;background:#eef4e4;color:#254500}
+.student-prompt p{margin:0}
+.explanation-scroll .workflow-list{list-style:disc;margin:20px 0;padding-left:1.25em}
+.explanation-scroll .workflow-list>li{margin:18px 0;padding-left:6px}
+.explanation-scroll .workflow-list>li::marker{color:#76b900}
+.explanation-scroll .workflow-heading{margin:0}
+#slide-content .workflow-heading button{padding:0;border:0;background:none;color:var(--dli-explanation-title-color);font:inherit;font-size:var(--dli-explanation-title-size);font-weight:700;line-height:1.45;text-align:left;text-decoration:underline;text-underline-offset:.22em;text-decoration-thickness:1px}
+.workflow-heading button:hover{color:#284800!important}
+.workflow-heading button:focus-visible{outline:3px solid #76b900;outline-offset:4px;border-radius:2px}
+.workflow-body{margin:14px 0 22px;padding:0 0 0 18px;border-left:2px solid #c7dbab}
+.explanation-scroll .workflow-body p{margin:0 0 16px}
+.workflow-body[hidden]{display:none}
+.explanation-scroll.has-brand-visual{display:flex;flex-direction:column}
+.explanation-scroll.has-brand-visual>section{flex:none}
+.explanation-scroll .brand-visual{display:flex;align-items:center;justify-content:center;flex:1;min-height:160px;margin:24px 0 0;padding:12px 24px}
+.brand-visual img{display:block;width:min(100%,780px);height:auto;max-height:310px;object-fit:contain;cursor:zoom-in}
+@media(max-width:900px){.explanation-scroll .brand-visual{min-height:110px;margin-top:16px;padding:12px 0}}
+
+/* A gallery owns its caption and selectors, before the explanation on mobile. */
+.media-footer{width:100%;min-width:0;flex:none;align-self:stretch}
+.media-footer>.media-picker{width:100%;margin:12px 0 0;padding:0;position:static}
+.media-picker button{line-height:1.4}
+.visual-stage>img,.visual-stage>video{width:auto!important;max-width:100%!important;height:var(--media-frame-height,400px)!important;max-height:none!important;flex:none;object-fit:contain;object-position:center top}
+.visual-stage>.media-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:100%;height:var(--media-frame-height,400px);min-height:0;flex:none}
+.visual-stage>.media-pair>img{display:block;width:100%!important;height:100%!important;max-width:100%;max-height:100%;min-width:0;min-height:0;object-fit:contain;object-position:center top;cursor:zoom-in}
+.visual-stage>.media-footer>.media-caption{height:var(--gallery-caption-height,21px)}
+.step-layout.has-rail-media{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px}
+@media(min-width:901px){
+ #stage[data-slide="topic--07-calibrating-so101--2"] .step-layout.has-rail-media{grid-template-columns:minmax(0,3.5fr) minmax(0,6.5fr)}
+ #stage[data-slide="topic--07-calibrating-so101--3"] .visual-layout:not(.visual-only){grid-template-columns:minmax(0,3.5fr) minmax(0,6.5fr)}
+ /* Camera ID and Camera Teleoperation are this slide's two image panes. */
+ #stage[data-slide="topic--08-operating-so101--2"] .visual-layout:not(.visual-only){grid-template-columns:minmax(0,3.5fr) minmax(0,6.5fr)}
+}
+.step-sidebar{display:flex;flex-direction:column;gap:16px;min-width:0;min-height:0}
+.step-sidebar>.step-rail{flex:none}
+.rail-gallery{flex:1;min-height:0}
+@media(max-width:900px){
+ .step-layout.has-rail-media{grid-template-columns:1fr;gap:18px}
+ .step-sidebar>.step-rail{display:flex}
+ .rail-gallery{flex:none}
+}
+
+/* Body text -10%; media captions and navigation retain their prior size. */
+:is(#slide-content,#reading-body) .sd-tab-label{font-size:.9rem}
+#reading-body table{font-size:15.3px}
+.table-detail-mode #reading-body table{font-size:var(--dli-prose-size)}
+@media(max-width:900px){#reading-body table{font-size:11.7px}.table-detail-mode #reading-body table{font-size:var(--dli-prose-size)}}
+.course-model-card .model-card-family{font-size:calc(.68rem * .9)}
+.course-model-card .model-card-purpose{font-size:calc(.8rem * .9)}
+.course-model-card .model-card-hub{font-size:calc(.72rem * .9)}
+.model-card-hub .model-card-face{font-size:calc(1.4rem * .9)}
+.course-model-card .model-card-episodes{font-size:calc(.83rem * .9)}
+.model-card-episodes strong{font-size:calc(1.6rem * .9)}
+.model-card-source .model-card-source-name{font-size:calc(.72rem * .9)}
+.model-card-source .model-card-source-status{font-size:calc(.65rem * .9)}
+.course-model-card .model-card-training{font-size:calc(.74rem * .9)}
+.course-model-card .model-card-datasets{font-size:calc(.85rem * .9)}
+@media(max-width:480px){.model-card-source .model-card-source-name{font-size:calc(.65rem * .9)}}
+
+/* Align the beginning of prose across full-width, rail and card layouts. */
+.concept-screen #slide-content :is(.text-focus,.step-panel,.teaching-card,.diagram-prose){padding-top:16px}
+
+/* A camera selection shows its four environments at the same time. */
+.visual-stage>.camera-grid{grid-template-rows:repeat(2,minmax(0,1fr))}
+.camera-grid>.camera-view{display:grid;grid-template-rows:2.7em minmax(0,1fr);gap:8px;min-width:0;min-height:0;font-size:var(--dli-explanation-title-size)}
+.camera-grid .camera-view h3{margin:0;line-height:1.35}
+.camera-grid .camera-view img{display:block;width:100%!important;height:100%!important;max-width:100%;max-height:100%;min-width:0;min-height:0;object-fit:contain;object-position:center top;cursor:zoom-in}
+@media(max-width:900px){.camera-grid>.camera-view{grid-template-rows:4.05em minmax(0,1fr)}}

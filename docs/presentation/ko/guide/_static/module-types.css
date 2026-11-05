@@ -1,0 +1,42 @@
+.course-module-type {
+  --module-accent: #466900;
+  --module-tint: #f0f7e4;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin: .15rem 0 1rem;
+  padding: .35rem .75rem .35rem .5rem;
+  border: 1px solid color-mix(in srgb, var(--module-accent) 18%, transparent);
+  border-radius: .7rem;
+  background: var(--module-tint);
+  color: var(--module-accent);
+  font-size: .8rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+html[data-theme="dark"] .course-module-type {
+  --module-accent: #b5e46a;
+  --module-tint: #273522;
+}
+
+.course-module-type--lecture {
+  --module-accent: #7140a3;
+  --module-tint: #f3edfa;
+}
+
+html[data-theme="dark"] .course-module-type--lecture {
+  --module-accent: #d0a6f3;
+  --module-tint: #32253f;
+}
+
+.course-module-type svg {
+  width: 1.8rem;
+  height: 1.8rem;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

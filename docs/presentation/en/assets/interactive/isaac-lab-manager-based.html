@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head><base href="../../guide/_static/interactive/"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Isaac Lab manager-based workflow</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link href="../../../assets/iframe-fonts.css" rel="stylesheet"/>
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* User-requested variation: explanations only, with no term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+html {scrollbar-gutter: stable;}
+.diagram {overflow-x:auto;}
+.diagram svg {min-width:680px;}
+.is-enhanced .explanations {display:grid;}
+.is-enhanced .definition, .is-enhanced #empty-prompt {grid-area:1/1;}
+.is-enhanced .definition[hidden], .is-enhanced #empty-prompt[hidden] {display:block;visibility:hidden;pointer-events:none;}
+</style>
+<link href="../../../assets/interactive-layout.css" rel="stylesheet"/></head>
+<body>
+<main id="interactive-learning-diagram">
+<div class="layout">
+<div class="diagram"><svg aria-labelledby="title description" height="1000" role="group" viewbox="0 0 1490 1000" width="1490" xmlns="http://www.w3.org/2000/svg">
+<title id="title">Isaac Lab manager-based workflow</title>
+<desc id="description">Robot, other assets, and sensors configure the scene. Scene, actions, simulation settings, events, observations, terminations, and rewards configure the environment. The environment exchanges actions and observations with a policy, teleoperator, or scripted controller. A compact rounded rectangular loop attached to the environment represents stepping physics and sensors.</desc>
+<defs>
+<marker id="arrow" markerheight="7" markerwidth="7" orient="auto-start-reverse" refx="9" refy="5" viewbox="0 0 10 10"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-accent-text,#004831)"></path></marker>
+</defs>
+<style>
+text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#1a1a1a);}
+.box {fill:var(--diagram-surface,#f7f7f7);stroke:var(--diagram-accent-text,#004831);stroke-width:2;}
+.heading {font-size:24px;font-weight:700;}
+.detail {font-size:19px;fill:var(--diagram-muted,#666);}
+.edge {fill:none;stroke:var(--diagram-accent-text,#004831);stroke-width:2;marker-end:url(#arrow);}
+.config {stroke:var(--diagram-muted,#666);stroke-dasharray:5 6;stroke-width:1.5;}
+.label {font-size:19px;paint-order:stroke;stroke:var(--diagram-bg,#fff);stroke-width:9px;stroke-linejoin:round;}
+</style>
+<rect fill="var(--diagram-bg,#fff)" height="1000" width="1490"></rect>
+<text class="detail" x="40" y="80">Dashed arrows: configuration · Solid arrows: runtime interaction</text>
+<path class="edge config" d="M 720 188 C 820 188, 805 424, 900 424"></path>
+<path class="edge config" d="M 720 308 C 820 308, 805 442, 900 442"></path>
+<path class="edge config" d="M 720 428 C 820 428, 805 460, 900 460"></path>
+<path class="edge config" d="M 720 548 C 820 548, 805 478, 900 478"></path>
+<path class="edge config" d="M 720 668 C 820 668, 805 496, 900 496"></path>
+<path class="edge config" d="M 720 788 C 820 788, 805 514, 900 514"></path>
+<path class="edge config" d="M 720 908 C 820 908, 805 532, 900 532"></path>
+<path class="edge config" d="M 310 290 C 360 290, 350 308, 410 308"></path>
+<path class="edge config" d="M 310 430 C 360 430, 350 308, 410 308"></path>
+<path class="edge config" d="M 310 570 C 360 570, 350 308, 410 308"></path>
+<path class="edge" d="M 1135 400 V 370 Q 1135 350 1155 350 H 1410 Q 1430 350 1430 370 V 594 Q 1430 614 1410 614 H 1155 Q 1135 614 1135 594 V 564"></path>
+<path class="edge" d="M 985 255 L 985 400"></path>
+<path class="edge" d="M 1105 400 L 1105 255"></path>
+<rect class="box" height="104" rx="14" width="270" x="40" y="240"></rect>
+<text class="heading" text-anchor="middle" x="175.0" y="272">
+<tspan dy="0" x="175.0">Articulation / robot</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="175.0" y="301">
+<tspan dy="0" x="175.0">Joints, actuators,</tspan>
+<tspan dy="23" x="175.0">physical properties</tspan>
+</text>
+<rect class="box" height="104" rx="14" width="270" x="40" y="380"></rect>
+<text class="heading" text-anchor="middle" x="175.0" y="412">
+<tspan dy="0" x="175.0">Assets</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="175.0" y="441">
+<tspan dy="0" x="175.0">Static and dynamic objects,</tspan>
+<tspan dy="23" x="175.0">lights and materials</tspan>
+</text>
+<rect class="box" height="104" rx="14" width="270" x="40" y="520"></rect>
+<text class="heading" text-anchor="middle" x="175.0" y="552">
+<tspan dy="0" x="175.0">Sensors</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="175.0" y="581">
+<tspan dy="0" x="175.0">Cameras, contact sensors, etc.</tspan>
+</text>
+<rect class="box" height="96" rx="14" width="310" x="410" y="140"></rect>
+<text class="heading" text-anchor="middle" x="565.0" y="172">
+<tspan dy="0" x="565.0">Actions</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="565.0" y="201">
+<tspan dy="0" x="565.0">Convert controller outputs</tspan>
+<tspan dy="23" x="565.0">into robot commands</tspan>
+</text>
+<rect class="box" height="96" rx="14" width="310" x="410" y="260"></rect>
+<text class="heading" text-anchor="middle" x="565.0" y="292">
+<tspan dy="0" x="565.0">Scene</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="565.0" y="321">
+<tspan dy="0" x="565.0">Asset placement and</tspan>
+<tspan dy="23" x="565.0">parallel environments</tspan>
+</text>
+<rect class="box" height="96" rx="14" width="310" x="410" y="380"></rect>
+<text class="heading" text-anchor="middle" x="565.0" y="412">
+<tspan dy="0" x="565.0">Simulation settings</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="565.0" y="441">
+<tspan dy="0" x="565.0">Physics backend, solver,</tspan>
+<tspan dy="23" x="565.0">timestep, and rendering</tspan>
+</text>
+<rect class="box" height="96" rx="14" width="310" x="410" y="500"></rect>
+<text class="heading" text-anchor="middle" x="565.0" y="532">
+<tspan dy="0" x="565.0">Events</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="565.0" y="561">
+<tspan dy="0" x="565.0">Startup, reset, and</tspan>
+<tspan dy="23" x="565.0">periodic operations</tspan>
+</text>
+<rect class="box" height="96" rx="14" width="310" x="410" y="620"></rect>
+<text class="heading" text-anchor="middle" x="565.0" y="652">
+<tspan dy="0" x="565.0">Observations</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="565.0" y="681">
+<tspan dy="0" x="565.0">Build inputs from state</tspan>
+<tspan dy="23" x="565.0">and sensor data</tspan>
+</text>
+<rect class="box" height="96" rx="14" width="310" x="410" y="740"></rect>
+<text class="heading" text-anchor="middle" x="565.0" y="772">
+<tspan dy="0" x="565.0">Terminations</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="565.0" y="801">
+<tspan dy="0" x="565.0">Success, failure, and</tspan>
+<tspan dy="23" x="565.0">episode time limits</tspan>
+</text>
+<rect class="box" height="96" rx="14" width="310" x="410" y="860"></rect>
+<text class="heading" text-anchor="middle" x="565.0" y="892">
+<tspan dy="0" x="565.0">Rewards</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="565.0" y="921">
+<tspan dy="0" x="565.0">Compute task reward signals</tspan>
+</text>
+<rect class="box" height="164" rx="14" width="290" x="900" y="400"></rect>
+<text class="heading" text-anchor="middle" x="1045.0" y="454">
+<tspan dy="0" x="1045.0">Environment</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="1045.0" y="483">
+<tspan dy="0" x="1045.0">Coordinates scene, managers,</tspan>
+<tspan dy="23" x="1045.0">stepping, and episode resets</tspan>
+</text>
+<rect class="box" height="115" rx="14" width="290" x="900" y="140"></rect>
+<text class="heading" text-anchor="middle" x="1045.0" y="172">
+<tspan dy="0" x="1045.0">Policy</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="1045.0" y="201">
+<tspan dy="0" x="1045.0">or teleoperator /</tspan>
+<tspan dy="23" x="1045.0">scripted controller</tspan>
+</text>
+<text class="label" text-anchor="middle" x="948" y="332">
+<tspan dy="0" x="948">Actions</tspan>
+</text>
+<text class="label" text-anchor="middle" x="1045" y="332">
+<tspan dy="0" x="1045">Observations</tspan>
+</text>
+<text class="heading" text-anchor="middle" x="1310" y="454">
+<tspan dy="0" x="1310">Simulation</tspan>
+</text>
+<text class="detail" text-anchor="middle" x="1310" y="483">
+<tspan dy="0" x="1310">Stepping physics</tspan>
+<tspan dy="23" x="1310">and sensors</tspan>
+</text>
+<a aria-controls="definition-node-0" aria-expanded="false" aria-label="Articulation / robot" class="hotspot" data-term="node-0" href="#definition-node-0" role="button" tabindex="0"><rect class="hit-area" height="104" rx="10" width="270" x="40" y="240"></rect></a><a aria-controls="definition-node-1" aria-expanded="false" aria-label="Assets" class="hotspot" data-term="node-1" href="#definition-node-1" role="button" tabindex="0"><rect class="hit-area" height="104" rx="10" width="270" x="40" y="380"></rect></a><a aria-controls="definition-node-2" aria-expanded="false" aria-label="Sensors" class="hotspot" data-term="node-2" href="#definition-node-2" role="button" tabindex="0"><rect class="hit-area" height="104" rx="10" width="270" x="40" y="520"></rect></a><a aria-controls="definition-node-3" aria-expanded="false" aria-label="Actions" class="hotspot" data-term="node-3" href="#definition-node-3" role="button" tabindex="0"><rect class="hit-area" height="96" rx="10" width="310" x="410" y="140"></rect></a><a aria-controls="definition-node-4" aria-expanded="false" aria-label="Scene" class="hotspot" data-term="node-4" href="#definition-node-4" role="button" tabindex="0"><rect class="hit-area" height="96" rx="10" width="310" x="410" y="260"></rect></a><a aria-controls="definition-node-5" aria-expanded="false" aria-label="Simulation settings" class="hotspot" data-term="node-5" href="#definition-node-5" role="button" tabindex="0"><rect class="hit-area" height="96" rx="10" width="310" x="410" y="380"></rect></a><a aria-controls="definition-node-6" aria-expanded="false" aria-label="Events" class="hotspot" data-term="node-6" href="#definition-node-6" role="button" tabindex="0"><rect class="hit-area" height="96" rx="10" width="310" x="410" y="500"></rect></a><a aria-controls="definition-node-7" aria-expanded="false" aria-label="Observations" class="hotspot" data-term="node-7" href="#definition-node-7" role="button" tabindex="0"><rect class="hit-area" height="96" rx="10" width="310" x="410" y="620"></rect></a><a aria-controls="definition-node-8" aria-expanded="false" aria-label="Terminations" class="hotspot" data-term="node-8" href="#definition-node-8" role="button" tabindex="0"><rect class="hit-area" height="96" rx="10" width="310" x="410" y="740"></rect></a><a aria-controls="definition-node-9" aria-expanded="false" aria-label="Rewards" class="hotspot" data-term="node-9" href="#definition-node-9" role="button" tabindex="0"><rect class="hit-area" height="96" rx="10" width="310" x="410" y="860"></rect></a><a aria-controls="definition-node-10" aria-expanded="false" aria-label="Environment" class="hotspot" data-term="node-10" href="#definition-node-10" role="button" tabindex="0"><rect class="hit-area" height="164" rx="10" width="290" x="900" y="400"></rect></a><a aria-controls="definition-node-11" aria-expanded="false" aria-label="Policy" class="hotspot" data-term="node-11" href="#definition-node-11" role="button" tabindex="0"><rect class="hit-area" height="115" rx="10" width="290" x="900" y="140"></rect></a></svg>
+</div>
+<section aria-label="Selected explanation" class="explanations">
+<button aria-label="Close explanation" hidden="" id="clear-selection" type="button">Close ×</button>
+<div id="empty-prompt"></div>
+<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Articulation / robot</h2><p>Joints, actuators, physical properties.</p></article>
+<article aria-labelledby="heading-node-1" class="definition" data-definition="node-1" id="definition-node-1"><h2 id="heading-node-1">Assets</h2><p>Static and dynamic objects, lights and materials.</p></article>
+<article aria-labelledby="heading-node-2" class="definition" data-definition="node-2" id="definition-node-2"><h2 id="heading-node-2">Sensors</h2><p>Cameras, contact sensors, etc..</p></article>
+<article aria-labelledby="heading-node-3" class="definition" data-definition="node-3" id="definition-node-3"><h2 id="heading-node-3">Actions</h2><p>Action terms map controller outputs into commands for the simulated robot.</p></article>
+<article aria-labelledby="heading-node-4" class="definition" data-definition="node-4" id="definition-node-4"><h2 id="heading-node-4">Scene</h2><p>Asset placement and parallel environments.</p></article>
+<article aria-labelledby="heading-node-5" class="definition" data-definition="node-5" id="definition-node-5"><h2 id="heading-node-5">Simulation settings</h2><p>With physics_dt = 1/60 and decimation = 2, each control step advances two physics steps: a 30 Hz control rate.</p></article>
+<article aria-labelledby="heading-node-6" class="definition" data-definition="node-6" id="definition-node-6"><h2 id="heading-node-6">Events</h2><p>Startup terms prepare the scene; reset terms vary a new episode; periodic terms run at configured intervals.</p></article>
+<article aria-labelledby="heading-node-7" class="definition" data-definition="node-7" id="definition-node-7"><h2 id="heading-node-7">Observations</h2><p>Build inputs from state and sensor data.</p></article>
+<article aria-labelledby="heading-node-8" class="definition" data-definition="node-8" id="definition-node-8"><h2 id="heading-node-8">Terminations</h2><p>Success, failure, and time limits determine when an episode ends. An ending alone is not evidence of success.</p></article>
+<article aria-labelledby="heading-node-9" class="definition" data-definition="node-9" id="definition-node-9"><h2 id="heading-node-9">Rewards</h2><p>Reward terms produce task signals. Recording demonstrations does not update a policy from these rewards.</p></article>
+<article aria-labelledby="heading-node-10" class="definition" data-definition="node-10" id="definition-node-10"><h2 id="heading-node-10">Environment</h2><p>Coordinates scene, managers, stepping, and episode resets.</p></article>
+<article aria-labelledby="heading-node-11" class="definition" data-definition="node-11" id="definition-node-11"><h2 id="heading-node-11">Policy</h2><p>During evaluation the policy predicts actions from observations. During collection a teleoperator or scripted controller can supply actions instead.</p></article>
+</section>
+</div>
+<p aria-live="polite" class="sr-only" id="selection-status" role="status"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', item.dataset.term === source);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+</body>
+</html>

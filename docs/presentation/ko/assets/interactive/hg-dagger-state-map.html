@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head><base href="../../guide/_static/interactive/"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>HG-DAgger: familiar states and recovery</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link href="../../../assets/iframe-fonts.css" rel="stylesheet"/>
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* User-requested variation: explanations only, with no term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+</style>
+<link href="../../../assets/interactive-layout.css" rel="stylesheet"/></head>
+<body>
+<main id="interactive-learning-diagram">
+<div class="layout">
+<div class="diagram"><svg aria-labelledby="map-title map-desc" role="group" viewbox="0 0 1000 570" xmlns="http://www.w3.org/2000/svg">
+<title id="map-title">From demonstrations to human-guided recovery</title>
+<desc id="map-desc">State map 예시입니다. 회색 demonstration은 시작 상태에서 task 완료까지 이어집니다. Policy 경로가 익숙한 영역을 벗어나면 사람이 제어를 맡아 초록색 recovery 구간을 추가한 뒤 제어권을 돌려줍니다. 저장한 correction은 이후 training의 예시가 됩니다. 경로는 실제 로봇 궤적이 아니라 state의 변화를 나타냅니다.</desc>
+<style>text{font-family:var(--diagram-font);fill:var(--diagram-text);font-size:21px}.muted{fill:var(--diagram-muted);font-size:18px}.demo{fill:none;stroke:var(--diagram-muted);stroke-width:3}.policy{fill:none;stroke:var(--diagram-text);stroke-width:5}.human{fill:none;stroke:var(--diagram-accent-text);stroke-width:6}.label{font-weight:700}.green{fill:var(--diagram-accent-text)} </style>
+<path d="M70 300 C300 350 320 160 540 170 S780 130 925 100" fill="none" stroke="var(--diagram-muted)" stroke-opacity=".12" stroke-width="80"></path>
+<path class="demo" d="M70 300 C300 330 320 160 540 170 S780 130 925 100"></path>
+<path class="demo" d="M70 300 C310 345 320 180 540 185 S790 150 925 100"></path>
+<path class="demo" d="M70 300 C285 315 315 145 540 160 S790 110 925 100"></path>
+<path class="policy" d="M70 300 C270 305 350 230 480 295"></path>
+<path class="human" d="M480 295 C580 320 580 195 680 168"></path>
+<path class="policy" d="M680 168 Q800 155 925 100"></path>
+<circle cx="70" cy="300" fill="var(--diagram-text)" r="7"></circle><circle cx="480" cy="295" fill="var(--diagram-accent-text)" r="8"></circle>
+<circle cx="680" cy="168" fill="var(--diagram-bg)" r="8" stroke="var(--diagram-text)" stroke-width="3"></circle>
+<circle cx="925" cy="100" fill="var(--diagram-bg)" r="10" stroke="var(--diagram-text)" stroke-width="3"></circle>
+<text x="45" y="350">Start</text><text x="780" y="70">Task complete</text>
+<text class="label" x="135" y="115">Demonstrations</text><text class="muted" x="135" y="141">Familiar states</text>
+<text class="label" x="280" y="235">Policy drifts</text>
+<text class="label green" x="310" y="365">1 · Take over</text>
+<path class="demo" d="M465 343 L480 305"></path>
+<text class="label green" x="630" y="290">2 · Human correction</text>
+<path class="human" d="M635 275 L607 246"></path>
+<text class="label" x="620" y="112">3 · Hand back</text><path class="demo" d="M670 123 L680 156"></path>
+<path class="human" d="M580 320 L580 405" stroke-dasharray="5 6"></path>
+<path class="human" d="M573 396 L580 406 L587 396"></path>
+<rect fill="var(--diagram-surface)" height="100" rx="14" stroke="var(--diagram-border)" width="620" x="270" y="424"></rect>
+<text class="label" x="295" y="460">Save recovery examples</text>
+<text class="muted" x="295" y="492">Observation + human action → separate training run</text>
+<a aria-controls="definition-demonstrations" aria-expanded="false" aria-label="Demonstrations" class="hotspot" data-term="demonstrations" href="#definition-demonstrations" role="button" tabindex="0"><rect class="hit-area" height="85" rx="10" width="270" x="120" y="85"></rect></a><a aria-controls="definition-drift" aria-expanded="false" aria-label="Unfamiliar states" class="hotspot" data-term="drift" href="#definition-drift" role="button" tabindex="0"><rect class="hit-area" height="60" rx="10" width="220" x="260" y="198"></rect></a><a aria-controls="definition-takeover" aria-expanded="false" aria-label="Human takeover" class="hotspot" data-term="takeover" href="#definition-takeover" role="button" tabindex="0"><rect class="hit-area" height="60" rx="10" width="270" x="295" y="330"></rect></a><a aria-controls="definition-correction" aria-expanded="false" aria-label="Human correction" class="hotspot" data-term="correction" href="#definition-correction" role="button" tabindex="0"><rect class="hit-area" height="60" rx="10" width="330" x="625" y="260"></rect></a><a aria-controls="definition-handback" aria-expanded="false" aria-label="Hand control back" class="hotspot" data-term="handback" href="#definition-handback" role="button" tabindex="0"><rect class="hit-area" height="65" rx="10" width="180" x="610" y="80"></rect></a><a aria-controls="definition-data" aria-expanded="false" aria-label="Recovery examples" class="hotspot" data-term="data" href="#definition-data" role="button" tabindex="0"><rect class="hit-area" height="100" rx="10" width="620" x="270" y="424"></rect></a></svg></div>
+<section aria-label="선택한 항목의 설명" class="explanations">
+<button aria-label="설명 닫기" hidden="" id="clear-selection" type="button">닫기 ×</button>
+<div id="empty-prompt">단계나 객체를 선택하면 설명을 볼 수 있습니다.</div>
+<article aria-labelledby="heading-demonstrations" class="definition" data-definition="demonstrations" id="definition-demonstrations"><h2 id="heading-demonstrations">Demonstrations</h2><p>Demonstration은 로봇이 관찰한 정보와 그다음 사람이 수행한 action을 짝지어 기록합니다. 여러 번의 성공적인 시도는 익숙한 state 영역을 다루지만, 로봇이 마주칠 모든 상황을 포함하지는 않습니다.</p></article><article aria-labelledby="heading-drift" class="definition" data-definition="drift" id="definition-drift"><h2 id="heading-drift">Unfamiliar states</h2><p>작은 action 오차도 다음 observation을 바꿉니다. 예를 들어 vial 끝이 rack slot 사이에 놓일 수 있습니다. 성공적인 demonstration에서는 이런 상황이 드물게 나타납니다.</p></article><article aria-labelledby="heading-takeover" class="definition" data-definition="takeover" id="definition-takeover"><h2 id="heading-takeover">Human takeover</h2><p>Policy에 도움이 필요한 시점을 사람이 판단합니다. 일시 정지하고 leader를 follower와 정렬한 뒤 제어권을 넘겨받습니다. Workshop에서는 저장한 correction 구간의 human action만 기록합니다.</p></article><article aria-labelledby="heading-correction" class="definition" data-definition="correction" id="definition-correction"><h2 id="heading-correction">Human correction</h2><p>Leader arm으로 recovery를 시연합니다. 예를 들어 vial을 들어 올리고 끝을 빈 slot 위로 옮긴 뒤 내려놓습니다. 사람이 제어한 유용한 구간을 저장합니다.</p></article><article aria-labelledby="heading-handback" class="definition" data-definition="handback" id="definition-handback"><h2 id="heading-handback">Hand control back</h2><p>실패 상태에서 벗어나도록 로봇을 유도하고 유용한 correction을 저장한 뒤 policy를 재개합니다. 초록색 구간은 사람이 제어한 recovery이며, 자율 policy의 성공을 뜻하지 않습니다.</p></article><article aria-labelledby="heading-data" class="definition" data-definition="data" id="definition-data"><h2 id="heading-data">Recovery examples</h2><p>Correction은 observation과 joint position을 짝지어 저장하는 일반 recording 과정을 사용합니다. 가능하면 같은 failure mode에 해당하는 여러 실패 상황에서 반복합니다. 이 data를 이후 training 단계에 사용합니다.</p></article>
+</section>
+</div>
+<p aria-live="polite" class="sr-only" id="selection-status" role="status"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', item.dataset.term === source);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' 선택됨.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+</body>
+</html>

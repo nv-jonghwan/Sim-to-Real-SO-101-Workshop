@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Measure, fit and validate robot response</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* Show the selected explanation without a term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+.diagram { overflow-x: auto; padding: 3px; }
+.diagram svg { min-width: 640px; }
+.diagram-label { fill: var(--diagram-text); font: 600 23px var(--diagram-font); }
+.diagram-small { fill: var(--diagram-muted); font: 18px var(--diagram-font); }
+.diagram-key { fill: var(--diagram-accent-text); font: 600 18px var(--diagram-font); }
+.art { fill: var(--diagram-surface); stroke: var(--diagram-line); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ink { fill: none; stroke: var(--diagram-text); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.signal { fill: none; stroke: var(--diagram-accent-text); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.flow { fill: none; stroke: var(--diagram-line); stroke-width: 2; marker-end: url(#arrow); }
+.return { stroke-dasharray: 7 5; }
+.purple { fill: color-mix(in srgb, #a16cda 13%, var(--diagram-bg)); stroke: #a16cda; stroke-width: 2; }
+.orange { fill: color-mix(in srgb, #e99040 18%, var(--diagram-bg)); stroke: #b06e2e; stroke-width: 2; }
+.stage { fill: var(--diagram-tint); stroke: var(--diagram-accent-text); stroke-width: 2; }
+@media(max-width: 660px) { .instructions::after { content: ' Swipe the diagram sideways to see the whole flow.'; } }
+
+</style>
+<link rel="stylesheet" href="diagram-layout.css">
+</head>
+<body>
+<main id="interactive-learning-diagram">
+<div class="layout">
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 518" role="group" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">Measure, fit and validate robot response</title><desc id="diagram-desc">Informative commands produce measured physical response. Fit a model, validate with different motions and separately test task performance.</desc><defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="var(--diagram-line)" stroke-width="1.5"/></marker>
+<g id="arm"><path class="orange" d="M16 92H93V105H16Z M40 90 31 56 43 51 55 87Z M33 51 70 20 79 30 44 59Z M78 23 111 49 104 59 68 32Z"/><circle class="art" cx="40" cy="55" r="10"/><circle class="art" cx="74" cy="27" r="10"/><path class="ink" d="m108 53 17 1 10 17m-26-18 6 20 12 5"/></g>
+<g id="rack"><path class="orange" d="M10 20 104 8 139 39 45 56Z M10 20V70L45 100V56 M45 100 139 83V39"/><g fill="var(--diagram-bg)" stroke="#b06e2e" stroke-width="2"><ellipse cx="45" cy="27" rx="12" ry="7"/><ellipse cx="92" cy="21" rx="12" ry="7"/><ellipse cx="64" cy="43" rx="12" ry="7"/><ellipse cx="111" cy="36" rx="12" ry="7"/></g></g>
+<g id="vial"><path class="art" d="M12 13H43V70Q27 98 12 70Z"/><rect x="9" y="5" width="37" height="17" rx="4" fill="#4994c8" stroke="#276f9f" stroke-width="2"/></g>
+<g id="camera"><rect class="art" x="0" y="15" width="80" height="53" rx="8"/><path class="ink" d="M15 15 22 4H52L60 15"/><circle class="signal" cx="40" cy="40" r="17"/><circle class="signal" cx="40" cy="40" r="7"/></g>
+<g id="model"><path class="purple" d="M14 15H91V91H14Z"/><path class="ink" d="M26 5V15M44 5V15M62 5V15M80 5V15M26 91V101M44 91V101M62 91V101M80 91V101M4 29H14M4 51H14M4 73H14M91 29H101M91 51H101M91 73H101"/><path class="signal" d="M31 33 71 34 52 71 31 33 M31 33 73 70M71 34 73 70M52 71 73 70"/><g class="stage"><circle cx="31" cy="33" r="6"/><circle cx="71" cy="34" r="6"/><circle cx="52" cy="71" r="6"/><circle cx="73" cy="70" r="6"/></g></g>
+<g id="data"><path class="art" d="M5 17V91C5 111 100 111 100 91V17"/><ellipse class="stage" cx="52.5" cy="17" rx="47.5" ry="15"/><path class="signal" d="M5 45C5 65 100 65 100 45M5 70C5 90 100 90 100 70"/></g>
+<g id="film"><rect class="art" x="0" y="0" width="145" height="100" rx="8"/><path class="ink" d="M0 16H145M0 84H145M20 0V16M45 0V16M70 0V16M95 0V16M120 0V16M20 84V100M45 84V100M70 84V100M95 84V100M120 84V100"/><use href="#vial" transform="translate(20 22) scale(.6)"/><path class="signal" d="M75 37 95 50 75 63Z"/></g>
+<g id="chart"><path class="ink" d="M3 4V94H145"/><path class="signal" d="M8 50C20 10 32 10 44 50S68 90 80 50S104 10 116 50S134 90 143 50"/><path d="M8 65C20 30 32 30 44 65S68 100 80 65S104 30 116 65S134 100 143 65" fill="none" stroke="#a16cda" stroke-width="3" stroke-dasharray="6 4"/></g>
+</defs><use href="#chart" transform="translate(35 82) scale(0.8)"/><text x="96" y="218" class="diagram-label" text-anchor="middle">Command motion</text><text x="96" y="244" class="diagram-small" text-anchor="middle">For example, a chirp</text><use href="#arm" transform="translate(285 56) scale(0.9)"/><text x="351" y="218" class="diagram-label" text-anchor="middle">Measure response</text><text x="351" y="244" class="diagram-small" text-anchor="middle">Physical robot</text><use href="#chart" transform="translate(568 70) scale(0.85)"/><text x="630" y="218" class="diagram-label" text-anchor="middle">Fit parameters</text><text x="630" y="244" class="diagram-small" text-anchor="middle">Match simulated motion</text><path class="flow " d="M191 122H262"/><path class="flow " d="M442 122H541"/><path class="flow " d="M728 122H817V375H729"/><use href="#arm" transform="translate(554 310) scale(0.8)"/><text x="620" y="455" class="diagram-label" text-anchor="middle">Validate on new motion</text><text x="620" y="482" class="diagram-small" text-anchor="middle">Hold out test recordings</text><path class="flow " d="M501 376H357"/><use href="#rack" transform="translate(159 324) scale(0.8)"/><use href="#vial" transform="translate(200 300) scale(0.7)"/><text x="220" y="455" class="diagram-label" text-anchor="middle">Evaluate the task</text><text x="220" y="482" class="diagram-small" text-anchor="middle">Count task outcomes</text><g class="passive-context" pointer-events="none"><text x="448" y="30" class="diagram-small" text-anchor="middle">Conceptual workflow · the workshop uses a published fitted profile</text></g><a class="hotspot" data-term="excite" href="#definition-excite" tabindex="0" role="button" aria-label="Choose informative motion" aria-controls="definition-excite" aria-expanded="false"><rect class="hit-area" x="12" y="63" width="196" height="204" rx="12"/></a><a class="hotspot" data-term="measure" href="#definition-measure" tabindex="0" role="button" aria-label="Measure physical response" aria-controls="definition-measure" aria-expanded="false"><rect class="hit-area" x="252" y="51" width="203" height="216" rx="12"/></a><a class="hotspot" data-term="fit" href="#definition-fit" tabindex="0" role="button" aria-label="Fit simulation parameters" aria-controls="definition-fit" aria-expanded="false"><rect class="hit-area" x="531" y="52" width="202" height="215" rx="12"/></a><a class="hotspot" data-term="validate" href="#definition-validate" tabindex="0" role="button" aria-label="Validate with held-out motions" aria-controls="definition-validate" aria-expanded="false"><rect class="hit-area" x="499" y="305" width="252" height="196" rx="12"/></a><a class="hotspot" data-term="policy" href="#definition-policy" tabindex="0" role="button" aria-label="Evaluate the policy on the task" aria-controls="definition-policy" aria-expanded="false"><rect class="hit-area" x="66" y="298" width="313" height="201" rx="12"/></a></svg></div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt">Select a step or object for its explanation.</p>
+<article class="definition" id="definition-excite" data-definition="excite" aria-labelledby="heading-excite"><h2 id="heading-excite">Use informative motions</h2><p>Moving through a range of speeds reveals response differences that a single held pose cannot.</p><h3>In this workshop</h3><p>A chirp sweep changes command frequency. Watch how the measured motion’s lag and amplitude change. The curves here are illustrative, not measured results.</p><p><a href="../../15-strategy4-sysid.html#example-sysid-motion-chirp-sweep" target="_top">Watch the chirp sweep</a></p></article>
+<article class="definition" id="definition-measure" data-definition="measure" aria-labelledby="heading-measure"><h2 id="heading-measure">Record what the robot does</h2><p>Compare commanded motion with time-aligned physical measurements. Units, calibration and initial conditions must agree.</p><h3>In this workshop</h3><p>Anchor-Lab includes physical motion measurements. Additional readback delay can affect the teleoperation overlay.</p><p><a href="../../15-strategy4-sysid.html#anchor-lab-and-anchorbench" target="_top">Explore Anchor-Lab and AnchorBench</a></p></article>
+<article class="definition" id="definition-fit" data-definition="fit" aria-labelledby="heading-fit"><h2 id="heading-fit">Fit simulation parameters</h2><p>Adjust parameters that affect response, such as stiffness, damping and friction, to reduce disagreement with the measurements used for fitting.</p><h3>In this workshop</h3><p>The workshop comparison uses an AnchorBench fitted USD layer over the robot asset. This page introduces the process; it is not a fitting exercise.</p><p><a href="../../15-strategy4-sysid.html#from-measurements-to-a-simulation-model" target="_top">Read about model fitting</a></p></article>
+<article class="definition" id="definition-validate" data-definition="validate" aria-labelledby="heading-validate"><h2 id="heading-validate">Test motions excluded from fitting</h2><p>A model should explain more than the motions used to tune it. Compare response on held-out recordings before drawing conclusions about the fit.</p><h3>In this workshop</h3><p>Inspect tracking lag, amplitude and settling using matched commands and starting conditions.</p><p><a href="../../15-strategy4-sysid.html#teleop-comparison-default-and-sysid-assets" target="_top">Inspect the motion comparison</a></p></article>
+<article class="definition" id="definition-policy" data-definition="policy" aria-labelledby="heading-policy"><h2 id="heading-policy">Evaluate the full manipulation task</h2><p>Closer actuator tracking does not establish a better policy success rate. Pick-and-place adds sensing, contact and learned behavior to the test.</p><h3>In this workshop</h3><p>The paired policy video shows a policy that was not trained to robust task performance. Use it to inspect approaches to the vial.</p><p><a href="../../15-strategy4-sysid.html#workshop-comparison-sysid-and-original-actuators" target="_top">Watch the policy comparison</a></p></article>
+</section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+</body>
+</html>

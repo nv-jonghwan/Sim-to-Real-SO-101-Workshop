@@ -1,0 +1,537 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Learning From Real Demonstrations With a State Machine — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '09-state-machine-learning';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="11-sim-evaluation.html" rel="next" title="Sim Evaluation"/>
+<link href="09-code-tour.html" rel="prev" title="Architecture Tour: Building the Robotics Application"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Learning From Real Demonstrations With a State Machine</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/09-state-machine-learning.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="learning-from-real-demonstrations-with-a-state-machine">
+<h1>Learning From Real Demonstrations With a State Machine<a class="headerlink" href="#learning-from-real-demonstrations-with-a-state-machine" title="Link to this heading">#</a></h1>
+<div class="course-module-type course-module-type--lecture">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="3"></rect>
+<path d="M16 21v4m-6 4 6-4 6 4M11 9h9m-9 2 3.5 4m6.5-4-3.5 4"></path>
+<circle cx="9" cy="9" r="2"></circle>
+<circle cx="22" cy="9" r="2"></circle>
+<circle cx="16" cy="16" r="2"></circle>
+</svg>
+<span>Lecture</span>
+</div>
+<a class="course-banner simulation-poster reference internal image-reference" href="_images/real-to-sim.gif"><img alt="Real and simulated vial manipulation shown side by side, with joint traces underneath." class="course-banner simulation-poster" src="_images/real-to-sim.gif" style="width: 100%;"/>
+</a>
+<p>A state machine can generate large-scale demonstration data as well as help us fine-tune the physics configuration to narrow the sim-to-real gap. It breaks the task into phases and rules for moving between them.</p>
+<p>Building one by hand takes motion analysis and careful programming - but capturing the motion’s “DNA” is hard.
+Coding agents can help by studying a few human demonstrations, finding the nuances and patterns, writing the state machine, and refining its behavior against those examples. Here, we call this process <strong>real-to-sim</strong>: real data used to create and tune a simulation.</p>
+<section id="learning-objectives">
+<h2>Learning Objectives<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Explain</strong> how real demonstrations can guide a state machine.</p></li>
+<li><p><strong>Compare</strong> trajectory nuances and timing across human and generated demonstrations.</p></li>
+<li><p><strong>Guide</strong> an agent to make corrections before collecting a larger dataset.</p></li>
+</ul>
+</section>
+<section id="from-a-few-demonstrations-to-new-layouts">
+<h2>From a Few Demonstrations to New Layouts<a class="headerlink" href="#from-a-few-demonstrations-to-new-layouts" title="Link to this heading">#</a></h2>
+<p>As an example use case, we use the state machine approach to collect simulated demonstrations with new vial and rack layouts, without manually teleoperating each episode.</p>
+<p>We then fine-tune an existing policy with generated data of new layouts.
+In our experiments, we have seen successful real-world rollouts in layouts that existed only in simulation.</p>
+<figure>
+<video aria-label="Selected real-robot rollouts showing external and wrist camera views" controls="" playsinline="" preload="metadata" style="width:100%">
+<source src="_static/videos/state-machine/real-rollouts.mp4" type="video/mp4"/>
+</video>
+<figcaption>Selected real-robot rollouts. Watch the approach, grasp, and placement in an unseen layout.</figcaption>
+</figure></section>
+<section id="start-with-a-focused-prompt">
+<h2>Start With a Focused Prompt<a class="headerlink" href="#start-with-a-focused-prompt" title="Link to this heading">#</a></h2>
+<p>We seed the process with 10 real demonstrations from <a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_real_manual" rel="noreferer noopener" target="_blank">sreetz-nv/so101_real_manual</a>. The prompt keeps the agent focused on motion so it does not change the scene to make the comparison look better.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Example Prompt: Build and Refine the State Machine</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Review these 10 real demonstrations of our task:
+https://huggingface.co/datasets/sreetz-nv/so101_real_manual
+
+Analyze them closely and build a state machine that matches their motion
+characteristics.
+
+Keep the existing geometry, shapes, colors, camera parameters, lighting,
+materials, and render settings unchanged. These are already established
+in our code.
+
+Focus on robot commands: trajectories, linear and angular velocities,
+smoothness, natural variation, grasp positions, and the approach, grasp,
+lift, insertion, and retraction strategies. Build a state machine that
+can generate reliable demonstrations at a larger scale than these
+10 examples.
+
+Compare the resulting motions in the camera observations against the
+real demonstrations. Check framing, how much of the image each object
+occupies, and the timing of each movement. Review, compare, and refine.
+</pre></div>
+</div>
+</div>
+</details></section>
+<section id="analyze-the-motion-then-refine-it">
+<h2>Analyze the Motion, Then Refine It<a class="headerlink" href="#analyze-the-motion-then-refine-it" title="Link to this heading">#</a></h2>
+<p>Look beyond whether the task is completed. Compare the sequence of stages, the path of the gripper, and how its speed changes through the task.</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/motion-analysis.png"><img alt="Ten demonstration timelines alongside jaw-center paths and speed traces." src="_images/motion-analysis.png" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Selected plots from the agent’s initial analysis of the human example. Note the patterns it was able to extract.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure>
+<video aria-label="Real demonstration compared with baseline and refined state-machine motions" controls="" playsinline="" preload="metadata" style="width:100%">
+<source src="_static/videos/state-machine/first-refinement.mp4" type="video/mp4"/>
+</video>
+<figcaption>The agent’s first self-refinement pass: a comparison of the real demonstration, baseline simulation, and revised simulation in both camera views.</figcaption>
+</figure></section>
+<section id="lessons-learned">
+<h2>Lessons Learned<a class="headerlink" href="#lessons-learned" title="Link to this heading">#</a></h2>
+<section id="think-procedurally">
+<h3>Think Procedurally<a class="headerlink" href="#think-procedurally" title="Link to this heading">#</a></h3>
+<p>The agent may choose to simply mimic the provided examples by creating a “motion bank.” We guide it to decompose the motion into atomic pieces so that it can procedurally generate motions for different layouts.</p>
+<figure>
+<video aria-label="State-machine demonstration with a mirrored vial and rack layout" controls="" playsinline="" preload="metadata" style="width:100%">
+<source src="_static/videos/state-machine/mirrored-layout.mp4" type="video/mp4"/>
+</video>
+<figcaption>A mirrored layout tests whether the state machine can adapt its approach and placement.</figcaption>
+</figure></section>
+<section id="match-the-starting-pose-distribution">
+<h3>Match the Starting-Pose Distribution<a class="headerlink" href="#match-the-starting-pose-distribution" title="Link to this heading">#</a></h3>
+<p>A state machine that always starts in one pose can produce a narrow training distribution, even when the vial and rack positions vary. This is easy to miss visually: domain randomization changes the camera view between runs, making the same starting pose look different.</p>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/posture-distributions.png"><img alt="Manual and procedural simulation joint postures at the start and at gripper closure. Procedural starts cluster at one pose while manual starts are spread out." src="_images/posture-distributions.png" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">The left plot exposes a fixed procedural starting pose. The other plots compare joint configurations at gripper closure. Similar grasp poses do not mean the starting poses match.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="check-the-grasp-height">
+<h3>Check the Grasp Height<a class="headerlink" href="#check-the-grasp-height" title="Link to this heading">#</a></h3>
+<p>Where the jaws grip the vial affects its position in the wrist image. A successful simulated grasp can still look different from the real demonstrations. Compare the cap, vial body, and jaws in both views, and consider how contact with real materials affects the grasp.</p>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/grasp-height.png"><img alt="Before-and-after grasp-height adjustment, showing the external view above and the wrist view below." src="_images/grasp-height.png" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Changing the grasp height changes how much of the vial and cap the wrist camera sees.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="match-the-pickup-timing">
+<h3>Match the Pickup Timing<a class="headerlink" href="#match-the-pickup-timing" title="Link to this heading">#</a></h3>
+<p>A pause after closing the gripper becomes part of the training data. If generated demonstrations repeatedly hesitate before lifting, a policy trained on them may learn that hesitation too. When observations barely change during the pause, the policy may struggle to determine when to begin lifting and continue predicting stationary actions. Compare when the lift begins, not just where it ends.</p>
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="_images/lift-timing.png"><img alt="Vertical rise after gripper closure for 20 manual and 20 procedural examples. Procedural lifting starts later, though both reach similar heights." src="_images/lift-timing.png" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">The procedural examples begin lifting later than the manual examples. Aligning the traces at gripper closure makes the delay easier to see.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="another-way-to-scale-demonstrations-isaac-autodata">
+<h2>Another Way to Scale Demonstrations: Isaac AutoData<a class="headerlink" href="#another-way-to-scale-demonstrations-isaac-autodata" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://github.com/isaac-sim/AutoData" rel="noreferer noopener" target="_blank">Isaac AutoData</a> expands a small set of annotated seed demonstrations into many more demonstrations in simulation. It splits the examples into motion segments relative to objects, adapts those segments to new object placements and scene configurations, then joins and executes them in simulation, saving successful demonstrations. Our approach uses a coding agent to write and refine a state machine; AutoData transforms and recombines the demonstrated motions themselves. Both reduce manual collection, with AutoData providing a structured way to generate variation from seed examples. See the <a class="reference external" href="https://isaac-sim.github.io/AutoData/" rel="noreferer noopener" target="_blank">AutoData documentation</a> to learn more.</p>
+</section>
+<section id="another-way-to-scale-demonstrations-an-agent-as-the-policy">
+<h2>Another Way to Scale Demonstrations: an Agent as the Policy<a class="headerlink" href="#another-way-to-scale-demonstrations-an-agent-as-the-policy" title="Link to this heading">#</a></h2>
+<p>Another agentic alternative for generating robot demonstrations is to let a coding agent act as the policy, having it drive the simulated robot directly. Here it receives camera images and joint readings and replies with joint targets.</p>
+<figure>
+<iframe class="interactive-learning-diagram" loading="lazy" src="_static/interactive/agent-policy-loop.html" style="display:block; width:100%; height:960px; border:0;" title="An agent as a policy: select a step for details"></iframe>
+</figure><figure>
+<video aria-label="Simulated rollout with the agent as the policy, shown in the external and wrist camera views" controls="" playsinline="" preload="metadata" style="width:100%">
+<source src="_static/videos/state-machine/agent-rollout.mp4" type="video/mp4"/>
+</video>
+<figcaption><strong>This video is not running in real time.</strong> A simulated rollout with the agent as the policy, shown in the external and wrist camera views. In this video, the agent controlling the policy is GPT-6 Astra.</figcaption>
+</figure><p>There is no state machine to write or debug. However, the bottleneck with this technique is inference time. Every decision is a blocking call to a remote model, and in our runs the agent can take several seconds to reason before each chunk. The simulation pauses for that wait, so the motion plays out in simulated time and collection is far slower than a state machine.</p>
+<p>Review these rollouts the way you reviewed the state machine’s. Check the starting pose, the grasp height, and when the lift begins before you collect a large set.</p>
+</section>
+<section id="key-takeaways">
+<h2>Key Takeaways<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Watch the timing.</strong> Remove unintended delays and hesitations while preserving the pauses needed to grasp and place objects.</p></li>
+<li><p><strong>Inspect the motion and contact.</strong> Check joint configurations, grasp positions, and interactions with real materials.</p></li>
+<li><p><strong>Compare trends, not just outcomes.</strong> Small differences in poses and timing can accumulate across a trajectory.</p></li>
+<li><p><strong>Use agents to review, compare, and refine.</strong> Inspect the generated demonstrations before scaling up collection, then evaluate the trained policy in both sim and real.</p></li>
+</ul>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>What's Next?</h2>
+<p>Continue to the next page in the table of contents:
+    <a class="reference internal course-next-link" href="11-sim-evaluation.html">Sim Evaluation</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="09-code-tour.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Architecture Tour: Building the Robotics Application</p>
+</div>
+</a>
+<a class="right-next" href="11-sim-evaluation.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Sim Evaluation</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning Objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-a-few-demonstrations-to-new-layouts">From a Few Demonstrations to New Layouts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#start-with-a-focused-prompt">Start With a Focused Prompt</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-the-motion-then-refine-it">Analyze the Motion, Then Refine It</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lessons-learned">Lessons Learned</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#think-procedurally">Think Procedurally</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#match-the-starting-pose-distribution">Match the Starting-Pose Distribution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#check-the-grasp-height">Check the Grasp Height</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#match-the-pickup-timing">Match the Pickup Timing</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#another-way-to-scale-demonstrations-isaac-autodata">Another Way to Scale Demonstrations: Isaac AutoData</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#another-way-to-scale-demonstrations-an-agent-as-the-policy">Another Way to Scale Demonstrations: an Agent as the Policy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">Key Takeaways</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

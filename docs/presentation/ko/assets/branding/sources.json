@@ -1,0 +1,16 @@
+[
+  {
+    "source": "https://github.com/huggingface/lerobot/blob/main/media/readme/lerobot-logo-thumbnail.png",
+    "readme": "https://github.com/huggingface/lerobot/blob/main/README.md",
+    "download_url": "https://raw.githubusercontent.com/huggingface/lerobot/main/media/readme/lerobot-logo-thumbnail.png",
+    "retrieved_on": "2026-11-03",
+    "file": "assets/branding/lerobot-logo-thumbnail.png",
+    "sha256": "72ee48061c2528eb9f6a1f163622d4805476a52c813bd03f2f32e32d89afd63e",
+    "bytes": 164066,
+    "dimensions": [
+      3794,
+      1234
+    ],
+    "changes": "Original PNG, unmodified"
+  }
+]

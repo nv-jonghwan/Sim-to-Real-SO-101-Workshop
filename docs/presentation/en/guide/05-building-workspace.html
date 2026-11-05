@@ -1,0 +1,696 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Building the Workspace — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '05-building-workspace';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Building the Workspace</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/05-building-workspace.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="building-the-workspace">
+<h1>Building the Workspace<a class="headerlink" href="#building-the-workspace" title="Link to this heading">#</a></h1>
+<div class="course-module-type">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M11 17V8a2 2 0 0 1 4 0v6a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v2a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-3c-2 0-4-1-5-3l-5-7a2 2 0 0 1 3-2l1 1"></path>
+<path d="M15 14v5m4-4v4m4-2v3M5 9H3m4-5L5.5 2.5M19 5l1.5-1.5"></path>
+</svg>
+<span>Hands-on</span>
+</div>
+<a class="course-banner reference internal image-reference" href="_images/so101_workspace.jpg"><img alt="SO-101 workspace with the lightbox, cameras, vial rack, and work mat." class="course-banner" src="_images/so101_workspace.jpg" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">What Do I Need for This Module?</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">The equipment is listed below - here you will assemble your robot laboratory.</p>
+</div>
+</details><p>This module is about <strong>constructing and standardizing the real-world task area</strong>. This includes a lightbox enclosure, lighting, cameras, mat, vials, and rack—so it matches the Isaac Lab scene used for training and evaluation.</p>
+<p>Building the lightbox this way gives you a consistent environment, so you can use our models and datasets.</p>
+<p>You can also keep using it after this learning path, to do more of your own robot experiments!</p>
+<section id="video-tutorial">
+<h2>Video Tutorial<a class="headerlink" href="#video-tutorial" title="Link to this heading">#</a></h2>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube-nocookie.com/embed/6o_amE3jIuE?si=Qf8UxgW3k5H0MOPT" title="YouTube video player" width="560"></iframe><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Read more about setting up the physical workspace first</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p class="sd-card-text">Why are we starting with the physical workspace?</p>
+<p class="sd-card-text">When you do Physical AI work in the real world, you might not have a <strong>physical</strong> workspace available to you when you start out. We often start in sim, for all the reasons we discussed earlier (ease of testing, cost, safety, ease of iteration).</p>
+<p class="sd-card-text">For this workshop, we will set up the physical space first for three reasons:</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">We give you this info early on, so you can order parts or build your workspace in prep for finishing the learning path</p></li>
+<li><p class="sd-card-text">To give you experience with the physical robot and teleoperation. It’s fun!</p></li>
+<li><p class="sd-card-text">To give you a sense of how “hard” the task is, when using the same inputs the AI model will have (two cameras, joint positions)</p></li>
+</ol>
+</div>
+</div>
+</details></section>
+<section id="the-lightbox-environment">
+<h2>The Lightbox Environment<a class="headerlink" href="#the-lightbox-environment" title="Link to this heading">#</a></h2>
+<p>Let’s start by building a <strong>white lightbox enclosure</strong> that includes:</p>
+<ol class="arabic simple">
+<li><p><strong>Cameras</strong> — one wrist camera on the robot and one external camera fixed in the workspace</p></li>
+<li><p><strong>Lights</strong> — diffuse light with controllable brightness</p></li>
+<li><p><strong>Props</strong> — centrifuge vials, yellow rack, foam mat.</p></li>
+</ol>
+<p><img alt="Vial Rack" src="_images/vial_rack.jpg"/></p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Why we use a lightbox</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><strong>Limits variables for learning and debugging</strong>
+A plain, bright enclosure reduces visual noise so the policy can focus on the task-relevant features—gripper, vials, and rack.</p>
+<p class="sd-card-text"><strong>Matches the digital twin</strong>
+The Isaac Lab scene replicates this enclosure’s dimensions, color, camera placements, and object geometry. Matching the real bench to that design shrinks the visual domain gap—one of the main sources of sim-to-real failure.</p>
+<p class="sd-card-text"><strong>Accommodates low-performance cameras</strong>
+Consumer webcams have auto-exposure and limited dynamic range. Bright, diffuse lighting inside the box keeps images clean and consistent.</p>
+<p class="sd-card-text"><strong>Enables transferable models</strong>
+Controlling the environment makes it easier to prepare models that transfer across robots and setups. Debugging focuses on policy and calibration, not uncontrolled scene drift.</p>
+</div>
+</details></section>
+<section id="bill-of-materials">
+<h2>Bill of Materials<a class="headerlink" href="#bill-of-materials" title="Link to this heading">#</a></h2>
+<p>The complete robot + workspace setup should cost less than $500 USD, estimated based on the options below.</p>
+<p>We recommend getting the SO-101 pre-assembled, as it comes with a leader arm and is easier to assemble. You can also build it yourself, but it’s a bit more work.</p>
+<section id="robot">
+<h3>Robot<a class="headerlink" href="#robot" title="Link to this heading">#</a></h3>
+<p>Approximate cost: $300 USD</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Item</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Model/Specs</p></th>
+<th class="head"><p>Quantity</p></th>
+<th class="head"><p>Details</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>SO-101 Follower and Leader Arms</strong></p></td>
+<td><p>6-DoF collaborative robot arm (SO-101 or similar)</p></td>
+<td><p><a class="reference external" href="https://shop.wowrobo.com/products/so-arm101-diy-kit-assembled-version-1?variant=46588641706201" rel="noreferer noopener" target="_blank">SO-101</a> package 3, orange</p></td>
+<td><p>1</p></td>
+<td><p>Main robot for pick-and-place task; Leader arm optional for demonstration recording. We recommend this kit because of the included wrist camera, which will match our datasets. Alternatively, you can <a class="reference external" href="https://github.com/TheRobotStudio/SO-ARM100" rel="noreferer noopener" target="_blank">print and build your own SO-101</a>!</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="workspace">
+<h3>Workspace<a class="headerlink" href="#workspace" title="Link to this heading">#</a></h3>
+<p>Approximate cost: $130 USD</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Item</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Model/Specs</p></th>
+<th class="head"><p>Quantity</p></th>
+<th class="head"><p>Details</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>External camera</strong></p></td>
+<td><p>USB webcam, fixed mount, ~78° horizontal FoV</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/Logitech-C920x-Pro-HD-Webcam/dp/B085TFF7M1" rel="noreferer noopener" target="_blank">Logitech C920</a> or equivalent</p></td>
+<td><p>1</p></td>
+<td><p>Fixed perspective to capture overview of workspace; must be stable and aligned as in simulation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Lightbox Enclosure Panels</strong></p></td>
+<td><p>White foam board box, approx. 30” wide, 20” tall, 20” deep.</p></td>
+<td><p>Assemble from 5 sheets of <a class="reference external" href="https://www.michaels.com/product/20-x-30-white-foam-board-10110205" rel="noreferer noopener" target="_blank">20x30” foam board, 3/16” thick</a></p></td>
+<td><p>5</p></td>
+<td><p>Provides consistent, diffuse lighting and neutral background for images. Other white lightboxes can be substituted. Thicker or thinner foam board works.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Light Source</strong></p></td>
+<td><p>LED tube light, diffuse, CRI &gt;90, ~4000K, adjustable</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/NEEWER-Inflatable-2700K-5600K-Photography-GC10B/dp/B0DQ7Y8DWX?th=1" rel="noreferer noopener" target="_blank">Neewer Dimmable LED Bar</a></p></td>
+<td><p>1</p></td>
+<td><p>Ensures workspace is brightly and uniformly illuminated.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Black Work Mat</strong></p></td>
+<td><p>Foam mat for workspace</p></td>
+<td><p><a class="reference external" href="https://www.michaels.com/product/12-x-18-thick-foam-sheet-by-creatology-10661709" rel="noreferer noopener" target="_blank">Black EVA foam</a></p></td>
+<td><p>1</p></td>
+<td><p>Non-slip surface for vials and rack; color matches simulation environment.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Centrifuge Vials</strong></p></td>
+<td><p>50ml with screw cap, clear plastic</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/Kashi-Scientific-Conical-Centrifuge-Graduation/dp/B0C35JV95M?th=1" rel="noreferer noopener" target="_blank">Falcon tube or similar</a></p></td>
+<td><p>1-4</p></td>
+<td><p>Props manipulated by robot; clear sides allow for visual consistency with simulation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Vial Rack</strong></p></td>
+<td><p>Yellow, fits 4+ vials, similar to simulation asset</p></td>
+<td><p>3D printed in yellow - models available <a class="reference external" href="https://www.printables.com/model/1675961-vial-rack-50ml-centrifuge" rel="noreferer noopener" target="_blank">here</a></p></td>
+<td><p>1</p></td>
+<td><p>Holds vials upright, target for pick and place. Yellow color to match digital twin is best, as low as 5% infill can work.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>USB-C Charging Block</strong></p></td>
+<td><p>To power the light</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/gp/product/B0D72DWLZ1/" rel="noreferer noopener" target="_blank">Anker 25W USB-C Charging Block</a></p></td>
+<td><p>as needed</p></td>
+<td><p>21W or greater. Sufficient power for all lights and accessories; ensure safety and compliance with device specs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>USB-C Cable</strong></p></td>
+<td><p>To power the light</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/Anker-Charging-MacBook-Galaxy-Charger/dp/B088NRLMPV" rel="noreferer noopener" target="_blank">USB-C to USB-C cable, 6ft</a></p></td>
+<td><p>1</p></td>
+<td><p>Suggested light above is battery powered, but this will keep it powered</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>(optional) Foam board joints</strong></p></td>
+<td><p>To assemble lightbox</p></td>
+<td><p>3D printed, model <a class="reference external" href="https://www.printables.com/model/1652109-foam-board-joints-for-lightbox" rel="noreferer noopener" target="_blank">here</a></p></td>
+<td><p>8</p></td>
+<td><p>Allows assembly of lightbox without tearing the foam board during disassembly. Alternatively, you can use tape.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="props">
+<h3>Props<a class="headerlink" href="#props" title="Link to this heading">#</a></h3>
+<p>Approximate cost: $20 USD.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Item</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Model/Specs</p></th>
+<th class="head"><p>Quantity</p></th>
+<th class="head"><p>Details</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Centrifuge Vials</strong></p></td>
+<td><p>50ml with screw cap, clear plastic</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/Kashi-Scientific-Conical-Centrifuge-Graduation/dp/B0C35JV95M?th=1" rel="noreferer noopener" target="_blank">Falcon tube or similar</a></p></td>
+<td><p>1-4</p></td>
+<td><p>Props manipulated by robot; clear sides allow for visual consistency with simulation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Vial Rack</strong></p></td>
+<td><p>Yellow, fits 4 vials, same model used to create simulation USD asset</p></td>
+<td><p>3D printed, model <a class="reference external" href="https://www.printables.com/model/1675961-vial-rack-50ml-centrifuge" rel="noreferer noopener" target="_blank">here</a></p></td>
+<td><p>1</p></td>
+<td><p>Holds vials upright; color/shape should closely match digital asset.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="build-the-workspace">
+<h2>Build the Workspace<a class="headerlink" href="#build-the-workspace" title="Link to this heading">#</a></h2>
+<p>In short, we’ll:</p>
+<ol class="arabic simple">
+<li><p><strong>Cut</strong> the foam board to size</p></li>
+<li><p><strong>Cut</strong> a hole for the external camera</p></li>
+<li><p><strong>Mount</strong> the light</p></li>
+<li><p><strong>Clamp</strong> and <strong>position</strong> the props and robot.</p></li>
+</ol>
+<section id="assemble-the-lightbox">
+<h3>Assemble the Lightbox<a class="headerlink" href="#assemble-the-lightbox" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Cut</strong> 2 of the 5 foam board panels down to 20” x 20” (50.8 cm x 50.8 cm). These will become the sides.</p></li>
+<li><p>On one of the 20” x 20” (50.8 cm x 50.8 cm) panels, <strong>cut</strong> a rectangular hole for the external camera. The Logitech webcam arm is approximately 5 cm × 1.5 cm — size the hole to slide it through snugly.</p></li>
+<li><p>Now <strong>assemble</strong> the box - there are two options:</p></li>
+</ol>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-0">
+Option A — Tape (fast)</label><div class="sd-tab-content docutils">
+<p>White duct tape or gaffer tape along the seams.</p>
+<ul class="simple">
+<li><p><strong>Pros</strong>: cheap, fast, no tools required</p></li>
+<li><p><strong>Cons</strong>: removing the tape later will damage the foam board</p></li>
+</ul>
+<p>Keep foam board edges flush when taping. Running tape along the full length of each seam produces the strongest bond; small pieces work but are weaker.</p>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-1">
+Option B — 3D-printed corners (reusable)</label><div class="sd-tab-content docutils">
+<p>Print the corner assemblies from the BOM link above and snap panels in.</p>
+<ul class="simple">
+<li><p><strong>Pros</strong>: clean look, easy to disassemble and reassemble</p></li>
+<li><p><strong>Cons</strong>: requires access to a 3D printer</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="camera-placement-measurements">
+<h3>Camera Placement Measurements<a class="headerlink" href="#camera-placement-measurements" title="Link to this heading">#</a></h3>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/camera_placement.jpeg"><img alt="Camera placement diagram" src="_images/camera_placement.jpeg" style="width: 400px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Camera placement diagram</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Height</strong></p></td>
+<td><p>40 cm from back of lightbox</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Distance from back wall</strong></p></td>
+<td><p>27 cm from back of robot to center of camera lens</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Angle</strong></p></td>
+<td><p>Approximately 54° downward from horizontal, matching the nominal simulation view. Use the <a class="reference internal" href="07-calibrating-so101.html#match-the-external-camera-tilt-to-simulation"><span class="std std-ref">phone-level alignment steps</span></a> and keep the robot, vials, and rack in view.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Verify the camera view matches the sample images before finalizing the slot position. A few centimeters of error is acceptable; large deviations change what the policy sees and degrade performance.</p>
+</div>
+</section>
+</section>
+<section id="set-up-the-light">
+<span id="lighting-setup"></span><h2>Set Up the Light<a class="headerlink" href="#set-up-the-light" title="Link to this heading">#</a></h2>
+<p>The light should be <strong>bright, diffuse, and daylight-temperature</strong>. If you use the lights listed in the BOM, they are already diffuse.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>These lights can get warm over extended use. Do not leave them on overnight, and monitor temperature during long sessions.</p>
+</div>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-2">
+Foam board top — interior mount</label><div class="sd-tab-content docutils">
+<p>If you use foam board for the top panel, mount a diffuse panel light inside the lightbox facing down. Zip ties through small holes in the foam board are the most reliable attachment; tape can work but may release from heat.</p>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-3">
+Open top — external mount</label><div class="sd-tab-content docutils">
+<p>Clamp or position an external diffuse light above the open top, angled to illuminate the workspace evenly.</p>
+</div>
+</div>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/light-operation.gif"><img alt="Turning on and adjusting lightbox lighting" src="_images/light-operation.gif" style="width: 400px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><em>Turn on the light and set brightness before teleoperation or policy runs.</em></span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple">
+<li><p><strong>Press</strong> the <strong>power button</strong> on the light.</p></li>
+<li><p><strong>Press and hold</strong> the <strong>power button</strong> again until the travel lock progress bar completes and the light stays on.</p></li>
+<li><p><strong>Use</strong> the <strong>brightness controls</strong>; for evaluations and data collection, target roughly <strong>50–100 %</strong>.</p></li>
+<li><p><strong>Plug in</strong> the light if AC power is available; battery-only runs may not last a full session.</p></li>
+</ol>
+</section>
+<section id="mount-the-robot">
+<h2>Mount the Robot<a class="headerlink" href="#mount-the-robot" title="Link to this heading">#</a></h2>
+<p>Clamp the SO-101 to a solid table. Position it so the base sits inside the lightbox at the position shown in the reference photo below.</p>
+<p>This gives it good range-of-motion and lets the external camera see the robot well.</p>
+<p><strong>Verify</strong> the clamps do <strong>not</strong> restrict the robot’s range of motion—test by manually moving each joint through its range before powering on.</p>
+<p><img alt="Lightbox" src="_images/so101_workspace.jpg"/></p>
+</section>
+<section id="arrange-the-mat-vials-and-rack">
+<h2>Arrange the Mat, Vials, and Rack<a class="headerlink" href="#arrange-the-mat-vials-and-rack" title="Link to this heading">#</a></h2>
+<p>Our simulation environment and checkpoint models are overfit to the rack generally being on the <strong>left</strong> side and vials on the <strong>right</strong>. Use the reference photo above for positioning.</p>
+<p>If you customize the Isaac Lab environment we’ll use later, you could try out other configurations!</p>
+<section id="rack-placement-measurements">
+<h3>Rack Placement Measurements<a class="headerlink" href="#rack-placement-measurements" title="Link to this heading">#</a></h3>
+<p>Place the foam mat flat under the vials, and scatter 1–3 vials on the mat in varied poses (same general layout as in simulation).</p>
+</section>
+</section>
+<section id="physical-layout-checklist">
+<h2>Physical Layout Checklist<a class="headerlink" href="#physical-layout-checklist" title="Link to this heading">#</a></h2>
+<p>Before you place the robot in the enclosure or run any real-robot software:</p>
+<ol class="arabic simple">
+<li><p><strong>Enclosure</strong> — Lightbox panels assembled; interior clear of stray objects.</p></li>
+<li><p><strong>Mat and props</strong> — Foam mat flat; <strong>yellow rack</strong> in its designated spot; <strong>1–3 vials</strong> on the mat in varied poses (same general layout as in simulation).</p></li>
+<li><p><strong>Cameras</strong> — Wrist and external cameras mounted and aimed so both the mat/rack and gripper workspace are visible; no heavy occlusion or glare.</p></li>
+<li><p><strong>Cables</strong> — Route camera and robot cables so they do <strong>not</strong> snag or limit joint motion (cables can create false calibration limits; see <a class="reference internal" href="troubleshooting.html"><span class="std std-doc">Troubleshooting</span></a>, <em>Calibration Fails</em>).</p></li>
+<li><p><strong>Lighting</strong> — Light on and bright enough (previous section).</p></li>
+</ol>
+<p>Re-check this checklist <strong>before</strong> <a class="reference internal" href="12-real-evaluation.html"><span class="std std-doc">Real Evaluation</span></a> and before each <a class="reference internal" href="13-cotraining-practice.html#workspace-prep"><span class="std std-ref">Co-Training in Practice</span></a> / <a class="reference internal" href="14-strategy3-cosmos.html"><span class="std std-doc">Strategy 4</span></a> deployment if anything was moved.</p>
+</section>
+<section id="key-takeaways">
+<h2>Key Takeaways<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Workspace setup is critical for successful training and deployment.</p></li>
+</ul>
+</section>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#video-tutorial">Video Tutorial</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-lightbox-environment">The Lightbox Environment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bill-of-materials">Bill of Materials</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robot">Robot</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#workspace">Workspace</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#props">Props</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-the-workspace">Build the Workspace</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assemble-the-lightbox">Assemble the Lightbox</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#camera-placement-measurements">Camera Placement Measurements</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-light">Set Up the Light</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mount-the-robot">Mount the Robot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#arrange-the-mat-vials-and-rack">Arrange the Mat, Vials, and Rack</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rack-placement-measurements">Rack Placement Measurements</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-layout-checklist">Physical Layout Checklist</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">Key Takeaways</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

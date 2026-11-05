@@ -1,0 +1,705 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>CODEX — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '01-codex';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<link href="04-lerobot.html" rel="next" title="LeRobot과 SO-101"/>
+<link href="01-overview.html" rel="prev" title="과정 개요"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">과정 개요</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">SO-101 Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Dataset과 Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">CODEX</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/01-codex.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="codex">
+<h1>CODEX<a class="headerlink" href="#codex" title="Link to this heading">#</a></h1>
+<p>강사·TA·학생은 같은 repository와 <code class="docutils literal notranslate"><span class="pre">skills/</span></code>의 공통 스킬로 환경을 준비하고, 교재를 이해하고, 실습을 진행하며 관찰 결과를 함께 검토합니다.</p>
+<p>한국어로 질문하고 Physical AI, GR00T, Co-Training, HG-DAgger와 같은 전문 용어는 영어로 사용해도 됩니다. 과정 질문은 교재를 바탕으로 답하고, 실제 장비 실습은 강사의 진행 순서와 station 준비 상태에 맞춰 수행합니다.</p>
+<section id="choose-your-starting-point">
+<h2>사용 환경 선택하기<a class="headerlink" href="#choose-your-starting-point" title="Link to this heading">#</a></h2>
+<p>공통 workshop 폴더를 열고 자연스럽게 질문합니다. <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>가 요청에 맞는 <code class="docutils literal notranslate"><span class="pre">skills/&lt;name&gt;/SKILL.md</span></code>를 읽도록 안내합니다. 모두 같은 파일을 사용합니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>화면</p></th>
+<th class="head"><p>시작 방법</p></th>
+<th class="head"><p>공통 스킬 파일</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ChatGPT app · Codex</p></td>
+<td><p>로컬 수업 project 열기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">skills/so101-dli/SKILL.md</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Codex CLI</p></td>
+<td><p>수업 폴더에서 <code class="docutils literal notranslate"><span class="pre">codex</span></code> 실행</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">skills/so101-dli/SKILL.md</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>ChatGPT app · Work</p></td>
+<td><p>로컬 파일에 접근할 수 있는 project 사용</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">skills/so101-dli/SKILL.md</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="option-a-chatgpt-app">
+<h2>ChatGPT app에서 시작하기<a class="headerlink" href="#option-a-chatgpt-app" title="Link to this heading">#</a></h2>
+<section id="codex-in-the-desktop-app">
+<h3>Desktop app의 Codex 사용하기<a class="headerlink" href="#codex-in-the-desktop-app" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>준비된 ChatGPT desktop app에 로그인하고 제품 선택 메뉴에서 <strong>Codex</strong>를 선택합니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">~/Sim-to-Real-SO-101-Workshop</span></code>을 로컬 project로 엽니다. 기존 project에서는 <strong>Edit project → Add folder</strong>로 추가하고, <strong>Make primary</strong>로 수업 저장소를 기본 폴더로 지정합니다. 새 채팅이 이 폴더에서 교재와 스킬을 찾습니다.</p></li>
+<li><p>이번 수업에서는 <strong>Work in → This computer / Local</strong>을 선택하고 <code class="docutils literal notranslate"><span class="pre">aidayseoul2026</span></code> branch의 준비된 checkout을 사용합니다. 채팅과 Workshop Container가 같은 수업 폴더를 사용하도록 맞춥니다.</p></li>
+<li><p>이 project에서 채팅을 시작하고 아래 연결 확인 질문 후 환경설정이나 수업 질문을 입력합니다. Repository 지침이 공통 스킬 원문을 직접 읽도록 안내합니다.</p></li>
+</ol>
+<p>폴더 연결은 <a class="reference external" href="https://learn.chatgpt.com/docs/projects" rel="noreferer noopener" target="_blank">Projects and chats</a>, 실행 위치는 <a class="reference external" href="https://learn.chatgpt.com/docs/environments/modes" rel="noreferer noopener" target="_blank">Codex environments</a>를 참고하세요. Cloud 환경에는 사용할 파일과 도구가 따로 준비되어야 하며, Laptop의 USB 장치·실행 중인 Container·GPU가 자동으로 연결되지는 않습니다.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>현재 작업 폴더와 Git branch를 확인해줘.
+AGENTS.md, skills/so101-dli/SKILL.md, docs/seoul-workshop-schedule.md를 읽을 수 있는지 확인하고,
+앞으로 수업 질문이나 실습 요청에 맞는 스킬을 찾아 적용해줘.
+이번에는 파일 접근만 확인해줘.
+</pre></div>
+</div>
+</section>
+<section id="chatgpt-work-in-the-app">
+<h3>App의 ChatGPT Work 사용하기<a class="headerlink" href="#chatgpt-work-in-the-app" title="Link to this heading">#</a></h3>
+<p>ChatGPT 화면을 사용하려면 <strong>ChatGPT → Work</strong>를 선택하고 로컬 수업 폴더에 접근할 수 있는 project를 사용합니다. 지원 여부는 계정과 workspace 설정에 따라 다릅니다. 같은 연결 확인 질문으로 시작하세요. <a class="reference external" href="https://learn.chatgpt.com/docs/use-chatgpt" rel="noreferer noopener" target="_blank">Use ChatGPT</a>에서 자세한 내용을 확인할 수 있습니다.</p>
+<p>파일 접근을 확인한 뒤 자연스럽게 질문하거나 공통 스킬 파일을 직접 지정합니다. 역할별 스킬 설치나 스킬 선택기에 항목을 추가하는 과정은 필요하지 않습니다.</p>
+<p>로컬 폴더 접근이 없는 일반 web/mobile Chat에서는 관련 교재 파일을 첨부해 Q&amp;A를 진행합니다. GitHub 링크만으로 저장소 스킬이 설치되거나 교실의 로봇이 연결되지는 않습니다. 이 과정은 로컬 스킬 폴더를 제공하며, 별도로 게시된 ChatGPT plugin은 없습니다.</p>
+</section>
+</section>
+<section id="option-b-codex-cli">
+<h2>Codex CLI에서 시작하기<a class="headerlink" href="#option-b-codex-cli" title="Link to this heading">#</a></h2>
+<p>준비된 CLI를 사용합니다. 설치가 필요하면 <a class="reference external" href="https://learn.chatgpt.com/docs/codex/cli" rel="noreferer noopener" target="_blank">공식 Codex CLI 안내</a>를 따릅니다. Host terminal에서 수업 폴더로 이동하고 Codex를 시작합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/Sim-to-Real-SO-101-Workshop
+git<span class="w"> </span>branch<span class="w"> </span>--show-current
+codex<span class="w"> </span>--version
+codex
+</pre></div>
+</div>
+<p>Branch가 <code class="docutils literal notranslate"><span class="pre">aidayseoul2026</span></code>인지 확인하고 필요한 로그인을 마칩니다. 자연어로 요청하거나 먼저 <code class="docutils literal notranslate"><span class="pre">skills/so101-dli/SKILL.md</span></code>를 읽도록 요청합니다.</p>
+</section>
+<section id="set-up-the-course-skills">
+<h2>수업용 스킬 설정하기<a class="headerlink" href="#set-up-the-course-skills" title="Link to this heading">#</a></h2>
+<p>모든 수업 스킬은 <code class="docutils literal notranslate"><span class="pre">skills/</span></code>에 있습니다. <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>는 환경설정이나 수업 질문에 맞는 스킬 원문을 읽도록 안내합니다. 교재의 상대 경로를 유지하도록 폴더 구조를 보존합니다. Symlink, 개인 폴더 복사, 역할별 활성화는 필요하지 않습니다.</p>
+<p>스킬 선택기 UI에는 이 폴더들이 표시되지 않을 수 있습니다. 연결 확인 질문으로 <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>와 필요한 <code class="docutils literal notranslate"><span class="pre">SKILL.md</span></code>를 읽을 수 있는지 확인합니다. 이 수업은 원문 파일을 직접 읽는 방식으로 진행합니다.</p>
+<p>파일을 읽을 수 없으면 선택한 project 폴더와 로컬 파일 접근을 확인합니다. 스킬 요청 자체가 추가 권한이나 robot 준비 상태를 보장하지는 않습니다.</p>
+</section>
+<section id="what-the-course-skills-cover">
+<h2>스킬이 지원하는 내용<a class="headerlink" href="#what-the-course-skills-cover" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>스킬</p></th>
+<th class="head"><p>사용하는 시점</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-prepare</span></code></p></td>
+<td><p>환경 설치·점검·재개</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-docs</span></code></p></td>
+<td><p>수업 문서 빌드와 preview</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli</span></code></p></td>
+<td><p>오늘의 일정, 교재 탐색, 다음 실습 진행</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-qa</span></code></p></td>
+<td><p>전체 과정의 개념·명령·오류에 대한 Q&amp;A</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-hardware</span></code></p></td>
+<td><p>Workspace 점검, calibration, camera와 Real Teleop</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-collect</span></code></p></td>
+<td><p>Sim Teleop, Domain Randomization, State Machine과 dataset</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-gr00t</span></code></p></td>
+<td><p>VLA, GR00T, post-training과 Co-Training</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-evaluate</span></code></p></td>
+<td><p>Sim/real 평가와 준비된 policy 비교</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-dagger</span></code></p></td>
+<td><p>HG-DAgger correction 수집과 검토</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-cosmos</span></code></p></td>
+<td><p>Cosmos augmentation과 원본·생성 video 비교</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-sysid</span></code></p></td>
+<td><p>Actuation gap, System Identification과 AnchorBench</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>스킬은 현재 교재의 Markdown, 한국어 catalog, interactive 설명과 관련 코드를 읽습니다. 답변이 교재의 어느 내용인지 확인하고 싶으면 해당 절도 함께 알려 달라고 요청하세요.</p>
+</section>
+<section id="environment-setup">
+<h2>환경설정<a class="headerlink" href="#environment-setup" title="Link to this heading">#</a></h2>
+<p>공통 workshop project에서 <code class="docutils literal notranslate"><span class="pre">환경설정을</span> <span class="pre">해줘</span></code>라고 요청합니다. Agent는 <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>와 <code class="docutils literal notranslate"><span class="pre">skills/so101-dli-prepare/SKILL.md</span></code>를 읽고 기존 설치를 확인한 뒤 준비 문서를 따라 진행합니다. 같은 스킬 파일로 설치와 수업 질문·실습을 지원합니다.</p>
+<p>먼저 이 컴퓨터를 점검하려면 <code class="docutils literal notranslate"><span class="pre">현재</span> <span class="pre">컴퓨터가</span> <span class="pre">DLI를</span> <span class="pre">실행할</span> <span class="pre">수</span> <span class="pre">있는</span> <span class="pre">환경인지</span> <span class="pre">확인해줘</span></code>라고 요청합니다. 준비 스킬이 Host의 기본 실행 조건, 누락된 도구·자산, 미확인 용량·runtime 검증 항목을 자동으로 보고합니다. 읽기 전용 보고서만으로 수업 실행을 보장하거나 설치·다운로드·robot 동작을 시작하지 않습니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>skills/so101-dli-prepare/scripts/preflight.py<span class="w"> </span>--format<span class="w"> </span>markdown
+</pre></div>
+</div>
+<p>읽기 전용 계획 도구는 설치 단계와 명령을 보여주며 실제로 실행하지 않습니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>skills/so101-dli-prepare/scripts/setup_plan.py
+</pre></div>
+</div>
+<p>합의한 source commit, 실제 model·dataset 경로, 명령·로그와 다음 작업을 <code class="docutils literal notranslate"><span class="pre">runs/setup/&lt;station&gt;/</span></code>에 기록합니다. 재개할 때는 검증한 설치·다운로드를 재사용합니다. Permission 오류나 검증하지 않은 runtime 항목은 미확인으로 남깁니다.</p>
+<section id="build-and-open-the-course-guide">
+<h3>교재를 빌드하고 열기<a class="headerlink" href="#build-and-open-the-course-guide" title="Link to this heading">#</a></h3>
+<p>문서용 고정 dependency와 Git LFS media를 준비한 뒤 Host의 repository root에서 아래 명령을 실행합니다. 문서에는 robot Container나 GPU가 필요하지 않습니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen
+bash<span class="w"> </span>skills/so101-dli-docs/scripts/build.sh
+python3<span class="w"> </span>skills/so101-dli-docs/scripts/verify_html.py
+</pre></div>
+</div>
+<p>두 언어의 문서를 빌드합니다. 같은 Laptop에서 빌드하고 브라우저로 볼 때는 사용 가능한 포트로 로컬 preview를 시작합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>skills/so101-dli-docs/scripts/preview.py<span class="w"> </span>start<span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">8095</span>
+python3<span class="w"> </span>skills/so101-dli-docs/scripts/preview.py<span class="w"> </span>status
+</pre></div>
+</div>
+<p>Preview를 시작한 뒤 같은 Laptop의 브라우저에서 <a class="reference external" href="http://localhost:8095/ko/event/html/index.html" rel="noreferer noopener" target="_blank">교재 열기</a> 또는 <a class="reference external" href="http://localhost:8095/ko/event/html/2026-10-28-seoul-preparation.html" rel="noreferer noopener" target="_blank">DLI준비와 진행 열기</a>를 클릭합니다. 로컬 서비스 주소는 <code class="docutils literal notranslate"><span class="pre">http://localhost:8095</span></code>입니다. 문서 빌드만으로 서버나 브라우저가 실행되지는 않습니다. 다른 포트를 선택하면 링크의 포트도 바꿉니다.</p>
+<p><code class="docutils literal notranslate"><span class="pre">localhost</span></code>는 브라우저를 실행하는 컴퓨터를 가리킵니다. 다른 PC에서 접속할 때만 시작 명령의 <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code>을 서버의 실제 LAN IP로 바꾸고 그 PC에서 preview가 보고한 URL을 엽니다.</p>
+<p>Preview가 보고한 URL의 실제 응답을 확인해 사용합니다. 사용자가 볼 preview는 유지하며 PID·실행 명령·로그는 로컬에 기록됩니다. 해당 preview를 중지할 때는 <code class="docutils literal notranslate"><span class="pre">preview.py</span> <span class="pre">stop</span></code>을 사용합니다. 백그라운드 실행이며 재부팅 후 자동 시작은 아닙니다.</p>
+<p>Software 준비와 robot 동작은 따로 점검합니다. 전원을 켜는 robot 실습 전에는 현재 작업자와 station 준비 상태를 확인합니다. Model cache나 연결 메시지만으로 실제 동작 성공을 판정하지 않습니다.</p>
+</section>
+</section>
+<section id="first-example-ask-for-todays-schedule">
+<h2>첫 번째 예제: 오늘의 일정 묻기<a class="headerlink" href="#first-example-ask-for-todays-schedule" title="Link to this heading">#</a></h2>
+<p>App 또는 CLI에서 수업 폴더를 연 뒤, 스킬 이름 없이 다음과 같이 질문합니다.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>오늘의 일정이 뭐야?
+</pre></div>
+</div>
+<p>Codex가 <code class="docutils literal notranslate"><span class="pre">docs/seoul-workshop-schedule.md</span></code>를 읽고 시간·주제·소요 시간·진행자를 표로 제시하는지 확인합니다. 입장·휴식·점심이 포함되고 모든 시간이 KST 기준인지도 확인합니다. 답변을 <a class="reference internal" href="seoul-workshop-schedule.html"><span class="std std-doc">오늘의 일정</span></a>과 비교하세요.</p>
+<section id="optional-name-the-file-directly">
+<h3>선택 사항: 파일을 직접 지정하기<a class="headerlink" href="#optional-name-the-file-directly" title="Link to this heading">#</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>skills/so101-dli/SKILL.md를 읽고 오늘의 일정을 시간, 주제, 소요 시간, 진행자 표로 보여줘.
+</pre></div>
+</div>
+<p>수업 시작이 09:00, 점심이 12:45–13:45, 마무리 종료가 17:15인지 확인합니다. 세션별 진행자는 상세 일정의 각 행을 기준으로 확인합니다. 이 예제는 문서를 읽는 작업이므로 robot이나 simulation을 시작할 필요가 없습니다.</p>
+</section>
+<section id="verified-schedule-example">
+<h3>확인한 일정 답변 예시<a class="headerlink" href="#verified-schedule-example" title="Link to this heading">#</a></h3>
+<p>위 질문으로 Codex를 읽기 전용 실행해 아래 22개 항목의 일정 표가 출력되는 것을 확인했습니다. 시간·소요 시간·진행자는 교재와 대조했습니다. 주제 표기는 교재 용어에 맞춰 정리했으며, 답변 문장은 실행마다 달라질 수 있습니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>시간</p></th>
+<th class="head"><p>주제</p></th>
+<th class="head"><p>소요 시간</p></th>
+<th class="head"><p>진행자</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>08:30–09:00</p></td>
+<td><p>도착 및 착석</p></td>
+<td><p>30분</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>09:00–09:10</p></td>
+<td><p>Physical AI &amp; today’s task</p></td>
+<td><p>10분</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-even"><td><p>09:10–09:30</p></td>
+<td><p>LeRobot</p></td>
+<td><p>20분</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-odd"><td><p>09:30–10:40</p></td>
+<td><p>Robot setup · calibration · Real Teleop</p></td>
+<td><p>70분</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-even"><td><p>10:40–11:05</p></td>
+<td><p>Understanding GR00T</p></td>
+<td><p>25분</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-odd"><td><p>11:05–11:25</p></td>
+<td><p>Sim Teleop · Domain Randomization</p></td>
+<td><p>20분</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-even"><td><p>11:25–11:50</p></td>
+<td><p>Software stack, architecture</p></td>
+<td><p>25분</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-odd"><td><p>11:50–12:00</p></td>
+<td><p>Break</p></td>
+<td><p>10분</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>12:00–12:15</p></td>
+<td><p>State Machine</p></td>
+<td><p>15분</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-odd"><td><p>12:15–12:35</p></td>
+<td><p>Sim Evaluation</p></td>
+<td><p>20분</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-even"><td><p>12:35–12:45</p></td>
+<td><p>Q&amp;A</p></td>
+<td><p>10분</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-odd"><td><p>12:45–13:45</p></td>
+<td><p>Lunch</p></td>
+<td><p>60분</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>13:45–13:55</p></td>
+<td><p>오후 시작, 오전 내용 정리 및 Q&amp;A</p></td>
+<td><p>10분</p></td>
+<td><p>Hogun Kee</p></td>
+</tr>
+<tr class="row-odd"><td><p>13:55–14:10</p></td>
+<td><p>Sim-to-Real Gap</p></td>
+<td><p>15분</p></td>
+<td><p>Hogun Kee</p></td>
+</tr>
+<tr class="row-even"><td><p>14:10–14:40</p></td>
+<td><p>Real Robot Rollouts with sim-only data</p></td>
+<td><p>30분</p></td>
+<td><p>Hogun Kee</p></td>
+</tr>
+<tr class="row-odd"><td><p>14:40–15:10</p></td>
+<td><p>Co-Training theory and practice</p></td>
+<td><p>30분</p></td>
+<td><p>Hogun Kee</p></td>
+</tr>
+<tr class="row-even"><td><p>15:10–15:40</p></td>
+<td><p>HG-DAgger</p></td>
+<td><p>30분</p></td>
+<td><p>Hogun Kee</p></td>
+</tr>
+<tr class="row-odd"><td><p>15:40–15:50</p></td>
+<td><p>Break</p></td>
+<td><p>10분</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>15:50–16:10</p></td>
+<td><p>Cosmos</p></td>
+<td><p>20분</p></td>
+<td><p>Jihyeon Ryu</p></td>
+</tr>
+<tr class="row-odd"><td><p>16:10–16:20</p></td>
+<td><p>SysID / AnchorBench</p></td>
+<td><p>10분</p></td>
+<td><p>Jihyeon Ryu</p></td>
+</tr>
+<tr class="row-even"><td><p>16:20–17:05</p></td>
+<td><p>Explore, experiment &amp; wrap up</p></td>
+<td><p>45분</p></td>
+<td><p>Jihyeon Ryu</p></td>
+</tr>
+<tr class="row-odd"><td><p>17:05–17:15</p></td>
+<td><p>Conclusion</p></td>
+<td><p>10분</p></td>
+<td><p>Jihyeon Ryu</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="try-course-questions-and-hands-on-requests">
+<h2>과정 Q&amp;A와 실습 요청 예시<a class="headerlink" href="#try-course-questions-and-hands-on-requests" title="Link to this heading">#</a></h2>
+<p>아래 예시는 스킬 이름 없이 입력합니다. Agent가 관련 수업 스킬과 교재를 찾아 사용합니다. 어떤 스킬과 교재의 어느 절을 사용했는지 물어볼 수도 있습니다.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Sim-to-Real Gap과 Domain Randomization의 관계를 오늘 task 기준으로 설명해줘.
+
+VLA의 입력과 action chunk가 뭔지 GR00T 교재를 읽고 설명해줘.
+
+교재의 calibration부터 한 단계씩 진행하자. 현재 연결을 먼저 확인해줘.
+
+State Machine으로 수집한 dataset과 Teleop dataset은 어떻게 달라?
+
+Sim-only와 Co-Training model을 어떤 조건으로 비교해야 해?
+
+HG-DAgger에서 leader가 언제 움직이는지 실습 전에 설명해줘.
+
+원본과 augmented video에서 무엇을 비교해야 해?
+
+AnchorBench와 calibration의 차이가 뭐야?
+</pre></div>
+</div>
+<p>오류가 발생하면 실행한 명령, Host/Container 중 실행 위치, 관련 오류 메시지를 함께 알려 주세요. Codex가 <a class="reference internal" href="troubleshooting.html"><span class="std std-doc">Troubleshooting</span></a>과 연결해 원인을 살펴볼 수 있습니다. 실제 장비를 움직이기 전에는 강사의 안전 안내를 따르고 station 준비 상태를 확인합니다.</p>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>다음 단계</h2>
+<p>목차 순서에 따라 다음 페이지로 이동하세요:
+    <a class="reference internal course-next-link" href="04-lerobot.html">LeRobot과 SO-101</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="01-overview.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">이전</p>
+<p class="prev-next-title">과정 개요</p>
+</div>
+</a>
+<a class="right-next" href="04-lerobot.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">다음</p>
+<p class="prev-next-title">LeRobot과 SO-101</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-your-starting-point">사용 환경 선택하기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-a-chatgpt-app">ChatGPT app에서 시작하기</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codex-in-the-desktop-app">Desktop app의 Codex 사용하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chatgpt-work-in-the-app">App의 ChatGPT Work 사용하기</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-b-codex-cli">Codex CLI에서 시작하기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-course-skills">수업용 스킬 설정하기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-course-skills-cover">스킬이 지원하는 내용</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-setup">환경설정</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-and-open-the-course-guide">교재를 빌드하고 열기</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-example-ask-for-todays-schedule">첫 번째 예제: 오늘의 일정 묻기</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-name-the-file-directly">선택 사항: 파일을 직접 지정하기</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verified-schedule-example">확인한 일정 답변 예시</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#try-course-questions-and-hands-on-requests">과정 Q&amp;A와 실습 요청 예시</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

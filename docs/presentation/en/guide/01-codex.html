@@ -1,0 +1,690 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>CODEX — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '01-codex';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="04-lerobot.html" rel="next" title="LeRobot and the SO-101"/>
+<link href="01-overview.html" rel="prev" title="Overview"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">CODEX</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/01-codex.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="codex">
+<h1>CODEX<a class="headerlink" href="#codex" title="Link to this heading">#</a></h1>
+<p>Use Codex throughout the workshop to prepare the environment, understand the course, follow an exercise, and discuss observations. Instructors, TAs and students use the same repository and the same skill files under <code class="docutils literal notranslate"><span class="pre">skills/</span></code>.</p>
+<p>Ask in Korean and keep technical names such as Physical AI, GR00T, Co-Training and HG-DAgger in English. A course question can be answered from the documents; physical exercises follow the instructor’s sequence and the readiness of your station.</p>
+<section id="choose-your-starting-point">
+<h2>Choose your starting point<a class="headerlink" href="#choose-your-starting-point" title="Link to this heading">#</a></h2>
+<p>Open the shared workshop folder and ask naturally. <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> routes the request to the relevant <code class="docutils literal notranslate"><span class="pre">skills/&lt;name&gt;/SKILL.md</span></code> file. Everyone uses the same files.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Interface</p></th>
+<th class="head"><p>Start here</p></th>
+<th class="head"><p>Common skill file</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ChatGPT app · Codex</p></td>
+<td><p>Open the local workshop project</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">skills/so101-dli/SKILL.md</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Codex CLI</p></td>
+<td><p>Run <code class="docutils literal notranslate"><span class="pre">codex</span></code> in the workshop directory</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">skills/so101-dli/SKILL.md</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>ChatGPT app · Work</p></td>
+<td><p>Use a project with local file access</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">skills/so101-dli/SKILL.md</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="option-a-chatgpt-app">
+<h2>Option A: ChatGPT app<a class="headerlink" href="#option-a-chatgpt-app" title="Link to this heading">#</a></h2>
+<section id="codex-in-the-desktop-app">
+<h3>Codex in the desktop app<a class="headerlink" href="#codex-in-the-desktop-app" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Sign in to the prepared ChatGPT desktop app and select <strong>Codex</strong> in the product selector.</p></li>
+<li><p>Open a local project for <code class="docutils literal notranslate"><span class="pre">~/Sim-to-Real-SO-101-Workshop</span></code>. In an existing project, use <strong>Edit project → Add folder</strong>; make this repository the primary folder with <strong>Make primary</strong>. New chats use it to find the course files and skills.</p></li>
+<li><p>For this workshop, choose <strong>Work in → This computer / Local</strong> and use the prepared checkout on branch <code class="docutils literal notranslate"><span class="pre">aidayseoul2026</span></code>. This keeps the chat aligned with the folder mounted in the workshop Container.</p></li>
+<li><p>Start a chat in this project and ask the connection-check question below, followed by your setup or lesson request. The repository instructions read the canonical skill files directly.</p></li>
+</ol>
+<p>Folder selection is described in <a class="reference external" href="https://learn.chatgpt.com/docs/projects" rel="noreferer noopener" target="_blank">Projects and chats</a>; execution choices are described in <a class="reference external" href="https://learn.chatgpt.com/docs/environments/modes" rel="noreferer noopener" target="_blank">Codex environments</a>. A cloud environment needs its own files and tools; it does not automatically receive the laptop’s USB devices, running Container or GPU.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre>Check the current working directory and Git branch. Confirm that you can read AGENTS.md, skills/so101-dli/SKILL.md, and docs/seoul-workshop-schedule.md, and use the relevant skills for subsequent course questions and exercise requests. For now, only verify file access.</pre></div>
+</div>
+</section>
+<section id="chatgpt-work-in-the-app">
+<h3>ChatGPT Work in the app<a class="headerlink" href="#chatgpt-work-in-the-app" title="Link to this heading">#</a></h3>
+<p>If you prefer the ChatGPT interface, select <strong>ChatGPT → Work</strong> and use a project that can access the local workshop folder. Availability depends on the account and workspace. Start with the same connection check. See <a class="reference external" href="https://learn.chatgpt.com/docs/use-chatgpt" rel="noreferer noopener" target="_blank">Use ChatGPT</a>.</p>
+<p>After confirming file access, ask naturally or name the canonical skill file directly. This workflow does not require a role-specific skill installation or a skill-selector entry.</p>
+<p>For ordinary web/mobile Chat without local folder access, attach the relevant lesson and ask questions about it. A GitHub link alone does not install these repository skills or connect the classroom robot. This course distributes local skill folders; it has no separately published ChatGPT plugin.</p>
+</section>
+</section>
+<section id="option-b-codex-cli">
+<h2>Option B: Codex CLI<a class="headerlink" href="#option-b-codex-cli" title="Link to this heading">#</a></h2>
+<p>Use the prepared CLI, or follow the <a class="reference external" href="https://learn.chatgpt.com/docs/codex/cli" rel="noreferer noopener" target="_blank">official Codex CLI guide</a> if installation is needed. In a Host terminal, enter the workshop folder and start Codex.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/Sim-to-Real-SO-101-Workshop
+git<span class="w"> </span>branch<span class="w"> </span>--show-current
+codex<span class="w"> </span>--version
+codex
+</pre></div>
+</div>
+<p>Confirm branch <code class="docutils literal notranslate"><span class="pre">aidayseoul2026</span></code> and complete sign-in if prompted. Enter a natural-language request or ask Codex to read <code class="docutils literal notranslate"><span class="pre">skills/so101-dli/SKILL.md</span></code> first.</p>
+</section>
+<section id="set-up-the-course-skills">
+<h2>Set up the course skills<a class="headerlink" href="#set-up-the-course-skills" title="Link to this heading">#</a></h2>
+<p>All course skills live in <code class="docutils literal notranslate"><span class="pre">skills/</span></code>. <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> tells the agent which canonical file to read for a setup request or lesson question. Keep the folder structure intact so relative lesson references work. No symlinks, personal-folder copies or role-specific activation are needed.</p>
+<p>The skill-selector UI may not list these plain folders. Use the connection-check prompt to verify access to <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> and the requested <code class="docutils literal notranslate"><span class="pre">SKILL.md</span></code>; direct file reading is the course workflow.</p>
+<p>If files cannot be read, check the selected project folder and local file access. A skill request does not itself grant additional permissions or establish robot readiness.</p>
+</section>
+<section id="what-the-course-skills-cover">
+<h2>What the course skills cover<a class="headerlink" href="#what-the-course-skills-cover" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Skill</p></th>
+<th class="head"><p>When to use it</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-prepare</span></code></p></td>
+<td><p>Environment installation, checks and resume</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-docs</span></code></p></td>
+<td><p>Build and serve the course documentation</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli</span></code></p></td>
+<td><p>Today’s schedule, lesson navigation and the next exercise</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-qa</span></code></p></td>
+<td><p>Questions and explanations across the complete course</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-hardware</span></code></p></td>
+<td><p>Workspace checks, calibration, cameras and Real Teleop</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-collect</span></code></p></td>
+<td><p>Sim Teleop, Domain Randomization, State Machine and datasets</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-gr00t</span></code></p></td>
+<td><p>VLA, GR00T, post-training and Co-Training</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-evaluate</span></code></p></td>
+<td><p>Sim/real evaluation and comparisons of prepared policies</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-dagger</span></code></p></td>
+<td><p>HG-DAgger correction collection and review</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-cosmos</span></code></p></td>
+<td><p>Cosmos augmentation and source/generated video comparison</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-sysid</span></code></p></td>
+<td><p>Actuation gap, System Identification and AnchorBench</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The skills read the current lesson Markdown, Korean catalogs, interactive explanations and relevant code. Ask for a source section when you want to relate an answer back to the lesson.</p>
+</section>
+<section id="environment-setup">
+<h2>Environment setup<a class="headerlink" href="#environment-setup" title="Link to this heading">#</a></h2>
+<p>Ask “Set up the environment” in the shared workshop project. The agent reads <code class="docutils literal notranslate">AGENTS.md</code> and <code class="docutils literal notranslate">skills/so101-dli-prepare/SKILL.md</code>, checks the existing installation, and follows the preparation guide. The same skill files support installation, course questions, and exercises.</p>
+<p>To check this computer first, ask “Check whether this computer meets the requirements to run the DLI workshop.” The preparation skill reports basic Host eligibility, missing tools and assets, and unverified capacity or runtime checks. A read-only report does not certify classroom execution or start installation, downloads, or robot motion.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>skills/so101-dli-prepare/scripts/preflight.py<span class="w"> </span>--format<span class="w"> </span>markdown
+</pre></div>
+</div>
+<p>A read-only plan shows the installation checkpoints and commands without executing them:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>skills/so101-dli-prepare/scripts/setup_plan.py
+</pre></div>
+</div>
+<p>Record the agreed source commit, actual model/dataset paths, commands, logs and next action under <code class="docutils literal notranslate"><span class="pre">runs/setup/&lt;station&gt;/</span></code>. Reuse verified installations and downloads when resuming. Permission errors and untested runtime checks remain unknown.</p>
+<section id="build-and-open-the-course-guide">
+<h3>Build and open the course guide<a class="headerlink" href="#build-and-open-the-course-guide" title="Link to this heading">#</a></h3>
+<p>Run these commands on the Host from the repository root after preparing the locked documentation dependencies and Git LFS media. Documentation does not require the robot Container or GPU.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen
+bash<span class="w"> </span>skills/so101-dli-docs/scripts/build.sh
+python3<span class="w"> </span>skills/so101-dli-docs/scripts/verify_html.py
+</pre></div>
+</div>
+<p>The build prepares both languages. When you build and browse on the same Laptop, start a local preview on an available port:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>skills/so101-dli-docs/scripts/preview.py<span class="w"> </span>start<span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">8095</span>
+python3<span class="w"> </span>skills/so101-dli-docs/scripts/preview.py<span class="w"> </span>status
+</pre></div>
+</div>
+<p>After the preview starts, open <a class="reference external" href="http://localhost:8095/ko/event/html/index.html" rel="noreferer noopener" target="_blank">the course guide</a> or <a class="reference external" href="http://localhost:8095/ko/event/html/2026-10-28-seoul-preparation.html" rel="noreferer noopener" target="_blank">DLI preparation and delivery</a> in that Laptop’s browser. The local service uses <code class="docutils literal notranslate"><span class="pre">http://localhost:8095</span></code>; building alone does not start the server or open the browser. If you choose a different port, update the links accordingly.</p>
+<p><code class="docutils literal notranslate"><span class="pre">localhost</span></code> refers to the computer running your browser. For access from another PC, replace <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> in the start command with the server’s verified LAN IP and open the URL reported by the preview on that PC.</p>
+<p>Use the verified URL reported by the preview. Keep the requested preview running; its PID, command and log are recorded locally. Use <code class="docutils literal notranslate"><span class="pre">preview.py</span> <span class="pre">stop</span></code> to stop that owned preview. This is background execution, not boot autostart.</p>
+<p>Software preparation and robot operation are separate checks. Confirm the current operator and station readiness before powered robot exercises; a model cache or connection message does not establish successful motion.</p>
+</section>
+</section>
+<section id="first-example-ask-for-todays-schedule">
+<h2>First example: ask for today’s schedule<a class="headerlink" href="#first-example-ask-for-todays-schedule" title="Link to this heading">#</a></h2>
+<p>After opening the workshop folder in the app or CLI, enter this question without a skill name.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre>What is today's schedule?</pre></div>
+</div>
+<p>Codex should read <code class="docutils literal notranslate"><span class="pre">docs/seoul-workshop-schedule.md</span></code> and return a table with the time, topic, duration and instructor. It should include arrival, breaks and lunch, and state that all times are KST. Compare the answer with <a class="reference internal" href="seoul-workshop-schedule.html"><span class="std std-doc">Today’s Schedule</span></a>.</p>
+<section id="optional-name-the-file-directly">
+<h3>Optional: name the file directly<a class="headerlink" href="#optional-name-the-file-directly" title="Link to this heading">#</a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre>Read skills/so101-dli/SKILL.md and show today's schedule as a table with time, topic, duration, and presenter.</pre></div>
+</div>
+<p>Check that teaching begins at 09:00, lunch is 12:45–13:45 and the conclusion ends at 17:15. Use each detailed session row for its instructor. This exercise reads documents and does not need to start a robot or simulation.</p>
+</section>
+<section id="verified-schedule-example">
+<h3>Verified schedule example<a class="headerlink" href="#verified-schedule-example" title="Link to this heading">#</a></h3>
+<p>A read-only Codex run with the question above produced the 22-row schedule below. Times, durations and instructors were checked against the lesson. Topic labels are aligned with the course terminology; wording may vary between runs.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Time</p></th>
+<th class="head"><p>Topic</p></th>
+<th class="head"><p>Duration</p></th>
+<th class="head"><p>Instructor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>08:30–09:00</p></td>
+<td><p>Arrival and Settling In</p></td>
+<td><p>30 min</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>09:00–09:10</p></td>
+<td><p>Physical AI &amp; today’s task</p></td>
+<td><p>10 min</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-even"><td><p>09:10–09:30</p></td>
+<td><p>LeRobot</p></td>
+<td><p>20 min</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-odd"><td><p>09:30–10:40</p></td>
+<td><p>Robot setup · calibration · Real Teleop</p></td>
+<td><p>70 min</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-even"><td><p>10:40–11:05</p></td>
+<td><p>Understanding GR00T</p></td>
+<td><p>25 min</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-odd"><td><p>11:05–11:25</p></td>
+<td><p>Sim Teleop · Domain Randomization</p></td>
+<td><p>20 min</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-even"><td><p>11:25–11:50</p></td>
+<td><p>Software stack, architecture</p></td>
+<td><p>25 min</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-odd"><td><p>11:50–12:00</p></td>
+<td><p>Break</p></td>
+<td><p>10 min</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>12:00–12:15</p></td>
+<td><p>State Machine</p></td>
+<td><p>15 min</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-odd"><td><p>12:15–12:35</p></td>
+<td><p>Sim Evaluation</p></td>
+<td><p>20 min</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-even"><td><p>12:35–12:45</p></td>
+<td><p>Q&amp;A</p></td>
+<td><p>10 min</p></td>
+<td><p>Jonghwan Lee</p></td>
+</tr>
+<tr class="row-odd"><td><p>12:45–13:45</p></td>
+<td><p>Lunch</p></td>
+<td><p>60 min</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>13:45–13:55</p></td>
+<td><p>Afternoon Welcome, Morning Recap, and Q&amp;A</p></td>
+<td><p>10 min</p></td>
+<td><p>Hogun Kee</p></td>
+</tr>
+<tr class="row-odd"><td><p>13:55–14:10</p></td>
+<td><p>Sim-to-Real Gap</p></td>
+<td><p>15 min</p></td>
+<td><p>Hogun Kee</p></td>
+</tr>
+<tr class="row-even"><td><p>14:10–14:40</p></td>
+<td><p>Real Robot Rollouts with sim-only data</p></td>
+<td><p>30 min</p></td>
+<td><p>Hogun Kee</p></td>
+</tr>
+<tr class="row-odd"><td><p>14:40–15:10</p></td>
+<td><p>Co-Training theory and practice</p></td>
+<td><p>30 min</p></td>
+<td><p>Hogun Kee</p></td>
+</tr>
+<tr class="row-even"><td><p>15:10–15:40</p></td>
+<td><p>HG-DAgger</p></td>
+<td><p>30 min</p></td>
+<td><p>Hogun Kee</p></td>
+</tr>
+<tr class="row-odd"><td><p>15:40–15:50</p></td>
+<td><p>Break</p></td>
+<td><p>10 min</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>15:50–16:10</p></td>
+<td><p>Cosmos</p></td>
+<td><p>20 min</p></td>
+<td><p>Jihyeon Ryu</p></td>
+</tr>
+<tr class="row-odd"><td><p>16:10–16:20</p></td>
+<td><p>SysID / AnchorBench</p></td>
+<td><p>10 min</p></td>
+<td><p>Jihyeon Ryu</p></td>
+</tr>
+<tr class="row-even"><td><p>16:20–17:05</p></td>
+<td><p>Explore, experiment &amp; wrap up</p></td>
+<td><p>45 min</p></td>
+<td><p>Jihyeon Ryu</p></td>
+</tr>
+<tr class="row-odd"><td><p>17:05–17:15</p></td>
+<td><p>Conclusion</p></td>
+<td><p>10 min</p></td>
+<td><p>Jihyeon Ryu</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="try-course-questions-and-hands-on-requests">
+<h2>Try course questions and hands-on requests<a class="headerlink" href="#try-course-questions-and-hands-on-requests" title="Link to this heading">#</a></h2>
+<p>These examples need no skill names. The agent uses the relevant available course skill and lesson. You can ask which skill and source section it used.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre>Explain how the Sim-to-Real Gap relates to Domain Randomization for today's task.
+Read the GR00T guide and explain VLA inputs and action chunks.
+Let's work through calibration one step at a time, starting with the current connections.
+How does a State Machine dataset differ from a teleoperation dataset?
+Under what conditions should we compare sim-only and Co-Training models?
+Before the exercise, explain when the leader moves during HG-DAgger.
+What should I compare between the original and augmented videos?
+How does AnchorBench differ from calibration?</pre></div>
+</div>
+<p>For an error, provide the command, whether it ran on the Host or in the Container, and the relevant error text. Codex can connect it to <a class="reference internal" href="troubleshooting.html"><span class="std std-doc">Troubleshooting</span></a>. Before physical motion, follow the instructor’s safety guidance and confirm that the station is ready.</p>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>What's Next?</h2>
+<p>Continue to the next page in the table of contents:
+    <a class="reference internal course-next-link" href="04-lerobot.html">LeRobot and the SO-101</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="01-overview.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Overview</p>
+</div>
+</a>
+<a class="right-next" href="04-lerobot.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">LeRobot and the SO-101</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-your-starting-point">Choose your starting point</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-a-chatgpt-app">Option A: ChatGPT app</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#codex-in-the-desktop-app">Codex in the desktop app</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chatgpt-work-in-the-app">ChatGPT Work in the app</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-b-codex-cli">Option B: Codex CLI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-course-skills">Set up the course skills</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-course-skills-cover">What the course skills cover</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-setup">Environment setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-and-open-the-course-guide">Build and open the course guide</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-example-ask-for-todays-schedule">First example: ask for today’s schedule</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-name-the-file-directly">Optional: name the file directly</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verified-schedule-example">Verified schedule example</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#try-course-questions-and-hands-on-requests">Try course questions and hands-on requests</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   | 
+  
+  
+  
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+    
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

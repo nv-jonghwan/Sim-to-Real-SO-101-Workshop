@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Isaac Lab · Camera sensor and ovrtx</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* User-requested variation: explanations only, with no term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+html {scrollbar-gutter: stable;}
+.diagram {overflow-x:auto;}
+.diagram svg {min-width:680px;}
+.is-enhanced .explanations {display:grid;}
+.is-enhanced .definition, .is-enhanced #empty-prompt {grid-area:1/1;}
+.is-enhanced .definition[hidden], .is-enhanced #empty-prompt[hidden] {display:block;visibility:hidden;pointer-events:none;}
+</style>
+</head>
+<body>
+<main id="interactive-learning-diagram">
+
+<div class="layout">
+<div class="diagram"><svg xmlns="http://www.w3.org/2000/svg" width="1470" height="650" viewBox="0 0 1470 650" role="group" aria-labelledby="title description">
+<title id="title">Isaac Lab · Camera sensor and ovrtx</title>
+<desc id="description">The environment sends scene state to ovrtx. Camera configuration supplies the sensor settings. The camera sensor sends its pose and render requests to ovrtx, which renders the scene and returns RGB images. The camera image data feeds environment observations.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-accent-text,#004831)"/></marker>
+</defs>
+<style>
+text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#1a1a1a);}
+.box {fill:var(--diagram-surface,#f7f7f7);stroke:var(--diagram-accent-text,#004831);stroke-width:2;}
+.heading {font-size:24px;font-weight:700;}
+.detail {font-size:19px;fill:var(--diagram-muted,#666);}
+.edge {fill:none;stroke:var(--diagram-accent-text,#004831);stroke-width:2;marker-end:url(#arrow);}
+.config {stroke:var(--diagram-muted,#666);stroke-dasharray:5 6;stroke-width:1.5;}
+.label {font-size:19px;paint-order:stroke;stroke:var(--diagram-bg,#fff);stroke-width:9px;stroke-linejoin:round;}
+</style>
+<rect width="1470" height="650" fill="var(--diagram-bg,#fff)"/>
+
+<text x="40" y="80" class="detail">Dashed arrows: configuration · Solid arrows: runtime interaction</text>
+<path d="M 190 245 V 350" class="edge"/>
+<path d="M 800 245 V 350" class="edge config"/>
+<path d="M 340 420 H 650" class="edge"/>
+<path d="M 950 420 H 1140" class="edge"/>
+<path d="M 800 490 V 555 Q 800 575 780 575 H 210 Q 190 575 190 555 V 490" class="edge"/>
+<rect x="40" y="130" width="300" height="115" rx="14" class="box"/>
+<text x="190.0" y="168" text-anchor="middle" class="heading">
+<tspan x="190.0" dy="0">Environment</tspan>
+</text>
+<text x="190.0" y="199" text-anchor="middle" class="detail">
+<tspan x="190.0" dy="0">Provides the scene</tspan>
+<tspan x="190.0" dy="23">and its current state</tspan>
+</text>
+<rect x="650" y="130" width="300" height="115" rx="14" class="box"/>
+<text x="800.0" y="168" text-anchor="middle" class="heading">
+<tspan x="800.0" dy="0">Camera configuration</tspan>
+</text>
+<text x="800.0" y="199" text-anchor="middle" class="detail">
+<tspan x="800.0" dy="0">Lens, resolution, outputs,</tspan>
+<tspan x="800.0" dy="23">and update rate</tspan>
+</text>
+<rect x="40" y="350" width="300" height="140" rx="14" class="box"/>
+<text x="190.0" y="388" text-anchor="middle" class="heading">
+<tspan x="190.0" dy="0">ovrtx renderer</tspan>
+</text>
+<text x="190.0" y="419" text-anchor="middle" class="detail">
+<tspan x="190.0" dy="0">Renders the scene</tspan>
+<tspan x="190.0" dy="23">from the camera&#x27;s view</tspan>
+</text>
+<rect x="650" y="350" width="300" height="140" rx="14" class="box"/>
+<text x="800.0" y="388" text-anchor="middle" class="heading">
+<tspan x="800.0" dy="0">Camera sensor</tspan>
+</text>
+<text x="800.0" y="419" text-anchor="middle" class="detail">
+<tspan x="800.0" dy="0">Tracks the camera pose</tspan>
+<tspan x="800.0" dy="23">and provides image data</tspan>
+</text>
+<rect x="1140" y="350" width="270" height="140" rx="14" class="box"/>
+<text x="1275.0" y="388" text-anchor="middle" class="heading">
+<tspan x="1275.0" dy="0">Observations</tspan>
+</text>
+<text x="1275.0" y="419" text-anchor="middle" class="detail">
+<tspan x="1275.0" dy="0">Camera images available</tspan>
+<tspan x="1275.0" dy="23">to the policy</tspan>
+</text>
+<text x="255" y="301" text-anchor="middle" class="label">
+<tspan x="255" dy="0">Scene state</tspan>
+</text>
+<text x="495" y="406" text-anchor="middle" class="label">
+<tspan x="495" dy="0">RGB images</tspan>
+</text>
+<text x="1045" y="406" text-anchor="middle" class="label">
+<tspan x="1045" dy="0">Image data</tspan>
+</text>
+<text x="495" y="562" text-anchor="middle" class="label">
+<tspan x="495" dy="0">Camera pose + render request</tspan>
+</text>
+<a class="hotspot" data-term="node-0" href="#definition-node-0" tabindex="0" role="button" aria-label="Environment" aria-controls="definition-node-0" aria-expanded="false"><rect class="hit-area" x="40" y="130" width="300" height="115" rx="10"/></a><a class="hotspot" data-term="node-1" href="#definition-node-1" tabindex="0" role="button" aria-label="Camera configuration" aria-controls="definition-node-1" aria-expanded="false"><rect class="hit-area" x="650" y="130" width="300" height="115" rx="10"/></a><a class="hotspot" data-term="node-2" href="#definition-node-2" tabindex="0" role="button" aria-label="ovrtx renderer" aria-controls="definition-node-2" aria-expanded="false"><rect class="hit-area" x="40" y="350" width="300" height="140" rx="10"/></a><a class="hotspot" data-term="node-3" href="#definition-node-3" tabindex="0" role="button" aria-label="Camera sensor" aria-controls="definition-node-3" aria-expanded="false"><rect class="hit-area" x="650" y="350" width="300" height="140" rx="10"/></a><a class="hotspot" data-term="node-4" href="#definition-node-4" tabindex="0" role="button" aria-label="Observations" aria-controls="definition-node-4" aria-expanded="false"><rect class="hit-area" x="1140" y="350" width="270" height="140" rx="10"/></a></svg>
+</div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt"></p>
+<article class="definition" id="definition-node-0" data-definition="node-0" aria-labelledby="heading-node-0"><h2 id="heading-node-0">Environment</h2><p>Provides the scene and its current state.</p></article>
+<article class="definition" id="definition-node-1" data-definition="node-1" aria-labelledby="heading-node-1"><h2 id="heading-node-1">Camera configuration</h2><p>The example requests 640 × 480 RGB at a 1/30-second update period. Lens and renderer settings determine the camera view.</p></article>
+<article class="definition" id="definition-node-2" data-definition="node-2" aria-labelledby="heading-node-2"><h2 id="heading-node-2">ovrtx renderer</h2><p>ovrtx renders the current scene from the requested camera pose and returns RGB images.</p></article>
+<article class="definition" id="definition-node-3" data-definition="node-3" aria-labelledby="heading-node-3"><h2 id="heading-node-3">Camera sensor</h2><p>The camera sensor connects its configured view and update timing to rendering, then exposes the resulting image data.</p></article>
+<article class="definition" id="definition-node-4" data-definition="node-4" aria-labelledby="heading-node-4"><h2 id="heading-node-4">Observations</h2><p>Camera images available to the policy.</p></article>
+</section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+</body>
+</html>

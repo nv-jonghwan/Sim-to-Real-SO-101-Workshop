@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GR00T training stages and trainable components</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* Show one explanation below the workflow, without a term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+main { padding: 8px 2px; }
+.instructions { font-size: 15px; margin-bottom: 10px; }
+.layout { gap: 10px; }
+.diagram { overflow-x: auto; }
+.diagram svg { min-width: 680px; font-family: var(--diagram-font); }
+.ink { stroke: var(--diagram-text); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.outline { stroke: var(--diagram-border); fill: var(--diagram-surface); stroke-width: 2; }
+.soft { fill: var(--diagram-tint); stroke: var(--diagram-accent-text); stroke-width: 2; }
+.flow { fill: none; stroke: var(--diagram-accent-text); stroke-width: 3; stroke-linejoin: round; marker-end: url(#arrow); }
+.feedback { fill: none; stroke: var(--diagram-line); stroke-width: 2.5; stroke-linejoin: round; marker-end: url(#muted-arrow); }
+.label { fill: var(--diagram-text); font-size: 22px; font-weight: 650; }
+.detail { fill: var(--diagram-text); font-size: 19px; }
+.context { fill: var(--diagram-muted); font-size: 16px; }
+.accent { fill: var(--diagram-accent-text); }
+.definition a { color: var(--diagram-accent-text); }
+.definition p { font-size: 16px; }
+.definition .eyebrow { font-size: 14px; }
+.definition h3 { font-size: 16px; }
+.definition h2 { font-size: 23px; }
+main:not(.is-enhanced) #empty-prompt { display: none; }
+main:not(.is-enhanced) .definition + .definition { margin-top: 24px; }
+.mobile-note { display: none; }
+@media (max-width: 679px) { .mobile-note { display: block; } }
+
+</style>
+<link rel="stylesheet" href="diagram-layout.css">
+</head>
+<body>
+<main id="interactive-learning-diagram">
+<div class="layout">
+<p class="instructions mobile-note">Swipe across the diagram to follow the arrows; select a labeled object for its explanation.</p><div class="diagram" tabindex="0" aria-label="Scrollable workflow diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" role="group" aria-labelledby="diagram-title diagram-desc">
+<title id="diagram-title">From pretrained weights to a task policy</title>
+<desc id="diagram-desc">Pretrained weights initialize post-training. SO-101 demonstrations supply targets; loss and an optimizer update the selected trainable components. Vision and language are frozen in the base example; vision can optionally be unfrozen. Inference uses the resulting checkpoint with fixed weights.</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="var(--diagram-accent-text)"/></marker>
+  <marker id="muted-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="var(--diagram-line)"/></marker>
+  <g id="padlock" class="ink"><rect x="0" y="12" width="22" height="18" rx="3"/><path d="M5 12V7a6 6 0 0 1 12 0v5"/><circle cx="11" cy="21" r="1.5"/></g>
+  <g id="arm" class="ink"><path d="M0 64H50M25 63V48L8 22 43 0 68 23M65 18l15 6-4 15M67 25l6 17-10 8"/><circle cx="25" cy="48" r="6"/><circle cx="8" cy="22" r="6"/><circle cx="43" cy="0" r="6"/></g>
+</defs>
+<g aria-hidden="true">
+  <text class="label" x="120" y="30" text-anchor="middle">1 · Pre-training</text>
+  <text class="label" x="450" y="30" text-anchor="middle">2 · Post-training</text>
+  <text class="label" x="774" y="30" text-anchor="middle">3 · Inference</text>
+  <g class="outline"><rect x="56" y="60" width="130" height="90" rx="7"/><rect x="47" y="70" width="130" height="90" rx="7"/><rect x="38" y="80" width="130" height="90" rx="7"/></g>
+  <g class="ink"><path d="M62 123 92 106 138 123M62 123 94 150 138 123M92 106l2 44"/><circle cx="62" cy="123" r="7" fill="var(--diagram-bg)"/><circle cx="92" cy="106" r="7" fill="var(--diagram-bg)"/><circle cx="138" cy="123" r="7" fill="var(--diagram-bg)"/><circle cx="94" cy="150" r="7" fill="var(--diagram-bg)"/></g>
+  <text class="label" x="118" y="204" text-anchor="middle">Pretrained weights</text>
+  <text class="context" x="118" y="228" text-anchor="middle">A reusable starting point</text>
+  <path class="flow" d="M193 120H293"/>
+  <text class="context" x="245" y="103" text-anchor="middle">initialize</text>
+  <rect class="outline" x="300" y="55" width="300" height="195" rx="13"/>
+  <rect class="outline" x="316" y="68" width="268" height="48" rx="7"/>
+  <use href="#padlock" transform="translate(334 76) scale(.9)"/>
+  <text class="label" x="369" y="99">Vision</text>
+  <text class="context" x="463" y="99">Frozen*</text>
+  <rect class="outline" x="316" y="126" width="268" height="48" rx="7"/>
+  <use href="#padlock" transform="translate(334 134) scale(.9)"/>
+  <text class="label" x="369" y="157">Language</text>
+  <text class="context" x="493" y="157">Frozen</text>
+  <rect class="soft" x="316" y="184" width="268" height="48" rx="7"/>
+  <path class="ink" d="m334 215 4-13 14-13 8 8-14 13-12 5M338 202l8 8"/>
+  <text class="label" x="369" y="215">Action head</text>
+  <text class="context" x="512" y="215">Trainable</text>
+  <path class="flow" d="M600 120H672"/>
+  <text class="context" x="638" y="103" text-anchor="middle">save</text>
+  <rect class="soft" x="680" y="55" width="196" height="195" rx="13"/>
+  <use href="#arm" transform="translate(730 99)"/>
+  <use href="#padlock" transform="translate(824 72) scale(.9)"/>
+  <text class="label" x="778" y="204" text-anchor="middle">Run the policy</text>
+  <text class="context" x="778" y="228" text-anchor="middle">Weights stay fixed</text>
+  <path class="feedback" d="M713 150c-25-35 12-74 50-64"/>
+  <path class="feedback" d="M812 170c32 2 47-22 36-45"/>
+  <text class="detail" x="778" y="290" text-anchor="middle">Observe → act</text><text class="detail" x="778" y="315" text-anchor="middle">→ observe again</text>
+  <g class="ink"><rect x="33" y="291" width="174" height="67" rx="5"/><path d="M41 304h158M41 345h158M87 304v41M146 304v41"/><path d="M52 334l8-17 12 17M104 333l15-18 14 18M160 334l12-20 13 20"/></g>
+  <text class="label" x="120" y="391" text-anchor="middle">SO-101 examples</text>
+  <text class="context" x="120" y="418" text-anchor="middle">Observations + action targets</text>
+  <path class="flow" d="M210 326H292"/>
+  <text class="context" x="252" y="309" text-anchor="middle">sample</text>
+  <rect class="soft" x="300" y="289" width="300" height="92" rx="12"/>
+  <path class="ink" d="M321 352v-40M321 352h52M329 319l10 19 12-8 14 15"/>
+  <text class="label" x="391" y="324">Loss + optimizer</text>
+  <text class="detail" x="391" y="351">Update trainable parts</text>
+  <path class="flow" d="M450 289V253"/>
+  <path class="feedback" d="M600 215H623V338H603"/>
+  <text class="detail" x="316" y="418">*Optional: unfreeze vision</text>
+  <path d="M310 411H287V92H313" class="feedback" stroke-dasharray="5 5"/>
+</g>
+<a class="hotspot" data-term="foundation" href="#definition-foundation" tabindex="0" role="button" aria-label="Pre-training: reusable model weights" aria-controls="definition-foundation" aria-expanded="false"><rect class="hit-area" x="20" y="48" width="197" height="194" rx="12"/></a>
+<a class="hotspot" data-term="components" href="#definition-components" tabindex="0" role="button" aria-label="Post-training: select frozen and trainable components" aria-controls="definition-components" aria-expanded="false"><rect class="hit-area" x="300" y="55" width="300" height="195" rx="12"/></a>
+<a class="hotspot" data-term="inference" href="#definition-inference" tabindex="0" role="button" aria-label="Inference: use fixed model weights" aria-controls="definition-inference" aria-expanded="false"><rect class="hit-area" x="680" y="55" width="196" height="268" rx="12"/></a>
+<a class="hotspot" data-term="demonstrations" href="#definition-demonstrations" tabindex="0" role="button" aria-label="SO-101 demonstrations supply observations and action targets" aria-controls="definition-demonstrations" aria-expanded="false"><rect class="hit-area" x="20" y="281" width="207" height="149" rx="12"/></a>
+<a class="hotspot" data-term="update" href="#definition-update" tabindex="0" role="button" aria-label="Training loss and the optimizer update trainable parameters" aria-controls="definition-update" aria-expanded="false"><rect class="hit-area" x="300" y="289" width="300" height="92" rx="12"/></a>
+<a class="hotspot" data-term="unfreeze" href="#definition-unfreeze" tabindex="0" role="button" aria-label="Optional experiment: unfreeze the vision encoder" aria-controls="definition-unfreeze" aria-expanded="false"><rect class="hit-area" x="300" y="393" width="304" height="43" rx="12"/></a></svg></div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt">Select a step or object for its explanation.</p>
+<article class="definition" id="definition-foundation" data-definition="foundation" aria-labelledby="heading-foundation">
+<h2 id="heading-foundation">Begin with pretrained model weights</h2><p class="eyebrow">Stage 1 · Broad reusable representations</p><p>Pre-training establishes representations that later robot adaptation can reuse. Broad visual and language data and robot experience play different roles; the diagram does not specify dataset proportions or a universal training order.</p>
+<h3>Example</h3><p>Instead of learning everything from SO-101 demonstrations, the workshop starts from GR00T 1.7 and adapts it to this arm, camera setup, and vial-placement task.</p><p><a href="../../10-groot.html#understanding-vla-training-stages" target="_top">Read the training-stage definitions →</a></p></article>
+<article class="definition" id="definition-components" data-definition="components" aria-labelledby="heading-components">
+<h2 id="heading-components">Choose which weights can change</h2><p class="eyebrow">Stage 2 · Post-training configuration</p><p>Frozen components still compute features, but the optimizer does not update their parameters. The base workshop example keeps vision and language frozen while training the action components. This drawing groups components conceptually; the saved configuration records the precise trainable set.</p>
+<h3>Example</h3><p>The base command uses <code>--policy.tune_visual=false</code> and <code>--policy.tune_llm=false</code>. Those choices affect training, not which inputs are available at inference.</p><p><a href="../../10-groot.html#suggested-training-hyperparameters" target="_top">Inspect the training settings →</a></p></article>
+<article class="definition" id="definition-inference" data-definition="inference" aria-labelledby="heading-inference">
+<h2 id="heading-inference">Use the adapted policy with fixed weights</h2><p class="eyebrow">Stage 3 · New observations, no optimizer updates</p><p>Inference takes fresh images, instruction text, and robot state and predicts actions using the saved checkpoint and processors. Feedback changes the next observation, not the checkpoint weights.</p>
+<h3>Example</h3><p>A rollout can observe a different vial position after moving the arm. It makes another prediction; it does not fine-tune itself on that trial. Compare checkpoints under the same covered starting conditions.</p><p><a href="../../10-groot.html#prediction-and-execution-lengths" target="_top">Explore the inference loop →</a></p></article>
+<article class="definition" id="definition-demonstrations" data-definition="demonstrations" aria-labelledby="heading-demonstrations">
+<h2 id="heading-demonstrations">Sample examples of this robot and task</h2><p class="eyebrow">Training input · Aligned observations and future action targets</p><p>Post-training samples windows from demonstration episodes. Images, language, robot state, and future action targets must describe compatible task data. Variation should cover the starting states and behavior expected at rollout.</p>
+<h3>Example</h3><p>For vial placement, include different vial poses and grasp approaches. Repeating one familiar grasp more often cannot supply a missing recovery behavior.</p><p><a href="../../10-groot.html#overfitting" target="_top">Plan the demonstration coverage →</a></p></article>
+<article class="definition" id="definition-update" data-definition="update" aria-labelledby="heading-update">
+<h2 id="heading-update">Use loss to guide weight updates</h2><p class="eyebrow">Training loop · Loss, optimizer, learning rate</p><p>The training objective supplies a loss from sampled predictions and targets. The optimizer updates trainable parameters; the learning-rate schedule controls the scale of those updates. Falling loss alone does not measure successful grasping or placement.</p>
+<h3>Example</h3><p>With 20,000 training steps, the optimizer performs 20,000 updates. Assess saved checkpoints with autonomous rollouts as well as training curves.</p><p><a href="../../10-groot.html#suggested-training-hyperparameters" target="_top">Relate loss to training hyperparameters →</a></p></article>
+<article class="definition" id="definition-unfreeze" data-definition="unfreeze" aria-labelledby="heading-unfreeze">
+<h2 id="heading-unfreeze">Optionally adapt visual features</h2><p class="eyebrow">Controlled experiment · Vision trainable, language frozen</p><p>Unfreezing permits the vision encoder to adapt to task images. It adds trainable parameters and memory use, and can increase overfitting risk. Keep the other training and evaluation choices fixed when testing its effect.</p>
+<h3>Example</h3><p>Compare frozen and trainable vision using the same dataset, batch size, action window, update budget, and rollout conditions. The supplied alternative command also changes batch size and window, so it is not itself a one-factor comparison.</p><p><a href="../../10-groot.html#optional-unfreeze-the-vision-encoder" target="_top">Read the vision-unfreezing experiment →</a></p></article>
+</section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+</body>
+</html>

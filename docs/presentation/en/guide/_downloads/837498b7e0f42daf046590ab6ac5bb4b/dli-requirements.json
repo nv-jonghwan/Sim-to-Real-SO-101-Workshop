@@ -1,0 +1,11 @@
+{
+  "source": "docs/2026-10-28-seoul-preparation.md",
+  "os_id": "ubuntu",
+  "os_version": "24.04",
+  "architecture": "x86_64",
+  "gpu_name_contains": "RTX",
+  "minimum_driver_branch": 580,
+  "minimum_ram_gib": null,
+  "minimum_vram_gib": null,
+  "minimum_free_disk_gib": null
+}

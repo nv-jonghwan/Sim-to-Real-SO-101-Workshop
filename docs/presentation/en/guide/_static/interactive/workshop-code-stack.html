@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The workshop code stack</title>
+<script>
+// Set the initial theme before painting, including when opened by itself.
+(() => {
+  let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  try { theme = parent.document.documentElement.dataset.theme || theme; } catch {}
+  document.documentElement.dataset.theme = theme;
+})();
+</script>
+<link rel="stylesheet" href="../styles/nvidia-sphinx-theme.css">
+<style>
+/* Use the same theme stylesheet, font faces, and tokens as the Sphinx page.
+   Local fallbacks also make this file usable outside a built course. */
+:root {
+  --fallback-bg: #fff; --fallback-text: #1a1a1a; --fallback-muted: #666;
+  --fallback-surface: #f7f7f7; --fallback-primary: #004831;
+  --diagram-bg: var(--pst-color-background, var(--fallback-bg));
+  --diagram-text: var(--pst-color-text-base, var(--fallback-text));
+  --diagram-muted: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-surface: var(--pst-color-surface, var(--fallback-surface));
+  --diagram-line: var(--pst-color-text-muted, var(--fallback-muted));
+  --diagram-accent: var(--nv-color-green, #76b900);
+  --diagram-accent-text: var(--pst-color-primary, var(--fallback-primary));
+  --diagram-border: color-mix(in srgb, var(--diagram-text) 20%, var(--diagram-bg));
+  --diagram-tint: color-mix(in srgb, var(--diagram-accent) 12%, var(--diagram-bg));
+  --diagram-font: var(--pst-font-family-base, NVIDIA, "NVIDIA Sans", Arial, Helvetica, sans-serif);
+  color-scheme: light;
+  font-family: var(--diagram-font);
+  color: var(--diagram-text);
+  background: var(--diagram-bg);
+  overflow-y: auto;
+}
+:root[data-theme="dark"] {
+  --fallback-bg: #111; --fallback-text: #eee; --fallback-muted: #999;
+  --fallback-surface: #1a1a1a; --fallback-primary: #76b900;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1380px; margin: auto; padding: 8px; }
+.instructions { margin: 0 0 16px; color: var(--diagram-muted); font-size: 14px; line-height: 1.5; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+.diagram { min-width: 0; }
+.explorer { display: grid; grid-template-columns: minmax(200px, 30%) minmax(0, 1fr); gap: 28px; align-items: start; border-top: 1px solid var(--diagram-border); padding-top: 24px; }
+svg { display: block; width: 100%; height: auto; }
+.hotspot { cursor: pointer; outline: none; }
+.hotspot rect { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot .hit-flow { fill: none; stroke: transparent; stroke-width: 22; }
+.hotspot.is-active rect { fill: var(--diagram-accent); fill-opacity: .14; stroke: var(--diagram-accent-text); }
+.hotspot.is-active .hit-flow { stroke: var(--diagram-accent); stroke-opacity: .4; }
+.hotspot:focus-visible rect, .hotspot:focus-visible .hit-flow { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+.terms { min-width: 0; }
+.terms h2 { font-size: 16px; margin: 0 0 10px; font-weight: 700; }
+.terms ol { margin: 0; padding-left: 28px; }
+.terms li { padding-left: 3px; border-bottom: 1px solid var(--diagram-border); }
+.terms li::marker { color: var(--diagram-muted); font-size: 14px; font-weight: 700; }
+.terms li:has([aria-current="true"])::marker { color: var(--diagram-accent-text); }
+.term-choice { display: flex; align-items: center; min-height: 44px; padding: 10px 8px; font-size: 15px; font-weight: 600; line-height: 1.4; color: var(--diagram-text); text-decoration: none; }
+.term-choice:hover { background: var(--diagram-surface); }
+.term-choice:focus-visible { outline: 2px solid var(--diagram-accent-text); outline-offset: 2px; }
+.term-choice[aria-current="true"] { color: var(--diagram-accent-text); background: var(--diagram-tint); box-shadow: inset 3px 0 var(--diagram-accent); }
+.explanations { min-width: 0; border-left: 1px solid var(--diagram-border); padding-left: 28px; }
+.definition { padding: 0 0 16px; }
+.definition h2 { font-size: 24px; line-height: 1.25; margin: 0 0 10px; }
+.definition p, #empty-prompt { font-size: 15px; line-height: 1.6; margin: 0 0 12px; }
+.definition h3 { font-size: 14px; margin: 20px 0 6px; }
+.definition .eyebrow { color: var(--diagram-muted); font-size: 13px; margin-bottom: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 539px) {
+  .layout { gap: 16px; }
+  .explorer { grid-template-columns: minmax(0, 1fr); gap: 24px; padding-top: 16px; }
+  .explanations { border-left: 0; padding-left: 0; border-top: 1px solid var(--diagram-border); padding-top: 20px; }
+}
+@media print {
+  .instructions, .terms, #empty-prompt { display: none; }
+  .explorer { display: block; }
+  .explanations { border: 0; padding: 0; }
+  .definition { display: block !important; break-inside: avoid; }
+}
+/* Show one explanation below the workflow, without a term index. */
+.explanations { border-left: 0; padding: 18px 0 0; border-top: 1px solid var(--diagram-border); position: relative; }
+.definition { padding: 0; max-width: 900px; }
+.definition h2 { padding-right: 90px; }
+.definition p { margin-bottom: 10px; }
+.definition h3 { margin-top: 12px; }
+#empty-prompt { margin: 0; color: var(--diagram-muted); }
+#clear-selection { position: absolute; right: 0; top: 16px; border: 1px solid var(--diagram-border); color: var(--diagram-text); background: var(--diagram-surface); border-radius: 6px; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; }
+#clear-selection:focus-visible { outline: 2px solid var(--diagram-accent); }
+.hotspot { text-decoration: none; }
+.hotspot .hit-area { fill: transparent; stroke: transparent; stroke-width: 3; }
+.hotspot.is-active .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); }
+.hotspot:focus-visible .hit-area { stroke: var(--diagram-accent-text); stroke-dasharray: 5 3; }
+/* Linked module/diagram highlighting is independent of the pinned explanation. */
+.hotspot.is-related .hit-area { fill: var(--diagram-accent); fill-opacity: .10; stroke: var(--diagram-accent-text); stroke-width: 3; }
+.diagram-note { font-size: 12px; color: var(--diagram-muted); line-height: 1.5; margin: 10px 0 0; }
+@media print { #clear-selection { display: none; } }
+
+
+main { padding: 8px 2px; }
+.instructions { font-size: 15px; margin-bottom: 10px; }
+.layout { gap: 10px; }
+.diagram { overflow-x: auto; }
+.diagram svg { min-width: 680px; font-family: var(--diagram-font); }
+.ink { stroke: var(--diagram-text); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.outline { stroke: var(--diagram-border); fill: var(--diagram-surface); stroke-width: 2; }
+.soft { fill: var(--diagram-tint); stroke: var(--diagram-accent-text); stroke-width: 2; }
+.flow { fill: none; stroke: var(--diagram-accent-text); stroke-width: 3; stroke-linejoin: round; marker-end: url(#arrow); }
+.feedback { fill: none; stroke: var(--diagram-line); stroke-width: 2.5; stroke-linejoin: round; marker-end: url(#muted-arrow); }
+.label { fill: var(--diagram-text); font-size: 22px; font-weight: 650; }
+.detail { fill: var(--diagram-text); font-size: 19px; }
+.context { fill: var(--diagram-muted); font-size: 16px; }
+.accent { fill: var(--diagram-accent-text); }
+.definition a { color: var(--diagram-accent-text); }
+.definition p { font-size: 16px; }
+.definition .eyebrow { font-size: 14px; }
+.definition h3 { font-size: 16px; }
+.definition h2 { font-size: 23px; }
+main:not(.is-enhanced) #empty-prompt { display: none; }
+main:not(.is-enhanced) .definition + .definition { margin-top: 24px; }
+.mobile-note { display: none; }
+@media (max-width: 679px) { .mobile-note { display: block; } }
+
+</style>
+<link rel="stylesheet" href="diagram-layout.css">
+</head>
+<body>
+<main id="interactive-learning-diagram">
+<p class="instructions">Select a library to see its role and jump to the code.</p>
+<div class="layout">
+<p class="instructions mobile-note">Swipe across the diagram to follow the arrows; select a labeled object for its explanation.</p><div class="diagram" tabindex="0" aria-label="Scrollable workflow diagram"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 625" role="group" aria-labelledby="stack-title stack-desc"><title id="stack-title">The workshop code stack</title><desc id="stack-desc">Workshop code connects LeRobot controls and datasets to Isaac Lab. Isaac Lab uses Newton for physics and Omniverse libraries for camera rendering, with shared USD assets. Observations return to the controller and recorder.</desc><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--diagram-accent-text)"/></marker></defs>
+<path class="flow" d="M455 120V190"/><text class="context" x="470" y="162">configures</text>
+<path class="flow" d="M270 220H325"/><text class="context" x="285" y="180" text-anchor="middle">actions</text>
+<path class="flow" d="M330 282H275"/><text class="context" x="288" y="330" text-anchor="middle">observations</text>
+<path class="flow" d="M660 247H585"/><text class="context" x="620" y="229" text-anchor="middle">loads</text>
+<path class="flow" d="M400 305V368H305V414"/><text class="context" x="255" y="354">joint commands</text>
+<path class="flow" d="M515 305V368H705V414"/><text class="context" x="614" y="354">camera updates</text>
+<path class="flow" d="M430 475H525"/><text class="context" x="478" y="455" text-anchor="middle">poses</text>
+<path class="flow" d="M305 530V590H50V311"/><path class="flow" d="M705 530V590H305"/><text class="context" x="470" y="617" text-anchor="middle">joint state + camera images return to the controller and recorder</text>
+<rect class="outline" x="330" y="20" width="250" height="100" rx="10"/><path class="ink" d="M346 41h18v18h-18z M350 36v5 M360 36v5 M350 59v5 M360 59v5"/><text class="label" x="376" y="56">Workshop code</text><text class="detail" x="346" y="96">Task and control loop</text><a class="hotspot" data-term="workshop" href="#definition-workshop" tabindex="0" role="button" aria-label="Workshop application" aria-controls="definition-workshop" aria-expanded="false"><rect class="hit-area" x="330" y="20" width="250" height="100" rx="10"/></a><rect class="outline" x="20" y="195" width="250" height="110" rx="10"/><path class="ink" d="M36 216h18v18h-18z M40 211v5 M50 211v5 M40 234v5 M50 234v5"/><text class="label" x="66" y="231">LeRobot</text><text class="detail" x="36" y="271">Leader or policy · datasets</text><a class="hotspot" data-term="lerobot" href="#definition-lerobot" tabindex="0" role="button" aria-label="LeRobot" aria-controls="definition-lerobot" aria-expanded="false"><rect class="hit-area" x="20" y="195" width="250" height="110" rx="10"/></a><rect class="outline" x="330" y="195" width="250" height="110" rx="10"/><path class="ink" d="M346 216h18v18h-18z M350 211v5 M360 211v5 M350 234v5 M360 234v5"/><text class="label" x="376" y="231">Isaac Lab</text><text class="detail" x="346" y="271">Scene · actions · events</text><a class="hotspot" data-term="lab" href="#definition-lab" tabindex="0" role="button" aria-label="Isaac Lab" aria-controls="definition-lab" aria-expanded="false"><rect class="hit-area" x="330" y="195" width="250" height="110" rx="10"/></a><rect class="outline" x="660" y="195" width="220" height="110" rx="10"/><path class="ink" d="M676 216h18v18h-18z M680 211v5 M690 211v5 M680 234v5 M690 234v5"/><text class="label" x="706" y="231">USD assets</text><text class="detail" x="676" y="271">Robot · rack · cameras</text><a class="hotspot" data-term="usd" href="#definition-usd" tabindex="0" role="button" aria-label="USD assets" aria-controls="definition-usd" aria-expanded="false"><rect class="hit-area" x="660" y="195" width="220" height="110" rx="10"/></a><rect class="outline" x="180" y="420" width="250" height="110" rx="10"/><path class="ink" d="M196 441h18v18h-18z M200 436v5 M210 436v5 M200 459v5 M210 459v5"/><text class="label" x="226" y="456">Newton</text><text class="detail" x="196" y="496">Motion and contact</text><a class="hotspot" data-term="newton" href="#definition-newton" tabindex="0" role="button" aria-label="Newton" aria-controls="definition-newton" aria-expanded="false"><rect class="hit-area" x="180" y="420" width="250" height="110" rx="10"/></a><rect class="outline" x="530" y="420" width="350" height="110" rx="10"/><path class="ink" d="M546 441h18v18h-18z M550 436v5 M560 436v5 M550 459v5 M560 459v5"/><text class="label" x="576" y="456">Omniverse libraries</text><text class="detail" x="546" y="496">ovstage · ovrtx · ovstream</text><a class="hotspot" data-term="ov" href="#definition-ov" tabindex="0" role="button" aria-label="Omniverse libraries" aria-controls="definition-ov" aria-expanded="false"><rect class="hit-area" x="530" y="420" width="350" height="110" rx="10"/></a></svg></div>
+<section class="explanations" aria-label="Selected explanation">
+<button id="clear-selection" type="button" hidden aria-label="Close explanation">Close ×</button>
+<p id="empty-prompt">Select a step or object for its explanation.</p>
+<article class="definition" id="definition-workshop" data-definition="workshop" aria-labelledby="heading-workshop"><h2 id="heading-workshop">Workshop code</h2><p>Combines the task configuration, controller, recording, and evaluation. The bridge converts LeRobot commands into simulation joint commands and converts observations back for recording or inference.</p></article>
+<article class="definition" id="definition-lerobot" data-definition="lerobot" aria-labelledby="heading-lerobot"><h2 id="heading-lerobot">LeRobot</h2><p>Provides teleoperator and robot interfaces, the dataset format, and policy tools. During collection the leader supplies actions; during evaluation a policy supplies them. The workshop recorder saves images, joint state, and actions.</p></article>
+<article class="definition" id="definition-lab" data-definition="lab" aria-labelledby="heading-lab"><h2 id="heading-lab">Isaac Lab</h2><p>Organizes assets, observations, action terms, resets, and success checks. Its environment step connects the selected physics and rendering backends to the vial-to-rack task.</p></article>
+<article class="definition" id="definition-usd" data-definition="usd" aria-labelledby="heading-usd"><h2 id="heading-usd">USD assets</h2><p>Describe the workstation geometry, materials, camera properties, and physical properties. Isaac Lab loads these assets for simulation, and the Omniverse libraries manage their rendered scene.</p></article>
+<article class="definition" id="definition-newton" data-definition="newton" aria-labelledby="heading-newton"><h2 id="heading-newton">Newton</h2><p>Advances robot and object dynamics using the configured MJWarp solver and collision pipeline. Updated poses drive the simulated scene and become joint observations.</p></article>
+<article class="definition" id="definition-ov" data-definition="ov" aria-labelledby="heading-ov"><h2 id="heading-ov">Omniverse libraries</h2><p>ovstage manages the USD scene used for rendering. ovrtx renders wrist and external RGB images from the updated scene. ovstream takes GPU renders and stream them to the browser. Isaac Lab exposes those camera results as observations.</p></article>
+</section>
+</div>
+<p id="selection-status" class="sr-only" role="status" aria-live="polite"></p>
+</main>
+<script>
+(() => {
+  const root = document.getElementById('interactive-learning-diagram');
+  const hotspots = [...root.querySelectorAll('.hotspot')];
+  const definitions = [...root.querySelectorAll('[data-definition]')];
+  const emptyPrompt = document.getElementById('empty-prompt');
+  const announcement = document.getElementById('selection-status');
+  const clear = document.getElementById('clear-selection');
+  let selected = '';
+  let preview = '';
+  let hovered = '';
+  let focused = '';
+  root.classList.add('is-enhanced');
+  function render() {
+    const active = selected || preview;
+    definitions.forEach(item => { item.hidden = item.dataset.definition !== active; });
+    emptyPrompt.hidden = Boolean(active);
+    clear.hidden = !active;
+    const source = hovered || focused || selected;
+    const sourceItem = hotspots.find(item => item.dataset.term === source);
+    const sourceModules = (sourceItem?.dataset.modules || '').split(' ').filter(Boolean);
+    hotspots.forEach(item => {
+      const matches = item.dataset.term === active;
+      const linked = item.hasAttribute('data-modules');
+      const related = linked && item.dataset.modules.split(' ').some(module => sourceModules.includes(module));
+      item.classList.toggle('is-active', linked ? item.dataset.term === source : matches);
+      item.classList.toggle('is-related', related);
+      // Only the term whose explanation is displayed is expanded.
+      item.setAttribute('aria-expanded', String(matches));
+    });
+  }
+  function select(term) {
+    selected = term; preview = ''; render();
+    announcement.textContent = definitions.find(item => item.dataset.definition === term).querySelector('h2').textContent + ' selected.';
+  }
+  function reset() { selected = ''; preview = ''; hovered = ''; focused = ''; render(); }
+  hotspots.forEach(item => {
+    item.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'touch') return;
+      hovered = item.dataset.term;
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('pointerleave', () => {
+      if (hovered === item.dataset.term) hovered = '';
+      render();
+    });
+    item.addEventListener('focus', () => {
+      focused = item.dataset.term; hovered = '';
+      if (!selected) preview = item.dataset.term;
+      render();
+    });
+    item.addEventListener('blur', () => {
+      if (focused === item.dataset.term) focused = '';
+      render();
+    });
+    item.addEventListener('click', event => { event.preventDefault(); select(item.dataset.term); });
+    item.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(item.dataset.term); }
+    });
+  });
+  clear.addEventListener('click', reset);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+  render();
+
+  const colorPreference = window.matchMedia('(prefers-color-scheme: dark)');
+  let parentTheme = false;
+  colorPreference.addEventListener('change', () => {
+    if (!parentTheme) document.documentElement.dataset.theme = colorPreference.matches ? 'dark' : 'light';
+  });
+  window.addEventListener('message', event => {
+    if (event.source !== window.parent || event.origin !== window.location.origin ||
+        event.data?.type !== 'interactive-learning-diagram:theme') return;
+    if (!['light', 'dark'].includes(event.data.theme)) return;
+    parentTheme = true;
+    document.documentElement.dataset.theme = event.data.theme;
+    for (const [name, value] of Object.entries(event.data.tokens || {})) {
+      if ((name.startsWith('--pst-') || name === '--nv-color-green') && typeof value === 'string') {
+        document.documentElement.style.setProperty(name, value);
+      }
+    }
+  });
+
+  // Report content height independently of the iframe's current height.
+  if (window.parent !== window && window.location.origin !== 'null') {
+    let lastHeight = 0;
+    const reportHeight = () => {
+      const height = Math.ceil(root.getBoundingClientRect().height);
+      if (height !== lastHeight) {
+        lastHeight = height;
+        window.parent.postMessage({ type: 'interactive-learning-diagram:resize', height }, window.location.origin);
+      }
+    };
+    new ResizeObserver(reportHeight).observe(root);
+    window.addEventListener('load', reportHeight);
+    window.parent.postMessage({ type: 'interactive-learning-diagram:ready' }, window.location.origin);
+  }
+})();
+</script>
+</body>
+</html>
