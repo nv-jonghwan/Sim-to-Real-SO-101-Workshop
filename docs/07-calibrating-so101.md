@@ -90,7 +90,7 @@ lerobot-find-port
 
 ```text
 Finding all available ports for the MotorBus.
-['/dev/ttyACM0', '/dev/ttyACM1']
+['/dev/ttyACM0', '/dev/ttyACM2']
 Remove the usb cable from your MotorsBus and press Enter when done.
 ```
 5. After removing the cable, **press** **Enter**.
