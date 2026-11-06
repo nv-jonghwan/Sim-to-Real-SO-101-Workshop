@@ -7,7 +7,7 @@ Open [index.html](index.html) in Chrome or Edge and choose a language.
 | English | [en/index.html](en/index.html) | [English guide](en/guide/index.html) | English |
 | 한국어 | [ko/index.html](ko/index.html) | [한국어 교재](ko/guide/index.html) | 한국어 |
 
-Both versions contain the same 70 slides, 1,539 presenter cues, interaction targets, and media. The English version uses the English course source and translated presentation-specific explanations and narration. Course terminology and executable commands are retained.
+Both versions contain the same 70 slides, 1,538 presenter cues, interaction targets, and media. The English version uses the English course source and translated presentation-specific explanations and narration. Course terminology and executable commands are retained.
 
 ## Open locally
 
