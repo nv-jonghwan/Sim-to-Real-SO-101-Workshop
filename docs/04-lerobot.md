@@ -106,16 +106,28 @@ LeRobot is the foundation of this course for several practical reasons:
 
 The workshop uses one `so101-workshop` container for LeRobot tools. Simulation recording writes `datasets/<repo_id>`; use the same namespace when uploading:
 
-```bash
-export DATASET_ID="${HF_USER}/so101_teleop_vials_newton"
-hf upload "$DATASET_ID" "./datasets/$DATASET_ID" . --repo-type dataset
-hf repos tag create "$DATASET_ID" v3.0 --repo-type dataset --revision main
-hf download "$DATASET_ID" --repo-type dataset --revision v3.0 --local-dir "./datasets/$DATASET_ID"
-```
-
 Set `HF_USER` to your Hugging Face username and authenticate with `hf auth login` first.
 
+:::{important}
+Run this upload workflow only after [recording and inspecting a completed dataset](08-simulation-teleoperation.md#recording-demonstrations). Setting `DATASET_ID` does not collect data or create the local dataset. An empty directory or a downloaded reference sample is not a completed recording. If you are learning the workflow before collection, skip these upload commands for now.
+:::
+
+```bash
+export DATASET_ID="${HF_USER:?Set HF_USER to your Hugging Face username first}/so101_teleop_vials_newton"
+if [ -f "./datasets/$DATASET_ID/meta/info.json" ]; then
+    hf upload "$DATASET_ID" "./datasets/$DATASET_ID" . --repo-type dataset &&
+    hf repos tag create "$DATASET_ID" v3.0 --repo-type dataset --revision main &&
+    hf download "$DATASET_ID" --repo-type dataset --revision v3.0 --local-dir "./datasets/$DATASET_ID"
+else
+    echo "Collect and inspect a completed dataset before uploading."
+fi
+```
+
 For later uploads to the same dataset, {ref}`refresh its tag <refresh-dataset-tag>`.
+
+```{raw} html
+:file: _includes/hf-cli-install.html
+```
 
 ### Post-Training Pipeline
 

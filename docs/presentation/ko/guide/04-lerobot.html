@@ -361,14 +361,71 @@
 <span class="sd-summary-text">수집·학습·평가 workflow 미리 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
 <p class="rubric" id="data-flow-with-hugging-face-hub">Hugging Face Hub를 통한 Data Flow</p>
 <p class="sd-card-text">Workshop은 하나의 <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container에서 LeRobot 도구를 사용합니다. Simulation recording 결과는 <code class="docutils literal notranslate"><span class="pre">datasets/&lt;repo_id&gt;</span></code>에 저장됩니다. Upload할 때도 같은 namespace를 사용하세요.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DATASET_ID</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HF_USER</span><span class="si">}</span><span class="s2">/so101_teleop_vials_newton"</span>
-hf<span class="w"> </span>upload<span class="w"> </span><span class="s2">"</span><span class="nv">$DATASET_ID</span><span class="s2">"</span><span class="w"> </span><span class="s2">"./datasets/</span><span class="nv">$DATASET_ID</span><span class="s2">"</span><span class="w"> </span>.<span class="w"> </span>--repo-type<span class="w"> </span>dataset
-hf<span class="w"> </span>repos<span class="w"> </span>tag<span class="w"> </span>create<span class="w"> </span><span class="s2">"</span><span class="nv">$DATASET_ID</span><span class="s2">"</span><span class="w"> </span>v3.0<span class="w"> </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span>--revision<span class="w"> </span>main
-hf<span class="w"> </span>download<span class="w"> </span><span class="s2">"</span><span class="nv">$DATASET_ID</span><span class="s2">"</span><span class="w"> </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span>--revision<span class="w"> </span>v3.0<span class="w"> </span>--local-dir<span class="w"> </span><span class="s2">"./datasets/</span><span class="nv">$DATASET_ID</span><span class="s2">"</span>
+<p class="sd-card-text">먼저 <code class="docutils literal notranslate"><span class="pre">HF_USER</span></code>를 본인의 Hugging Face username으로 설정하고 <code class="docutils literal notranslate"><span class="pre">hf</span> <span class="pre">auth</span> <span class="pre">login</span></code>으로 인증하세요.</p>
+<div class="admonition important">
+<p class="admonition-title">중요</p>
+<p class="sd-card-text"><a class="reference internal" href="08-simulation-teleoperation.html#recording-demonstrations"><span class="std std-ref">Dataset 수집과 검수</span></a>를 완료한 뒤에만 아래 upload workflow를 실행하세요. <code class="docutils literal notranslate"><span class="pre">DATASET_ID</span></code>를 설정해도 데이터가 수집되거나 로컬 dataset이 생성되지는 않습니다. 빈 폴더나 내려받은 참고 표본은 수집이 완료된 dataset이 아닙니다. 수집 전에 workflow를 배우는 단계라면 아래 upload 명령은 지금 실행하지 마세요.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DATASET_ID</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HF_USER</span><span class="p">:?Set HF_USER to your Hugging Face username first</span><span class="si">}</span><span class="s2">/so101_teleop_vials_newton&quot;</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;./datasets/</span><span class="nv">$DATASET_ID</span><span class="s2">/meta/info.json&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span>hf<span class="w"> </span>upload<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATASET_ID</span><span class="s2">&quot;</span><span class="w"> </span><span class="s2">&quot;./datasets/</span><span class="nv">$DATASET_ID</span><span class="s2">&quot;</span><span class="w"> </span>.<span class="w"> </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="w">    </span>hf<span class="w"> </span>repos<span class="w"> </span>tag<span class="w"> </span>create<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATASET_ID</span><span class="s2">&quot;</span><span class="w"> </span>v3.0<span class="w"> </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span>--revision<span class="w"> </span>main<span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="w">    </span>hf<span class="w"> </span>download<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DATASET_ID</span><span class="s2">&quot;</span><span class="w"> </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span>--revision<span class="w"> </span>v3.0<span class="w"> </span>--local-dir<span class="w"> </span><span class="s2">&quot;./datasets/</span><span class="nv">$DATASET_ID</span><span class="s2">&quot;</span>
+<span class="k">else</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Collect and inspect a completed dataset before uploading.&quot;</span>
+<span class="k">fi</span>
 </pre></div>
 </div>
-<p class="sd-card-text">먼저 <code class="docutils literal notranslate"><span class="pre">HF_USER</span></code>를 본인의 Hugging Face username으로 설정하고 <code class="docutils literal notranslate"><span class="pre">hf</span> <span class="pre">auth</span> <span class="pre">login</span></code>으로 인증하세요.</p>
 <p class="sd-card-text">같은 dataset에 나중에 다시 upload할 때는 <a class="reference internal" href="08-simulation-teleoperation.html#refresh-dataset-tag"><span class="std std-ref">tag를 갱신하세요</span></a>.</p>
+<p><a href="#hf-cli-install" id="hf-cli-install-link" aria-haspopup="dialog">참고: hf CLI 설치하기</a></p>
+<dialog id="hf-cli-install" aria-labelledby="hf-cli-install-title">
+  <header class="hf-cli-install-header">
+    <h4 id="hf-cli-install-title">hf CLI 설치하기</h4>
+    <button type="button" class="hf-cli-install-close" autofocus>닫기</button>
+  </header>
+  <p>hf CLI는 huggingface_hub Python package에 포함되어 있습니다. Host 터미널에서 아래 명령을 실행해 사용자 전용 환경에 설치합니다.</p>
+  <p>hf 명령을 이미 사용할 수 있다면 설치를 건너뛰고 계정을 확인하세요. 이 Host 설치는 workshop Container 안의 설치와 별개입니다.</p>
+  <ol>
+    <li><p>전용 Python 환경을 만듭니다.</p><pre><code>python3 -m venv ~/.local/share/hf-cli</code></pre></li>
+    <li><p>CLI가 포함된 package를 설치합니다.</p><pre><code>~/.local/share/hf-cli/bin/python -m pip install "huggingface_hub==2.4.0"</code></pre></li>
+    <li><p>사용자 bin 폴더에 명령을 연결합니다. 링크가 이미 있으면 ln 명령은 건너뜁니다.</p><pre><code>mkdir -p ~/.local/bin
+ln -s ~/.local/share/hf-cli/bin/hf ~/.local/bin/hf</code></pre></li>
+    <li><p>현재 터미널 세션의 PATH에 해당 폴더를 추가합니다.</p><pre><code>export PATH="$HOME/.local/bin:$PATH"
+hash -r</code></pre><p>새 Bash 세션에서도 사용하려면 해당 폴더가 PATH에 없는 경우 export 줄을 ~/.bashrc에 추가합니다.</p></li>
+    <li><p>CLI가 실행되는지 확인합니다.</p><pre><code>hf version
+hf --help</code></pre></li>
+    <li><p>필요하면 로그인한 뒤 Hub 작업에 사용할 실제 계정을 확인합니다.</p><pre><code>hf auth login
+hf auth whoami</code></pre><p>HF_USER는 repository ID를 구성하는 별도의 shell 변수이며, 설정해도 로그인되지는 않습니다. 인증 정보는 로그인 입력창에서만 입력하세요.</p></li>
+  </ol>
+  <p><a href="https://huggingface.co/docs/huggingface_hub/en/guides/cli" target="_blank" rel="noopener noreferrer">Hugging Face CLI 공식 문서</a></p>
+</dialog>
+<style>
+  #hf-cli-install { box-sizing: border-box; width: min(760px, calc(100% - 32px)); max-height: 85vh; overflow-y: auto; padding: 24px; border: 1px solid var(--pst-color-border, #b5b5b5); border-radius: 12px; background: var(--pst-color-background, white); color: var(--pst-color-text-base, #202020); box-shadow: 0 16px 64px #0005; }
+  #hf-cli-install::backdrop { background: #0009; }
+  #hf-cli-install .hf-cli-install-header { display: flex; align-items: start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+  #hf-cli-install-title { margin: 0; }
+  #hf-cli-install .hf-cli-install-close { flex-shrink: 0; padding: 6px 14px; border: 1px solid var(--pst-color-border, #999); border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+  #hf-cli-install pre { padding: 12px; overflow-x: auto; background: var(--pst-color-surface, #f3f5f1); border-radius: 6px; }
+  #hf-cli-install ol { padding-left: 24px; }
+  #hf-cli-install li { margin-bottom: 20px; }
+  #hf-cli-install p { line-height: 1.6; }
+</style>
+<script>
+(() => {
+  const link = document.getElementById('hf-cli-install-link');
+  const dialog = document.getElementById('hf-cli-install');
+  link.addEventListener('click', (event) => {
+    event.preventDefault();
+    dialog.showModal();
+  });
+  dialog.querySelector('.hf-cli-install-close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (event) => {
+    const bounds = dialog.getBoundingClientRect();
+    if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
+  });
+  dialog.addEventListener('close', () => link.focus());
+})();
+</script>
 <p class="rubric" id="post-training-pipeline">Post-Training Pipeline</p>
 <p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">lerobot_agent</span></code>와 leader arm으로 demonstration을 수집하거나, <code class="docutils literal notranslate"><span class="pre">vials_state_machine</span></code>으로 <a class="reference internal" href="08-simulation-teleoperation.html#optional-automated-data-collection"><span class="std std-ref">automated simulation collection</span></a>을 수행합니다. 두 workflow 모두 <code class="docutils literal notranslate"><span class="pre">datasets/&lt;repo_id&gt;</span></code> 아래에 LeRobot dataset을 생성합니다. Upload와 학습 전에 <code class="docutils literal notranslate"><span class="pre">lerobot-dataset-viz</span></code>로 episode를 확인하세요.</p>
 <p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">lerobot-train</span></code>에 <code class="docutils literal notranslate"><span class="pre">--policy.type=groot</span></code>와 <code class="docutils literal notranslate"><span class="pre">--policy.base_model_path=nvidia/GR00T-N1.7-3B</span></code>를 지정합니다. 전체 설정은 <a class="reference internal" href="10-groot.html#reference-post-train-your-own-model"><span class="std std-ref">GR00T Post-Training</span></a>에 있습니다.</p>

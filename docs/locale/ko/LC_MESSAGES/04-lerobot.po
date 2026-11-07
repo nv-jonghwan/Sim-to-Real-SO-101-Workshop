@@ -345,3 +345,6 @@ msgstr "Hugging Face community에서 지속적인 지원과 자료를 얻을 수
 
 msgid "You're joining a growing community of robot learners and practitioners"
 msgstr "계속 성장하는 robot 학습자와 실무자 community에 함께 참여할 수 있습니다."
+
+msgid "Run this upload workflow only after [recording and inspecting a completed dataset](08-simulation-teleoperation.md#recording-demonstrations). Setting `DATASET_ID` does not collect data or create the local dataset. An empty directory or a downloaded reference sample is not a completed recording. If you are learning the workflow before collection, skip these upload commands for now."
+msgstr "[Dataset 수집과 검수](08-simulation-teleoperation.md#recording-demonstrations)를 완료한 뒤에만 아래 upload workflow를 실행하세요. `DATASET_ID`를 설정해도 데이터가 수집되거나 로컬 dataset이 생성되지는 않습니다. 빈 폴더나 내려받은 참고 표본은 수집이 완료된 dataset이 아닙니다. 수집 전에 workflow를 배우는 단계라면 아래 upload 명령은 지금 실행하지 마세요."

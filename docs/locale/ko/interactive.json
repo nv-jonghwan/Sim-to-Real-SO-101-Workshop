@@ -2091,6 +2091,78 @@
         "translation": "+ ' 선택됨.'",
         "mode": "literal"
       }
+    ],
+    "_includes/hf-cli-install.html": [
+      {
+        "source": "Reference: Install the hf CLI",
+        "translation": "참고: hf CLI 설치하기",
+        "mode": "html"
+      },
+      {
+        "source": "Install the hf CLI",
+        "translation": "hf CLI 설치하기",
+        "mode": "html"
+      },
+      {
+        "source": "Close",
+        "translation": "닫기",
+        "mode": "html"
+      },
+      {
+        "source": "The hf CLI is included in the huggingface_hub Python package. Run these commands in a Host terminal to install it in a separate environment for your user.",
+        "translation": "hf CLI는 huggingface_hub Python package에 포함되어 있습니다. Host 터미널에서 아래 명령을 실행해 사용자 전용 환경에 설치합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "If hf is already available, skip installation and check your account. This Host installation is separate from the workshop Container.",
+        "translation": "hf 명령을 이미 사용할 수 있다면 설치를 건너뛰고 계정을 확인하세요. 이 Host 설치는 workshop Container 안의 설치와 별개입니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Create a dedicated Python environment.",
+        "translation": "전용 Python 환경을 만듭니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Install the package containing the CLI.",
+        "translation": "CLI가 포함된 package를 설치합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Make the command available from your user bin directory. Skip the link command if it already exists.",
+        "translation": "사용자 bin 폴더에 명령을 연결합니다. 링크가 이미 있으면 ln 명령은 건너뜁니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Add that directory to PATH for the current terminal session.",
+        "translation": "현재 터미널 세션의 PATH에 해당 폴더를 추가합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "For new Bash sessions, add the export line to ~/.bashrc if that directory is not already on PATH.",
+        "translation": "새 Bash 세션에서도 사용하려면 해당 폴더가 PATH에 없는 경우 export 줄을 ~/.bashrc에 추가합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Check that the CLI is available.",
+        "translation": "CLI가 실행되는지 확인합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Authenticate if needed, then verify the account used for Hub operations.",
+        "translation": "필요하면 로그인한 뒤 Hub 작업에 사용할 실제 계정을 확인합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "HF_USER is a separate shell variable for building repository IDs; setting it does not log you in. Enter credentials only through the login prompt.",
+        "translation": "HF_USER는 repository ID를 구성하는 별도의 shell 변수이며, 설정해도 로그인되지는 않습니다. 인증 정보는 로그인 입력창에서만 입력하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "Hugging Face CLI documentation",
+        "translation": "Hugging Face CLI 공식 문서",
+        "mode": "html"
+      }
     ]
   }
 }
