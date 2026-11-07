@@ -325,3 +325,6 @@ msgstr "`~/.cache/ovrtx/`, `~/.cache/warp/`"
 
 msgid "Renderer and physics caches"
 msgstr "Renderer와 physics cache"
+
+msgid "Use your actual checkout path for the directory change above; `~/Sim-to-Real-SO-101-Workshop` is only an example. In the same terminal, confirm that the directory contains `docker/Dockerfile` and `source/` before running the next block."
+msgstr "위 cd 명령에는 실제 저장소 경로를 사용하세요. `~/Sim-to-Real-SO-101-Workshop`는 예시입니다. 같은 터미널에서 현재 폴더에 `docker/Dockerfile`과 `source/`가 있는지 확인한 뒤 다음 명령 블록을 실행하세요."

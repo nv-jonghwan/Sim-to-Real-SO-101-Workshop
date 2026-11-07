@@ -75,6 +75,11 @@ The same image supports simulation and real-robot exercises.
 
 ```bash
 cd ~/Sim-to-Real-SO-101-Workshop
+```
+
+Use your actual checkout path for the directory change above; `~/Sim-to-Real-SO-101-Workshop` is only an example. In the same terminal, confirm that the directory contains `docker/Dockerfile` and `source/` before running the next block.
+
+```bash
 xhost +
 docker run --name so101-workshop -it --rm --privileged --runtime=nvidia --network=host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/root/.Xauthority -v /dev:/dev -v /run/udev:/run/udev:ro -v ~/.cache/huggingface:/root/.cache/huggingface -v ~/.cache/ovrtx:/root/.cache/ovrtx -v ~/.cache/warp:/root/.cache/warp -v ./docker/env:/root/env -v ./source:/workspace/Sim-to-Real-SO-101-Workshop/source -v ./outputs:/workspace/Sim-to-Real-SO-101-Workshop/outputs -v ./datasets:/workspace/Sim-to-Real-SO-101-Workshop/datasets -v ./models:/workspace/Sim-to-Real-SO-101-Workshop/models so101-workshop:latest
 ```

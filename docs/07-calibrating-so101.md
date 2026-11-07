@@ -59,6 +59,8 @@ USB port assignments can change when you reconnect the arms. Usually reconnectin
 cd ~/Sim-to-Real-SO-101-Workshop
 ```
 
+Use your actual checkout path for the directory change above; `~/Sim-to-Real-SO-101-Workshop` is only an example. In the same terminal, confirm that the directory contains `docker/Dockerfile` and `source/` before running the next block.
+
 ```{raw} html
 :file: _includes/docker-build-reference.html
 ```

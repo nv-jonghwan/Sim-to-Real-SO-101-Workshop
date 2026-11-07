@@ -267,9 +267,14 @@
 <h2>Build와 시작 — Host<a class="headerlink" href="#build-and-start-host" title="Link to this heading">#</a></h2>
 <p>Host terminal에서 home directory의 workshop folder로 이동한 뒤 container를 build하거나 시작합니다.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/Sim-to-Real-SO-101-Workshop
-docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>so101-workshop<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile<span class="w"> </span>.
+</pre></div>
+</div>
+<p>위 cd 명령에는 실제 저장소 경로를 사용하세요. <code class="docutils literal notranslate"><span class="pre">~/Sim-to-Real-SO-101-Workshop</span></code>는 예시입니다. 같은 터미널에서 현재 폴더에 <code class="docutils literal notranslate"><span class="pre">docker/Dockerfile</span></code>과 <code class="docutils literal notranslate"><span class="pre">source/</span></code>가 있는지 확인한 뒤 다음 명령 블록을 실행하세요.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>so101-workshop<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile<span class="w"> </span>.
 mkdir<span class="w"> </span>-p<span class="w"> </span>outputs<span class="w"> </span>datasets<span class="w"> </span>models
-xhost<span class="w"> </span>+
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xhost<span class="w"> </span>+
 docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>so101-workshop<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>--privileged<span class="w"> </span>--runtime<span class="o">=</span>nvidia<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span>DISPLAY<span class="w"> </span>-v<span class="w"> </span>/tmp/.X11-unix:/tmp/.X11-unix<span class="w"> </span>-v<span class="w"> </span>~/.Xauthority:/root/.Xauthority<span class="w"> </span>-v<span class="w"> </span>/dev:/dev<span class="w"> </span>-v<span class="w"> </span>/run/udev:/run/udev:ro<span class="w"> </span>-v<span class="w"> </span>~/.cache/huggingface:/root/.cache/huggingface<span class="w"> </span>-v<span class="w"> </span>~/.cache/ovrtx:/root/.cache/ovrtx<span class="w"> </span>-v<span class="w"> </span>~/.cache/warp:/root/.cache/warp<span class="w"> </span>-v<span class="w"> </span>./docker/env:/root/env<span class="w"> </span>-v<span class="w"> </span>./source:/workspace/Sim-to-Real-SO-101-Workshop/source<span class="w"> </span>-v<span class="w"> </span>./outputs:/workspace/Sim-to-Real-SO-101-Workshop/outputs<span class="w"> </span>-v<span class="w"> </span>./datasets:/workspace/Sim-to-Real-SO-101-Workshop/datasets<span class="w"> </span>-v<span class="w"> </span>./models:/workspace/Sim-to-Real-SO-101-Workshop/models<span class="w"> </span>so101-workshop:latest
 </pre></div>
 </div>
