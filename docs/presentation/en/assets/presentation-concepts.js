@@ -543,8 +543,22 @@
       const code=pre.textContent;
       const tools=document.createElement('div');tools.className='code-tools';
       const copy=document.createElement('button');copy.textContent="Copy";copy.addEventListener('click',async()=>{
-        try {await navigator.clipboard.writeText(code);toast("Command copied.");}
-        catch {const selection=getSelection();const range=document.createRange();range.selectNodeContents(pre);selection.removeAllRanges();selection.addRange(range);toast("Command selected. Press Ctrl+C to copy.");}
+        if(navigator.clipboard?.writeText){
+          try {await navigator.clipboard.writeText(code);toast("Command copied.");return;}
+          catch {}
+        }
+        // LAN HTTP can lack the Clipboard API; the fallback must stay inside an open modal.
+        const input=document.createElement('textarea');input.value=code;input.readOnly=true;
+        input.style.cssText='position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;';
+        (pre.closest('dialog[open]')||document.body).append(input);
+        try {
+          input.focus({preventScroll:true});input.select();input.setSelectionRange(0,input.value.length);
+          if(!document.execCommand('copy'))throw new Error('Copy unavailable');
+          toast("Command copied.");
+        } catch {
+          const selection=getSelection();const range=document.createRange();range.selectNodeContents(pre);
+          selection.removeAllRanges();selection.addRange(range);toast("Command selected. Press Ctrl+C to copy.");
+        } finally {input.remove();copy.focus({preventScroll:true});}
       });tools.append(copy);
       if(!reading){const expand=document.createElement('button');expand.textContent="Enlarge";expand.addEventListener('click',()=>openReading(slides[current].title,pre.outerHTML));tools.append(expand);}
       pre.before(tools);
