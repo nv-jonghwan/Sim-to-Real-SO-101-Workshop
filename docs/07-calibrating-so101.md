@@ -59,6 +59,10 @@ USB port assignments can change when you reconnect the arms. Usually reconnectin
 cd ~/Sim-to-Real-SO-101-Workshop
 ```
 
+```{raw} html
+:file: _includes/docker-build-reference.html
+```
+
 2. **Start** the container from this folder if you haven't already:
 
 ```bash

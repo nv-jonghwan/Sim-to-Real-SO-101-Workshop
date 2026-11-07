@@ -2163,6 +2163,83 @@
         "translation": "Hugging Face CLI 공식 문서",
         "mode": "html"
       }
+    ],
+    "_includes/docker-build-reference.html": [
+      {
+        "source": "Reference: docker build",
+        "translation": "참고: docker build하기",
+        "mode": "html"
+      },
+      {
+        "source": "Build the workshop Docker image",
+        "translation": "docker build하기",
+        "mode": "html"
+      },
+      {
+        "source": "Close",
+        "translation": "닫기",
+        "mode": "html"
+      },
+      {
+        "source": "so101-workshop:latest is built locally from this repository. A Docker Hub login does not create this image. If it is missing, docker run can attempt a Hub pull and report pull access denied.",
+        "translation": "so101-workshop:latest는 이 저장소에서 로컬로 빌드하는 이미지입니다. Docker Hub에 로그인해도 이미지가 생성되지는 않습니다. 이미지가 없으면 docker run이 Hub에서 내려받으려다 pull access denied 오류를 표시할 수 있습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Run the following steps in a Host terminal before starting the workshop Container. If your checkout uses another folder, use that folder instead of the example path.",
+        "translation": "Workshop Container를 시작하기 전에 Host 터미널에서 아래 순서로 진행하세요. 저장소를 다른 폴더에 받았다면 예시 경로 대신 실제 저장소 폴더를 사용합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Open the repository root and check that its Dockerfile exists.",
+        "translation": "저장소 최상위 폴더로 이동하고 Dockerfile이 있는지 확인합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Check Docker access and Buildx. Docker version must show both Client and Server; resolve permission or daemon errors before building.",
+        "translation": "Docker 접근과 Buildx를 확인합니다. docker version에 Client와 Server가 모두 나와야 합니다. 권한이나 daemon 오류가 있으면 먼저 해결하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "If Buildx is installed at the Ubuntu path below but docker buildx is not recognized, register it in your user plugin directory. Skip the link command if that link already exists. If the binary is missing, install the Docker Buildx plugin using the official Docker installation guide.",
+        "translation": "아래 Ubuntu 경로에 Buildx가 설치되어 있지만 docker buildx가 인식되지 않으면 사용자 plugin 폴더에 연결합니다. 링크가 이미 있으면 ln 명령은 건너뜁니다. 바이너리가 없다면 공식 Docker 설치 안내에 따라 Buildx plugin을 설치하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "This link is saved on disk and remains after reboot. It does not restart Docker or interrupt a running build.",
+        "translation": "이 링크는 디스크에 저장되어 재부팅 후에도 유지됩니다. Docker를 재시작하거나 진행 중인 빌드를 중단하지 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Build the image. Wait for the command to finish successfully before starting the Container; the first build downloads and installs the course dependencies.",
+        "translation": "이미지를 빌드합니다. 첫 빌드는 과정에 필요한 의존성을 내려받아 설치합니다. 명령이 성공적으로 끝난 뒤 Container를 시작하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "If the Docker CLI still cannot dispatch to Buildx, use the installed binary directly.",
+        "translation": "Docker CLI가 여전히 Buildx를 실행하지 못하면 설치된 바이너리를 직접 사용합니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Check the built image and create the persistent data directories.",
+        "translation": "빌드된 이미지를 확인하고 데이터를 보관할 폴더를 만듭니다.",
+        "mode": "html"
+      },
+      {
+        "source": "The image architecture must match the Host: linux/amd64 on an x86_64 PC, or linux/arm64 on Spark. Architecture alone does not verify simulation, rendering or policy inference.",
+        "translation": "이미지 architecture는 Host와 같아야 합니다. x86_64 PC는 linux/amd64, Spark는 linux/arm64입니다. Architecture 일치만으로 simulation·rendering·policy inference가 검증되지는 않습니다.",
+        "mode": "html"
+      },
+      {
+        "source": "Close this reference and continue with the Container start command in the lesson. The built image survives reboot; start the Container again after reboot. Rebuild when the Dockerfile or required dependencies change.",
+        "translation": "이 팝업을 닫고 본문의 Container 시작 명령으로 이어갑니다. 빌드된 이미지는 재부팅 후에도 유지되며, Container는 다시 시작해야 합니다. Dockerfile이나 필요한 의존성이 바뀌면 다시 빌드하세요.",
+        "mode": "html"
+      },
+      {
+        "source": "Docker installation and Buildx documentation",
+        "translation": "Docker 설치와 Buildx 공식 문서",
+        "mode": "html"
+      }
     ]
   }
 }

@@ -1,0 +1,51 @@
+<p><a href="#docker-build-reference" id="docker-build-reference-link" aria-haspopup="dialog">Reference: docker build</a></p>
+<dialog id="docker-build-reference" aria-labelledby="docker-build-reference-title">
+  <header class="docker-build-reference-header">
+    <h4 id="docker-build-reference-title">Build the workshop Docker image</h4>
+    <button type="button" class="docker-build-reference-close" autofocus>Close</button>
+  </header>
+  <p>so101-workshop:latest is built locally from this repository. A Docker Hub login does not create this image. If it is missing, docker run can attempt a Hub pull and report pull access denied.</p>
+  <p>Run the following steps in a Host terminal before starting the workshop Container. If your checkout uses another folder, use that folder instead of the example path.</p>
+  <ol>
+    <li><p>Open the repository root and check that its Dockerfile exists.</p><pre><code>cd ~/Sim-to-Real-SO-101-Workshop
+test -f docker/Dockerfile</code></pre></li>
+    <li><p>Check Docker access and Buildx. Docker version must show both Client and Server; resolve permission or daemon errors before building.</p><pre><code>docker version
+docker buildx version</code></pre></li>
+    <li><p>If Buildx is installed at the Ubuntu path below but docker buildx is not recognized, register it in your user plugin directory. Skip the link command if that link already exists. If the binary is missing, install the Docker Buildx plugin using the official Docker installation guide.</p><pre><code>test -x /usr/libexec/docker/cli-plugins/docker-buildx
+mkdir -p ~/.docker/cli-plugins
+ln -s /usr/libexec/docker/cli-plugins/docker-buildx ~/.docker/cli-plugins/docker-buildx
+docker buildx version</code></pre><p>This link is saved on disk and remains after reboot. It does not restart Docker or interrupt a running build.</p></li>
+    <li><p>Build the image. Wait for the command to finish successfully before starting the Container; the first build downloads and installs the course dependencies.</p><pre><code>docker build --progress=plain -t so101-workshop:latest -f docker/Dockerfile .</code></pre><p>If the Docker CLI still cannot dispatch to Buildx, use the installed binary directly.</p><pre><code>/usr/libexec/docker/cli-plugins/docker-buildx build --load --progress=plain -t so101-workshop:latest -f docker/Dockerfile .</code></pre></li>
+    <li><p>Check the built image and create the persistent data directories.</p><pre><code>docker image inspect so101-workshop:latest --format '{{.Os}}/{{.Architecture}}'
+mkdir -p outputs datasets models</code></pre><p>The image architecture must match the Host: linux/amd64 on an x86_64 PC, or linux/arm64 on Spark. Architecture alone does not verify simulation, rendering or policy inference.</p></li>
+    <li><p>Close this reference and continue with the Container start command in the lesson. The built image survives reboot; start the Container again after reboot. Rebuild when the Dockerfile or required dependencies change.</p></li>
+  </ol>
+  <p><a href="https://docs.docker.com/engine/install/ubuntu/" target="_blank" rel="noopener noreferrer">Docker installation and Buildx documentation</a></p>
+</dialog>
+<style>
+  #docker-build-reference { box-sizing: border-box; width: min(760px, calc(100% - 32px)); max-height: 85vh; overflow-y: auto; padding: 24px; border: 1px solid var(--pst-color-border, #b5b5b5); border-radius: 12px; background: var(--pst-color-background, white); color: var(--pst-color-text-base, #202020); box-shadow: 0 16px 64px #0005; }
+  #docker-build-reference::backdrop { background: #0009; }
+  #docker-build-reference .docker-build-reference-header { display: flex; align-items: start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+  #docker-build-reference-title { margin: 0; }
+  #docker-build-reference .docker-build-reference-close { flex-shrink: 0; padding: 6px 14px; border: 1px solid var(--pst-color-border, #999); border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+  #docker-build-reference pre { padding: 12px; overflow-x: auto; background: var(--pst-color-surface, #f3f5f1); border-radius: 6px; }
+  #docker-build-reference ol { padding-left: 24px; }
+  #docker-build-reference li { margin-bottom: 20px; }
+  #docker-build-reference p { line-height: 1.6; }
+</style>
+<script>
+(() => {
+  const link = document.getElementById('docker-build-reference-link');
+  const dialog = document.getElementById('docker-build-reference');
+  link.addEventListener('click', (event) => {
+    event.preventDefault();
+    dialog.showModal();
+  });
+  dialog.querySelector('.docker-build-reference-close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (event) => {
+    const bounds = dialog.getBoundingClientRect();
+    if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
+  });
+  dialog.addEventListener('close', () => link.focus());
+})();
+</script>
