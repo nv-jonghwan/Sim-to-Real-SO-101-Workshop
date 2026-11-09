@@ -68,6 +68,19 @@
     }
     return d.body.innerHTML;
   }
+  // Reuse the audience's Hands-on icon; the badge opens a teaching control,
+  // never a shell command. Public web demonstrations remain normal browser links.
+  function instructorBadge(step,index){
+    const action=step.actions?.[0]?.action;
+    const web=step.instructor_action?.kind==='web-demo';
+    const actionable=web||step.media_cue||['command','widget','widget-file','video'].includes(action?.kind)||(action?.kind==='practice'&&action.phase!=='check');
+    if(!actionable)return '';
+    const badge=course.slides.find(s=>s.teaching_type==='Hands-on')?.teaching_badge_html||'<span>Hands-on</span>';
+    const content=badge.replace(/^<div /,'<span ').replace(/<\/div>\s*$/,'</span>');
+    const label=course.language==='ko'?'강사 시연 · 열기':'Open instructor demonstration';
+    if(web)return `<a class="instructor-badge" href="${esc(step.instructor_action.url)}" target="_blank" rel="noopener" aria-label="${label}">${content}</a>`;
+    return `<button class="instructor-badge" data-cue-action="${index}:0" aria-label="${label}">${content}</button>`;
+  }
   function renderScript(){
     const slide=course.slides[current],session=course.sessions.find(s=>s.id===slide.session),script=scripts[current];
     // Navigation already displays the opening cue. Start there on every visit,
@@ -76,7 +89,7 @@
     $('#script-title').textContent=slide.title;$('#script-position').textContent=`${current+1} / ${course.slides.length}`;
     $('#script-meta').textContent=[session.time,session.instructor,slide.teaching_type].filter(s=>s&&s!=='—').join(' · ');
     $('#current-number').textContent=String(current+1).padStart(2,'0');$('#presenter-page').value=current+1;
-    $('#script-content').innerHTML=script.steps.map((step,i)=>`<article class="script-step" id="cue-${i}" data-cue="${i}"><div class="cue-heading"><span>${String(i+1).padStart(2,'0')}</span><h2>${esc(step.title)}</h2></div><div class="speaker-prose">${safeNotes(step.html)}</div><div class="cue-actions">${step.actions.map((a,j)=>`<button data-cue-action="${i}:${j}" ${j===0?'class="cue-primary"':''}><span aria-hidden="true">${j===0?'▶':'↗'}</span>${esc(a.label)}</button>`).join('')}</div></article>`).join('');
+    $('#script-content').innerHTML=script.steps.map((step,i)=>`<article class="script-step" id="cue-${i}" data-cue="${i}"><div class="cue-heading"><span>${String(i+1).padStart(2,'0')}</span><h2>${esc(step.title)}</h2>${instructorBadge(step,i)}</div><div class="speaker-prose">${safeNotes(step.html)}</div><div class="cue-actions">${step.actions.map((a,j)=>`<button data-cue-action="${i}:${j}" ${j===0?'class="cue-primary"':''}><span aria-hidden="true">${j===0?'▶':'↗'}</span>${esc(a.label)}</button>`).join('')}</div></article>`).join('');
     $('#script-scroll').scrollTop=0;highlight(false);
     const next=course.slides[current+1];$('#advance-slide').disabled=!next;$('#previous-slide').disabled=current===0;
     $('#next-title').textContent=next?`${current+2}. ${next.title}`:'마지막 장표입니다.';
@@ -116,9 +129,16 @@
     if(working)return;working=true;highlight(false);$('#presenter-status').classList.remove('error');$('#presenter-status').textContent='발표 화면을 맞추고 있습니다…';
     const at=current;
     try{
-      const c=await controller();await c.run(action);
+      const c=await controller();
+      const cueChange=cueIndex!==null||action.kind==='slide';
+      if(cueChange)await c.run({kind:'video',operation:'pause-all'});
+      await c.run(action);
       const snap=previewAPI().captureState();receive(snap);
       if(at===current&&cueIndex!==null)active=cueIndex;
+      // A narrated cue owns playback. Re-entering it restarts its clip; ordinary
+      // pause/seek controls do not trigger this automatic replay.
+      const media=cueChange&&['show','scroll','slide'].includes(action.kind)&&scripts[current].steps[active]?.media_cue;
+      if(media){await c.run(media);receive(previewAPI().captureState());}
       $('#presenter-status').textContent='화면에 반영했습니다.';
     }catch(e){$('#presenter-status').textContent=e.message;$('#presenter-status').classList.add('error');}
     finally{working=false;highlight(cueIndex!==null);updateControls();}
@@ -132,7 +152,7 @@
     }
     // Read the final transition card before executing its slide-change action.
     if(transitionCue(i)){
-      active=i;highlight();
+      active=i;highlight();controller().then(c=>c.run({kind:'video',operation:'pause-all'}));
       $('#presenter-status').classList.remove('error');
       $('#presenter-status').textContent='마지막 설명입니다. 한 번 더 누르면 다음 장표로 이동합니다.';
       return;
@@ -204,6 +224,8 @@
     if(event.source!==currentFrame.contentWindow)return;
     if(event.data?.type==='dli:ready'){
       wirePreviewKeys();
+      const opening=scripts[current].steps[0];
+      if(opening?.media_cue)run(opening.actions[0].action,0);
       channel?.postMessage({type:'hello',role:'controller'});receive(previewAPI().captureState());
     }else if(event.data?.type==='dli:state')receive(event.data.state);
     else if(event.data?.type==='dli:media-error'){$('#presenter-status').textContent=event.data.message;$('#presenter-status').classList.add('error');}

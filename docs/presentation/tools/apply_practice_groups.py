@@ -80,14 +80,15 @@ for lang in ['ko','en']:
   if num in ['4-C','5-B']:scope+=pick(' Data merge나 학습은 오늘 실행하지 않습니다. 수업 후 직접 반복할 때는 가이드의 상세 절차를 참고하세요.',' Do not merge data or train today. For independent repetition after class, follow the detailed guide.')
   if num=='3':scope+=pick(' 오늘은 로컬 검토까지 진행합니다. Hub 공유는 수업 후 가이드의 상세 절차를 참고하세요.',' Today ends with local review. For Hub sharing afterward, follow the detailed guide.')
   page=c['slides'][start]['page'];guide='guide/'+page
-  g['html']='<p class="practice-phase">'+pick('설명 → 강사 시연 → 참가자 실습 → 완료 확인','Explain → instructor demonstration → participant practice → completion check')+'</p><p>'+goal+'</p><h3>'+pick('이번 묶음의 순서','Exercise sequence')+'</h3><ol>'+''.join('<li>'+x+'</li>' for x in tasks)+'</ol><h3>'+pick('완료 기준','Completion criteria')+'</h3><ul>'+''.join('<li>'+x+'</li>' for x in checks)+'</ul><p>'+scope+'</p><details><summary>'+pick('실습 명령 모음 · 필요한 단계만 실행','Exercise commands · run only the required steps')+'</summary>'+commands+'</details><p><a href="'+guide+'" target="_blank" rel="noopener">'+pick('상세 가이드 ↗','Detailed guide ↗')+'</a></p>'
+  g['html']='<p class="practice-phase">'+pick('설명 → 강사 시연 → 참가자 실습 → 완료 확인','Explain → instructor demonstration → participant practice → completion check')+'</p><p>'+goal+'</p><h3>'+pick('이번 묶음의 순서','Exercise sequence')+'</h3><ol>'+''.join('<li>'+x+'</li>' for x in tasks)+'</ol><h3>'+pick('완료 기준','Completion criteria')+'</h3><ul>'+''.join('<li>'+x+'</li>' for x in checks)+'</ul><p>'+scope+'</p><p><a href="'+guide+'" target="_blank" rel="noopener">'+pick('상세 가이드 ↗','Detailed guide ↗')+'</a></p>'
+  g['commands_html']='<p>'+scope+'</p>'+commands
   groups.append(g)
   for i in range(start,end+1):c['slides'][i].setdefault('practice_groups',[]).append(num)
   def make(phase,i,text):
    title=pick({'start':'설명·시연','practice':'참가자 실습','check':'완료 확인'}[phase],{'start':'Explain and demonstrate','practice':'Participant practice','check':'Completion check'}[phase])+' · '+num
-   return {'id':'practice-'+num+'-'+phase,'title':title,'html':'<p>'+text+'</p>','actions':[{'label':pick('실습 '+num+' · 순서와 명령 보기','Exercise '+num+' · sequence and commands'),'action':{'kind':'practice','slide':c['slides'][i]['id'],'group':num,'phase':phase}}], 'narration':{'mode':'practice-group','group':num,'phase':phase}}
-  intro=pick('지금부터 실습 '+num+'번입니다. '+goal+' 먼저 제가 핵심 명령과 예상 결과를 보여드리겠습니다. 설명 중에는 결과를 보시고, 참가자 실습 안내가 나오면 같은 묶음을 수행하세요.','We are starting exercise '+num+'. '+goal+' I will first demonstrate the key commands and expected results. Watch during the explanation, then perform the sequence when participant practice begins.')
-  work=pick('이제 실습 '+num+'번을 직접 진행해 보세요. '+tasks[0]+'부터 시작해 순서대로 진행합니다. 완료 기준을 확인하는 동안 이 화면에서 기다리겠습니다. 막히면 오류 메시지와 현재 단계를 알려 주세요.','Now carry out exercise '+num+'. Start with the first task and follow the sequence. We will stay on this screen while you work toward the completion criteria. If blocked, share the error and current step.')
+   return {'id':'practice-'+num+'-'+phase,'title':title,'html':'<p>'+text+'</p>','actions':[{'label':pick('실습 '+num+' · 진행 안내','Exercise '+num+' · instructions'),'action':{'kind':'practice','slide':c['slides'][i]['id'],'group':num,'phase':phase}}]+([{'label':pick('실습 명령 모음 열기','Open exercise commands'),'action':{'kind':'practice-commands','slide':c['slides'][i]['id'],'group':num}}] if phase!='check' else []), 'narration':{'mode':'practice-group','group':num,'phase':phase}}
+  intro=pick('지금부터 실습 '+num+'번입니다. '+goal+' 먼저 제가 핵심 명령과 예상 결과를 보여드리겠습니다. 설명과 시연이 끝나면 직접 실습하실 시간을 충분히 드리겠습니다. 그때 앞서 확인한 순서대로 진행해 주세요.','We are starting exercise '+num+'. '+goal+' I will first demonstrate the key commands and expected results. Please watch the explanation and demonstration first. I will then give you plenty of time to try it yourselves, following the steps we have reviewed.')
+  work=pick('지금부터 실습 '+num+'번을 직접 해보실 시간을 충분히 드리겠습니다. 화면의 첫 단계부터 앞서 확인한 순서대로 진행해 주세요. 실습하시는 동안 이 화면을 유지하겠습니다. 막히면 오류 메시지와 현재 단계를 알려 주세요.','We will now allow plenty of time for you to work through exercise '+num+'. Start with the first task and follow the steps we have reviewed. We will keep this screen open while you work. If blocked, share the error and current step.')
   check=pick('함께 완료 상태를 확인하겠습니다. '+' / '.join(checks)+'. 아직 완료하지 못한 분의 상태를 확인한 뒤 다음 설명으로 넘어가겠습니다.','Let us check completion together: '+' / '.join(checks)+'. We will check anyone still blocked before moving to the next explanation.')
   opening=make('start',start,intro);practice=make('practice',end,work);closing=make('check',end,check)
   if num=='2':
@@ -145,8 +146,8 @@ for lang in ['ko','en']:
  def rewrite(i,match,k,e):
   step=next(x for x in s[i]['steps'] if match(x));step['html']='<p>'+pick(k,e)+'</p>'
  rewrite(11,lambda x:x['actions'][0]['action'].get('pane')==1,
-  'Dataset ID와 revision은 data와 checkpoint의 출처를 연결합니다. 오늘은 제공된 로컬 자료로 진행하고, 나중에 직접 공유할 때 필요한 인증·upload·revision 관리 절차는 Hub 가이드에서 참고하실 수 있습니다.',
-  'Dataset IDs and revisions connect data provenance to checkpoints. Today we use supplied local material. For sharing your own work later, the Hub guide covers authentication, upload, and revision management.')
+  'Dataset ID와 revision은 data와 checkpoint의 출처를 연결합니다. 방금은 공개 Hub data를 조회했고, 이후 실습 3에서는 직접 기록한 로컬 episode를 검토합니다. 자신의 data를 공유할 때 필요한 인증·upload·revision 관리 절차는 수업 후 Hub 가이드에서 참고하실 수 있습니다.',
+  'Dataset IDs and revisions connect data provenance to checkpoints. We have just inspected public Hub data; in exercise 3 we will review locally recorded episodes. For sharing your own work after class, the Hub guide covers authentication, upload, and revision management.')
  for step in s[14]['steps']:
   a=step['actions'][0]['action']
   if a['kind']=='command' and a.get('index')==0:

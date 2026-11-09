@@ -177,9 +177,9 @@ text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#
 <section aria-label="선택한 항목의 설명" class="explanations">
 <button aria-label="설명 닫기" hidden="" id="clear-selection" type="button">닫기 ×</button>
 <div id="empty-prompt"></div>
-<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Reset event configuration</h2><p>.</p></article>
+<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Reset event configuration</h2><p>Reset event 설정은 새 episode에서 어떤 배치를 바꿀지 정합니다. 설정한 함수와 sampling 범위가 reset 시 적용됩니다.</p></article>
 <article aria-labelledby="heading-node-1" class="definition" data-definition="node-1" id="definition-node-1"><h2 id="heading-node-1">Initial reset</h2><p>첫 control step 전에 설정된 rack·vial 배치를 포함하여 scene을 초기화합니다.</p></article>
-<article aria-labelledby="heading-node-2" class="definition" data-definition="node-2" id="definition-node-2"><h2 id="heading-node-2">Environment step</h2><p>.</p></article>
+<article aria-labelledby="heading-node-2" class="definition" data-definition="node-2" id="definition-node-2"><h2 id="heading-node-2">Environment step</h2><p>Environment step은 action을 적용하고 simulation을 진행하는 반복입니다. 매 step의 진행과 새 episode를 위한 reset은 서로 구분합니다.</p></article>
 <article aria-labelledby="heading-node-3" class="definition" data-definition="node-3" id="definition-node-3"><h2 id="heading-node-3">Event manager</h2><p>Reset event는 reset 대상 environment에서 실행되며, 일반적인 매 control step에서 실행되지는 않습니다.</p></article>
 <article aria-labelledby="heading-node-4" class="definition" data-definition="node-4" id="definition-node-4"><h2 id="heading-node-4">Randomize placement</h2><p>Reset 함수는 설정된 범위에서 rack 배치를 sampling합니다. 여기서 x와 y의 단위는 meter, yaw의 단위는 radian입니다.</p></article>
 </section>

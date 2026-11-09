@@ -3,7 +3,7 @@
 ## 학습 환경 선택
 
 - **self_env**: [한국어·English](self_env/index.html). 현재 발표자료의 전체 실습 절차를 자신의 환경에서 수행합니다.
-- **dli_env**: [한국어·English](dli_env/index.html). 설치·Docker build·Hugging Face 연결·모델 다운로드·데이터 업로드 없이, 준비된 환경에서 로컬 수집·검토·평가를 진행하고 제공 checkpoint를 사용합니다. 학습·추가 Co-Training data 준비·환경 구축은 수업 후 개인 실습 순서로 간략히 안내합니다.
+- **dli_env**: [한국어·English](dli_env/index.html). 설치·Docker build·Hugging Face 로그인·모델 다운로드·데이터 업로드 없이, 준비된 환경에서 로컬 수집·검토·평가를 진행하고 제공 checkpoint를 사용합니다. 공개 Hub Dataset Visualizer 시연은 수업에서 진행합니다. 학습·추가 Co-Training data 준비·환경 구축은 수업 후 개인 실습 순서로 간략히 안내합니다.
 
 두 환경은 각각 한국어·영어 70장과 독립된 발표자 대본을 제공합니다. 계산 도표에서는 기본값 → 조건 변경 → 결과 비교 → 기본값 복원 순으로 자동 조작합니다. 변경은 교육용 도표에만 적용되며 실제 학습이나 robot 설정은 바뀌지 않습니다.
 
@@ -128,7 +128,7 @@ Open [index.html](index.html) in Chrome or Edge, choose self_env or dli_env, the
 | English | [en/index.html](en/index.html) | [English guide](en/guide/index.html) | English |
 | 한국어 | [ko/index.html](ko/index.html) | [한국어 교재](ko/guide/index.html) | 한국어 |
 
-Each edition has 70 slides in both languages. self_env has 285 presenter cues per language; dli_env has 300. dli_env keeps the workshop exercises and prepared-checkpoint evaluation, but omits installation, build, Hub authentication, model download, and data upload from class. Optional training and preparation are summarized as independent follow-up sequences with reminders and detailed-guide links. The narration connects the essential technical reasoning, demonstrations, and exercise decisions; detailed commands and reference procedures remain in the slides and course guide. Tabs, diagrams, media, and guide content are available independently of the shorter narration. The English version uses the English course source and translated presentation-specific explanations and narration. Course terminology and executable commands are retained.
+Each edition has 70 slides in both languages. self_env has 380 presenter cues per language; dli_env has 394. dli_env keeps the workshop exercises and prepared-checkpoint evaluation, but omits installation, build, Hub authentication, model download, and data upload from class. Optional training and preparation are summarized as independent follow-up sequences with reminders and detailed-guide links. The narration connects the essential technical reasoning, demonstrations, and exercise decisions; detailed commands and reference procedures remain in the slides and course guide. Tabs, diagrams, media, and guide content are available independently of the shorter narration. The English version uses the English course source and translated presentation-specific explanations and narration. Course terminology and executable commands are retained.
 
 ### Edition maintenance
 
@@ -183,3 +183,11 @@ Reuse valid prepared settings. Revise USB/camera settings only if mismatched, an
 Authoring: `tools/apply_practice_groups.py` reuses existing lesson commands and adds bilingual group metadata and presenter cues. It does not execute commands or change self_env content.
 
 Skipped procedures retain a concise explanation of what they do, why they matter, and their sequence. Follow-up guidance is given once per related unit (Hub sharing, post-training, co-training preparation, automated collection, or environment preparation), rather than appended to every presenter card. Detailed guide links remain available.
+
+### 발표자 카드의 시연 동작
+
+- 카드 오른쪽 위 Hands-on 표시는 해당 명령·계산 도표·공개 웹 시연을 엽니다. 명령을 운영체제에서 자동 실행하지 않습니다.
+- 영상 설명 카드에 진입하면 연결된 영상을 처음부터 무음 재생합니다. 다른 설명 카드나 장표로 이동하면 정지하며, 다음 장표 미리보기는 재생하지 않습니다. 수동 재생·정지·시간 이동도 사용할 수 있습니다.
+- 참가자 실습 카드는 충분한 실습 시간을 안내하며, 완료를 확인한 뒤 강사가 직접 다음 설명으로 진행합니다.
+
+실습 안내 팝업에는 목표·순서·완료 기준만 표시합니다. 명령 모음은 발표자 카드의 **실습 명령 모음 열기** 버튼을 눌렀을 때만 별도 팝업으로 표시됩니다. 도표의 학습 항목 108개는 각각 선택과 짧은 설명 카드가 연결되어 있습니다.

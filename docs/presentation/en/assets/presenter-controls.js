@@ -144,10 +144,20 @@
     else box.scrollTop+=(a.delta||1)*box.clientHeight*.8;
   }
   async function execute(a){
+    if(a.kind==='video'&&a.operation==='pause-all'){
+      videos().forEach(v=>v.pause());
+      return;
+    }
     if(['show','diagram','scroll','accordion','widget','widget-file','zoom','video'].includes(a.kind)&&a.scope!=='popup'&&a.scope!=='objectives')close();
     await context(a);
     const s=slide(),pane=s.panes?.[a.pane??api.pane]||s.rail_overview;
     switch(a.kind){
+      case 'practice-commands':{
+        const group=api.course.practice_groups?.find(g=>g.id===a.group);
+        if(!group?.commands_html)throw Error('Exercise commands not found: '+a.group);
+        api.openReading(group.title,group.commands_html,{page:api.course.slides[group.start].page,anchor:''});
+        break;
+      }
       case 'practice':{
         const group=api.course.practice_groups?.find(g=>g.id===a.group);
         if(!group)throw Error('Exercise group not found: '+a.group);
@@ -188,11 +198,11 @@
         const v=videos()[a.video||0];if(!v)throw Error("No locally controllable video is available in this view.");
         v.muted=true;
         const play=()=>v.play().catch(error=>{if(error.name!=='AbortError'&&window.DLI_EMBED_CONFIG)parent.postMessage({type:'dli:media-error',message:"Video playback could not start. Use the play button in the presentation window."},'*');});
-        if(a.operation==='play')play();else if(a.operation==='pause')v.pause();
+        if(a.operation==='play')await play();else if(a.operation==='pause')v.pause();
         else if(a.operation==='replay'||a.operation==='seek'){
           const time=a.operation==='replay'?0:Math.min(v.duration||Infinity,Math.max(0,a.time));
           v.dataset.seekId=String(Date.now());v.dataset.seekTime=String(time);v.currentTime=time;
-          if(a.operation==='replay')play();
+          if(a.operation==='replay')await play();
         }
         break;
       }

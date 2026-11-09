@@ -215,7 +215,7 @@ text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#
 <section aria-label="선택한 항목의 설명" class="explanations">
 <button aria-label="설명 닫기" hidden="" id="clear-selection" type="button">닫기 ×</button>
 <div id="empty-prompt"></div>
-<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Real leader arm</h2><p>.</p></article>
+<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Real leader arm</h2><p>Leader arm이 사람이 의도한 joint command를 제공합니다. 이 입력을 현재 simulation observation과 짝지어 demonstration을 기록합니다.</p></article>
 <article aria-labelledby="heading-node-1" class="definition" data-definition="node-1" id="definition-node-1"><h2 id="heading-node-1">lerobot_interface</h2><p>Leader arm을 읽고 joint 값을 simulation의 action 표현으로 연결합니다.</p></article>
 <article aria-labelledby="heading-node-2" class="definition" data-definition="node-2" id="definition-node-2"><h2 id="heading-node-2">lerobot_agent</h2><p>Action을 읽어 현재 observation과 함께 기록한 뒤 simulation을 진행합니다. Rate limiter가 다음 반복의 timing을 맞춥니다.</p></article>
 <article aria-labelledby="heading-node-3" class="definition" data-definition="node-3" id="definition-node-3"><h2 id="heading-node-3">Environment</h2><p>Simulation의 로봇과 camera입니다.</p></article>

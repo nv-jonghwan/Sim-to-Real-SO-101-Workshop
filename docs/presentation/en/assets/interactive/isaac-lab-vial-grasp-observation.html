@@ -175,12 +175,12 @@ text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#
 <section aria-label="Selected explanation" class="explanations">
 <button aria-label="Close explanation" hidden="" id="clear-selection" type="button">Close ×</button>
 <div id="empty-prompt"></div>
-<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Observation configuration</h2><p>.</p></article>
+<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Observation configuration</h2><p>Observation configuration defines the terms to compute and how they are grouped. It configures the vial-grasp term to read the required sensors and state.</p></article>
 <article aria-labelledby="heading-node-1" class="definition" data-definition="node-1" id="definition-node-1"><h2 id="heading-node-1">Contact sensor</h2><p>Contact readings provide evidence for the grasp check. Contact alone is not a successful placement.</p></article>
-<article aria-labelledby="heading-node-2" class="definition" data-definition="node-2" id="definition-node-2"><h2 id="heading-node-2">Environment step</h2><p>.</p></article>
+<article aria-labelledby="heading-node-2" class="definition" data-definition="node-2" id="definition-node-2"><h2 id="heading-node-2">Environment step</h2><p>The environment step updates the scene and sensors. Observations read that updated state to provide information for the next decision.</p></article>
 <article aria-labelledby="heading-node-3" class="definition" data-definition="node-3" id="definition-node-3"><h2 id="heading-node-3">Observation manager</h2><p>Compute configured observation terms from the updated scene and sensor data.</p></article>
 <article aria-labelledby="heading-node-4" class="definition" data-definition="node-4" id="definition-node-4"><h2 id="heading-node-4">Grasp check</h2><p>The workshop uses contact force and vial height to acquire a grasp flag, then keeps it while contact persists. This heuristic is not proof of a stable grasp. Observation-group nesting is simplified here.</p></article>
-<article aria-labelledby="heading-node-5" class="definition" data-definition="node-5" id="definition-node-5"><h2 id="heading-node-5">Observations</h2><p>vial_grasped.</p></article>
+<article aria-labelledby="heading-node-5" class="definition" data-definition="node-5" id="definition-node-5"><h2 id="heading-node-5">Observations</h2><p>vial_grasped is the computed grasp indicator. This flag alone does not establish successful rack placement.</p></article>
 </section>
 </div>
 <p aria-live="polite" class="sr-only" id="selection-status" role="status"></p>

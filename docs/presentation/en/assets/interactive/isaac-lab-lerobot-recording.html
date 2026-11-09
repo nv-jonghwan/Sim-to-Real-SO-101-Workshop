@@ -215,7 +215,7 @@ text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#
 <section aria-label="Selected explanation" class="explanations">
 <button aria-label="Close explanation" hidden="" id="clear-selection" type="button">Close ×</button>
 <div id="empty-prompt"></div>
-<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Real leader arm</h2><p>.</p></article>
+<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Real leader arm</h2><p>The leader arm supplies the human-intended joint commands. Pair these inputs with the current simulation observations to record demonstrations.</p></article>
 <article aria-labelledby="heading-node-1" class="definition" data-definition="node-1" id="definition-node-1"><h2 id="heading-node-1">lerobot_interface</h2><p>Read the leader arm and bridge its joint values to the simulated action representation.</p></article>
 <article aria-labelledby="heading-node-2" class="definition" data-definition="node-2" id="definition-node-2"><h2 id="heading-node-2">lerobot_agent</h2><p>Read the action, record it with the current observation, then advance simulation. The rate limiter paces the next iteration.</p></article>
 <article aria-labelledby="heading-node-3" class="definition" data-definition="node-3" id="definition-node-3"><h2 id="heading-node-3">Environment</h2><p>Simulated robot + cameras.</p></article>

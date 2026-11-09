@@ -175,12 +175,12 @@ text {font-family:var(--diagram-font,Arial,sans-serif);fill:var(--diagram-text,#
 <section aria-label="선택한 항목의 설명" class="explanations">
 <button aria-label="설명 닫기" hidden="" id="clear-selection" type="button">닫기 ×</button>
 <div id="empty-prompt"></div>
-<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Observation configuration</h2><p>.</p></article>
+<article aria-labelledby="heading-node-0" class="definition" data-definition="node-0" id="definition-node-0"><h2 id="heading-node-0">Observation configuration</h2><p>Observation configuration은 계산할 term과 이를 묶을 group을 정합니다. Vial grasp term이 필요한 sensor와 state를 읽도록 구성합니다.</p></article>
 <article aria-labelledby="heading-node-1" class="definition" data-definition="node-1" id="definition-node-1"><h2 id="heading-node-1">Contact sensor</h2><p>Contact 측정값은 grasp 확인의 근거를 제공합니다. Contact가 발생했다는 사실만으로 placement 성공을 뜻하지는 않습니다.</p></article>
-<article aria-labelledby="heading-node-2" class="definition" data-definition="node-2" id="definition-node-2"><h2 id="heading-node-2">Environment step</h2><p>.</p></article>
+<article aria-labelledby="heading-node-2" class="definition" data-definition="node-2" id="definition-node-2"><h2 id="heading-node-2">Environment step</h2><p>Environment step에서 scene과 sensor가 갱신됩니다. Observation은 갱신된 상태를 읽어 다음 판단에 사용할 정보를 만듭니다.</p></article>
 <article aria-labelledby="heading-node-3" class="definition" data-definition="node-3" id="definition-node-3"><h2 id="heading-node-3">Observation manager</h2><p>갱신된 scene과 sensor data로 설정된 observation term을 계산합니다.</p></article>
 <article aria-labelledby="heading-node-4" class="definition" data-definition="node-4" id="definition-node-4"><h2 id="heading-node-4">Grasp check</h2><p>Workshop에서는 contact force와 vial 높이로 grasp flag를 설정하고, contact가 지속되는 동안 유지합니다. 이 heuristic이 안정적인 grasp를 입증하는 것은 아닙니다. 여기서는 observation group의 중첩 구조를 단순화했습니다.</p></article>
-<article aria-labelledby="heading-node-5" class="definition" data-definition="node-5" id="definition-node-5"><h2 id="heading-node-5">Observations</h2><p>vial_grasped.</p></article>
+<article aria-labelledby="heading-node-5" class="definition" data-definition="node-5" id="definition-node-5"><h2 id="heading-node-5">Observations</h2><p>vial_grasped는 계산된 grasp 판정 결과입니다. 이 flag만으로 rack placement까지 성공했다고 판단하지는 않습니다.</p></article>
 </section>
 </div>
 <p aria-live="polite" class="sr-only" id="selection-status" role="status"></p>
