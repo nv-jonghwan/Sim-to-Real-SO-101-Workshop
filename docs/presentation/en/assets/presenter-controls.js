@@ -12,7 +12,7 @@
   const frames=()=>[...stage.querySelectorAll('iframe')].filter(f=>{try{return !!f.contentDocument?.body;}catch{return false;}});
   const roots=()=>[stage,...frames().map(f=>f.contentDocument)];
   const videos=()=>roots().flatMap(r=>[...r.querySelectorAll('video')]);
-  const fields=d=>[...d.querySelectorAll('.groot-explorers input,.groot-explorers select,.image-comparison input:not([type=file]),.image-comparison select')];
+  const fields=d=>[...d.querySelectorAll('.groot-explorers input,.groot-explorers select,.batch-controls select,.image-comparison input:not([type=file]),.image-comparison select')];
   const scrollables=d=>[...d.querySelectorAll('.diagram-overview-prose,.panel-content,.detail-panel,.detail-body,.details-body,.detail-content,[tabindex="0"]')].filter(n=>n.scrollHeight>n.clientHeight+3&&['auto','scroll'].includes(d.defaultView.getComputedStyle(n).overflowY));
 
   function widgetState(d){return {values:fields(d).map(n=>({value:n.value,checked:n.checked})),tab:d.querySelector('.widget-tabs [aria-selected="true"]')?.id,details:[...d.querySelectorAll('details')].map(n=>n.open),scroll:scrollables(d).map(n=>n.scrollTop/Math.max(1,n.scrollHeight-n.clientHeight))};}
@@ -148,6 +148,13 @@
     await context(a);
     const s=slide(),pane=s.panes?.[a.pane??api.pane]||s.rail_overview;
     switch(a.kind){
+      case 'practice':{
+        const group=api.course.practice_groups?.find(g=>g.id===a.group);
+        if(!group)throw Error('Exercise group not found: '+a.group);
+        // A teaching panel only: it never starts commands or advances on a timer.
+        api.openReading(group.title,group.html,{page:api.course.slides[group.start].page,anchor:''});
+        break;
+      }
       case 'show':break;
       case 'slide':close();api.go(a.index??api.index+(a.delta||1));break;
       case 'objectives':api.setObjectivesOpen(a.open!==false);break;
@@ -192,6 +199,14 @@
       case 'widget':{
         const f=await readyFrame(),d=f?.contentDocument;if(!d)throw Error("Widget is not ready.");
         if(a.tab){const n=d.getElementById(a.tab);if(n)n.click();}
+        // Each narrated scenario sets its own values so backward navigation is deterministic.
+        for(const [selector,value] of Object.entries(a.values||{})){
+          const n=d.querySelector(selector);if(!n)throw Error('Missing calculator control: '+selector);
+          n.value=String(value);if(n.value!==String(value))throw Error('Unsupported calculator value: '+selector);
+          n.dispatchEvent(new f.contentWindow.Event('input',{bubbles:true}));
+          n.dispatchEvent(new f.contentWindow.Event('change',{bubbles:true}));
+        }
+        if(a.focus)d.querySelector(a.focus)?.scrollIntoView({block:'center',behavior:'instant'});
         if(a.selector){const n=d.querySelector(a.selector);if(!n)throw Error("Widget control not found.");
           if(a.operation==='click')n.click();else{n.value=String(a.value);if(a.checked!==undefined)n.checked=a.checked;n.dispatchEvent(new f.contentWindow.Event('input',{bubbles:true}));n.dispatchEvent(new f.contentWindow.Event('change',{bubbles:true}));}}
         break;

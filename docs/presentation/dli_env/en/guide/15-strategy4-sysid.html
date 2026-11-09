@@ -1,0 +1,523 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Sim-to-Real Strategy 5: System Identification With AnchorBench — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '15-strategy4-sysid';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="15-explore.html" rel="next" title="Explore and Experiment"/>
+<link href="14-strategy3-cosmos.html" rel="prev" title="Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Sim-to-Real Strategy 5: System Identification With AnchorBench</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/15-strategy4-sysid.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="sim-to-real-strategy-5-system-identification-with-anchorbench">
+<h1>Sim-to-Real Strategy 5: System Identification With AnchorBench<a class="headerlink" href="#sim-to-real-strategy-5-system-identification-with-anchorbench" title="Link to this heading">#</a></h1>
+<div class="course-module-type course-module-type--lecture">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="3"></rect>
+<path d="M16 21v4m-6 4 6-4 6 4M11 9h9m-9 2 3.5 4m6.5-4-3.5 4"></path>
+<circle cx="9" cy="9" r="2"></circle>
+<circle cx="22" cy="9" r="2"></circle>
+<circle cx="16" cy="16" r="2"></circle>
+</svg>
+<span>Lecture</span>
+</div>
+<a class="reference internal image-reference" href="_images/sysid-actuator-comparison-banner.png"><img alt="SO-101 paired trial with SysID actuators on the left and original actuators on the right. Both trials failed: the SysID trial missed the rack, and the original-actuator trial missed the vial grasp." src="_images/sysid-actuator-comparison-banner.png" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">What Do I Need for This Module?</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">This module uses videos and published comparisons to explain system identification. You do not need a connected robot or a running workshop container.</p>
+</div>
+</details><p>The same joint command can produce different motion in simulation and on hardware. <strong>System identification (SysId)</strong> estimates model parameters from measured behavior so that simulation better represents the physical system. Here, you’ll compare SO-101 motion with and without an <a class="reference external" href="https://github.com/NVIDIA/anchor-bench" rel="noreferer noopener" target="_blank">AnchorBench</a> SysID layer and see how model differences can affect policy behavior.</p>
+<section id="learning-objectives">
+<h2>Learning Objectives<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Explain how measured robot motion informs system identification.</p></li>
+<li><p>Recognize differences between baseline, fitted, and measured motion.</p></li>
+<li><p>Explain why matched actions and initial conditions matter in an experiment.</p></li>
+<li><p>Distinguish actuator-model validation from downstream policy evaluation.</p></li>
+</ul>
+</section>
+<section id="from-measurements-to-a-simulation-model">
+<h2>From Measurements to a Simulation Model<a class="headerlink" href="#from-measurements-to-a-simulation-model" title="Link to this heading">#</a></h2>
+<p>A position-controlled joint’s response depends on more than its target angle. Drive stiffness and damping, actuator effort limits, armature, and friction affect tracking and settling. A SysId workflow adjusts these parameters to reduce disagreement between simulated motion and physical measurements.</p>
+<p>The basic process is to record informative motions, fit a model on a chosen subset, and test it on motions excluded from fitting. A good fit should explain behavior beyond the motions used to tune it. Policy success is a further test: improved motion tracking does not by itself establish better pick-and-place performance.</p>
+<figure>
+<iframe class="interactive-learning-diagram" loading="lazy" src="_static/interactive/system-identification.html" style="display:block; width:100%; height:600px; border:0;" title="Measure physical motion, fit a simulation model, then validate motion and policy behavior"></iframe>
+</figure></section>
+<section id="anchor-lab-and-anchorbench">
+<h2>Anchor-Lab and AnchorBench<a class="headerlink" href="#anchor-lab-and-anchorbench" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://huggingface.co/datasets/nvidia/Anchor-Lab" rel="noreferer noopener" target="_blank">NVIDIA Anchor-Lab</a> is a collection of timestamped measurements from physical robot experiments. It covers SO-101 arms and H1/G1 humanoids. The SO-101 recordings include frequency sweeps, backlash-detection motions, and workspace sweeps: different motions reveal different aspects of a robot’s response. These measurements provide a reference for calibrating and validating simulation models.</p>
+<p>The <a class="reference external" href="https://huggingface.co/VigneshBhavan/so101-newton-actuator-ab-paired-checkpoints" rel="noreferer noopener" target="_blank">SO-101 AnchorBench comparison</a> shows how fitted actuator parameters can be studied in a policy-learning workflow. Its Hugging Face page brings together baseline and fitted actuator profiles, paired policy checkpoints, reproduction notes, and comparison videos. The accompanying <a class="reference external" href="https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-paired-demos" rel="noreferer noopener" target="_blank">paired demonstrations</a> use matched commands and scenes to help isolate the effect of the actuator model.</p>
+<p>The published bundle supplies a fitted profile and reproduction records, but not a complete command sequence for fitting a new AnchorBench model from Anchor-Lab telemetry.</p>
+</section>
+<section id="teleop-comparison-default-and-sysid-assets">
+<h2>Teleop Comparison: Default and SysID Assets<a class="headerlink" href="#teleop-comparison-default-and-sysid-assets" title="Link to this heading">#</a></h2>
+<p>A poorly tuned robot asset can move differently from the physical robot it represents. This teleoperation comparison overlays the default SO-101 asset, the asset with a fitted SysID layer, and the measured hardware motion. The separation between them illustrates the actuation gap.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Color</p></th>
+<th class="head"><p>What it shows</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Yellow</strong></p></td>
+<td><p>Default USD asset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Red</strong></p></td>
+<td><p>SysID USD layer applied on top of the default USD asset.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Light blue</strong></p></td>
+<td><p>Joint values read back from the physical SO-101 being driven. This readback adds a little more delay.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Compare how closely the simulated motion follows the light-blue hardware readback. Account for the readback delay when interpreting timing differences; not every visible lag comes from the actuator model.</p>
+<figure style="margin: 1.5rem auto;">
+<video aria-describedby="teleop-sysid-comparison-caption" aria-label="SO-101 teleop comparison of default USD, SysID USD layer, and measured hardware motion" controls="" height="720" playsinline="" preload="metadata" style="width: 100%; height: auto;" width="1280">
+<source src="_static/videos/so101-teleop-sysid-comparison.mp4" type="video/mp4"/>
+<a href="_static/videos/so101-teleop-sysid-comparison.mp4">Download the SO-101 teleop and SysID comparison.</a>
+</video>
+<figcaption id="teleop-sysid-comparison-caption">Yellow: default USD. Red: SysID USD layer over the default asset. Light blue: measured hardware readback, with additional delay.</figcaption>
+</figure></section>
+<section id="example-sysid-motion-chirp-sweep">
+<h2>Example SysID Motion: Chirp Sweep<a class="headerlink" href="#example-sysid-motion-chirp-sweep" title="Link to this heading">#</a></h2>
+<p>A chirp sweep gradually changes the frequency of an oscillating command. Watch the lag, amplitude, and settling of the measured motion as the sweep progresses. A single static pose would not reveal these response differences.</p>
+<figure style="margin: 1.5rem auto;">
+<video aria-label="Chirp Sweep: SO-101 system identification motion" controls="" height="720" playsinline="" preload="metadata" style="width: 100%; height: auto;" width="1280">
+<source src="_static/videos/chirp-sweep.mp4" type="video/mp4"/>
+<a href="_static/videos/chirp-sweep.mp4">Download the Chirp Sweep SysID motion example.</a>
+</video>
+</figure><figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/chirp-sweep-joint-response.png"><img alt="Six joint-response plots for the chirp sweep, comparing dashed commanded trajectories with solid motor encoder measurements as frequency increases. Arm positions are in degrees; gripper opening is in percent." src="_images/chirp-sweep-joint-response.png" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Joint responses from the chirp sweep above. Dashed lines show the commanded motion; solid lines show motor encoder measurements. Notice where the measured motion lags or has a smaller amplitude as the oscillations get faster.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="workshop-comparison-sysid-and-original-actuators">
+<h2>Workshop Comparison: SysId and Original Actuators<a class="headerlink" href="#workshop-comparison-sysid-and-original-actuators" title="Link to this heading">#</a></h2>
+<p>Watch these 10 paired trials with SysId actuators on the left and original actuators on the right. The video plays at 5× speed.</p>
+<p>The policy used here was not trained to robust task performance, but the comparison makes failures while moving toward the vial visible. Focus on the approach: does the gripper reach the vial in a position where it can grasp it? Use these observations to distinguish approach failures from problems during grasping or placement.</p>
+<figure style="margin: 1.5rem auto;">
+<video aria-describedby="sysid-comparison-caption" aria-label="SO-101 comparison with SysId and original actuators" controls="" height="610" playsinline="" preload="metadata" style="width: 100%; height: auto;" width="1920">
+<source src="_static/videos/sysid_vs_original_10_pairs_5x.mp4" type="video/mp4"/>
+<a href="_static/videos/sysid_vs_original_10_pairs_5x.mp4">Download the SysId and original actuator comparison.</a>
+</video>
+<figcaption id="sysid-comparison-caption">SysId actuators (left) and original actuators (right).</figcaption>
+</figure><section id="simulation-evaluation-results">
+<h3>Simulation Evaluation Results<a class="headerlink" href="#simulation-evaluation-results" title="Link to this heading">#</a></h3>
+<p>In a separate simulation comparison, we evaluated two policies with both actuator profiles. Each cell below reports successful placements out of <strong>100 trials</strong>, using the same scene resets, a 16-action execution horizon, and a 30-second trial limit.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Policy training data</p></th>
+<th class="head"><p>Evaluated with SysID actuators</p></th>
+<th class="head"><p>Evaluated with original actuators</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Collected with SysID actuators</p></td>
+<td><p><strong>96/100 (96%)</strong></p></td>
+<td><p><strong>86/100 (86%)</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Collected with original actuators</p></td>
+<td><p><strong>57/100 (57%)</strong></p></td>
+<td><p><strong>49/100 (49%)</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The SysID-trained policy performed better with either actuator profile. For that same policy, switching evaluation from original to SysID actuators improved success by <strong>10 percentage points</strong>.</p>
+<p>This isn’t always the case with SysID, and likely points to poor tuning with the original model to have such a delta in simulation.</p>
+</section>
+</section>
+<section id="key-takeaways">
+<h2>Key Takeaways<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>SysId uses physical measurements to estimate simulation parameters.</p></li>
+<li><p>Timing, units, and motion coverage determine whether a fit is meaningful.</p></li>
+<li><p>Matched demonstrations help isolate the effect of actuator profiles.</p></li>
+<li><p>Verify both motion-model accuracy and downstream task performance.</p></li>
+</ul>
+</section>
+<section id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://huggingface.co/datasets/nvidia/Anchor-Lab" rel="noreferer noopener" target="_blank">Anchor-Lab measurements</a></p></li>
+<li><p><a class="reference external" href="https://huggingface.co/VigneshBhavan/so101-newton-actuator-ab-paired-checkpoints/blob/123b6cbc48f7bb948397cb0ad5b9dac8a4ab38d8/reproduction/README.md" rel="noreferer noopener" target="_blank">SO-101 profiles and reproduction notes</a></p></li>
+<li><p><a class="reference external" href="https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-paired-demos" rel="noreferer noopener" target="_blank">Paired demonstrations</a></p></li>
+</ul>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>What's Next?</h2>
+<p>Continue to the next page in the table of contents:
+    <a class="reference internal course-next-link" href="15-explore.html">Explore and Experiment</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="14-strategy3-cosmos.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</p>
+</div>
+</a>
+<a class="right-next" href="15-explore.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Explore and Experiment</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning Objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-measurements-to-a-simulation-model">From Measurements to a Simulation Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#anchor-lab-and-anchorbench">Anchor-Lab and AnchorBench</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teleop-comparison-default-and-sysid-assets">Teleop Comparison: Default and SysID Assets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-sysid-motion-chirp-sweep">Example SysID Motion: Chirp Sweep</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workshop-comparison-sysid-and-original-actuators">Workshop Comparison: SysId and Original Actuators</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-evaluation-results">Simulation Evaluation Results</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">Key Takeaways</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resources">Resources</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

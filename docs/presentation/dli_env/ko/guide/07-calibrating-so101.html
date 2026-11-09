@@ -1,0 +1,777 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>SO-101 Calibration — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '07-calibrating-so101';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<link href="08-operating-so101.html" rel="next" title="Teleoperation"/>
+<link href="07-using-workspace.html" rel="prev" title="Workspace 사용"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">과정 개요</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">SO-101 Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Dataset과 Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">SO-101 Calibration</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/07-calibrating-so101.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="calibrating-the-so-101">
+<h1>SO-101 Calibration<a class="headerlink" href="#calibrating-the-so-101" title="Link to this heading">#</a></h1>
+<div class="course-module-type">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M11 17V8a2 2 0 0 1 4 0v6a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v2a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-3c-2 0-4-1-5-3l-5-7a2 2 0 0 1 3-2l1 1"></path>
+<path d="M15 14v5m4-4v4m4-2v3M5 9H3m4-5L5.5 2.5M19 5l1.5-1.5"></path>
+</svg>
+<span>Hands-on</span>
+</div>
+<a class="course-banner reference internal image-reference" href="_images/teleop-calibration-pose.png"><img alt="Calibration을 위해 SO-101 leader arm의 pose를 맞추는 모습입니다." class="course-banner" src="_images/teleop-calibration-pose.png" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">이 Module에 필요한 준비물</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">실습입니다. SO-101 leader와 follower arm, USB cable, <a class="reference internal" href="07-using-workspace.html"><span class="std std-doc">Using the Workspace</span></a>에서 조립한 workspace가 필요합니다.</p>
+</div>
+</details><p>두 arm의 전원을 켜고 calibration한 뒤 joint range를 확인합니다. <strong>leader / teleop arm</strong>은 손으로 움직이는 arm이고, <strong>follower / robot arm</strong>은 task를 수행합니다.</p>
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<p>Hardware 문제가 발생하면 <a class="reference internal" href="troubleshooting.html"><span class="std std-doc">Troubleshooting Guide</span></a>에서 흔한 문제의 해결 방법을 확인하세요.</p>
+</div>
+<section id="learning-objectives">
+<h2>학습 목표<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<p>이 session을 마치면 다음을 수행할 수 있습니다.</p>
+<ul class="simple">
+<li><p>두 arm의 전원을 안전하게 <strong>켜기</strong></p></li>
+<li><p>정확한 positioning을 위한 leader와 follower <strong>calibration</strong></p></li>
+</ul>
+</section>
+<section id="safety-guidelines">
+<h2>안전 지침<a class="headerlink" href="#safety-guidelines" title="Link to this heading">#</a></h2>
+<p>Robot 전원을 켜기 전에 <a class="reference internal" href="08-operating-so101.html#id1"><span class="std std-ref">Safety</span></a> 절차를 확인하세요.</p>
+</section>
+<section id="powering-on-the-robot">
+<h2>Robot 전원 켜기<a class="headerlink" href="#powering-on-the-robot" title="Link to this heading">#</a></h2>
+<section id="physical-inspection">
+<h3>실물 점검<a class="headerlink" href="#physical-inspection" title="Link to this heading">#</a></h3>
+<p>전원을 켜기 전에:</p>
+<ol class="arabic simple">
+<li><p>Robot에 눈에 보이는 손상이 없는지 <strong>점검</strong>합니다.</p></li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">경고</p>
+<p><strong>Leader는 5V</strong>, <strong>follower는 12V</strong>를 사용합니다. 전원 공급 장치를 바꿔 연결하지 마세요.</p>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>전원과 USB cable을 <strong>연결</strong>합니다.</p></li>
+<li><p>Robot 뒤쪽 control board의 <strong>power LED</strong>가 켜지는지 <strong>확인</strong>합니다.</p></li>
+<li><p>두 arm을 USB cable로 computer에 <strong>연결</strong>합니다.</p></li>
+</ol>
+</section>
+<section id="run-the-docker-container-for-this-course">
+<h3>과정용 Docker Container 실행<a class="headerlink" href="#run-the-docker-container-for-this-course" title="Link to this heading">#</a></h3>
+<p>Arm을 다시 연결하면 USB port 할당이 바뀔 수 있습니다. 하나만 다시 연결하면 보통 바뀌지 않습니다. LeRobot port finder로 각 port를 확인하고 이후 명령에 사용할 값을 저장하세요.</p>
+<ol class="arabic simple">
+<li><p><strong>Host에서 terminal을 열고 home directory의 workshop folder로 이동</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/Sim-to-Real-SO-101-Workshop
+</pre></div>
+</div>
+<p>위 cd 명령에는 실제 저장소 경로를 사용하세요. <code class="docutils literal notranslate"><span class="pre">~/Sim-to-Real-SO-101-Workshop</span></code>는 예시입니다. 같은 터미널에서 현재 폴더에 <code class="docutils literal notranslate"><span class="pre">docker/Dockerfile</span></code>과 <code class="docutils literal notranslate"><span class="pre">source/</span></code>가 있는지 확인한 뒤 다음 명령 블록을 실행하세요.</p>
+<p><a aria-haspopup="dialog" href="#docker-build-reference" id="docker-build-reference-link">참고: docker build하기</a></p>
+<dialog aria-labelledby="docker-build-reference-title" id="docker-build-reference">
+<header class="docker-build-reference-header">
+<h4 id="docker-build-reference-title">docker build하기</h4>
+<button autofocus="" class="docker-build-reference-close" type="button">닫기</button>
+</header>
+<p>so101-workshop:latest는 이 저장소에서 로컬로 빌드하는 이미지입니다. Docker Hub에 로그인해도 이미지가 생성되지는 않습니다. 이미지가 없으면 docker run이 Hub에서 내려받으려다 pull access denied 오류를 표시할 수 있습니다.</p>
+<p>Workshop Container를 시작하기 전에 Host 터미널에서 아래 순서로 진행하세요. 저장소를 다른 폴더에 받았다면 예시 경로 대신 실제 저장소 폴더를 사용합니다.</p>
+<ol>
+<li><p>저장소 최상위 폴더로 이동하고 Dockerfile이 있는지 확인합니다.</p><pre><code>cd ~/Sim-to-Real-SO-101-Workshop
+test -f docker/Dockerfile</code></pre></li>
+<li><p>Docker 접근과 Buildx를 확인합니다. docker version에 Client와 Server가 모두 나와야 합니다. 권한이나 daemon 오류가 있으면 먼저 해결하세요.</p><pre><code>docker version
+docker buildx version</code></pre></li>
+<li><p>아래 Ubuntu 경로에 Buildx가 설치되어 있지만 docker buildx가 인식되지 않으면 사용자 plugin 폴더에 연결합니다. 링크가 이미 있으면 ln 명령은 건너뜁니다. 바이너리가 없다면 공식 Docker 설치 안내에 따라 Buildx plugin을 설치하세요.</p><pre><code>test -x /usr/libexec/docker/cli-plugins/docker-buildx
+mkdir -p ~/.docker/cli-plugins
+ln -s /usr/libexec/docker/cli-plugins/docker-buildx ~/.docker/cli-plugins/docker-buildx
+docker buildx version</code></pre><p>이 링크는 디스크에 저장되어 재부팅 후에도 유지됩니다. Docker를 재시작하거나 진행 중인 빌드를 중단하지 않습니다.</p></li>
+<li><p>이미지를 빌드합니다. 첫 빌드는 과정에 필요한 의존성을 내려받아 설치합니다. 명령이 성공적으로 끝난 뒤 Container를 시작하세요.</p><pre><code>docker build --progress=plain -t so101-workshop:latest -f docker/Dockerfile .</code></pre><p>Docker CLI가 여전히 Buildx를 실행하지 못하면 설치된 바이너리를 직접 사용합니다.</p><pre><code>/usr/libexec/docker/cli-plugins/docker-buildx build --load --progress=plain -t so101-workshop:latest -f docker/Dockerfile .</code></pre></li>
+<li><p>빌드된 이미지를 확인하고 데이터를 보관할 폴더를 만듭니다.</p><pre><code>docker image inspect so101-workshop:latest --format '{{.Os}}/{{.Architecture}}'
+mkdir -p outputs datasets models</code></pre><p>이미지 architecture는 Host와 같아야 합니다. x86_64 PC는 linux/amd64, Spark는 linux/arm64입니다. Architecture 일치만으로 simulation·rendering·policy inference가 검증되지는 않습니다.</p></li>
+<li><p>이 팝업을 닫고 본문의 Container 시작 명령으로 이어갑니다. 빌드된 이미지는 재부팅 후에도 유지되며, Container는 다시 시작해야 합니다. Dockerfile이나 필요한 의존성이 바뀌면 다시 빌드하세요.</p></li>
+</ol>
+<p><a href="https://docs.docker.com/engine/install/ubuntu/" rel="noopener noreferrer" target="_blank">Docker 설치와 Buildx 공식 문서</a></p>
+</dialog>
+<style>
+  #docker-build-reference { box-sizing: border-box; width: min(760px, calc(100% - 32px)); max-height: 85vh; overflow-y: auto; padding: 24px; border: 1px solid var(--pst-color-border, #b5b5b5); border-radius: 12px; background: var(--pst-color-background, white); color: var(--pst-color-text-base, #202020); box-shadow: 0 16px 64px #0005; }
+  #docker-build-reference::backdrop { background: #0009; }
+  #docker-build-reference .docker-build-reference-header { display: flex; align-items: start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+  #docker-build-reference-title { margin: 0; }
+  #docker-build-reference .docker-build-reference-close { flex-shrink: 0; padding: 6px 14px; border: 1px solid var(--pst-color-border, #999); border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+  #docker-build-reference pre { padding: 12px; overflow-x: auto; background: var(--pst-color-surface, #f3f5f1); border-radius: 6px; }
+  #docker-build-reference ol { padding-left: 24px; }
+  #docker-build-reference li { margin-bottom: 20px; }
+  #docker-build-reference p { line-height: 1.6; }
+</style>
+<script>
+(() => {
+  const link = document.getElementById('docker-build-reference-link');
+  const dialog = document.getElementById('docker-build-reference');
+  link.addEventListener('click', (event) => {
+    event.preventDefault();
+    dialog.showModal();
+  });
+  dialog.querySelector('.docker-build-reference-close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (event) => {
+    const bounds = dialog.getBoundingClientRect();
+    if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
+  });
+  dialog.addEventListener('close', () => link.focus());
+})();
+</script>
+<ol class="arabic simple" start="2">
+<li><p>아직 시작하지 않았다면 이 folder에서 container를 <strong>시작</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xhost<span class="w"> </span>+
+docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>so101-workshop<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>--privileged<span class="w"> </span>--runtime<span class="o">=</span>nvidia<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span>DISPLAY<span class="w"> </span>-v<span class="w"> </span>/tmp/.X11-unix:/tmp/.X11-unix<span class="w"> </span>-v<span class="w"> </span>~/.Xauthority:/root/.Xauthority<span class="w"> </span>-v<span class="w"> </span>/dev:/dev<span class="w"> </span>-v<span class="w"> </span>/run/udev:/run/udev:ro<span class="w"> </span>-v<span class="w"> </span>~/.cache/huggingface:/root/.cache/huggingface<span class="w"> </span>-v<span class="w"> </span>~/.cache/ovrtx:/root/.cache/ovrtx<span class="w"> </span>-v<span class="w"> </span>~/.cache/warp:/root/.cache/warp<span class="w"> </span>-v<span class="w"> </span>./docker/env:/root/env<span class="w"> </span>-v<span class="w"> </span>./source:/workspace/Sim-to-Real-SO-101-Workshop/source<span class="w"> </span>-v<span class="w"> </span>./outputs:/workspace/Sim-to-Real-SO-101-Workshop/outputs<span class="w"> </span>-v<span class="w"> </span>./datasets:/workspace/Sim-to-Real-SO-101-Workshop/datasets<span class="w"> </span>-v<span class="w"> </span>./models:/workspace/Sim-to-Real-SO-101-Workshop/models<span class="w"> </span>so101-workshop:latest
+</pre></div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">이미 실행 중인 Container에 연결</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Container가 이미 실행 중이고 추가 terminal이 필요하면 host에서 실행하세요. 이미 container prompt에 있다면 건너뜁니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>so101-workshop<span class="w"> </span>bash
+</pre></div>
+</div>
+</div>
+</details><p>Workshop Python environment와 저장된 설정이 자동으로 로드됩니다.</p>
+</section>
+<section id="identify-the-teleop-arm-port">
+<span id="identify-the-leader-arm-port"></span><h3>Leader Arm Port 확인<a class="headerlink" href="#identify-the-teleop-arm-port" title="Link to this heading">#</a></h3>
+<ol class="arabic simple" start="3">
+<li><p>다음 명령을 <strong>실행</strong>해 port를 확인합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-find-port
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>안내가 나오면 <strong>leader의 USB cable을 분리</strong>합니다.</p></li>
+</ol>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Finding all available ports for the MotorBus.
+['/dev/ttyACM0', '/dev/ttyACM2']
+Remove the usb cable from your MotorsBus and press Enter when done.
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Cable을 분리한 뒤 <strong>Enter</strong>를 누릅니다.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">port</span> <span class="n">of</span> <span class="n">this</span> <span class="n">MotorsBus</span> <span class="ow">is</span> <span class="s1">'/dev/ttyACM2'</span>
+<span class="n">Reconnect</span> <span class="n">the</span> <span class="n">USB</span> <span class="n">cable</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>이 예시에서 host가 할당한 port는 <code class="docutils literal notranslate"><span class="pre">/dev/ttyACM2</span></code>입니다. 연결 전후 device 목록의 차이로 찾습니다.</p>
+<ol class="arabic simple" start="6">
+<li><p>Leader를 <strong>다시 연결</strong>하고 port를 <strong>저장</strong>합니다. <code class="docutils literal notranslate"><span class="pre">/dev/ttyACM2</span></code>를 도구가 찾은 port로 바꾸세요.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setenv<span class="w"> </span><span class="nv">TELEOP_PORT</span><span class="o">=</span>/dev/ttyACM2<span class="w"> </span><span class="c1"># replace with the detected leader port</span>
+setenv<span class="w"> </span><span class="nv">TELEOP_ID</span><span class="o">=</span>orange_teleop<span class="w"> </span><span class="c1"># use this line as-is</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p><code class="docutils literal notranslate"><span class="pre">setenv</span></code>는 repository의 <code class="docutils literal notranslate"><span class="pre">docker/env</span></code>에 설정을 저장하므로 다음 container session에서도 자동으로 로드됩니다.</p>
+</div>
+</section>
+<section id="identify-the-robot-arm-port">
+<span id="identify-the-follower-arm-port"></span><h3>Follower Arm Port 확인<a class="headerlink" href="#identify-the-robot-arm-port" title="Link to this heading">#</a></h3>
+<ol class="arabic simple" start="7">
+<li><p><strong>Follower</strong>에서도 같은 절차를 <strong>반복</strong>하며, 안내에 따라 USB cable을 분리하고 다시 연결합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-find-port
+</pre></div>
+</div>
+<ol class="arabic simple" start="8">
+<li><p><code class="docutils literal notranslate"><span class="pre">/dev/ttyACM0</span></code>를 도구가 찾은 port로 바꿔 follower port를 <strong>저장</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setenv<span class="w"> </span><span class="nv">ROBOT_PORT</span><span class="o">=</span>/dev/ttyACM0<span class="w"> </span><span class="c1"># replace with the detected follower port</span>
+setenv<span class="w"> </span><span class="nv">ROBOT_ID</span><span class="o">=</span>orange_robot<span class="w"> </span><span class="c1"># use this as-is</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>ID는 arm의 calibration filename을 결정합니다. 같은 arm에는 모든 session에서 같은 ID를 사용하세요.</p>
+</div>
+<ol class="arabic simple" start="9">
+<li><p>저장한 port와 ID를 <strong>확인</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Teleop port is </span><span class="si">${</span><span class="nv">TELEOP_PORT</span><span class="si">}</span><span class="s2"> with id </span><span class="si">${</span><span class="nv">TELEOP_ID</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Robot port is </span><span class="si">${</span><span class="nv">ROBOT_PORT</span><span class="si">}</span><span class="s2"> with id </span><span class="si">${</span><span class="nv">ROBOT_ID</span><span class="si">}</span><span class="s2">"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="10">
+<li><p>이 terminal에서 calibration을 <strong>계속</strong>합니다.</p></li>
+</ol>
+<div class="admonition important">
+<p class="admonition-title">중요</p>
+<p>USB를 다시 연결한 뒤 할당이 바뀌었다면 port finder를 다시 실행하세요. 명령은 <a class="reference internal" href="quick_reference.html"><span class="std std-doc">Quick Reference</span></a>에도 있습니다.</p>
+</div>
+</section>
+</section>
+<section id="calibration-process">
+<h2>Calibration 절차<a class="headerlink" href="#calibration-process" title="Link to this heading">#</a></h2>
+<p>Calibration은 encoder reading과 각 link의 실제 위치를 맞춥니다. Policy는 joint position에 의존하므로, calibration이 잘못되면 의도하지 않은 움직임, task 실패, 충돌이 발생할 수 있습니다.</p>
+<p>두 arm 모두 calibration 후 검증하는 같은 절차를 따릅니다.</p>
+<section id="calibrate-the-leader-arm">
+<span id="calibrate-the-teleop-arm-leader"></span><h3>Leader Arm Calibration<a class="headerlink" href="#calibrate-the-leader-arm" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>저장한 port와 ID로 leader calibration 명령을 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-calibrate<span class="w"> </span>--teleop.type<span class="o">=</span>so101_leader<span class="w"> </span>--teleop.port<span class="o">=</span><span class="nv">$TELEOP_PORT</span><span class="w"> </span>--teleop.id<span class="o">=</span><span class="nv">$TELEOP_ID</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>안내가 나오면 <strong>각 joint를 가동 범위의 중간에 놓습니다</strong>. 아래 pose와 같아지므로 사진에 맞추면 됩니다.</p></li>
+</ol>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/teleop_arm_neutral_pose.jpg"><img alt="Calibration pose의 leader arm입니다." src="_images/teleop_arm_neutral_pose.jpg" style="width: 350px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Leader calibration pose</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple" start="3">
+<li><p>Pose를 맞춘 뒤 <strong>Enter를 누릅니다</strong>.</p></li>
+<li><p><strong>Wrist roll을 제외한</strong> 각 joint를 하나씩 전체 가동 범위로 <strong>움직입니다</strong>.</p></li>
+</ol>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/teleop_calibration.gif"><img alt="Leader joint를 calibration range 전체로 움직이는 모습입니다." src="_images/teleop_calibration.gif" style="width: 350px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><em>Calibration 동작 예시입니다. Calibration pose에서 시작해 각 joint를 하나씩 움직입니다. Wrist roll은 sweep할 필요가 없습니다.</em></span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<ul class="simple">
+<li><p>필요하면 같은 joint를 여러 번 움직여도 됩니다. Script가 최솟값과 최댓값을 기록합니다. 빠뜨린 joint가 있다면 calibration을 다시 실행하세요.</p></li>
+<li><p><strong>Mechanical end stop까지 움직이세요.</strong> Cable이나 장애물이 먼저 joint를 막아 잘못된 calibration이 기록되지 않도록 치웁니다.</p></li>
+<li><p>이 LeRobot 버전에서는 두 arm 모두 <strong>wrist roll range sweep이 필요 없습니다</strong>. Range는 자동으로 할당되지만, 아래의 초기 calibration pose에는 정확히 맞춰야 합니다. 움직이더라도 문제는 없습니다.</p></li>
+</ul>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>완료하면 <strong>Enter를 누릅니다</strong>.</p></li>
+</ol>
+<span id="check-the-teleop-arm-leader"></span><ol class="arabic simple" id="check-the-leader-arm" start="6">
+<li><p>Follower로 넘어가기 전에 <strong>leader calibration을 확인</strong>합니다. Checker는 저장된 <code class="docutils literal notranslate"><span class="pre">TELEOP_ID</span></code>와 <code class="docutils literal notranslate"><span class="pre">TELEOP_PORT</span></code>를 사용합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>docker/scripts/so101_check_calibration.py<span class="w"> </span>--arm<span class="w"> </span>teleop
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li><p>Report에 <code class="docutils literal notranslate"><span class="pre">Arm:</span> <span class="pre">teleop</span></code>와 본인의 calibration file이 표시되는지 <strong>확인</strong>합니다. <code class="docutils literal notranslate"><span class="pre">WARN</span></code> 또는 live <code class="docutils literal notranslate"><span class="pre">OUT</span> <span class="pre">OF</span> <span class="pre">RANGE</span></code>가 있으면 arm ID와 joint travel을 점검하세요. 문제를 수정하고 recalibration한 뒤 다시 검사합니다.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">선택 사항: Calibration 검사 원리</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Reference data는 이 workshop의 현장 운영을 위해 calibration한 WowRobo robot에서 얻었습니다. Checker는 arm별 reference dataset(teleop 10개 또는 follower 10개)과 비교하며, 평균 ±2 population standard deviation을 벗어나는 motion range를 표시합니다. 모든 reference range가 같다면 다른 값은 warning으로 표시됩니다. 이는 통계적 비교이며 calibration의 정오를 증명하지 않습니다. Reference sample도 ±2σ를 벗어날 수 있습니다.</p>
+<p class="sd-card-text">선택한 arm이 연결되면 checker는 live encoder position도 읽습니다. “Live Encoder Positions”에서 <code class="docutils literal notranslate"><span class="pre">OUT</span> <span class="pre">OF</span> <span class="pre">RANGE</span></code> 결과를 확인하세요. Hardware 연결 없이 저장 파일만 검사하려면 <code class="docutils literal notranslate"><span class="pre">--static-only</span></code>를 추가합니다. 파일 검사만 PASS했다고 live position까지 검증된 것은 아닙니다.</p>
+<p class="sd-card-text">특정 파일을 검사하려면 어느 arm 명령이든 <code class="docutils literal notranslate"><span class="pre">--calibration</span> <span class="pre">/path/to/arm.json</span></code>을 추가합니다. <code class="docutils literal notranslate"><span class="pre">STATS_JSON</span></code> environment variable로 선택한 arm의 reference 통계를 바꿀 수 있습니다.</p>
+</div>
+</details></section>
+<section id="calibrate-the-follower-arm">
+<span id="calibrate-the-follower-arm-robot"></span><h3>Follower Arm Calibration<a class="headerlink" href="#calibrate-the-follower-arm" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Follower calibration 명령을 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-calibrate<span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="nv">$ROBOT_PORT</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="nv">$ROBOT_ID</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Follower의 각 joint를 가동 범위 중간에 두어 calibration pose로 <strong>맞춥니다</strong>.</p></li>
+</ol>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<img alt="" class="sd-card-img-top" src="_images/calibration_pose.jpg"/>
+<div class="sd-card-body docutils">
+<p class="sd-card-text">Calibration Pose 예시</p>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<img alt="" class="sd-card-img-top" src="_images/wrist_center.jpg"/>
+<div class="sd-card-body docutils">
+<p class="sd-card-text">Reading이 wrap around되지 않도록 wrist-roll 위치를 정확히 맞추세요.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>Enter를 눌러</strong> calibration을 시작합니다.</p></li>
+<li><p><strong>Wrist roll을 제외한</strong> 각 joint를 하나씩 전체 가동 범위로 <strong>움직입니다</strong>.</p></li>
+</ol>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/full_so101_calibration.gif"><img alt="전체 SO-101 Calibration 순서" src="_images/full_so101_calibration.gif" style="width: 60%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">SO-101 calibration 동작 예시입니다. Wrist-roll sweep은 생략합니다.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple" start="5">
+<li><p>완료하면 <strong>Enter를 누릅니다</strong>.</p></li>
+</ol>
+<span id="check-the-follower-arm-robot"></span><ol class="arabic simple" id="check-the-follower-arm-calibration" start="6">
+<li><p>Teleoperation 전에 <strong>follower calibration을 확인</strong>합니다. Checker는 저장한 <code class="docutils literal notranslate"><span class="pre">ROBOT_ID</span></code>와 <code class="docutils literal notranslate"><span class="pre">ROBOT_PORT</span></code>를 사용합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>docker/scripts/so101_check_calibration.py
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li><p>Report에 <code class="docutils literal notranslate"><span class="pre">Arm:</span> <span class="pre">follower</span></code>와 본인의 calibration file이 표시되는지 <strong>확인</strong>합니다. Teleoperation 전에 <code class="docutils literal notranslate"><span class="pre">WARN</span></code>이나 live <code class="docutils literal notranslate"><span class="pre">OUT</span> <span class="pre">OF</span> <span class="pre">RANGE</span></code>를 점검하고, 문제를 수정한 뒤 recalibration과 검사를 반복하세요.</p></li>
+</ol>
+<p>LeRobot은 arm type과 ID별로 <code class="docutils literal notranslate"><span class="pre">~/.cache/huggingface/lerobot/calibration</span></code> 아래에 calibration을 저장합니다.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Calibration 검사 Report 예시 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">파일만 검사한 follower output 예시입니다.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>============================================================================
+  SO101 CALIBRATION CHECK REPORT
+  Arm:   follower
+  File:  /root/.cache/huggingface/lerobot/calibration/robots/so_follower/so-r-003.json
+  Stats: /workspace/Sim-to-Real-SO-101-Workshop/docker/scripts/calibration_stats.json
+============================================================================
+
+[1] Motion Range vs Stats (threshold ±2.0σ)
+
+  Joint               Range     Mean    Std  Deviation    Offset  Status
+  --------------------------------------------------------------------------
+  shoulder_pan         2724     2735     11     -1.03σ       467  ✓ PASS
+  shoulder_lift        2390     2367     15     +1.51σ       766  ✓ PASS
+  elbow_flex           2226     2222      8     +0.51σ       614  ✓ PASS
+  wrist_flex           2340     2323     12     +1.47σ      -564  ✓ PASS
+  wrist_roll           4095     4095      0          —     -1457  ✓ PASS
+  gripper              1475     1485     18     -0.57σ     -1331  ✓ PASS
+
+[2] Live check skipped (file-only check or arm not connected)
+
+============================================================================
+  Overall: ✓ PASS — calibration looks good.
+============================================================================
+</pre></div>
+</div>
+</div>
+</details></section>
+</section>
+<section id="match-the-external-camera-tilt-to-simulation">
+<h2>External Camera 기울기를 Simulation에 맞추기<a class="headerlink" href="#match-the-external-camera-tilt-to-simulation" title="Link to this heading">#</a></h2>
+<p>Station마다 camera mount가 다릅니다. 제공된 policy의 학습 view와 같도록 실제 camera를 조정하세요.</p>
+<p>Simulation camera는 <strong>수평에서 아래로 약 54°</strong>를 봅니다. 휴대전화 수평계 app으로 비슷한 기울기를 맞추세요.</p>
+<ol class="arabic simple">
+<li><p><strong>휴대전화의 긴 모서리를 테이블 위에 대고</strong> 약 <strong>0°</strong>인지 확인합니다.</p></li>
+<li><p><strong>그 모서리를 camera 전면에 대고</strong>, lens 옆에서 위아래 방향으로 맞춥니다.</p></li>
+<li><p>몇 도 이내의 오차로 <strong>아래쪽 약 54°</strong>가 되도록 <strong>mount를 조절</strong>합니다.</p></li>
+<li><p>다음 실습에서 <a class="reference internal" href="08-operating-so101.html#teleoperation-with-cameras"><span class="std std-ref">live view</span></a>를 simulation과 비교하세요. Robot, rack, vial의 구도가 비슷해야 하며, camera 위치와 field of view도 중요합니다.</p></li>
+</ol>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="_images/camera-level-tabletop.jpg"><img alt="휴대전화를 테이블에 대고 0°를 확인합니다." src="_images/camera-level-tabletop.jpg" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">테이블에서 zero를 맞춥니다.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id5">
+<a class="reference internal image-reference" href="_images/camera-level-front-face.jpg"><img alt="External camera에 휴대전화를 대고 기울기를 확인합니다." src="_images/camera-level-front-face.jpg" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">휴대전화로 camera 기울기를 확인합니다.</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="key-takeaways">
+<h2>핵심 내용<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Arm별 port, ID, calibration file을 함께 관리하세요.</p></li>
+<li><p>Calibration 시 wrist roll을 중앙에 맞추되 range sweep은 생략합니다.</p></li>
+<li><p>Data 수집이나 policy 실행 전에 두 arm의 calibration과 camera view를 확인하세요.</p></li>
+</ul>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>다음 단계</h2>
+<p>목차 순서에 따라 다음 페이지로 이동하세요:
+    <a class="reference internal course-next-link" href="08-operating-so101.html">Teleoperation</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="07-using-workspace.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">이전</p>
+<p class="prev-next-title">Workspace 사용</p>
+</div>
+</a>
+<a class="right-next" href="08-operating-so101.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">다음</p>
+<p class="prev-next-title">Teleoperation</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">학습 목표</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#safety-guidelines">안전 지침</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#powering-on-the-robot">Robot 전원 켜기</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-inspection">실물 점검</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-docker-container-for-this-course">과정용 Docker Container 실행</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#identify-the-teleop-arm-port">Leader Arm Port 확인</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#identify-the-robot-arm-port">Follower Arm Port 확인</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration-process">Calibration 절차</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibrate-the-leader-arm">Leader Arm Calibration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibrate-the-follower-arm">Follower Arm Calibration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#match-the-external-camera-tilt-to-simulation">External Camera 기울기를 Simulation에 맞추기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">핵심 내용</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

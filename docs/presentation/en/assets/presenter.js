@@ -8,9 +8,9 @@
   const id=decodeURIComponent(location.hash.slice(1));
   let current=Math.max(0,course.slides.findIndex(s=>s.id===id)),active=0,working=false,state=null,lastDisplay=0,displayWindow=window.opener,toolsSignature='';
   let channel;
-  try{channel=new BroadcastChannel('so101-dli-'+config.sessionKey);}catch{}
+  try{channel=new BroadcastChannel('so101-dli-'+(config.edition||'self_env')+'-'+config.sessionKey);}catch{}
   document.body.className='script-presenter';
-  document.body.innerHTML=`<header class="presenter-top"><a class="presenter-brand" href="#" aria-label="Go to cover"><img src="guide/_static/nvidia-logo-horiz-rgb-blk-for-screen.svg" alt="NVIDIA"><span>AI DAYS SEOUL 2026 <i>/</i> DLI</span></a><nav><span id="presenter-connection" role="status">Waiting for presentation connection</span><button id="open-display">Open presentation ↗</button><button id="presenter-agenda">Contents</button><button id="presenter-fullscreen">Fullscreen</button></nav></header>
+  document.body.innerHTML=`<header class="presenter-top"><a class="presenter-brand" href="#" aria-label="Go to cover"><img src="guide/_static/nvidia-logo-horiz-rgb-blk-for-screen.svg" alt="NVIDIA"><span>AI DAYS SEOUL 2026 <i>/</i> ${esc((config.edition||'self_env').toUpperCase())}</span></a><nav><span id="presenter-connection" role="status">Waiting for presentation connection</span><button id="open-display">Open presentation ↗</button><button id="presenter-agenda">Contents</button><button id="presenter-fullscreen">Fullscreen</button></nav></header>
     <main class="presenter-workspace"><section class="script-main" aria-label="Presenter Script"><header class="script-heading"><div class="script-eyebrow">PRESENTER SCRIPT <span id="script-position"></span></div><h1 id="script-title"></h1><p id="script-meta"></p></header><div id="script-scroll" tabindex="0"><div class="script-instructions">Use ← / → for previous/next cues. Buttons within the script also control the presentation.</div><div id="script-content"></div></div><footer class="script-footer"><span id="cue-position"></span><div><button id="previous-cue" aria-keyshortcuts="ArrowLeft">← Previous explanation</button><button id="next-cue" class="primary" aria-keyshortcuts="ArrowRight">Run next cue →</button></div></footer></section>
     <aside class="presenter-side" aria-label="Slide previews and controls"><section class="preview-card current-card"><header><strong><span class="live-dot"></span>Current slide</strong><span id="current-number"></span></header><div class="preview-viewport" id="current-viewport"><iframe id="current-preview" tabindex="-1" title="Current slide preview" allow="autoplay; fullscreen"></iframe></div><p id="current-selection"></p></section><section class="preview-card next-card"><header><strong>Next slide</strong><button id="advance-slide">Next slide →</button></header><div class="preview-viewport" id="next-viewport"><iframe id="next-preview" title="Next slide preview" tabindex="-1"></iframe></div><p id="next-title"></p></section>
     <div class="presenter-slide-nav"><button id="previous-slide">← Previous slide</button><label><input id="presenter-page" type="number" min="1" max="${course.slides.length}" aria-label="Slide number"> / ${course.slides.length}</label><span id="presenter-clock"></span></div>
@@ -171,7 +171,7 @@
   $('#presenter-fullscreen').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
   $('#open-display').onclick=()=>{
     const url=new URL(config.base);url.searchParams.delete('presenter');url.searchParams.set('session',config.sessionKey);url.hash=course.slides[current].id;
-    if(displayWindow&&!displayWindow.closed)displayWindow.focus();else displayWindow=window.open(url.href,'dli-display-'+config.sessionKey);
+    if(displayWindow&&!displayWindow.closed)displayWindow.focus();else displayWindow=window.open(url.href,'dli-display-'+(config.edition||'self_env')+'-'+config.sessionKey);
     if(!displayWindow){$('#presenter-status').textContent="Allow browser popups, then select Open presentation again.";return;}
     setTimeout(()=>previewAPI()?.sendState(),500);
   };

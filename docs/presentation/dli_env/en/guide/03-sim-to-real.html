@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>What Is Sim-to-Real? — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '03-sim-to-real';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="12-debugging-sim-to-real.html" rel="next" title="Debugging Sim-to-Real Issues"/>
+<link href="11-sim-evaluation.html" rel="prev" title="Sim Evaluation"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">What Is Sim-to-Real?</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/03-sim-to-real.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="what-is-sim-to-real">
+<h1>What Is Sim-to-Real?<a class="headerlink" href="#what-is-sim-to-real" title="Link to this heading">#</a></h1>
+<div class="course-module-type course-module-type--lecture">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="3"></rect>
+<path d="M16 21v4m-6 4 6-4 6 4M11 9h9m-9 2 3.5 4m6.5-4-3.5 4"></path>
+<circle cx="9" cy="9" r="2"></circle>
+<circle cx="22" cy="9" r="2"></circle>
+<circle cx="16" cy="16" r="2"></circle>
+</svg>
+<span>Lecture</span>
+</div>
+<figure class="align-default" id="id1">
+<img alt="Unitree H1 in simulation and in the real world." class="course-banner" src="_images/sim-and-real.png"/>
+<figcaption>
+<p><span class="caption-text">Sim-to-Real with Unitree H1</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">What Do I Need for This Module?</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Nothing — this module is theory-only.</p>
+</div>
+</details><section id="learning-objectives">
+<h2>Learning Objectives<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<p>By the end of this session, you’ll be able to:</p>
+<ul class="simple">
+<li><p><strong>Define</strong> sim-to-real transfer and its goals</p></li>
+<li><p><strong>Identify</strong> the four major categories of sim-to-real gaps</p></li>
+<li><p><strong>Explain</strong> why transfer is difficult even with high-fidelity simulation</p></li>
+</ul>
+</section>
+<section id="sim-to-real-defined">
+<h2>Sim-to-Real Defined<a class="headerlink" href="#sim-to-real-defined" title="Link to this heading">#</a></h2>
+<p><strong>Sim-to-real</strong> refers to the process of training a policy in simulation and deploying it on real hardware. The goal is a policy that performs well in the real world despite being trained entirely (or primarily) in simulation.</p>
+</section>
+<section id="simulation-evaluation-in-action">
+<h2>Simulation Evaluation in Action<a class="headerlink" href="#simulation-evaluation-in-action" title="Link to this heading">#</a></h2>
+<p>Watch this policy attempt the vial-to-rack task across different simulated scenes. The external camera is on the left and the wrist camera is on the right. Notice both the successful placements and the failures.</p>
+<figure>
+<video aria-describedby="sim-evaluation-example-caption" aria-label="Simulation policy evaluation at 10 times speed, with external and wrist camera views" controls="" height="550" muted="" playsinline="" poster="_static/videos/sim-evaluation-10x-poster.jpg" preload="none" style="display:block; width:100%; height:auto;" width="1280">
+<source src="_static/videos/sim-evaluation-10x.mp4" type="video/mp4"/>
+</video>
+<figcaption id="sim-evaluation-example-caption">Example simulation evaluation. Playback is <strong>10× speed</strong>.</figcaption>
+</figure></section>
+<section id="the-sim-to-real-gap">
+<h2>The Sim-to-Real Gap<a class="headerlink" href="#the-sim-to-real-gap" title="Link to this heading">#</a></h2>
+<p>The <strong>sim-to-real gap</strong> is the performance difference between simulation and reality. A policy achieving high success rates in simulation may perform significantly worse on real hardware.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The sim-to-real gap is often larger than expected.</p>
+<p>And while colloquially we may discuss “the gap” as if it’s a single entity, the gap is a complex combination of gaps in sensing, actuation, physics, and modeling.</p>
+<p>Zero-shot transfer is difficult, so avoid assuming a policy will “just work” on real hardware without systematic testing and iteration.</p>
+</div>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/slide-26.png"><img alt="Overlapping circles represent the source domain in simulation and the target domain in reality. Greater coverage of real conditions supports transfer." src="_images/slide-26.png" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">The source domain is where we train; the target domain is where we want the policy to work.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="sources-of-the-gap">
+<span id="choosing-a-strategy"></span><span id="sensing-gaps"></span><span id="physics-gaps"></span><span id="actuation-gaps"></span><h2>Sources of the Gap<a class="headerlink" href="#sources-of-the-gap" title="Link to this heading">#</a></h2>
+<p>You can <strong>teach the policy to handle variation</strong>, <strong>make simulation closer to the real setup</strong>, or combine both. Choose a change that addresses an observed failure, then compare under the same test conditions.</p>
+<p>Select a gap in the diagram to explore its examples.</p>
+<figure>
+<iframe class="interactive-learning-diagram" loading="lazy" src="_static/interactive/reality-gap-strategies.html" style="display:block; width:100%; height:600px; border:0;" title="Connect sensing, actuation, physics, and modeling gaps to transfer strategies"></iframe>
+</figure><section id="modeling-gap-examples">
+<span id="modeling-gaps"></span><h3>Modeling Gap Examples<a class="headerlink" href="#modeling-gap-examples" title="Link to this heading">#</a></h3>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-2 sd-g-xs-2 sd-g-sm-2 sd-g-md-2 sd-g-lg-2 docutils">
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/so101-modeling-gap.png"><img alt="Close-up of the simulated SO-101 arm, showing its links, joints, and gripper." src="_images/so101-modeling-gap.png" style="width: 300px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Robot geometry.</strong> Differences in link dimensions or joint placement can change the robot’s pose.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="_images/elbow-reference-frame-offset.svg"><img alt="Elbow diagram comparing the calibrated LeRobot zero direction in green with the USD joint-frame zero in orange." src="_images/elbow-reference-frame-offset.svg" style="width: 300px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Joint reference frames.</strong> Different definitions of zero can produce different poses for the same joint angle. The limits shown are an example, not calibration targets.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Select either image to view it at full size.</p>
+</section>
+<section id="explore-the-perception-gap">
+<span id="perception-gap-comparison"></span><h3>Explore the Perception Gap<a class="headerlink" href="#explore-the-perception-gap" title="Link to this heading">#</a></h3>
+<p>Appearance differences can contribute to missed grasps or reaches toward empty
+space. Similar symptoms can also come from calibration or action execution.</p>
+<p>Use the comparison below to inspect rack edges, hole shapes, and fixed gripper
+features. Adjust <strong>Sim opacity</strong>, switch to <strong>Side by side</strong>, or use
+<strong>Toggle real / sim</strong> to alternate between the images. You can also load your
+own saved image pair; the files stay in your browser. No camera stream or robot
+connection is needed.</p>
+<section aria-labelledby="wrist-comparison-title" class="image-comparison">
+<h4 id="wrist-comparison-title">Saved wrist images: real and simulated</h4>
+<div class="image-comparison-controls" hidden="">
+<label>View <select data-control="mode"><option value="overlay">Overlay</option><option value="side">Side by side</option><option value="real">Real only</option><option value="sim">Sim only</option></select></label>
+<label>Sim opacity <input aria-label="Simulation opacity" data-control="opacity" max="100" min="0" type="range" value="50"/><output data-control="value">50%</output></label>
+<button data-control="toggle" type="button">Toggle real / sim</button>
+<button data-control="reset" type="button">Reset example</button>
+<label>Load real image <input accept="image/png,image/jpeg,image/webp" data-control="real-file" type="file"/></label>
+<label>Load sim image <input accept="image/png,image/jpeg,image/webp" data-control="sim-file" type="file"/></label>
+</div>
+<p aria-live="polite" class="image-comparison-status" role="status">Real image on the left; simulation on the right. Both are 640 × 480.</p>
+<div class="image-comparison-stage" data-mode="side">
+<figure data-image="real"><img alt="Real wrist image with orange gripper fingers, a yellow rack at the left, and a wrapped vial on a dark mat." height="480" src="_static/wrist-comparison/real.jpg" width="640"/><figcaption>Real</figcaption></figure>
+<figure data-image="sim"><img alt="Perception-DR wrist image at the saved native joint angles, with perception materials, camera response, and reset-time wrist blur." height="480" src="_static/wrist-comparison/sim-perception-dr.png" width="640"/><figcaption>Simulation · Perception-DR</figcaption></figure>
+</div>
+<p>This example shows perceptual differences between simulation and reality for our vial-to-rack task. <strong>What do you notice is different?</strong></p>
+<noscript><p>Enable JavaScript for the opacity slider and local image selection. The two saved example images remain visible without it.</p></noscript>
+</section>
+<p>Here’s the real wrist view beside our perception-tuned simulation. Compare the lighting, textures, and edges.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">How we adjust the ovrtx camera response</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">The base vial scene configures grading and tone mapping through
+<code class="docutils literal notranslate"><span class="pre">SO101OVRTXRendererCfg.camera_responses</span></code>; DR adds film grain. The profiles live in
+<code class="docutils literal notranslate"><span class="pre">source/sim_to_real_so101/tasks/camera_profiles.py</span></code>. The renderer in
+<code class="docutils literal notranslate"><span class="pre">source/sim_to_real_so101/utils/ovrtx/renderer.py</span></code> authors response
+attributes on each camera’s <strong>render product</strong>, so wrist and external views
+can use different settings. These are appearance approximations designed to close the perception gap. Consider how you might tune or randomize parameters like this for other tasks.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">Setting</p></th>
+<th class="head"><p class="sd-card-text">Wrist camera</p></th>
+<th class="head"><p class="sd-card-text">External camera</p></th>
+<th class="head"><p class="sd-card-text">What it controls</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">grade:gain</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.18,</span> <span class="pre">1.18,</span> <span class="pre">1.182)</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.07,</span> <span class="pre">1.07,</span> <span class="pre">1.07)</span></code></p></td>
+<td><p class="sd-card-text">Per-channel image gain.</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">grade:gamma</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.12,</span> <span class="pre">1.12,</span> <span class="pre">1.12)</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.4,</span> <span class="pre">1.4,</span> <span class="pre">1.4)</span></code></p></td>
+<td><p class="sd-card-text">Midtone response.</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">grade:saturation</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.0,</span> <span class="pre">1.0,</span> <span class="pre">1.0)</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.2,</span> <span class="pre">1.2,</span> <span class="pre">1.2)</span></code></p></td>
+<td><p class="sd-card-text">Color intensity; the external profile also enables <code class="docutils literal notranslate"><span class="pre">colorcorr:enabled</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">grade:whitePoint</span></code></p></td>
+<td><p class="sd-card-text">No override</p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(0.95,</span> <span class="pre">0.95,</span> <span class="pre">0.95)</span></code></p></td>
+<td><p class="sd-card-text">White-point adjustment for the external view.</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">tvNoise:filmGrain:amount</span></code> / <code class="docutils literal notranslate"><span class="pre">size</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">0.015</span></code> / <code class="docutils literal notranslate"><span class="pre">0.25</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">0.003</span></code> / <code class="docutils literal notranslate"><span class="pre">1.0</span></code></p></td>
+<td><p class="sd-card-text">Grain strength and scale.</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">tonemap:operator</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">"none"</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">"none"</span></code></p></td>
+<td><p class="sd-card-text">Bypasses the default <code class="docutils literal notranslate"><span class="pre">acesApproximation</span></code> renderer operator and hands tone mapping to OCIO.</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">Gaussian blur sigma</p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">0.9</span></code> pixels in this example; task default <code class="docutils literal notranslate"><span class="pre">0.7–1.1</span></code></p></td>
+<td><p class="sd-card-text">No added blur</p></td>
+<td><p class="sd-card-text">Wrist softness, sampled independently per environment at reset.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text">All ovrtx keys in the table have the prefix <code class="docutils literal notranslate"><span class="pre">omni:rtx:post:</span></code>. For example,
+these entries from the wrist profile enable grading and a small amount of grain:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># Excerpt from the wrist render-product response profile.</span>
+<span class="linenos"> 2</span><span class="p">{</span>
+<span class="linenos"> 3</span>    <span class="s2">"omni:rtx:post:grade:enabled"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">"omni:rtx:post:grade:gain"</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.18</span><span class="p">,</span> <span class="mf">1.18</span><span class="p">,</span> <span class="mf">1.182</span><span class="p">),</span>
+<span class="linenos"> 5</span>    <span class="s2">"omni:rtx:post:grade:gamma"</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.12</span><span class="p">,</span> <span class="mf">1.12</span><span class="p">,</span> <span class="mf">1.12</span><span class="p">),</span>
+<span class="linenos"> 6</span>    <span class="s2">"omni:rtx:post:tvNoise:enabled"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="s2">"omni:rtx:post:tvNoise:filmGrain:enabled"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="s2">"omni:rtx:post:tvNoise:filmGrain:amount"</span><span class="p">:</span> <span class="mf">0.015</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="s2">"omni:rtx:post:tvNoise:filmGrain:size"</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span>
+<span class="linenos">10</span>    <span class="s2">"omni:rtx:post:tonemap:operator"</span><span class="p">:</span> <span class="s2">"none"</span><span class="p">,</span>
+<span class="linenos">11</span><span class="p">}</span>
+</pre></div>
+</div>
+<p class="sd-card-text"><strong>Blur is separate from those ovrtx attributes.</strong> The workshop applies Gaussian
+blur to the wrist camera after rendering, through the Isaac Lab API. Its reset event in
+<code class="docutils literal notranslate"><span class="pre">source/sim_to_real_so101/tasks/vials_to_rack_env_cfg.py</span></code> uses:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">reset_wrist_blur</span> <span class="o">=</span> <span class="n">EventTerm</span><span class="p">(</span>
+<span class="linenos">2</span>    <span class="n">func</span><span class="o">=</span><span class="n">randomize_camera_blur</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="n">mode</span><span class="o">=</span><span class="s2">"reset"</span><span class="p">,</span>
+<span class="linenos">4</span>    <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+<span class="linenos">5</span>        <span class="s2">"sensor_cfg"</span><span class="p">:</span> <span class="n">SceneEntityCfg</span><span class="p">(</span><span class="s2">"camera_wrist"</span><span class="p">),</span>
+<span class="linenos">6</span>        <span class="s2">"sigma_range"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">),</span>
+<span class="linenos">7</span>    <span class="p">},</span>
+<span class="linenos">8</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sd-card-text">The sampled blur stays fixed until that environment resets. The processed RGB
+feeds <strong>display, recording, and policy observations</strong>.
+When doing this in practice, check parameters likehighlights and texture as well as overall brightness, then evaluate the
+policy to determine whether the adjustment helps transfer.</p>
+</div>
+</details><p>For an alternate image pair, see the
+<a class="reference internal" href="troubleshooting.html#wrist-image-alignment"><span class="std std-ref">wrist-image comparison in the troubleshooting guide</span></a>.</p>
+</section>
+</section>
+<section id="what-makes-transfer-hard">
+<h2>What Makes Transfer Hard?<a class="headerlink" href="#what-makes-transfer-hard" title="Link to this heading">#</a></h2>
+<p>The sim-to-real gap isn’t just about simulation fidelity. Even with perfect simulation, transfer is challenging because:</p>
+<ol class="arabic simple">
+<li><p><strong>Distribution shift</strong>: Real-world conditions vary from training</p></li>
+<li><p><strong>Compounding errors</strong>: Small perception errors lead to large action errors</p></li>
+<li><p><strong>Unmodeled dynamics</strong>: Real physics has effects that may not be represented in simulation. For example, bearings or linear slides can wear, grease can dry out, and screws can loosen over time, changing friction or alignment.</p></li>
+<li><p><strong>Temporal differences</strong>: Real-time constraints affect behavior</p></li>
+</ol>
+<p>Before attributing a failure to the policy, check camera assignments, joint order and units, calibration, action conventions, and starting pose. A policy needs compatible inputs and commands as well as a plausible scene.</p>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Gap Category</p></th>
+<th class="head"><p>Examples</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Sensing</p></td>
+<td><p>Camera noise, lighting, depth artifacts</p></td>
+</tr>
+<tr class="row-odd"><td><p>Actuation</p></td>
+<td><p>Friction, backlash, thermal effects</p></td>
+</tr>
+<tr class="row-even"><td><p>Physics</p></td>
+<td><p>Contact dynamics, deformables</p></td>
+</tr>
+<tr class="row-odd"><td><p>Modeling</p></td>
+<td><p>CAD errors, mass/inertia estimates</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Understanding these gaps is essential—throughout this learning path, you’ll learn strategies to address each category.</p>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>What's Next?</h2>
+<p>Continue to the next page in the table of contents:
+    <a class="reference internal course-next-link" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="11-sim-evaluation.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Sim Evaluation</p>
+</div>
+</a>
+<a class="right-next" href="12-debugging-sim-to-real.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Debugging Sim-to-Real Issues</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning Objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sim-to-real-defined">Sim-to-Real Defined</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-evaluation-in-action">Simulation Evaluation in Action</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sim-to-real-gap">The Sim-to-Real Gap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sources-of-the-gap">Sources of the Gap</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modeling-gap-examples">Modeling Gap Examples</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-the-perception-gap">Explore the Perception Gap</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-makes-transfer-hard">What Makes Transfer Hard?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

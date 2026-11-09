@@ -1,0 +1,553 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Code와 Model 준비 — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '06-get-the-code';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">과정 개요</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">SO-101 Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Dataset과 Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Code와 Model 준비</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/06-get-the-code.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="get-the-code-and-models">
+<h1>Code와 Model 준비<a class="headerlink" href="#get-the-code-and-models" title="Link to this heading">#</a></h1>
+<div class="course-module-type">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M11 17V8a2 2 0 0 1 4 0v6a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v2a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-3c-2 0-4-1-5-3l-5-7a2 2 0 0 1 3-2l1 1"></path>
+<path d="M15 14v5m4-4v4m4-2v3M5 9H3m4-5L5.5 2.5M19 5l1.5-1.5"></path>
+</svg>
+<span>Hands-on</span>
+</div>
+<a class="course-banner reference internal image-reference" href="_images/task.png"><img alt="Simulation scene으로 표현한 SO-101 vial-to-rack task입니다." class="course-banner" src="_images/task.png" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">이 Module에 필요한 준비물</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">실습입니다. Ubuntu Linux, Git LFS가 포함된 Git, Docker, CUDA Toolkit, NVIDIA Container Toolkit, NVIDIA RTX GPU가 필요합니다.</p>
+<p class="sd-card-text">Robot asset과 과정 media를 올바르게 내려받을 수 있도록, clone 전에 host에 Git LFS를 설치하고 초기화하세요.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>lfs<span class="w"> </span>install
+</pre></div>
+</div>
+</div>
+</details><p>Simulation, calibration, teleoperation, recording, GR00T 학습과 평가에 사용할 하나의 workshop image를 build합니다.</p>
+<p>Ubuntu Linux 22.04보다 최신 버전에서 NVIDIA RTX 6000 Pro (Blackwell), RTX 5090 (Blackwell), RTX 6000 (Ada) GPU로 검증했습니다. Image를 build하기 전에 host software를 설치하세요.</p>
+<section id="workshop-software">
+<h2>Workshop Software<a class="headerlink" href="#workshop-software" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>구성 요소</p></th>
+<th class="head"><p>Workshop 구성</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Isaac Lab</p></td>
+<td><p>3.0 development stack. <code class="docutils literal notranslate"><span class="pre">docker/Dockerfile</span></code>의 <code class="docutils literal notranslate"><span class="pre">ISAACLAB_REF</span></code>로 고정됩니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Physics</p></td>
+<td><p>Newton with the MJWarp solver</p></td>
+</tr>
+<tr class="row-even"><td><p>Camera rendering</p></td>
+<td><p>ovrtx. Isaac Lab에서 호환되는 ovrtx와 OVStage 버전을 제공합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p>LeRobot</p></td>
+<td><p>0.6.0. 학습, GR00T, async inference, visualization 지원 포함</p></td>
+</tr>
+<tr class="row-even"><td><p>Policy</p></td>
+<td><p>GR00T 1.7. Post-training에 <code class="docutils literal notranslate"><span class="pre">nvidia/GR00T-N1.7-3B</span></code> 사용</p></td>
+</tr>
+<tr class="row-odd"><td><p>Container</p></td>
+<td><p>CUDA 13, Ubuntu 24.04, Python 3.12</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>이 workshop은 Isaac Sim 또는 Kit application 없이 실행됩니다. 별도 Isaac Sim 설치로 대체하지 말고 고정된 stack을 build하세요.</p>
+</section>
+<section id="clone-the-repository">
+<h2>Repository Clone<a class="headerlink" href="#clone-the-repository" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Host에서 terminal을 열고</strong>, home directory에 repository를 <strong>clone</strong>한 뒤 해당 directory로 <strong>이동</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~
+git<span class="w"> </span>clone<span class="w"> </span>--branch<span class="w"> </span>aidayseoul2026<span class="w"> </span>--single-branch<span class="w"> </span>https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop.git
+<span class="nb">cd</span><span class="w"> </span>Sim-to-Real-SO-101-Workshop
+git<span class="w"> </span>lfs<span class="w"> </span>pull
+</pre></div>
+</div>
+</section>
+<section id="build-the-workshop-container">
+<h2>Workshop Container Build<a class="headerlink" href="#build-the-workshop-container" title="Link to this heading">#</a></h2>
+<ol class="arabic simple" start="2">
+<li><p>Host의 repository root에서 image를 <strong>build</strong>하고 영구 output directory를 <strong>생성</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>so101-workshop<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile<span class="w"> </span>.
+mkdir<span class="w"> </span>-p<span class="w"> </span>outputs<span class="w"> </span>datasets<span class="w"> </span>models
+</pre></div>
+</div>
+<p>같은 image로 simulation과 실제 robot 실습을 모두 진행합니다.</p>
+</section>
+<section id="start-the-workshop-container">
+<h2>Workshop Container 시작<a class="headerlink" href="#start-the-workshop-container" title="Link to this heading">#</a></h2>
+<ol class="arabic simple" start="3">
+<li><p>Host의 repository root에서 container를 <strong>시작</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/Sim-to-Real-SO-101-Workshop
+</pre></div>
+</div>
+<p>위 cd 명령에는 실제 저장소 경로를 사용하세요. <code class="docutils literal notranslate"><span class="pre">~/Sim-to-Real-SO-101-Workshop</span></code>는 예시입니다. 같은 터미널에서 현재 폴더에 <code class="docutils literal notranslate"><span class="pre">docker/Dockerfile</span></code>과 <code class="docutils literal notranslate"><span class="pre">source/</span></code>가 있는지 확인한 뒤 다음 명령 블록을 실행하세요.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xhost<span class="w"> </span>+
+docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>so101-workshop<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>--privileged<span class="w"> </span>--runtime<span class="o">=</span>nvidia<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span>DISPLAY<span class="w"> </span>-v<span class="w"> </span>/tmp/.X11-unix:/tmp/.X11-unix<span class="w"> </span>-v<span class="w"> </span>~/.Xauthority:/root/.Xauthority<span class="w"> </span>-v<span class="w"> </span>/dev:/dev<span class="w"> </span>-v<span class="w"> </span>/run/udev:/run/udev:ro<span class="w"> </span>-v<span class="w"> </span>~/.cache/huggingface:/root/.cache/huggingface<span class="w"> </span>-v<span class="w"> </span>~/.cache/ovrtx:/root/.cache/ovrtx<span class="w"> </span>-v<span class="w"> </span>~/.cache/warp:/root/.cache/warp<span class="w"> </span>-v<span class="w"> </span>./docker/env:/root/env<span class="w"> </span>-v<span class="w"> </span>./source:/workspace/Sim-to-Real-SO-101-Workshop/source<span class="w"> </span>-v<span class="w"> </span>./outputs:/workspace/Sim-to-Real-SO-101-Workshop/outputs<span class="w"> </span>-v<span class="w"> </span>./datasets:/workspace/Sim-to-Real-SO-101-Workshop/datasets<span class="w"> </span>-v<span class="w"> </span>./models:/workspace/Sim-to-Real-SO-101-Workshop/models<span class="w"> </span>so101-workshop:latest
+</pre></div>
+</div>
+<p>Shell은 <code class="docutils literal notranslate"><span class="pre">/workspace/Sim-to-Real-SO-101-Workshop</span></code>에서 시작하며, 공통 Python environment인 <code class="docutils literal notranslate"><span class="pre">/workspace/IsaacLab/env_isaaclab</span></code>이 자동으로 활성화됩니다.</p>
+<ol class="arabic simple" start="4">
+<li><p>이 terminal을 <strong>열어 둔 채</strong> 이후 실습을 container prompt에서 진행하세요. 현재 실습을 마치거나 <strong>Ctrl+C</strong>로 중단한 뒤 종료가 완료될 때까지 기다리고, 같은 prompt에서 다음 명령을 실행합니다. Main shell을 닫으면 container도 종료됩니다.</p></li>
+</ol>
+<p>단계에 <strong>host</strong>라고 명시되어 있지 않다면 이후 명령은 container 내부의 <code class="docutils literal notranslate"><span class="pre">/workspace/Sim-to-Real-SO-101-Workshop</span></code>에서 실행합니다. Mount된 <code class="docutils literal notranslate"><span class="pre">docker/env</span></code>의 설정은 container shell 시작 시 읽습니다. 일반 <code class="docutils literal notranslate"><span class="pre">export</span></code>는 현재 shell에만 적용됩니다. Robot port와 ID를 유지하려면 과정의 <code class="docutils literal notranslate"><span class="pre">setenv</span></code> helper를 사용하세요.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="container-shell-recovery">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">실행 중인 Container에 다시 접속하거나 추가 Shell 열기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Host terminal에서 container가 실행 중인지 확인합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>ps<span class="w"> </span>--filter<span class="w"> </span><span class="nv">name</span><span class="o">=</span>so101-workshop
+</pre></div>
+</div>
+<p class="sd-card-text">실행 중인 container에 shell이 필요하면 다음을 사용합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>so101-workshop<span class="w"> </span>bash
+</pre></div>
+</div>
+<p class="sd-card-text">종료되어 있다면 host의 repository root에서 3단계를 다시 실행하세요. Mount된 dataset, model, output, 설정은 유지됩니다. 새 shell에서는 일반 <code class="docutils literal notranslate"><span class="pre">export</span></code> 변수를 다시 설정해야 합니다. 추가 shell은 선택 사항이며, simulation 평가에서는 같은 terminal의 background로 server를 시작합니다.</p>
+</div>
+</details><section id="persistent-files">
+<h3>유지되는 파일<a class="headerlink" href="#persistent-files" title="Link to this heading">#</a></h3>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Container mount와 영구 파일 위치 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">Host 위치</p></th>
+<th class="head"><p class="sd-card-text">Container 위치 / 용도</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">docker/env</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">/root/env</span></code>: robot port와 ID 등의 설정</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">source/</span></code></p></td>
+<td><p class="sd-card-text">Container repository의 workshop package source</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">datasets/</span></code></p></td>
+<td><p class="sd-card-text">Container repository의 recording 및 download dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">outputs/</span></code></p></td>
+<td><p class="sd-card-text">Container repository의 training run과 기타 output</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">models/</span></code></p></td>
+<td><p class="sd-card-text">Container repository의 download checkpoint</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">~/.cache/huggingface/</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">/root/.cache/huggingface/</span></code>: Hub cache와 robot calibration</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">~/.cache/ovrtx/</span></code>, <code class="docutils literal notranslate"><span class="pre">~/.cache/warp/</span></code></p></td>
+<td><p class="sd-card-text">Renderer와 physics cache</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</details><p>Mount된 directory의 수정은 host에 유지됩니다. <code class="docutils literal notranslate"><span class="pre">--rm</span></code> 옵션은 main process가 끝나면 container를 제거합니다.</p>
+</section>
+</section>
+<section id="check-the-simulation">
+<h2>Simulation 확인<a class="headerlink" href="#check-the-simulation" title="Link to this heading">#</a></h2>
+<ol class="arabic simple" start="5">
+<li><p>Container 안에서 task를 <strong>조회</strong>하고 physics-only 검사를 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>list_envs
+zero_agent<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-v0<span class="w"> </span>--cameras<span class="w"> </span>none<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton<span class="w"> </span>--visualizer<span class="w"> </span>newton
+</pre></div>
+</div>
+<ol class="arabic simple" start="6">
+<li><p><strong>Ctrl+C</strong>로 <strong>종료</strong>한 뒤 camera-rendering 검사를 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zero_agent<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer
+</pre></div>
+</div>
+<p>ovrtx를 처음 실행하면 shader cache 준비에 몇 분이 걸릴 수 있습니다. Interactive camera display는 <a class="reference internal" href="08-simulation-teleoperation.html"><span class="std std-doc">Teleoperating in Sim</span></a>에서 다룹니다.</p>
+<p>Camera 명령에는 명시적인 <code class="docutils literal notranslate"><span class="pre">--cameras</span></code> 선택과 <code class="docutils literal notranslate"><span class="pre">presets=newton,ovrtx_renderer</span></code>가 필요합니다. Physics-only 명령은 <code class="docutils literal notranslate"><span class="pre">--cameras</span> <span class="pre">none</span> <span class="pre">presets=newton</span></code>을 사용합니다.</p>
+<section id="choose-the-task-for-each-stage">
+<h3>단계별 Task 선택<a class="headerlink" href="#choose-the-task-for-each-stage" title="Link to this heading">#</a></h3>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">수집 및 평가 Task ID 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ul class="simple">
+<li><p class="sd-card-text"><strong>Leader-arm collection:</strong> <code class="docutils literal notranslate"><span class="pre">lerobot_agent</span></code>에 <code class="docutils literal notranslate"><span class="pre">Newton-So101-Teleop-Vials-To-Rack-v0</span></code>를 사용합니다. Domain Randomization에는 <code class="docutils literal notranslate"><span class="pre">Newton-So101-Teleop-Vials-To-Rack-DR-v0</span></code>를 사용합니다.</p></li>
+<li><p class="sd-card-text"><strong>Scripted collection:</strong> <code class="docutils literal notranslate"><span class="pre">vials_state_machine</span></code>에 <code class="docutils literal notranslate"><span class="pre">Newton-So101-Auto-Vials-State-Machine-v0</span></code> 또는 <code class="docutils literal notranslate"><span class="pre">Newton-So101-Auto-Vials-State-Machine-DR-v0</span></code>를 사용합니다. <a class="reference internal" href="08-simulation-teleoperation.html#optional-automated-data-collection"><span class="std std-ref">Automated Data Collection</span></a>을 따르세요.</p></li>
+<li><p class="sd-card-text"><strong>Policy evaluation:</strong> <code class="docutils literal notranslate"><span class="pre">lerobot_eval</span></code>과 LeRobot policy server를 사용하며, task는 <code class="docutils literal notranslate"><span class="pre">Newton-So101-Teleop-Vials-To-Rack-Eval-v0</span></code> 또는 <code class="docutils literal notranslate"><span class="pre">Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0</span></code>입니다.</p></li>
+</ul>
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">list_envs</span></code>는 bare-arm, lightbox, automatic-reach task도 표시합니다. 선택한 수집 방식에 맞는 vial-to-rack task를 사용하세요.</p>
+</div>
+</details></section>
+</section>
+<section id="get-the-models">
+<h2>Model 준비<a class="headerlink" href="#get-the-models" title="Link to this heading">#</a></h2>
+<ol class="arabic simple" start="7">
+<li><p><strong>Ctrl+C</strong>로 camera 검사를 <strong>종료</strong>하고 container 안에서 <strong>인증</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>auth<span class="w"> </span>login
+</pre></div>
+</div>
+<ol class="arabic simple" start="8">
+<li><p><a class="reference internal" href="datasets-and-models.html"><span class="std std-doc">Datasets and Models</span></a>에서 호환되는 LeRobot GR00T 1.7 checkpoint를 선택하거나 <a class="reference internal" href="10-groot.html#reference-post-train-your-own-model"><span class="std std-ref">GR00T Post-Training</span></a>으로 직접 학습합니다. Download한 파일은 <code class="docutils literal notranslate"><span class="pre">models/</span></code> 아래에 둡니다.</p></li>
+</ol>
+</section>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#workshop-software">Workshop Software</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clone-the-repository">Repository Clone</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-the-workshop-container">Workshop Container Build</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#start-the-workshop-container">Workshop Container 시작</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#persistent-files">유지되는 파일</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#check-the-simulation">Simulation 확인</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-the-task-for-each-stage">단계별 Task 선택</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#get-the-models">Model 준비</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

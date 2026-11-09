@@ -1,0 +1,612 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Sim Evaluation — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '11-sim-evaluation';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="03-sim-to-real.html" rel="next" title="What Is Sim-to-Real?"/>
+<link href="09-state-machine-learning.html" rel="prev" title="Learning From Real Demonstrations With a State Machine"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Sim Evaluation</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/11-sim-evaluation.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="sim-evaluation">
+<h1>Sim Evaluation<a class="headerlink" href="#sim-evaluation" title="Link to this heading">#</a></h1>
+<div class="course-module-type">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M11 17V8a2 2 0 0 1 4 0v6a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v2a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-3c-2 0-4-1-5-3l-5-7a2 2 0 0 1 3-2l1 1"></path>
+<path d="M15 14v5m4-4v4m4-2v3M5 9H3m4-5L5.5 2.5M19 5l1.5-1.5"></path>
+</svg>
+<span>Hands-on</span>
+</div>
+<a class="course-banner reference internal image-reference" href="_images/sim-eval-rollout.gif"><img alt="Simulated policy rollout with camera observations and joint signals." class="course-banner" src="_images/sim-eval-rollout.gif" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">What Do I Need for This Module?</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Hands-on. You’ll need the running <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container, an NVIDIA RTX GPU, and a compatible LeRobot GR00T 1.7 checkpoint.</p>
+</div>
+</details><p>Evaluate your policy in Isaac Lab 3.0 with Newton physics and ovrtx cameras before deploying it to the physical robot.</p>
+<section id="learning-objectives">
+<h2>Learning Objectives<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Run simulation evaluation from one terminal in the workshop container.</p></li>
+<li><p>Compare base and domain-randomized evaluation conditions.</p></li>
+<li><p>Record grasp, placement, and failure behavior.</p></li>
+</ul>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Success in sim does not guarantee success in real
+A strong simulation score is a useful starting point, but a higher sim score does not necessarily mean a better real-world policy. Test the same checkpoint on the physical robot and record the two results separately.</p>
+</div>
+<p>Before running trials, check the starting conditions against the selected checkpoint’s training data. An evaluation task’s default reset is not proof that its starts match that dataset.</p>
+</section>
+<section id="run-policy-evaluation">
+<h2>Run Policy Evaluation<a class="headerlink" href="#run-policy-evaluation" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Use</strong> the existing <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container terminal. Stop any active exercise with <strong>Ctrl+C</strong> and wait for the prompt.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Start the Workshop Container</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">If the container is not running, run this from a <strong>host terminal</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/Sim-to-Real-SO-101-Workshop
+</pre></div>
+</div>
+<p>Use your actual checkout path for the directory change above; <code class="docutils literal notranslate"><span class="pre">~/Sim-to-Real-SO-101-Workshop</span></code> is only an example. In the same terminal, confirm that the directory contains <code class="docutils literal notranslate"><span class="pre">docker/Dockerfile</span></code> and <code class="docutils literal notranslate"><span class="pre">source/</span></code> before running the next block.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xhost<span class="w"> </span>+
+docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>so101-workshop<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>--privileged<span class="w"> </span>--runtime<span class="o">=</span>nvidia<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span>DISPLAY<span class="w"> </span>-v<span class="w"> </span>/tmp/.X11-unix:/tmp/.X11-unix<span class="w"> </span>-v<span class="w"> </span>~/.Xauthority:/root/.Xauthority<span class="w"> </span>-v<span class="w"> </span>/dev:/dev<span class="w"> </span>-v<span class="w"> </span>/run/udev:/run/udev:ro<span class="w"> </span>-v<span class="w"> </span>~/.cache/huggingface:/root/.cache/huggingface<span class="w"> </span>-v<span class="w"> </span>~/.cache/ovrtx:/root/.cache/ovrtx<span class="w"> </span>-v<span class="w"> </span>~/.cache/warp:/root/.cache/warp<span class="w"> </span>-v<span class="w"> </span>./docker/env:/root/env<span class="w"> </span>-v<span class="w"> </span>./source:/workspace/Sim-to-Real-SO-101-Workshop/source<span class="w"> </span>-v<span class="w"> </span>./outputs:/workspace/Sim-to-Real-SO-101-Workshop/outputs<span class="w"> </span>-v<span class="w"> </span>./datasets:/workspace/Sim-to-Real-SO-101-Workshop/datasets<span class="w"> </span>-v<span class="w"> </span>./models:/workspace/Sim-to-Real-SO-101-Workshop/models<span class="w"> </span>so101-workshop:latest
+</pre></div>
+</div>
+</div>
+</details><p>The current <code class="docutils literal notranslate"><span class="pre">lerobot_eval</span></code> connects to a policy server. Start a fresh server for each policy in the background of this shell, leaving the prompt available for evaluation:</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Stop the policy server before switching policies
+Every time you finish evaluating a policy, use one of the <a class="reference internal" href="#stop-evaluation">server shutdown options</a> below <strong>before starting the next policy</strong>: run <code class="docutils literal notranslate"><span class="pre">kill</span></code>, <code class="docutils literal notranslate"><span class="pre">wait</span></code>, and <code class="docutils literal notranslate"><span class="pre">unset</span></code> in the same shell, or stop all policy servers in the container.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>outputs
+python<span class="w"> </span>-m<span class="w"> </span>lerobot.async_inference.policy_server<span class="w"> </span>--host<span class="o">=</span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="o">=</span><span class="m">8080</span><span class="w"> </span>--fps<span class="o">=</span><span class="m">30</span><span class="w"> </span>--inference_latency<span class="o">=</span><span class="m">0</span><span class="w"> </span>&gt;<span class="w"> </span>outputs/policy-server.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span><span class="w"> </span><span class="nv">POLICY_SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import grpc; grpc.channel_ready_future(grpc.insecure_channel('localhost:8080')).result(timeout=60); print('Policy server ready')"</span>
+</pre></div>
+</div>
+<p>Wait for <code class="docutils literal notranslate"><span class="pre">Policy</span> <span class="pre">server</span> <span class="pre">ready</span></code> before continuing. If readiness times out, inspect <code class="docutils literal notranslate"><span class="pre">tail</span> <span class="pre">-n</span> <span class="pre">40</span> <span class="pre">outputs/policy-server.log</span></code> and resolve the error before evaluating. The server log stays in the mounted <code class="docutils literal notranslate"><span class="pre">outputs/</span></code> directory. Keep <code class="docutils literal notranslate"><span class="pre">POLICY_SERVER_PID</span></code> in this shell for cleanup; do not start another server while this one is running.</p>
+<ol class="arabic simple" start="2">
+<li><p>At the same prompt, <strong>set</strong> your model repository or local checkpoint directory:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929
+</pre></div>
+</div>
+<article aria-label="Vision-trainable 20k model card" class="course-model-card">
+<div class="model-card-header">
+<div>
+<p class="model-card-family">GR00T 1.7 · SO-101</p>
+<h3 class="model-card-title">Vision-trainable 20k</h3>
+<p class="model-card-purpose">Sim-only baseline</p>
+</div>
+<a aria-label="Open Vision-trainable 20k on Hugging Face (new tab)" class="model-card-hub" href="https://huggingface.co/sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="model-card-face">🤗</span> Hugging Face <span aria-hidden="true">↗</span></a>
+</div>
+<p class="model-card-episodes"><span><strong>500</strong> episodes</span><span class="model-card-composition">500 state-machine demonstrations</span></p>
+<ul aria-label="Post-training data sources" class="model-card-sources">
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="9" rx="3" width="9" x="3" y="3"></rect>
+<rect height="9" rx="3" width="9" x="20" y="20"></rect>
+<path d="M12 7.5h8a4.5 4.5 0 0 1 4.5 4.5v4m-3-3 3 3 3-3M20 24.5h-8a4.5 4.5 0 0 1-4.5-4.5v-4m-3 3 3-3 3 3"></path>
+<path d="M6 7.5h3m-1.5-1.5v3m15 15.5 1.4 1.4 2.6-2.8"></path>
+</svg>
+<span class="model-card-source-name">State machine</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="4"></rect>
+<path d="M11 28h10m-5-6v6M9 17l4-6 5 5 5-8m-3 0h3v3"></path>
+<circle cx="9" cy="17" r="1"></circle>
+<path d="M6 7h1m2 0h1"></path>
+</svg>
+<span class="model-card-source-name">Sim teleop</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M5 28h22M9 28v-5h10v5M13 23l-4-9 8-7m2 0 6 6m-1 3 3 1 2-3M9 15l9 6"></path>
+<circle cx="9" cy="12" r="3"></circle>
+<circle cx="19" cy="6" r="3"></circle>
+<circle cx="25" cy="14" r="2"></circle>
+</svg>
+<span class="model-card-source-name">Real data</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+</ul>
+<p class="model-card-training">20,000 updates · Batch 32 · Learning rate 1e-4<br/>Vision trainable · Language frozen · <a href="https://huggingface.co/sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929/blob/bbfef9eaecc7a7654f42aaa4ceb95245bb140a53/README.md" rel="noopener noreferrer" target="_blank">Training details ↗</a></p>
+<p class="model-card-datasets">Training data: <a href="https://huggingface.co/datasets/sreetz-nv/so101_newton_dr500_20260923" rel="noopener noreferrer" target="_blank">500 state-machine demos ↗</a></p>
+</article>
+<section id="what-to-expect">
+<h3>What to Expect<a class="headerlink" href="#what-to-expect" title="Link to this heading">#</a></h3>
+<p>This model was trained on 500 state-machine demonstrations in simulation. Those demonstrations did not include returning after placement, so expect it to stop rather than repeat the task. Compare its behavior from the default starting pose with the dataset-derived start in the next run.</p>
+<p>For your own teleoperation model, use <code class="docutils literal notranslate"><span class="pre">your_hf_username/so101_teleop_vials_newton_GR00T17</span></code>. For the automated collection example, use <code class="docutils literal notranslate"><span class="pre">your_hf_username/so101_auto_vials_newton_GR00T17</span></code>. To evaluate a local checkpoint, set <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code> to the absolute container path of your selected <code class="docutils literal notranslate"><span class="pre">pretrained_model</span></code> directory under <code class="docutils literal notranslate"><span class="pre">models/</span></code> or <code class="docutils literal notranslate"><span class="pre">outputs/train/</span></code>. The background server uses the same container filesystem and can read these mounts. See <a class="reference internal" href="datasets-and-models.html#download-a-compatible-policy"><span class="std std-ref">Download a Compatible Policy</span></a>.</p>
+<ol class="arabic simple" start="3">
+<li><p><strong>Run</strong> ten episodes with both cameras, using the default starting pose:</p></li>
+</ol>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Expect a Low Success Rate on this first run.
+This is a deliberate starting-pose comparison, where we start the robot in a pose that’s out of distribution. The selected policy is expected to struggle from the default pose.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot_eval<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span>--browser-display<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer<span class="w"> </span>--server_address<span class="w"> </span>localhost:8080<span class="w"> </span>--pretrained_name_or_path<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy_type<span class="w"> </span>groot<span class="w"> </span>--policy_device<span class="w"> </span>cuda<span class="w"> </span>--action_horizon<span class="w"> </span><span class="m">16</span><span class="w"> </span>--num_episodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">76000</span><span class="w"> </span>--lang_instruction<span class="w"> </span><span class="s2">"Pick up the vial and place it in the rack"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>Open</strong> <a class="reference external" href="http://localhost:8090" rel="noreferer noopener" target="_blank">http://localhost:8090</a> to watch camera feeds and telemetry. With the page focused, <strong>R</strong> interrupts the current episode and resets the scene. Use only one browser tab connected to the viewer at a time.</p></li>
+<li><p><strong>Stop</strong> the evaluation with <strong>Ctrl+C</strong> if it is still running, then <strong>stop the policy server</strong> in the same shell:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span>
+<span class="nb">wait</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="nb">unset</span><span class="w"> </span>POLICY_SERVER_PID
+</pre></div>
+</div>
+<p>Or <strong>stop all policy servers</strong> in the container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+</section>
+<section id="compare-a-dataset-derived-starting-pose">
+<h3>Compare a Dataset-Derived Starting Pose<a class="headerlink" href="#compare-a-dataset-derived-starting-pose" title="Link to this heading">#</a></h3>
+<ol class="arabic simple" start="6">
+<li><p><strong>Restart</strong> the policy server and wait for <code class="docutils literal notranslate"><span class="pre">Policy</span> <span class="pre">server</span> <span class="pre">ready</span></code>:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>lerobot.async_inference.policy_server<span class="w"> </span>--host<span class="o">=</span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="o">=</span><span class="m">8080</span><span class="w"> </span>--fps<span class="o">=</span><span class="m">30</span><span class="w"> </span>--inference_latency<span class="o">=</span><span class="m">0</span><span class="w"> </span>&gt;<span class="w"> </span>outputs/policy-server.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span><span class="w"> </span><span class="nv">POLICY_SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import grpc; grpc.channel_ready_future(grpc.insecure_channel('localhost:8080')).result(timeout=60); print('Policy server ready')"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li><p><strong>Run</strong> the same evaluation with <code class="docutils literal notranslate"><span class="pre">--start_pose_dataset</span></code> added. Keep the model, task, seed, and episode count unchanged:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot_eval<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span>--browser-display<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer<span class="w"> </span>--server_address<span class="w"> </span>localhost:8080<span class="w"> </span>--pretrained_name_or_path<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy_type<span class="w"> </span>groot<span class="w"> </span>--policy_device<span class="w"> </span>cuda<span class="w"> </span>--start_pose_dataset<span class="w"> </span>sreetz-nv/so101_newton_dr500_20260923<span class="w"> </span>--action_horizon<span class="w"> </span><span class="m">16</span><span class="w"> </span>--num_episodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">76000</span><span class="w"> </span>--lang_instruction<span class="w"> </span><span class="s2">"Pick up the vial and place it in the rack"</span>
+</pre></div>
+</div>
+<p>The flag uses the mean joint positions at the start of episodes in the specified dataset, including gripper opening. Check the terminal’s <code class="docutils literal notranslate"><span class="pre">[Start</span> <span class="pre">pose]</span></code> lines for the dataset name, mean, and standard deviation. This uses a dataset-derived pose rather than sampling a different recorded start each time; the mean alone does not guarantee coverage for every checkpoint.</p>
+<ol class="arabic simple" start="8">
+<li><p><strong>Compare</strong> the two runs. For this workshop example, we expect a much higher success rate with the dataset-derived start. Did the grasp approach improve? What changed even though the policy weights stayed the same?</p></li>
+</ol>
+</section>
+<section id="what-happens-after-the-release">
+<h3>What Happens After the Release?<a class="headerlink" href="#what-happens-after-the-release" title="Link to this heading">#</a></h3>
+<p>Notice that the policy does not return home after releasing the vial. Why might that be?</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Why Doesn’t the Robot Return Home?</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">The state-machine demonstrations used for this model ended without returning home, so they did not teach the policy that part of the task. To teach a repeatable loop, include the movement after release back to a ready pose in the demonstrations, then train and evaluate that continuation. We’ll explore this with the next models.</p>
+<p class="sd-card-text">An evaluation reset is separate from this learned behavior: the simulator can reset after a placement without the policy having learned to move home.</p>
+</div>
+</details></section>
+<section id="evaluate-without-a-display">
+<h3>Evaluate Without a Display<a class="headerlink" href="#evaluate-without-a-display" title="Link to this heading">#</a></h3>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Show the evaluation command without a display</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">To repeat the dataset-derived-start evaluation without a display, <strong>run</strong> without <code class="docutils literal notranslate"><span class="pre">--browser-display</span></code>. Cameras and both presets remain required:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot_eval<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer<span class="w"> </span>--server_address<span class="w"> </span>localhost:8080<span class="w"> </span>--pretrained_name_or_path<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy_type<span class="w"> </span>groot<span class="w"> </span>--policy_device<span class="w"> </span>cuda<span class="w"> </span>--start_pose_dataset<span class="w"> </span>sreetz-nv/so101_newton_dr500_20260923<span class="w"> </span>--action_horizon<span class="w"> </span><span class="m">16</span><span class="w"> </span>--num_episodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">76000</span><span class="w"> </span>--lang_instruction<span class="w"> </span><span class="s2">"Pick up the vial and place it in the rack"</span>
+</pre></div>
+</div>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3" id="check-camera-compatibility">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Check Camera Compatibility</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Current observations use <code class="docutils literal notranslate"><span class="pre">wrist</span></code> and <code class="docutils literal notranslate"><span class="pre">external</span></code>, corresponding to <code class="docutils literal notranslate"><span class="pre">observation.images.wrist</span></code> and <code class="docutils literal notranslate"><span class="pre">observation.images.external</span></code> in LeRobot. A checkpoint trained with these names needs no rename map.</p>
+<p class="sd-card-text">For a compatible older LeRobot checkpoint whose camera features are <code class="docutils literal notranslate"><span class="pre">ego</span></code> and <code class="docutils literal notranslate"><span class="pre">external_D455</span></code>, add <code class="docutils literal notranslate"><span class="pre">--rename_map</span> <span class="pre">'{"wrist":"ego","external":"external_D455"}'</span></code>. The direction is <strong>simulation camera name → checkpoint feature name</strong>. Inspect the checkpoint before using a map. Renaming keys does not correct different camera poses, optics, joint conventions, or model formats.</p>
+</div>
+</details><ol class="arabic simple">
+<li><p><strong>Stop</strong> any active evaluation client with <strong>Ctrl+C</strong> and <strong>keep</strong> the server running.</p></li>
+<li><p><strong>Run</strong> the same checkpoint under the DR evaluation task:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot_eval<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span>--browser-display<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer<span class="w"> </span>--server_address<span class="w"> </span>localhost:8080<span class="w"> </span>--pretrained_name_or_path<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy_type<span class="w"> </span>groot<span class="w"> </span>--policy_device<span class="w"> </span>cuda<span class="w"> </span>--start_pose_dataset<span class="w"> </span>sreetz-nv/so101_newton_dr500_20260923<span class="w"> </span>--action_horizon<span class="w"> </span><span class="m">16</span><span class="w"> </span>--num_episodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">76000</span><span class="w"> </span>--lang_instruction<span class="w"> </span><span class="s2">"Pick up the vial and place it in the rack"</span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="10-domain-randomization.html#test-domain-randomization"><span class="std std-ref">camera comparison</span></a> and <a class="reference internal" href="10-domain-randomization.html#code-tour-domain-randomization-implementation"><span class="std std-ref">configured Domain Randomization ranges</span></a>. Use the same episode count and seed (<code class="docutils literal notranslate"><span class="pre">--seed</span></code>) when comparing checkpoints.</p>
+</section>
+</section>
+<section id="watch-and-record-results">
+<h2>Watch and Record Results<a class="headerlink" href="#watch-and-record-results" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The terminal reports progress and grasp/placement events.</p></li>
+<li><p>Evaluation tasks reset on placement, timeout, or an unsafe rack state.</p></li>
+<li><p>A trial counts as successful only when the task’s success condition is met without a timeout.</p></li>
+<li><p>Safety resets alone do not count as successes.</p></li>
+<li><p>Watch the rollouts as well as the summary to understand how the policy fails.</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p><strong>Record</strong> the model, task ID, seed, episode count, action horizon, successful placements, and failure descriptions. Look for missed grasps, drops, rack collisions, and lighting sensitivity.</p></li>
+</ol>
+<p><strong>Try another environment:</strong> Run the same checkpoint in the base or DR environment, keeping the seed, episode count, and action horizon the same. How do the results change? Consider how differences from the environment used to collect its training data—such as lighting, materials, camera views, or object placement—might affect what the policy sees and how it behaves.</p>
+<p>The workshop control and camera cadence is 30 Hz. GPU contention or inference latency can affect observed rollout rate.</p>
+</section>
+<section id="stop-evaluation">
+<h2>Stop Evaluation<a class="headerlink" href="#stop-evaluation" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Press Ctrl+C</strong> to stop a running evaluation and wait for the prompt. If all episodes have finished, the prompt is already available.</p></li>
+<li><p><strong>Stop</strong> the background server in this same shell to free its GPU memory. Run these commands every time you finish with a policy, before evaluating another policy:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span>
+<span class="nb">wait</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="nb">unset</span><span class="w"> </span>POLICY_SERVER_PID
+</pre></div>
+</div>
+<p>Or <strong>stop all policy servers</strong> in the container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>Keep</strong> this terminal and the workshop container open. Before evaluating the next policy in simulation.</p></li>
+</ol>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>What's Next?</h2>
+<p>Continue to the next page in the table of contents:
+    <a class="reference internal course-next-link" href="03-sim-to-real.html">What Is Sim-to-Real?</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="09-state-machine-learning.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Learning From Real Demonstrations With a State Machine</p>
+</div>
+</a>
+<a class="right-next" href="03-sim-to-real.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">What Is Sim-to-Real?</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning Objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-policy-evaluation">Run Policy Evaluation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-expect">What to Expect</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-a-dataset-derived-starting-pose">Compare a Dataset-Derived Starting Pose</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-happens-after-the-release">What Happens After the Release?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate-without-a-display">Evaluate Without a Display</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#watch-and-record-results">Watch and Record Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stop-evaluation">Stop Evaluation</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

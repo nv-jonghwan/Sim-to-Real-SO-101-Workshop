@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Co-Training in Practice — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '13-cotraining-practice';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="14-hg-dagger.html" rel="next" title="Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger"/>
+<link href="13-strategy2-cotraining.html" rel="prev" title="Sim-to-Real Strategy 2: Co-Training With Real Data"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Co-Training in Practice</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/13-cotraining-practice.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="co-training-in-practice">
+<h1>Co-Training in Practice<a class="headerlink" href="#co-training-in-practice" title="Link to this heading">#</a></h1>
+<div class="course-module-type">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M11 17V8a2 2 0 0 1 4 0v6a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v2a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-3c-2 0-4-1-5-3l-5-7a2 2 0 0 1 3-2l1 1"></path>
+<path d="M15 14v5m4-4v4m4-2v3M5 9H3m4-5L5.5 2.5M19 5l1.5-1.5"></path>
+</svg>
+<span>Hands-on</span>
+</div>
+<a class="course-banner reference internal image-reference" href="_images/so101_rack_task.png"><img alt="Physical SO-101 holding a vial above the yellow rack." class="course-banner" src="_images/so101_rack_task.png" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">What Do I Need for This Module?</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Hands-on. You’ll need the calibrated SO-101 robot, leader arm, both cameras, the assembled workspace, and the <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container.</p>
+</div>
+</details><p>In this session, you’ll compare a co-trained policy with the sim-only baseline on the physical robot.</p>
+<section id="learning-objectives">
+<h2>Learning Objectives<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<p>By the end of this session, you’ll be able to:</p>
+<ul class="simple">
+<li><p><strong>Deploy</strong> trained policies safely to the physical SO-101 robot</p></li>
+<li><p><strong>Observe</strong> and document real-world policy behavior</p></li>
+<li><p><strong>Identify</strong> initial sim-to-real gap symptoms</p></li>
+</ul>
+</section>
+<section id="example-results">
+<h2>Example Results<a class="headerlink" href="#example-results" title="Link to this heading">#</a></h2>
+<p>These real-robot sessions show a policy trained on <strong>75 simulated teleoperation demonstrations and 10 real demonstrations</strong>. The exercise below uses this Sim75 + Real10 checkpoint.</p>
+<p>As you watch, notice the failure modes—most commonly <strong>missing the vial slot in the rack</strong>. Compare them with your own setup: do you see the same misses?</p>
+<figure style="margin: 1.5rem auto;">
+<video aria-describedby="cotraining-sim75-real10-caption" aria-label="Co-trained policy evaluation on a black SO-101, with external and wrist camera views" controls="" height="592" muted="" playsinline="" poster="_static/videos/cotraining-sim75-real10-poster.jpg" preload="none" style="display: block; width: 100%; max-width: 56rem; height: auto; margin: 0 auto;" width="1280">
+<source src="_static/videos/cotraining-sim75-real10.mp4" type="video/mp4"/>
+<a href="_static/videos/cotraining-sim75-real10.mp4">Watch the evaluation with external and wrist camera views.</a>
+</video>
+<figcaption id="cotraining-sim75-real10-caption">Black SO-101: 10 trials, shown through the external and wrist cameras.</figcaption>
+</figure>
+<figure style="margin: 1.5rem auto;">
+<video aria-describedby="cotraining-train009-caption" aria-label="Co-trained policy evaluation on an orange SO-101, with annotated attempt outcomes" controls="" height="720" muted="" playsinline="" poster="_static/videos/cotraining-train009-poster.jpg" preload="none" style="display: block; width: 100%; max-width: 56rem; height: auto; margin: 0 auto;" width="1280">
+<source src="_static/videos/cotraining-train009.mp4" type="video/mp4"/>
+<a href="_static/videos/cotraining-train009.mp4">Watch the annotated evaluation on the orange robot.</a>
+</video>
+<figcaption id="cotraining-train009-caption">Orange SO-101: 11 attempts with outcomes marked in the video.</figcaption>
+</figure><p>In these small-sample tests, changing the robot color and using slightly different vials had <strong>no measurable impact on policy performance</strong>.</p>
+</section>
+<section id="optional-collecting-real-demonstrations-with-lerobot">
+<h2>(Optional) Collecting Real Demonstrations With LeRobot<a class="headerlink" href="#optional-collecting-real-demonstrations-with-lerobot" title="Link to this heading">#</a></h2>
+<p><strong>Already prepared for you:</strong> The event datasets and trained models are provided. You do not need to collect, merge, upload, or train data for this exercise. Continue to <a class="reference internal" href="#hands-on-deploy-a-co-trained-policy">Deploy a Co-Trained Policy</a>. The dropdown below is a reference for trying the preparation workflow later.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Use the same camera names, joint order, normalization, frame rate, and task instruction in simulation and real demonstrations.</p>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Reference: collect and prepare your own co-training data</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">This recording workflow starts with five new real episodes; this is a separate collection, not the selected checkpoint’s training dataset.</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">Use the existing container terminal after stopping any active rollout.</p></li>
+<li><p class="sd-card-text">If you plan to upload, <strong>log in</strong> with <code class="docutils literal notranslate"><span class="pre">hf</span> <span class="pre">auth</span> <span class="pre">login</span></code>. Skip this for local-only collection (recommended).</p></li>
+<li><p class="sd-card-text"><strong>Set</strong> the dataset namespace. Keep the placeholder for local-only collection, or use your Hugging Face username if you plan to upload.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">HF_USER</span><span class="o">=</span>your-hf-username
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text">Run the following command - make sure to set the <code class="docutils literal notranslate"><span class="pre">dataset.repo_id</span></code> argument.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-record<span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="nv">$ROBOT_PORT</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="nv">$ROBOT_ID</span><span class="w"> </span>--robot.cameras<span class="o">=</span><span class="s1">'{ "wrist": { "type": "opencv", "index_or_path": '</span><span class="s2">"</span><span class="nv">$CAMERA_GRIPPER</span><span class="s2">"</span><span class="s1">', "width": 640, "height": 480, "fps": 30 }, "external": { "type": "opencv", "index_or_path": '</span><span class="s2">"</span><span class="nv">$CAMERA_EXTERNAL</span><span class="s2">"</span><span class="s1">', "width": 640, "height": 480, "fps": 30 } }'</span><span class="w"> </span>--teleop.type<span class="o">=</span>so101_leader<span class="w"> </span>--teleop.port<span class="o">=</span><span class="nv">$TELEOP_PORT</span><span class="w"> </span>--teleop.id<span class="o">=</span><span class="nv">$TELEOP_ID</span><span class="w"> </span>--display_data<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--dataset.repo_id<span class="o">=</span><span class="si">${</span><span class="nv">HF_USER</span><span class="si">}</span>/so101-teleop-vials-to-rack-real<span class="w"> </span>--dataset.root<span class="o">=</span><span class="s2">"./datasets/</span><span class="si">${</span><span class="nv">HF_USER</span><span class="si">}</span><span class="s2">/so101-teleop-vials-to-rack-real"</span><span class="w"> </span>--dataset.push_to_hub<span class="o">=</span><span class="nb">false</span><span class="w"> </span>--dataset.num_episodes<span class="o">=</span><span class="m">5</span><span class="w"> </span>--dataset.single_task<span class="o">=</span><span class="s2">"Pick up the vial and place it in the rack"</span><span class="w"> </span>--play_sounds<span class="o">=</span><span class="nb">false</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p class="sd-card-text">Use these controls to control recording:</p></li>
+</ol>
+<ul class="simple">
+<li><p class="sd-card-text"><strong>Press Right Arrow (→):</strong> Early stop the current episode or reset time and move to the next.</p></li>
+<li><p class="sd-card-text"><strong>Press Left Arrow (←):</strong> Cancel the current episode and re-record it.</p></li>
+<li><p class="sd-card-text"><strong>Press Escape (ESC):</strong> Stop the session and allow video encoding and saving to finish.</p></li>
+</ul>
+<p class="sd-card-text">Read more about LeRobot Record here: <a class="reference external" href="https://huggingface.co/docs/lerobot/il_robots#record-function" rel="noreferer noopener" target="_blank">lerobot-record</a></p>
+<ol class="arabic simple" start="6">
+<li><p class="sd-card-text"><strong>Upload</strong> and <strong>tag</strong> the completed dataset:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DATASET_ID</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HF_USER</span><span class="si">}</span><span class="s2">/so101-teleop-vials-to-rack-real"</span>
+hf<span class="w"> </span>upload<span class="w"> </span><span class="s2">"</span><span class="nv">$DATASET_ID</span><span class="s2">"</span><span class="w"> </span><span class="s2">"./datasets/</span><span class="nv">$DATASET_ID</span><span class="s2">"</span><span class="w"> </span>.<span class="w"> </span>--repo-type<span class="w"> </span>dataset
+hf<span class="w"> </span>repos<span class="w"> </span>tag<span class="w"> </span>create<span class="w"> </span><span class="s2">"</span><span class="nv">$DATASET_ID</span><span class="s2">"</span><span class="w"> </span>v3.0<span class="w"> </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span>--revision<span class="w"> </span>main
+</pre></div>
+</div>
+<p class="sd-card-text">For later uploads to the same dataset, <a class="reference internal" href="08-simulation-teleoperation.html#refresh-dataset-tag"><span class="std std-ref">refresh its tag</span></a>.</p>
+<ol class="arabic simple" start="7">
+<li><p class="sd-card-text"><strong>Merge</strong> the local simulation dataset from <a class="reference internal" href="08-simulation-teleoperation.html#review-and-upload-collected-data"><span class="std std-ref">Teleoperating in Sim</span></a> with the real episodes you just recorded:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SIM_DATASET_ID</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HF_USER</span><span class="si">}</span><span class="s2">/so101_teleop_vials_newton"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">REAL_DATASET_ID</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HF_USER</span><span class="si">}</span><span class="s2">/so101-teleop-vials-to-rack-real"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATASET_NAME</span><span class="o">=</span>so101_vials_sim_real_round1
+<span class="nb">export</span><span class="w"> </span><span class="nv">MERGED_DATASET_ID</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">HF_USER</span><span class="si">}</span><span class="s2">/</span><span class="si">${</span><span class="nv">DATASET_NAME</span><span class="si">}</span><span class="s2">"</span>
+lerobot-edit-dataset<span class="w"> </span>--new_repo_id<span class="w"> </span><span class="s2">"</span><span class="nv">$MERGED_DATASET_ID</span><span class="s2">"</span><span class="w"> </span>--new_root<span class="w"> </span><span class="s2">"./datasets/</span><span class="nv">$MERGED_DATASET_ID</span><span class="s2">"</span><span class="w"> </span>--operation.type<span class="w"> </span>merge<span class="w"> </span>--operation.repo_ids<span class="w"> </span><span class="s2">"['</span><span class="nv">$SIM_DATASET_ID</span><span class="s2">', '</span><span class="nv">$REAL_DATASET_ID</span><span class="s2">']"</span><span class="w"> </span>--operation.roots<span class="w"> </span><span class="s2">"['./datasets/</span><span class="nv">$SIM_DATASET_ID</span><span class="s2">', './datasets/</span><span class="nv">$REAL_DATASET_ID</span><span class="s2">']"</span><span class="w"> </span>--push_to_hub<span class="o">=</span><span class="nb">false</span>
+</pre></div>
+</div>
+<p class="sd-card-text">Both input folders must contain completed LeRobot datasets. If you used automated collection, set <code class="docutils literal notranslate"><span class="pre">SIM_DATASET_ID</span></code> to <code class="docutils literal notranslate"><span class="pre">${HF_USER}/so101_auto_vials_newton</span></code> before merging. Use a new output dataset name for each merge. Check that the inputs share camera names (<code class="docutils literal notranslate"><span class="pre">wrist</span></code> and <code class="docutils literal notranslate"><span class="pre">external</span></code>), joint units, task instruction, and 30 Hz frame rate.</p>
+<p class="sd-card-text">This example includes all episodes from both sources without balancing or duplicating them. Longer datasets contribute more training frames; merging does not create a 50/50 sampling ratio or reproduce the selected Sim75 + Real10 model.</p>
+<ol class="arabic simple" start="8">
+<li><p class="sd-card-text"><strong>Inspect</strong> episodes from both sources in the merged dataset. Simulation episodes come first, followed by real episodes:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-dataset-viz<span class="w"> </span>--repo-id<span class="w"> </span><span class="s2">"</span><span class="nv">$MERGED_DATASET_ID</span><span class="s2">"</span><span class="w"> </span>--root<span class="w"> </span><span class="s2">"./datasets/</span><span class="nv">$MERGED_DATASET_ID</span><span class="s2">"</span><span class="w"> </span>--episode-index<span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+<p class="sd-card-text">Change <code class="docutils literal notranslate"><span class="pre">--episode-index</span></code> to inspect a real episode too; its first index is the number of simulation episodes in your input dataset. Then <strong>upload</strong> the merged dataset:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>upload<span class="w"> </span><span class="s2">"</span><span class="nv">$MERGED_DATASET_ID</span><span class="s2">"</span><span class="w"> </span><span class="s2">"./datasets/</span><span class="nv">$MERGED_DATASET_ID</span><span class="s2">"</span><span class="w"> </span>.<span class="w"> </span>--repo-type<span class="w"> </span>dataset
+hf<span class="w"> </span>repos<span class="w"> </span>tag<span class="w"> </span>create<span class="w"> </span><span class="s2">"</span><span class="nv">$MERGED_DATASET_ID</span><span class="s2">"</span><span class="w"> </span>v3.0<span class="w"> </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span>--revision<span class="w"> </span>main
+</pre></div>
+</div>
+<ol class="arabic simple" start="9">
+<li><p class="sd-card-text">Follow <a class="reference internal" href="10-groot.html#reference-post-train-your-own-model"><span class="std std-ref">GR00T Post-Training</span></a>, using <code class="docutils literal notranslate"><span class="pre">DATASET_NAME=so101_vials_sim_real_round1</span></code> instead of its teleoperation-only example. Define the training variables after choosing that name so the dataset, model ID, and output directory refer to this new experiment.</p></li>
+</ol>
+</div>
+</details></section>
+<section id="hands-on-deploy-a-co-trained-policy">
+<h2>Hands-On: Deploy a Co-Trained Policy<a class="headerlink" href="#hands-on-deploy-a-co-trained-policy" title="Link to this heading">#</a></h2>
+<p>Use the selected <a class="reference internal" href="datasets-and-models.html#cotrained-reference"><span class="std std-ref">Sim75 + Real10 policy</span></a>: a GR00T 1.7 checkpoint trained for 20,000 updates on 75 simulated teleoperation episodes and 10 real demonstrations. It uses a 16-action window with vision trainable and language frozen. The example videos show preliminary real trials; this exercise measures how it performs on your station.</p>
+<p>See <a class="reference internal" href="datasets-and-models.html#cotrained-reference"><span class="std std-ref">model downloads and benchmark conditions</span></a>.</p>
+<section id="workspace-prep">
+<h3>Workspace Prep<a class="headerlink" href="#workspace-prep" title="Link to this heading">#</a></h3>
+<p>Review <a class="reference internal" href="08-operating-so101.html#id1"><span class="std std-ref">Safety</span></a> before proceeding.</p>
+<ol class="arabic simple">
+<li><p><strong>Verify</strong> the follower connection and calibrated robot ID.</p></li>
+<li><p><strong>Place</strong> the vials and rack in the <a class="reference internal" href="12-real-evaluation.html#id1"><span class="std std-ref">workspace</span></a> used for the sim-only baseline.</p></li>
+<li><p><strong>Check</strong> camera assignments and clear their views.</p></li>
+<li><p><strong>Turn on</strong> the lightbox with the same settings used for the baseline.</p></li>
+</ol>
+</section>
+<section id="run-and-compare">
+<h3>Run and Compare<a class="headerlink" href="#run-and-compare" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Use</strong> the same container terminal after the preceding rollout stops, following <a class="reference internal" href="12-real-evaluation.html#run-the-policy"><span class="std std-ref">Real Evaluation</span></a>.</p></li>
+<li><p><strong>Set</strong> the selected co-trained model, or use the local path from its download instructions:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>sreetz-nv/so101_real10_sim75_vision_h16_b64_20k_20261011
+<span class="nb">export</span><span class="w"> </span><span class="nv">TASK_INSTRUCTION</span><span class="o">=</span><span class="s2">"Pick up the vial and place it in the rack"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ROBOT_CAMERAS</span><span class="o">=</span><span class="s2">"{ wrist: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_GRIPPER</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG}, external: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_EXTERNAL</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG} }"</span>
+</pre></div>
+</div>
+<article aria-label="Sim75 + Real10 model card" class="course-model-card">
+<div class="model-card-header">
+<div>
+<p class="model-card-family">GR00T 1.7 · SO-101</p>
+<h3 class="model-card-title">Sim75 + Real10</h3>
+<p class="model-card-purpose">Co-trained teleoperation policy</p>
+</div>
+<a aria-label="Open Sim75 + Real10 on Hugging Face (new tab)" class="model-card-hub" href="https://huggingface.co/sreetz-nv/so101_real10_sim75_vision_h16_b64_20k_20261011" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="model-card-face">🤗</span> Hugging Face <span aria-hidden="true">↗</span></a>
+</div>
+<p class="model-card-episodes"><span><strong>85</strong> episodes</span><span class="model-card-composition">75 sim teleop + 10 real</span></p>
+<ul aria-label="Post-training data sources" class="model-card-sources">
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="9" rx="3" width="9" x="3" y="3"></rect>
+<rect height="9" rx="3" width="9" x="20" y="20"></rect>
+<path d="M12 7.5h8a4.5 4.5 0 0 1 4.5 4.5v4m-3-3 3 3 3-3M20 24.5h-8a4.5 4.5 0 0 1-4.5-4.5v-4m-3 3 3-3 3 3"></path>
+<path d="M6 7.5h3m-1.5-1.5v3m15 15.5 1.4 1.4 2.6-2.8"></path>
+</svg>
+<span class="model-card-source-name">State machine</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="4"></rect>
+<path d="M11 28h10m-5-6v6M9 17l4-6 5 5 5-8m-3 0h3v3"></path>
+<circle cx="9" cy="17" r="1"></circle>
+<path d="M6 7h1m2 0h1"></path>
+</svg>
+<span class="model-card-source-name">Sim teleop</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M5 28h22M9 28v-5h10v5M13 23l-4-9 8-7m2 0 6 6m-1 3 3 1 2-3M9 15l9 6"></path>
+<circle cx="9" cy="12" r="3"></circle>
+<circle cx="19" cy="6" r="3"></circle>
+<circle cx="25" cy="14" r="2"></circle>
+</svg>
+<span class="model-card-source-name">Real data</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+</ul>
+<p class="model-card-training">20,000 updates · Effective batch 64 (microbatch 16 × 4 accumulation steps) · Learning rate 1e-4<br/>16-action window · Vision trainable · Language frozen · <a href="https://huggingface.co/sreetz-nv/so101_real10_sim75_vision_h16_b64_20k_20261011/blob/c7e8049753be5629e73eda69b57a358146bbeb5d/README.md" rel="noopener noreferrer" target="_blank">Training details ↗</a></p>
+<p class="model-card-datasets">Training data: <a href="https://huggingface.co/datasets/sreetz-nv/so101_real10_sim75_20261011" rel="noopener noreferrer" target="_blank">Merged training dataset ↗</a> · <a href="https://huggingface.co/datasets/sreetz-nv/so101_sim_manual_perception_newton_20261008" rel="noopener noreferrer" target="_blank">75 sim ↗</a> · <a href="https://huggingface.co/datasets/sreetz-nv/so101_real_manual" rel="noopener noreferrer" target="_blank">10 real ↗</a></p>
+</article>
+</section>
+<section id="what-to-expect">
+<h3>What to Expect<a class="headerlink" href="#what-to-expect" title="Link to this heading">#</a></h3>
+<p>This model was trained on 75 simulated teleoperation demonstrations and 10 real demonstrations. In our real-robot trials, it succeeded in <strong>10 of 20 episodes (50%)</strong>. Compare its grasping and placement with the sim-only policy, especially whether the vial tip misses the rack slot.</p>
+<p>Use camera keys <code class="docutils literal notranslate"><span class="pre">wrist</span></code> and <code class="docutils literal notranslate"><span class="pre">external</span></code>, with the camera configuration from <a class="reference internal" href="12-real-evaluation.html#run-the-policy"><span class="std std-ref">Real Evaluation</span></a>.</p>
+<p>Both commands below use the <a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_real10_sim75_20261011" rel="noreferer noopener" target="_blank">merged training dataset</a> to calculate the starting pose from its 10 real and 75 simulated episodes.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Optional: Try This Policy in Simulation First</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Stop</strong> the real rollout and continue in the same container terminal. Keep the selected <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code> and task instruction.</p></li>
+<li><p class="sd-card-text"><strong>Start</strong> the simulation policy server below, or reuse it if it is already running.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>outputs
+python<span class="w"> </span>-m<span class="w"> </span>lerobot.async_inference.policy_server<span class="w"> </span>--host<span class="o">=</span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="o">=</span><span class="m">8080</span><span class="w"> </span>--fps<span class="o">=</span><span class="m">30</span><span class="w"> </span>--inference_latency<span class="o">=</span><span class="m">0</span><span class="w"> </span>&gt;<span class="w"> </span>outputs/policy-server.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span><span class="w"> </span><span class="nv">POLICY_SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import grpc; grpc.channel_ready_future(grpc.insecure_channel('localhost:8080')).result(timeout=60); print('Policy server ready')"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text"><strong>Wait</strong> for <code class="docutils literal notranslate"><span class="pre">Policy</span> <span class="pre">server</span> <span class="pre">ready</span></code>, then <strong>run</strong> the evaluation:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot_eval<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span>--browser-display<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer<span class="w"> </span>--server_address<span class="w"> </span>localhost:8080<span class="w"> </span>--pretrained_name_or_path<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy_type<span class="w"> </span>groot<span class="w"> </span>--policy_device<span class="w"> </span>cuda<span class="w"> </span>--start_pose_dataset<span class="w"> </span>sreetz-nv/so101_real10_sim75_20261011<span class="w"> </span>--action_horizon<span class="w"> </span><span class="m">16</span><span class="w"> </span>--num_episodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">76000</span><span class="w"> </span>--lang_instruction<span class="w"> </span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text"><strong>Open</strong> <a class="reference external" href="http://localhost:8090" rel="noreferer noopener" target="_blank">http://localhost:8090</a>. Use only one browser tab connected to the viewer at a time.</p></li>
+<li><p class="sd-card-text"><strong>Stop</strong> the background server before running the real policy. If evaluation is still running, press <strong>Ctrl+C</strong> first:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span>
+<span class="nb">wait</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="nb">unset</span><span class="w"> </span>POLICY_SERVER_PID
+</pre></div>
+</div>
+<p class="sd-card-text">Or <strong>stop all policy servers</strong> in the container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<p class="sd-card-text">If reusing a server from another terminal, stop it there instead. Continue with the real rollout below; it loads the policy directly.</p>
+</div>
+</details><ol class="arabic simple" start="3">
+<li><p><strong>Run</strong> the policy on the real robot:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-rollout<span class="w"> </span>--strategy.type<span class="o">=</span>workshop<span class="w"> </span>--policy.path<span class="o">=</span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy.base_model_path<span class="o">=</span>nvidia/GR00T-N1.7-3B<span class="w"> </span>--policy.n_action_steps<span class="o">=</span><span class="m">16</span><span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_PORT</span><span class="s2">"</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_ID</span><span class="s2">"</span><span class="w"> </span>--robot.use_degrees<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--robot.cameras<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_CAMERAS</span><span class="s2">"</span><span class="w"> </span>--task<span class="o">=</span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span><span class="w"> </span>--device<span class="o">=</span>cuda<span class="w"> </span>--display_data<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--inference.type<span class="o">=</span>rtc<span class="w"> </span>--inference.rtc.enabled<span class="o">=</span><span class="nb">false</span><span class="w"> </span>--inference.rtc.execution_horizon<span class="o">=</span><span class="m">16</span><span class="w"> </span>--inference.queue_threshold<span class="o">=</span><span class="m">0</span><span class="w"> </span>--start_pose_dataset<span class="o">=</span>sreetz-nv/so101_real10_sim75_20261011
+</pre></div>
+</div>
+<div class="admonition-rollout-controls admonition">
+<p class="admonition-title">Rollout controls</p>
+<p>The arm moves to the workshop start pose on startup, then waits for <strong>P</strong>.
+Keep the rollout terminal focused. Keys are case-insensitive.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>P</strong></p></td>
+<td><p><strong>P for policy:</strong> Start the first or next trial.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>S / F</strong></p></td>
+<td><p>Score success/failure, return to the start pose, and pause.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>N / →</strong></p></td>
+<td><p><strong>N for next:</strong> Discard the trial, return to the start pose, and pause.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Q / Esc</strong></p></td>
+<td><p><strong>Q for Quit:</strong> Exit and discard any unfinished trial.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Ctrl+C</strong></p></td>
+<td><p>Stop the rollout and run cleanup.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Wait for <code class="docutils literal notranslate"><span class="pre">Paused</span></code> before rearranging props. On exit, wait for cleanup and any return motion to finish before touching the arm.</p>
+<p>When comparing models, record the first-action delay shown in the terminal and the number of successes out of scored trials.</p>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>Record</strong> successful grasps/placements, recovery attempts, drops, and overshoot across comparable trials.</p></li>
+<li><p><strong>Score</strong> or <strong>discard</strong> the trial, then wait for <code class="docutils literal notranslate"><span class="pre">Paused</span></code> before resetting props. Press <strong>P</strong> to try again, or <strong>Q / Esc</strong> to exit before changing checkpoints.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Optional: Try i5: Add State-Machine Variation</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Stop</strong> the previous rollout and wait for cleanup, then <strong>select</strong> this model:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>liorbenhorin-nv/so101_vision_dr_i5_GR00T17_20261013
+<span class="nb">export</span><span class="w"> </span><span class="nv">TASK_INSTRUCTION</span><span class="o">=</span><span class="s2">"Pick up the vial and place it in the rack"</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ROBOT_CAMERAS</span><span class="o">=</span><span class="s2">"{ wrist: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_GRIPPER</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG}, external: {type: opencv, index_or_path: </span><span class="nv">$CAMERA_EXTERNAL</span><span class="s2">, width: 640, height: 480, fps: 30, fourcc: MJPG} }"</span>
+</pre></div>
+</div>
+<article aria-label="i5 · Co-training + state-machine variation model card" class="course-model-card">
+<div class="model-card-header">
+<div>
+<p class="model-card-family">GR00T 1.7 · SO-101</p>
+<h3 class="model-card-title">i5 · Co-training + state-machine variation</h3>
+<p class="model-card-purpose">Co-training followed by broader simulated layouts</p>
+</div>
+<a aria-label="Open i5 · Co-training + state-machine variation on Hugging Face (new tab)" class="model-card-hub" href="https://huggingface.co/liorbenhorin-nv/so101_vision_dr_i5_GR00T17_20261013" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="model-card-face">🤗</span> Hugging Face <span aria-hidden="true">↗</span></a>
+</div>
+<p class="model-card-episodes"><span><strong>210</strong> episodes across two stages</span><span class="model-card-composition">75 sim teleop + 10 real → 125 state-machine sim</span></p>
+<ul aria-label="Post-training data sources" class="model-card-sources">
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="9" rx="3" width="9" x="3" y="3"></rect>
+<rect height="9" rx="3" width="9" x="20" y="20"></rect>
+<path d="M12 7.5h8a4.5 4.5 0 0 1 4.5 4.5v4m-3-3 3 3 3-3M20 24.5h-8a4.5 4.5 0 0 1-4.5-4.5v-4m-3 3 3-3 3 3"></path>
+<path d="M6 7.5h3m-1.5-1.5v3m15 15.5 1.4 1.4 2.6-2.8"></path>
+</svg>
+<span class="model-card-source-name">State machine</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="4"></rect>
+<path d="M11 28h10m-5-6v6M9 17l4-6 5 5 5-8m-3 0h3v3"></path>
+<circle cx="9" cy="17" r="1"></circle>
+<path d="M6 7h1m2 0h1"></path>
+</svg>
+<span class="model-card-source-name">Sim teleop</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M5 28h22M9 28v-5h10v5M13 23l-4-9 8-7m2 0 6 6m-1 3 3 1 2-3M9 15l9 6"></path>
+<circle cx="9" cy="12" r="3"></circle>
+<circle cx="19" cy="6" r="3"></circle>
+<circle cx="25" cy="14" r="2"></circle>
+</svg>
+<span class="model-card-source-name">Real data</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+</ul>
+<p class="model-card-training">20,000 + 5,000 updates · Batch 32 · Final 16-action training window<br/>Vision trainable · Language frozen · <a href="https://huggingface.co/liorbenhorin-nv/so101_vision_dr_i5_GR00T17_20261013/blob/main/README.md">Training details ↗</a></p>
+<p class="model-card-datasets">Training data: <a href="https://huggingface.co/datasets/sreetz-nv/so101_sim_manual_perception_newton_20261008" rel="noopener noreferrer" target="_blank">Stage 1: 75 sim ↗</a> · <a href="https://huggingface.co/datasets/sreetz-nv/so101_real_manual" rel="noopener noreferrer" target="_blank">Stage 1: 10 real ↗</a> · <a href="https://huggingface.co/datasets/liorbenhorin-nv/so101_vials_procedural_all_125ep_20261013" rel="noopener noreferrer" target="_blank">Stage 2: 125 state-machine demos ↗</a></p>
+</article>
+<p class="rubric" id="id1">What to Expect</p>
+<p class="sd-card-text">This model first trained on 75 sim-teleoperation and 10 real demonstrations, then trained further on 125 state-machine demonstrations with broader rack layouts. In our real-robot trials, it succeeded in <strong>9 of 20 trials (45%)</strong>. The state-machine variation lets it support some evaluations with the rack on the other side of the workspace. Try that layout and compare grasping and slot alignment with your usual setup.</p>
+<p class="sd-card-text">The command uses the initial poses from this model’s second-stage state-machine dataset. Verify the achieved starting pose before pressing <strong>P</strong>.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Optional: Try This Policy in Simulation First</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Stop</strong> the real rollout and continue in the same container terminal. Keep the selected <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code> and task instruction.</p></li>
+<li><p class="sd-card-text"><strong>Start</strong> the simulation policy server below, or reuse it if it is already running.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>outputs
+python<span class="w"> </span>-m<span class="w"> </span>lerobot.async_inference.policy_server<span class="w"> </span>--host<span class="o">=</span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="o">=</span><span class="m">8080</span><span class="w"> </span>--fps<span class="o">=</span><span class="m">30</span><span class="w"> </span>--inference_latency<span class="o">=</span><span class="m">0</span><span class="w"> </span>&gt;<span class="w"> </span>outputs/policy-server.log<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">&amp;</span><span class="w"> </span><span class="nv">POLICY_SERVER_PID</span><span class="o">=</span><span class="nv">$!</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import grpc; grpc.channel_ready_future(grpc.insecure_channel('localhost:8080')).result(timeout=60); print('Policy server ready')"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text"><strong>Wait</strong> for <code class="docutils literal notranslate"><span class="pre">Policy</span> <span class="pre">server</span> <span class="pre">ready</span></code>, then <strong>run</strong> the evaluation:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot_eval<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-DR-Eval-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span>--browser-display<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer<span class="w"> </span>--server_address<span class="w"> </span>localhost:8080<span class="w"> </span>--pretrained_name_or_path<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy_type<span class="w"> </span>groot<span class="w"> </span>--policy_device<span class="w"> </span>cuda<span class="w"> </span>--start_pose_dataset<span class="w"> </span>liorbenhorin-nv/so101_vials_procedural_all_125ep_20261013<span class="w"> </span>--action_horizon<span class="w"> </span><span class="m">16</span><span class="w"> </span>--num_episodes<span class="w"> </span><span class="m">10</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">76000</span><span class="w"> </span>--lang_instruction<span class="w"> </span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text"><strong>Open</strong> <a class="reference external" href="http://localhost:8090" rel="noreferer noopener" target="_blank">http://localhost:8090</a>. Use only one browser tab connected to the viewer at a time.</p></li>
+<li><p class="sd-card-text"><strong>Stop</strong> the background server before running the real policy. If evaluation is still running, press <strong>Ctrl+C</strong> first:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span>
+<span class="nb">wait</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="nb">unset</span><span class="w"> </span>POLICY_SERVER_PID
+</pre></div>
+</div>
+<p class="sd-card-text">Or <strong>stop all policy servers</strong> in the container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<p class="sd-card-text">If reusing a server from another terminal, stop it there instead. Continue with the real rollout below; it loads the policy directly.</p>
+</div>
+</details><ol class="arabic simple" start="2">
+<li><p class="sd-card-text"><strong>Run</strong> the policy on the real robot:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-rollout<span class="w"> </span>--strategy.type<span class="o">=</span>workshop<span class="w"> </span>--policy.path<span class="o">=</span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--policy.base_model_path<span class="o">=</span>nvidia/GR00T-N1.7-3B<span class="w"> </span>--policy.n_action_steps<span class="o">=</span><span class="m">16</span><span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_PORT</span><span class="s2">"</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_ID</span><span class="s2">"</span><span class="w"> </span>--robot.use_degrees<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--robot.cameras<span class="o">=</span><span class="s2">"</span><span class="nv">$ROBOT_CAMERAS</span><span class="s2">"</span><span class="w"> </span>--task<span class="o">=</span><span class="s2">"</span><span class="nv">$TASK_INSTRUCTION</span><span class="s2">"</span><span class="w"> </span>--device<span class="o">=</span>cuda<span class="w"> </span>--display_data<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--inference.type<span class="o">=</span>rtc<span class="w"> </span>--inference.rtc.enabled<span class="o">=</span><span class="nb">false</span><span class="w"> </span>--inference.rtc.execution_horizon<span class="o">=</span><span class="m">16</span><span class="w"> </span>--inference.queue_threshold<span class="o">=</span><span class="m">0</span><span class="w"> </span>--start_pose_dataset<span class="o">=</span>liorbenhorin-nv/so101_vials_procedural_all_125ep_20261013
+</pre></div>
+</div>
+<div class="admonition-rollout-controls admonition">
+<p class="admonition-title">Rollout controls</p>
+<p class="sd-card-text">The arm moves to the workshop start pose on startup, then waits for <strong>P</strong>.
+Keep the rollout terminal focused. Keys are case-insensitive.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">Key</p></th>
+<th class="head"><p class="sd-card-text">Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><strong>P</strong></p></td>
+<td><p class="sd-card-text"><strong>P for policy:</strong> Start the first or next trial.</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><strong>S / F</strong></p></td>
+<td><p class="sd-card-text">Score success/failure, return to the start pose, and pause.</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><strong>N / →</strong></p></td>
+<td><p class="sd-card-text"><strong>N for next:</strong> Discard the trial, return to the start pose, and pause.</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><strong>Q / Esc</strong></p></td>
+<td><p class="sd-card-text"><strong>Q for Quit:</strong> Exit and discard any unfinished trial.</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><strong>Ctrl+C</strong></p></td>
+<td><p class="sd-card-text">Stop the rollout and run cleanup.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text">Wait for <code class="docutils literal notranslate"><span class="pre">Paused</span></code> before rearranging props. On exit, wait for cleanup and any return motion to finish before touching the arm.</p>
+<p class="sd-card-text">When comparing models, record the first-action delay shown in the terminal and the number of successes out of scored trials.</p>
+</div>
+</div>
+</details></section>
+</section>
+<section id="key-takeaways">
+<h2>Key Takeaways<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Co-training combines sim and real data for better policies</p></li>
+<li><p>Document observations systematically—they guide improvement</p></li>
+<li><p>The sim-to-real gap is real and often significant</p></li>
+<li><p>Different policies exhibit different failure modes</p></li>
+</ul>
+</section>
+<section id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/NVIDIA/Isaac-GR00T" rel="noreferer noopener" target="_blank">Isaac-GR00T Repository</a> — Source code for GR00T deployment including SO-101 evaluation scripts</p></li>
+<li><p><a class="reference external" href="https://github.com/NVIDIA/Isaac-GR00T/blob/main/examples/SO100/README.md" rel="noreferer noopener" target="_blank">SO-101 Finetuning Guide</a> — Full instructions for finetuning and evaluation</p></li>
+<li><p><a class="reference external" href="https://co-training.github.io/" rel="noreferer noopener" target="_blank">Sim-and-Real Co-Training: A Simple Recipe for Vision-Based Robotic Manipulation</a> — RSS 2025 paper on co-training strategies</p></li>
+</ul>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>What's Next?</h2>
+<p>Continue to the next page in the table of contents:
+    <a class="reference internal course-next-link" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="13-strategy2-cotraining.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Sim-to-Real Strategy 2: Co-Training With Real Data</p>
+</div>
+</a>
+<a class="right-next" href="14-hg-dagger.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning Objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-results">Example Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-collecting-real-demonstrations-with-lerobot">(Optional) Collecting Real Demonstrations With LeRobot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hands-on-deploy-a-co-trained-policy">Hands-On: Deploy a Co-Trained Policy</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#workspace-prep">Workspace Prep</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-and-compare">Run and Compare</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-expect">What to Expect</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">Key Takeaways</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resources">Resources</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

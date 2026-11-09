@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const course = window.DLI_COURSE;
+  const edition = course.edition || 'self_env';
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
   const stage = $('#stage');
@@ -12,9 +13,9 @@
   const sessionKey = params.get('session') || (crypto.randomUUID?.() ?? Date.now().toString(36)+Math.random().toString(36).slice(2));
   params.set('session', sessionKey);
   if(!embed)history.replaceState(null, '', '?' + params + location.hash);
-  if(presenter&&!embed){window.DLI_CONTROLLER_CONFIG={sessionKey,base:pageURL};return;}
+  if(presenter&&!embed){window.DLI_CONTROLLER_CONFIG={sessionKey,base:pageURL,edition};return;}
   let channel = null;
-  try { if (typeof BroadcastChannel !== 'undefined'&&embed?.role!=='next') channel = new BroadcastChannel('so101-dli-' + sessionKey); } catch {}
+  try { if (typeof BroadcastChannel !== 'undefined'&&embed?.role!=='next') channel = new BroadcastChannel('so101-dli-' + edition + '-' + sessionKey); } catch {}
   let stateMuted=0,receivingState=false;
   const slides = course.slides;
   const objectivesForPage = new Map(slides.filter(s=>s.learning_objectives).map(s=>[s.page,s.learning_objectives]));
@@ -250,9 +251,11 @@
     const type=slide.teaching_type||'Reference';
     const badge=slide.teaching_badge_html||'<span class="teaching-type teaching-type--reference">'+esc(type)+'</span>';
     const objectives=slide.learning_objectives?"<button class=\"objectives-button\" data-open-objectives aria-haspopup=\"dialog\" aria-controls=\"objectives-dialog\" aria-expanded=\"false\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"8\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 1v4m0 14v4M1 12h4m14 0h4\"/></svg><span>Learning Objectives</span></button>":'';
-    stage.innerHTML = '<header class="slide-header"><div class="slide-heading-meta"><div class="slide-kicker">'+esc(slide.page_title)+'</div><div class="slide-header-actions">'+objectives+badge+'</div></div><h1>'+esc(slide.title)+'</h1></header>'+
+    const practice=(slide.practice_groups||[]).map(id=>'<button class="objectives-button" data-practice-group="'+esc(id)+'" aria-haspopup="dialog">'+(course.language==='ko'?'실습 ':'Exercise ')+esc(id)+'</button>').join('');
+    stage.innerHTML = '<header class="slide-header"><div class="slide-heading-meta"><div class="slide-kicker">'+esc(slide.page_title)+'</div><div class="slide-header-actions">'+practice+objectives+badge+'</div></div><h1>'+esc(slide.title)+'</h1></header>'+
       (tabs?"<nav class=\"concept-tabs\" aria-label=\"Topic sections\" role=\"tablist\">"+slide.panes.map((p,i)=>'<button role="tab" aria-selected="'+(i===activePane)+'" class="'+(i===activePane?'selected':'')+'" data-pane="'+i+'">'+esc(p.label)+'</button>').join('')+'</nav>':'')+
       '<div id="slide-content" class="lesson-content concept-canvas"></div>';
+    stage.querySelectorAll('[data-practice-group]').forEach(button=>button.addEventListener('click',()=>window.DLI_CONTROL?.run({kind:'practice',group:button.dataset.practiceGroup})));
     renderConceptBody();
   }
 
@@ -513,6 +516,12 @@
           if (!doc) return;
           if(frame.dataset.diagramKey&&frame.isConnected&&sourceSlide===current)installDiagramOverview(frame,sourcePane,paneIndex);
           const link=doc.createElement('link');link.rel='stylesheet';link.href=new URL('assets/iframe-fonts.css',pageURL).href;doc.head.append(link);
+          // A versioned stylesheet replaces stale diagram CSS in existing browsers.
+          if(doc.getElementById('clear-selection')){
+            const layout=doc.createElement('link');layout.rel='stylesheet';
+            layout.href=new URL('assets/interactive-layout.css?v=close-layout-20261109',pageURL).href;
+            doc.head.append(layout);
+          }
           doc.documentElement.style.overflowY='auto';doc.body.style.overflowY='auto';
           if (frame.src.includes('/_static/interactive/') && innerWidth > 900) {
             const wrapper=doc.createElement('div');
@@ -661,7 +670,7 @@
 
   function openPresenter() {
     const url=new URL(location.href);url.searchParams.set('presenter','1');
-    displayWindow=window.open(url.href,'dli-presenter-'+sessionKey,'width=1440,height=950');
+    displayWindow=window.open(url.href,'dli-presenter-'+edition+'-'+sessionKey,'width=1440,height=950');
     if(!displayWindow)toast("Allow popups in your browser.");
   }
 

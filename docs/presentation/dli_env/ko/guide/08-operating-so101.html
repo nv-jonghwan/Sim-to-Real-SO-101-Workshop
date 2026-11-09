@@ -1,0 +1,560 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Teleoperation — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '08-operating-so101';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<link href="10-groot.html" rel="next" title="Isaac GR00T: Vision-Language-Action Models"/>
+<link href="07-calibrating-so101.html" rel="prev" title="SO-101 Calibration"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">과정 개요</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">SO-101 Calibration</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Dataset과 Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Teleoperation</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/08-operating-so101.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="teleoperating">
+<h1>Teleoperation<a class="headerlink" href="#teleoperating" title="Link to this heading">#</a></h1>
+<div class="course-module-type">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M11 17V8a2 2 0 0 1 4 0v6a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v2a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-3c-2 0-4-1-5-3l-5-7a2 2 0 0 1 3-2l1 1"></path>
+<path d="M15 14v5m4-4v4m4-2v3M5 9H3m4-5L5.5 2.5M19 5l1.5-1.5"></path>
+</svg>
+<span>Hands-on</span>
+</div>
+<a class="course-banner reference internal image-reference" href="_images/rerun_viewer_teleop_hq.gif"><img alt="Rerun에서 보는 SO-101 teleoperation의 camera view와 joint signal입니다." class="course-banner" src="_images/rerun_viewer_teleop_hq.gif" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">이 Module에 필요한 준비물</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">실습입니다. Calibration된 SO-101 robot과 leader arm, camera 두 대, <a class="reference internal" href="07-calibrating-so101.html"><span class="std std-doc">Calibrating the SO-101</span></a>에서 실행한 Docker container가 필요합니다.</p>
+</div>
+</details><p>이 session에서는 leader arm으로 SO-101을 teleoperate합니다.</p>
+<p>직접 task를 수행하며 난이도를 체감하고, operator가 demonstration을 수집하는 방법을 이해합니다.</p>
+<p>Camera를 설정하고 Rerun의 live camera view를 보며 teleoperation도 진행합니다.</p>
+<p>먼저 <a class="reference internal" href="07-calibrating-so101.html"><span class="std std-doc">Calibrating the SO-101</span></a>을 완료하세요. Robot calibration을 마치고 environment variable을 설정한 Docker container가 실행 중이어야 합니다.</p>
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<p>Hardware 문제가 발생하면 <a class="reference internal" href="troubleshooting.html"><span class="std std-doc">Troubleshooting Guide</span></a>를 확인하세요.</p>
+</div>
+<section id="learning-objectives">
+<h2>학습 목표<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<p>이 session을 마치면 다음을 수행할 수 있습니다.</p>
+<ul class="simple">
+<li><p>Leader arm을 사용한 robot <strong>teleoperation</strong></p></li>
+<li><p>AI model과 같은 camera view로 teleoperate하도록 camera를 <strong>설정</strong>하고 Rerun으로 debugging</p></li>
+</ul>
+</section>
+<section id="safety">
+<span id="id1"></span><h2>안전<a class="headerlink" href="#safety" title="Link to this heading">#</a></h2>
+<p>전원을 켜거나 policy를 실행하기 전에:</p>
+<ul class="simple">
+<li><p><strong>Pinch hazard:</strong> Gripper와 움직이는 joint에 손가락이 끼일 수 있습니다. Motor가 활성화된 동안 follower arm에 손을 가까이하지 말고, leader를 움직일 때도 joint에서 손가락을 멀리 두세요.</p></li>
+<li><p>움직일 때 cable이 걸리지 않도록 배선을 확인합니다.</p></li>
+<li><p>필요하면 <strong>CTRL+C</strong>로 실행을 중단하거나 전원 cable을 뽑을 수 있도록 준비합니다.</p></li>
+<li><p>장비를 옮긴 뒤에는 workspace 배치를 다시 확인합니다.</p></li>
+</ul>
+</section>
+<section id="teleoperation-no-cameras">
+<h2>Camera 없는 Teleoperation<a class="headerlink" href="#teleoperation-no-cameras" title="Link to this heading">#</a></h2>
+<p>두 arm의 calibration을 마쳤으므로 teleoperation을 시작할 수 있습니다!</p>
+<p>먼저 camera 없이 눈으로 직접 보며 진행합니다.</p>
+<ol class="arabic simple">
+<li><p><strong>Teleoperation을 시작하기 전에 두 arm의 pose를 비슷하게 맞추세요.</strong> Follower가 leader와 같은 pose로 이동합니다.</p></li>
+<li><p>Teleoperation을 <strong>시작</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-teleoperate<span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="nv">$ROBOT_PORT</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="nv">$ROBOT_ID</span><span class="w"> </span>--teleop.type<span class="o">=</span>so101_leader<span class="w"> </span>--teleop.port<span class="o">=</span><span class="nv">$TELEOP_PORT</span><span class="w"> </span>--teleop.id<span class="o">=</span><span class="nv">$TELEOP_ID</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Leader arm을 <strong>움직여</strong> follower가 따라 움직이는지 확인합니다.</p></li>
+<li><p>Vial을 집어 rack에 넣어 <strong>보세요</strong>!</p></li>
+<li><p>Terminal에서 <strong>Ctrl+C를 눌러</strong> teleoperation을 중단합니다.</p></li>
+</ol>
+</section>
+<section id="camera-setup">
+<h2>Camera 설정<a class="headerlink" href="#camera-setup" title="Link to this heading">#</a></h2>
+<p>방금 teleoperation에서는 사람의 시각 인지 능력을 사용했습니다.</p>
+<p>AI model에는 이 정보가 없으므로 demonstration 수집 시에는 camera를 사용해야 합니다.</p>
+<p>각 robot workspace에는 <strong>camera 두 대</strong>가 있습니다.</p>
+<ul class="simple">
+<li><p><strong>Gripper camera</strong>: Gripper 바로 앞, robot wrist에 장착</p></li>
+<li><p><strong>External camera</strong>: Workspace를 측면에서 바라보는 고정 camera</p></li>
+</ul>
+<p>Policy는 이 image를 기반으로 동작하므로 camera 할당이 성능에 매우 중요합니다. 둘이 바뀌면 policy가 실패합니다.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Camera 두 대가 필요한 이유</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Robot이 vial 같은 물체를 잡으면 gripper camera가 일부 가려집니다.</p>
+<p class="sd-card-text">Vial을 rack에 세워 넣을 때는 camera가 목표 rack보다 lightbox 벽 쪽을 더 많이 향합니다.</p>
+<p class="sd-card-text">External camera는 전체 manipulation 과정에서 workspace를 계속 보여줍니다. Gripper camera가 가려져도 policy가 사용할 수 있는 시각 입력을 제공합니다.</p>
+</div>
+</details><section id="finding-available-cameras">
+<h3>사용 가능한 Camera 찾기<a class="headerlink" href="#finding-available-cameras" title="Link to this heading">#</a></h3>
+<p>Port finder와 마찬가지로 LeRobot에는 사용 가능한 camera를 찾는 도구가 있습니다.</p>
+<p>Robot의 camera와 고정 external camera의 ID를 각각 확인해야 합니다.</p>
+<ol class="arabic simple">
+<li><p>두 camera의 USB cable이 computer에 연결되어 있는지 <strong>확인</strong>합니다.</p></li>
+<li><p>다음 명령을 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-find-cameras<span class="w"> </span>opencv
+</pre></div>
+</div>
+<p>각 camera에서 image를 capture하므로 어떤 index가 어느 camera인지 확인할 수 있습니다.</p>
+<p>명령은 camera index를 출력하고 <code class="docutils literal notranslate"><span class="pre">outputs/captured_images</span></code>에 preview image를 저장합니다. 출력된 경로에서 image를 확인하세요.</p>
+<ol class="arabic simple" start="3">
+<li><p><strong>Container 밖</strong>의 host terminal에서 repository directory로 이동해 다음 명령으로 <strong>capture image를 엽니다</strong>.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>open<span class="w"> </span>./outputs/captured_images/
+</pre></div>
+</div>
+<p>Container의 <code class="docutils literal notranslate"><span class="pre">outputs/</span></code>가 여기에 mount되어 있으므로, 방금 capture한 image가 표시됩니다.</p>
+<ol class="arabic simple" start="4">
+<li><p>각 image를 <strong>열어</strong> wrist와 stationary camera에 해당하는 index를 <strong>기록</strong>하세요. 예를 들어 <code class="docutils literal notranslate"><span class="pre">opencv__dev_video0.png</span></code>의 index는 <code class="docutils literal notranslate"><span class="pre">0</span></code>입니다.</p></li>
+</ol>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/camera-identification-indices.png"><img alt="Wrist image filename의 index 0과 external image filename의 index 4를 표시한 camera preview입니다." src="_images/camera-identification-indices.png" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">이 예시에서는 <strong>0</strong>이 wrist, <strong>4</strong>가 external camera입니다. 반드시 본인의 capture image에서 확인한 index를 사용하세요.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple" start="5">
+<li><p>같은 container prompt에서 확인한 index로 environment variable을 <strong>설정</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setenv<span class="w"> </span><span class="nv">CAMERA_GRIPPER</span><span class="o">=</span><span class="m">4</span><span class="w"> </span><span class="c1"># make sure to update to your values</span>
+setenv<span class="w"> </span><span class="nv">CAMERA_EXTERNAL</span><span class="o">=</span><span class="m">6</span><span class="w"> </span><span class="c1"># make sure to update to your values</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">중요</p>
+<p><strong>Camera Index 주의사항</strong></p>
+<p>Camera를 분리하거나 다시 연결하면 index가 바뀔 수 있습니다. 특히 여러 camera를 동시에 분리했을 때 자주 발생합니다.</p>
+<p>Policy 실행 중 예상과 다른 동작이 나타나면 camera index 변경이 흔한 원인입니다.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<p>Camera나 hardware 문제는 sidebar의 <a class="reference internal" href="troubleshooting.html"><span class="std std-doc">Troubleshooting Guide</span></a>에서 해결 방법과 자세한 진단 절차를 확인하세요.</p>
+<p>자주 사용하는 명령은 <a class="reference internal" href="quick_reference.html"><span class="std std-doc">Quick Reference</span></a>에 있습니다.</p>
+</div>
+</section>
+</section>
+<section id="teleoperation-with-cameras">
+<h2>Camera를 사용하는 Teleoperation<a class="headerlink" href="#teleoperation-with-cameras" title="Link to this heading">#</a></h2>
+<p>Camera index를 확인했으므로 workspace의 실제 camera와 함께 teleoperation을 실행합니다.</p>
+<ol class="arabic simple">
+<li><p><strong>시작 전에 두 arm의 위치를 비슷하게 맞추세요.</strong> Teleoperation이 시작되면 follower가 leader에 맞춰 이동하므로 경로를 비워 두세요.</p></li>
+<li><p>다음 명령을 <strong>실행</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-teleoperate<span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="nv">$ROBOT_PORT</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="nv">$ROBOT_ID</span><span class="w"> </span>--teleop.type<span class="o">=</span>so101_leader<span class="w"> </span>--teleop.port<span class="o">=</span><span class="nv">$TELEOP_PORT</span><span class="w"> </span>--teleop.id<span class="o">=</span><span class="nv">$TELEOP_ID</span><span class="w"> </span>--display_data<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--robot.cameras<span class="o">=</span><span class="s1">'{ "wrist": { "type": "opencv", "index_or_path": '</span><span class="s2">"</span><span class="nv">$CAMERA_GRIPPER</span><span class="s2">"</span><span class="s1">', "width": 640, "height": 480, "fps": 30 }, "external": { "type": "opencv", "index_or_path": '</span><span class="s2">"</span><span class="nv">$CAMERA_EXTERNAL</span><span class="s2">"</span><span class="s1">', "width": 640, "height": 480, "fps": 30 } }'</span>
+</pre></div>
+</div>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/rerun_viewer_teleop_hq.gif"><img alt="Rerun Viewer Teleoperation 예시" src="_images/rerun_viewer_teleop_hq.gif" style="width: 650px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Rerun Viewer Teleoperation 예시</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>Teleoperation interface가 열립니다. Wrist camera와 lightbox에 고정된 external camera가 보여야 합니다. Camera view와 소품 배치를 이 예시와 비슷하게 맞추세요.</p>
+<p>Teleoperation과 debugging에 모두 유용한 도구입니다.</p>
+<ol class="arabic simple" start="3">
+<li><p>열린 <strong>Rerun</strong> viewer에서 <strong>camera view만 사용해</strong> vial을 집어 rack에 넣어 보세요. Workspace를 직접 보지 말고 몇 차례 성공할 수 있는지 확인합니다.</p></li>
+</ol>
+<p>여기서 시간을 들여 여러 번 시도하세요. 부드럽고 직접적인 움직임에 집중하고, 주저하기보다 목적을 분명히 하며 움직입니다.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Task를 어렵게 만드는 요인을 관찰하세요.</p>
+<ul class="simple">
+<li><p>Grasp 후 gripper camera가 일부 가려집니다.</p></li>
+<li><p>Rack에 정밀하게 배치해야 합니다.</p></li>
+<li><p>Depth data가 없어 rack 정렬이 어렵습니다.</p></li>
+</ul>
+</div>
+<ol class="arabic simple" start="4">
+<li><p><strong>Ctrl+C를 눌러</strong> teleoperation을 중단합니다.</p></li>
+<li><p>Rerun viewer가 남아 있으면 <strong>닫습니다</strong>.</p></li>
+</ol>
+</section>
+<section id="key-takeaways">
+<h2>핵심 내용<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Camera 할당은 policy 성능에 직접 영향을 줍니다.</p></li>
+<li><p>Grasp 후 gripper camera가 가려지는 반면, external camera는 계속 workspace를 보여줍니다.</p></li>
+<li><p>Rerun viewer는 camera view와 robot state를 검증하는 유용한 debugging 도구입니다.</p></li>
+</ul>
+</section>
+<section id="resources">
+<h2>참고 자료<a class="headerlink" href="#resources" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://huggingface.co/docs/lerobot/en/so101" rel="noreferer noopener" target="_blank">SO-101 Getting Started Guide</a> — 전체 조립, motor 설정, calibration 안내</p></li>
+<li><p><a class="reference external" href="https://rerun.io/" rel="noreferer noopener" target="_blank">Rerun</a> — Camera view와 robot action visualization 도구</p></li>
+</ul>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>다음 단계</h2>
+<p>목차 순서에 따라 다음 페이지로 이동하세요:
+    <a class="reference internal course-next-link" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="07-calibrating-so101.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">이전</p>
+<p class="prev-next-title">SO-101 Calibration</p>
+</div>
+</a>
+<a class="right-next" href="10-groot.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">다음</p>
+<p class="prev-next-title">Isaac GR00T: Vision-Language-Action Models</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">학습 목표</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#safety">안전</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teleoperation-no-cameras">Camera 없는 Teleoperation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#camera-setup">Camera 설정</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-available-cameras">사용 가능한 Camera 찾기</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teleoperation-with-cameras">Camera를 사용하는 Teleoperation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">핵심 내용</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resources">참고 자료</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

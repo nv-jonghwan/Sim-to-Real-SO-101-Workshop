@@ -1,0 +1,576 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>과정 개요 — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '01-overview';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<link href="01-codex.html" rel="next" title="CODEX"/>
+<link href="seoul-workshop-schedule.html" rel="prev" title="오늘의 일정"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">과정 개요</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">SO-101 Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Dataset과 Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">과정 개요</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/01-overview.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="overview">
+<h1>과정 개요<a class="headerlink" href="#overview" title="Link to this heading">#</a></h1>
+<div class="course-module-type course-module-type--lecture">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="3"></rect>
+<path d="M16 21v4m-6 4 6-4 6 4M11 9h9m-9 2 3.5 4m6.5-4-3.5 4"></path>
+<circle cx="9" cy="9" r="2"></circle>
+<circle cx="22" cy="9" r="2"></circle>
+<circle cx="16" cy="16" r="2"></circle>
+</svg>
+<span>Lecture</span>
+</div>
+<a class="course-banner reference internal image-reference" href="_images/task-wireframe.gif"><img alt="Simulation workspace의 SO-101, camera, vial, rack을 wireframe으로 보여줍니다." class="course-banner" src="_images/task-wireframe.gif" style="width: 100%;"/>
+</a>
+<section id="what-is-physical-ai">
+<h2>Physical AI란?<a class="headerlink" href="#what-is-physical-ai" title="Link to this heading">#</a></h2>
+<p>Physical AI는 물리적 세계와 상호작용하고 이를 조작하는 AI system을 말합니다. 이미지 생성기나 chatbot 같은 generative AI 또는 agentic AI와 달리, Physical AI는 다음과 같은 능력을 갖습니다.</p>
+<ul class="simple">
+<li><p><strong>Perceive</strong>: sensor로 실제 세계를 인식</p></li>
+<li><p><strong>Reason</strong>: 물리 법칙, 물체, 공간적 관계를 추론</p></li>
+<li><p><strong>Act</strong>: motor, actuator, end-effector를 통해 행동</p></li>
+<li><p><strong>Adapt</strong>: 예측하기 어려운 실제 환경에 적응</p></li>
+</ul>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/slide-08.png"><img alt="Sensor image와 text를 입력받은 Physical AI model이 factory robot, humanoid, autonomous vehicle의 action을 생성합니다." src="_images/slide-08.png" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Physical AI는 sensor observation과 instruction을 실제 세계의 action으로 연결합니다.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>이 과정에서는 simulation부터 눈앞의 robot이 자율적으로 동작하기까지, 실제 robot을 사용하는 전체 Physical AI workflow를 배웁니다.</p>
+<figure>
+<iframe class="interactive-learning-diagram" loading="lazy" src="_static/interactive/physical-ai-loop.html" style="display:block; width:100%; height:600px; border:0;" title="Camera observations and robot actions form a feedback loop"></iframe>
+</figure></section>
+<section id="specialist-and-generalist-robots">
+<h2>Specialist와 Generalist Robot<a class="headerlink" href="#specialist-and-generalist-robots" title="Link to this heading">#</a></h2>
+<p>Specialist는 좁은 범위의 task를 학습합니다. Generalist는 더 다양한 task를 다루는 것을 목표로 하며, post-training을 통해 폭넓은 기반 능력을 특정 robot과 작업에 맞게 조정합니다. 이 workshop에서는 GR00T를 SO-101의 vial-to-rack task에 맞게 조정합니다.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/slide-09.png"><img alt="Specialist robot은 좁은 범위를, generalist는 더 많은 task를 다룹니다. Generalist를 조정하면 특정 task의 숙련도가 높아집니다. 다양한 robot에 걸친 폭넓은 능력은 여전히 연구 목표입니다." src="_images/slide-09.png" style="width: 100%;"/>
+</a>
+</figure>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Specialist와 generalist robot의 예시 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/slide-10.png"><img alt="Factory production line, robot manipulation, 가사 작업을 수행하는 humanoid의 예시입니다." src="_images/slide-10.png" style="width: 100%;"/>
+</a>
+</figure>
+</div>
+</details></section>
+<section id="the-task-centrifuge-vial-pick-and-place">
+<h2>수행할 Task: Centrifuge Vial Pick-and-Place<a class="headerlink" href="#the-task-centrifuge-vial-pick-and-place" title="Link to this heading">#</a></h2>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/so101_vial_to_rack_task.gif"><img alt="SO-101 robot이 수행하는 vial-to-rack task" src="_images/so101_vial_to_rack_task.gif" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">SO-101 robot이 vial-to-rack pick-and-place task를 자율적으로 수행합니다.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>이번 task는 흩어져 있는 centrifuge vial을 집어 옮기는 unstructured pick-and-place입니다. 테이블 위에 흩어진 vial을 지정된 rack에 넣어야 합니다.</p>
+<p>실습에 쉽게 접근할 수 있도록 lightbox를 사용하고 task의 일부 조건과 parameter를 단순화했습니다.</p>
+<p>여기서 배우는 도구와 기법은 더 복잡한 task와 production robot에도 적용할 수 있습니다. 이 과정의 초점은 sim-to-real workflow입니다.</p>
+<section id="why-this-task">
+<h3>이 Task를 선택한 이유<a class="headerlink" href="#why-this-task" title="Link to this heading">#</a></h3>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Vial pick-and-place를 선택한 이유 자세히 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">왜 이 task를 선택했을까요? 실험실의 문제를 해결하는 engineer라고 가정해 봅시다.</p>
+<p class="sd-card-text">가상의 상황에서 vial은 chute를 통해 떨어지거나 불규칙하게 흩어져 있습니다. 이미 설치된 자동화 장비가 처리할 수 있도록 이를 rack에 정리해야 합니다.</p>
+<ul class="simple">
+<li><p class="sd-card-text"><strong>Real-world relevance</strong>: 자동 분석 장비에 투입할 물품을 준비하는 workflow와 유사합니다.</p></li>
+<li><p class="sd-card-text"><strong>Safety implications</strong>: 잠재적으로 위험한 시료를 다룰 때는 사람의 노출을 최소화해야 하므로 robotics가 유용합니다. Simulation에서 task를 가르치면 시간과 노출을 함께 줄일 수 있습니다.</p></li>
+<li><p class="sd-card-text"><strong>Technical challenge</strong>: 변화에 적응하고, robot이 상황에 맞게 재시도할 수 있어야 합니다.</p></li>
+<li><p class="sd-card-text"><strong>Approachable</strong>: 학습용 물품을 준비하고 teleoperation을 수행하기에 충분히 단순한 task입니다.</p></li>
+</ul>
+</div>
+</details></section>
+</section>
+<section id="why-is-this-problem-interesting">
+<h2>이 문제가 흥미로운 이유<a class="headerlink" href="#why-is-this-problem-interesting" title="Link to this heading">#</a></h2>
+<p>Policy는 2D camera 정보로 동작합니다. Vial을 rack에 넣으려면 방향을 바꾸고 비교적 정밀하게 배치해야 하며, 이 구성에서는 depth information을 사용할 수 없습니다.</p>
+<p>직접 teleoperation을 해보면 처음에는 쉽지 않다는 점을 느끼게 됩니다.</p>
+<p>특히 robot이 vial을 잡으면 wrist camera가 가려집니다. Policy는 이 정보를 사용할 수 없는 상황에서도 동작해야 합니다.</p>
+<p>직접 teleoperation을 진행하면서 이 어려움을 경험하게 됩니다.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>SO-101은 production robot은 아니지만, production robot에 적용하기 전에 도구를 익히기 좋은 접근성 높은 플랫폼입니다. 핵심은 다른 task나 production robot에도 적용할 수 있는 <strong>workflow</strong>입니다.</p>
+</div>
+</section>
+<section id="learning-from-demonstrations">
+<h2>Demonstration으로 학습<a class="headerlink" href="#learning-from-demonstrations" title="Link to this heading">#</a></h2>
+<p>Demonstration은 robot이 관측한 내용과 그에 이어진 action을 한 쌍으로 기록합니다. <strong>Imitation learning</strong>은 이런 예시를 다수 사용해 새로운 상황에서 어떻게 행동할지 policy에 가르칩니다.</p>
+<figure>
+<iframe class="interactive-learning-diagram" loading="lazy" src="_static/interactive/learning-from-demonstrations.html" style="display:block; width:100%; height:600px; border:0;" title="Collect demonstrations, review episodes, post-train, and evaluate"></iframe>
+</figure></section>
+<section id="scaling-physical-ai">
+<h2>Scaling Physical AI<a class="headerlink" href="#scaling-physical-ai" title="Link to this heading">#</a></h2>
+<p>폭넓은 pre-training, task별 post-training, inference 단계의 추가 연산은 각각 능력을 발전시키는 방법입니다. 그림의 곡선은 개념을 설명하며, workshop에서 측정한 결과가 아닙니다.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/slide-64.png"><img alt="Internet video, human demonstration, synthetic data를 활용한 pre-training, post-training, test-time computation의 개념적 scaling curve입니다." src="_images/slide-64.png" style="width: 100%;"/>
+</a>
+</figure>
+<section id="why-robot-data-takes-work">
+<h3>Robot Data 수집에 노력이 필요한 이유<a class="headerlink" href="#why-robot-data-takes-work" title="Link to this heading">#</a></h3>
+<p>Video는 일어난 일을 보여주지만, robot demonstration에는 그 결과를 만든 observation과 action도 필요합니다. Human teleoperation에는 시간이 들고, robot마다 제어 방식과 camera view가 다릅니다. 이 수집 부담을 줄이기 위해 simulation과 실제 demonstration을 함께 사용합니다.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/slide-65.png"><img alt="Robot learning에는 observation, action, outcome의 대응 관계가 필요합니다. Teleoperation에는 사람의 노력이 들며, hardware 차이로 dataset 재사용도 복잡해집니다." src="_images/slide-65.png" style="width: 100%;"/>
+</a>
+</figure>
+</section>
+</section>
+<section id="why-simulation-matters">
+<h2>Simulation이 중요한 이유<a class="headerlink" href="#why-simulation-matters" title="Link to this heading">#</a></h2>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/task-wireframe.gif"><img alt="Task wireframe: 테이블 위 vial과 목표 rack의 윤곽입니다." src="_images/task-wireframe.gif" style="width: 80%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Task wireframe: robot이 rack에 넣어야 할 vial이 테이블 위에 흩어져 있습니다.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p>실제 환경에서 robot을 시험하려면 비용이 많이 들고, 손상이나 안전 위험도 있습니다.</p>
+<p>Simulation은 다음과 같은 근본적인 제약을 완화합니다.</p>
+<ol class="arabic simple">
+<li><p><strong>Time</strong>: 실제 data 수집은 느립니다. Robot이 한 대든 천 대든, trajectory 하나를 수행하는 데는 같은 시간이 필요합니다.</p></li>
+<li><p><strong>Cost</strong>: Robot hardware는 비싸며, 탐색 중 실패로 손상될 수 있습니다.</p></li>
+<li><p><strong>Safety</strong>: 실제 hardware에서 failure mode를 탐색하는 것은 위험할 수 있습니다.</p></li>
+<li><p><strong>Diversity</strong>: 조명, 물체, 위치가 다른 다양한 학습 상황을 직접 구성하려면 많은 노동이 필요합니다.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">실제 환경과 simulation에서의 학습 비교</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Simulation은 이 모든 문제를 완화합니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">과제</p></th>
+<th class="head"><p class="sd-card-text">실제 환경</p></th>
+<th class="head"><p class="sd-card-text">Simulation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text">학습 속도</p></td>
+<td><p class="sd-card-text">실시간 1배</p></td>
+<td><p class="sd-card-text">Parallel environment로 1000배 이상</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">Hardware 비용</p></td>
+<td><p class="sd-card-text">Robot 한 대당 $10K–$100K 이상</p></td>
+<td><p class="sd-card-text">추가 compute 비용</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">실패의 영향</p></td>
+<td><p class="sd-card-text">손상과 downtime</p></td>
+<td><p class="sd-card-text">Reset 후 계속 진행</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text">Scenario 다양성</p></td>
+<td><p class="sd-card-text">수동 설정</p></td>
+<td><p class="sd-card-text">Procedural generation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</details><section id="privileged-information">
+<h3>Privileged Information<a class="headerlink" href="#privileged-information" title="Link to this heading">#</a></h3>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Simulation의 privileged information 자세히 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Simulation에서는 실제 환경에서 얻기 어려운 정보에도 접근할 수 있습니다.</p>
+<ul class="simple">
+<li><p class="sd-card-text"><strong>Exact object poses</strong>: perception noise나 occlusion 없이 정확한 pose 제공</p></li>
+<li><p class="sd-card-text"><strong>Contact forces</strong>: 모든 contact point의 힘을 정밀하게 측정</p></li>
+<li><p class="sd-card-text"><strong>Ground truth labels</strong>: 정확한 segmentation과 object identity 제공</p></li>
+<li><p class="sd-card-text"><strong>State derivatives</strong>: 정확한 velocity와 acceleration 제공</p></li>
+</ul>
+<p class="sd-card-text">최종 policy가 실제적인 sensor 입력만 사용하더라도, 이러한 privileged information으로 학습을 가속할 수 있습니다.</p>
+</div>
+</details></section>
+</section>
+<section id="key-takeaways">
+<h2>핵심 내용<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Simulation은 실제 환경에서는 어려울 수 있는 빠르고 안전하며 다양한 학습을 가능하게 합니다.</p></li>
+<li><p>Sim-to-real gap은 체계적인 접근이 필요한 근본적인 과제입니다.</p></li>
+<li><p>이 과정에서는 NVIDIA Isaac과 다양한 gap 완화 전략을 직접 실습합니다.</p></li>
+<li><p>반복 실험과 여러 접근의 조합이 성공의 열쇠입니다.</p></li>
+</ul>
+<p>Isaac GR00T 1.7의 VLA (Vision Language Action) model은 “pick up the vial and place it on the rack” 같은 language command를 받고, robot joint feedback과 camera observation을 policy 입력으로 사용합니다.</p>
+<p>Policy는 task를 수행하기 위한 motor position을 출력합니다.</p>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>다음 단계</h2>
+<p>목차 순서에 따라 다음 페이지로 이동하세요:
+    <a class="reference internal course-next-link" href="01-codex.html">CODEX</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="seoul-workshop-schedule.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">이전</p>
+<p class="prev-next-title">오늘의 일정</p>
+</div>
+</a>
+<a class="right-next" href="01-codex.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">다음</p>
+<p class="prev-next-title">CODEX</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-physical-ai">Physical AI란?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specialist-and-generalist-robots">Specialist와 Generalist Robot</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-task-centrifuge-vial-pick-and-place">수행할 Task: Centrifuge Vial Pick-and-Place</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-task">이 Task를 선택한 이유</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-is-this-problem-interesting">이 문제가 흥미로운 이유</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-from-demonstrations">Demonstration으로 학습</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scaling-physical-ai">Scaling Physical AI</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-robot-data-takes-work">Robot Data 수집에 노력이 필요한 이유</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-simulation-matters">Simulation이 중요한 이유</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#privileged-information">Privileged Information</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">핵심 내용</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

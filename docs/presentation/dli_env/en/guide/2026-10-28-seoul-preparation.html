@@ -1,0 +1,931 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>DLI Preparation and Delivery — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '2026-10-28-seoul-preparation';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="seoul-workshop-schedule.html" rel="next" title="Today’s Schedule"/>
+<link href="index.html" rel="prev" title="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">DLI Preparation and Delivery</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/2026-10-28-seoul-preparation.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="dli">
+<h1>DLI Preparation and Delivery<a class="headerlink" href="#dli" title="Link to this heading">#</a></h1>
+<p>This page covers installation and equipment setup on the day before the workshop, followed by guidance for classroom delivery. Use the shared repository and skills to prepare each station. Complete assembly and preflight checks so participants can begin calibration and exercises when they arrive.</p>
+<p><a class="reference internal" href="seoul-workshop-schedule.html">Today's Schedule</a> · <a class="reference internal" href="07-using-workspace.html">Using the Workspace</a> · <a class="reference internal" href="datasets-and-models.html#download-models-for-the-workshop-container">Datasets and Models</a> · <a class="reference internal" href="troubleshooting.html">Troubleshooting</a></p>
+<section id="id1">
+<h2>Day-before Setup: Build the Robot Workspace<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>Following <a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/sim-to-real-so-101/latest/05-building-workspace.html" rel="noreferer noopener" target="_blank">Build Your Robot Lab</a> in the public course and the current event guide, prepare each station in this order: assemble the workspace, connect the equipment, calibrate, and check teleoperation. Match the lightbox dimensions and colors, lighting, camera views, and rack and vial placement to simulation. A consistent setup makes problems easier to diagnose during class.</p>
+<section id="laptopleaderfollower">
+<span id="desk-layout-reference"></span><h3>Desk Layout: Laptop, Leader, and Follower<a class="headerlink" href="#laptopleaderfollower" title="Link to this heading">#</a></h3>
+<p>The photo below shows a two-person station from an earlier workshop. Viewed from the participants' side, the laptop sits on the left, the leader is at the front table edge to its right, and the follower is at the open front of the lightbox on the right. Use these relative positions as a reference. Reserve the leader's full motion envelope before placing the laptop and chairs.</p>
+<figure class="align-default" id="id10">
+<a class="reference internal image-reference" href="_images/workshop-desk-layout-reference.jpg"><img alt="참가자 정면에서 본 2인 station. 왼쪽에 Laptop, 그 오른쪽 테이블 앞 가장자리에 clamp로 고정한 SO-101 leader, 오른쪽 Lightbox의 열린 앞면에 고정한 follower와 앞쪽 좌석 두 개가 보입니다." src="_images/workshop-desk-layout-reference.jpg" style="width: 100%;"/>
+</a>
+<figcaption>
+<p>This earlier workshop layout illustrates a minimum footprint. Do not copy the laptop-to-leader spacing directly: allow clearance for the leader's motor-driven motion during HG-DAgger.<a class="headerlink" href="#id10" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Equipment / Area</p></th>
+<th class="head"><p>Position in the Photo</p></th>
+<th class="head"><p>Setup Checks</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>RTX Laptop·mouse</p></td>
+<td><p>To the left, outside the lightbox, with the screen and input devices accessible</p></td>
+<td><p>Keep the laptop, mouse, and personal belongings outside the leader's full range of motion. Route power and USB cables away from the arm's path.</p></td>
+</tr>
+<tr class="row-odd"><td><p>SO-101 leader</p></td>
+<td><p>At the front table edge, to the right of the laptop and outside the lightbox</p></td>
+<td><p>Clamp the leader securely and leave room for manual operation. Its motor-driven motion during HG-DAgger must not contact the laptop, lightbox, or cables.</p></td>
+</tr>
+<tr class="row-even"><td><p>SO-101 follower</p></td>
+<td><p>At the open front of the lightbox on the right, with its base fixed to the table</p></td>
+<td><p>Position the arm so it can reach the rack and pickup area inside the lightbox. Set camera and prop positions using the reference photo and the setup steps below.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Participant Seating / TA Access</p></td>
+<td><p>Two seats in front of the station, with an aisle behind the participants</p></td>
+<td><p>Both participants should be able to see the screen and workspace. Leave access for TAs behind them and keep walking routes clear of clamps protruding from the table edge.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The 5 ft (approximately 1.52 m) dimension is an example minimum total width for a two-person station. It does not specify table depth or safe clearance around an arm. Allow additional space, and recheck the leader's motion envelope, laptop clearance, and rear aisle before demonstrating HG-DAgger.</p>
+</div>
+</section>
+<section id="station">
+<h3>Reference Layout of a Completed Station<a class="headerlink" href="#station" title="Link to this heading">#</a></h3>
+<figure class="align-default" id="id11">
+<a class="reference internal image-reference" href="_images/so101_workspace.jpg"><img alt="흰색 lightbox 안에 SO-101 follower, 왼쪽의 노란 rack, 오른쪽 pickup 영역의 검은 mat, external camera와 상단 조명이 배치된 기준 사진." src="_images/so101_workspace.jpg" style="width: 100%;"/>
+</a>
+<figcaption>
+<p>Reference arrangement inside the lightbox. Looking through the open front, the rack is on the left and the pickup area on the right. The leader and participant computer occupy separate space outside this photo.<a class="headerlink" href="#id11" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id2">
+<h3>Equipment for One Station<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Area</p></th>
+<th class="head"><p>Required Equipment</p></th>
+<th class="head"><p>Completion Criteria</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Robot</p></td>
+<td><p>One SO-101 leader and one follower, clamps, power supplies, and USB cables</p></td>
+<td><p>Secure both arms and label them as leader and follower. Clamps must not restrict any joint's full range of motion.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Lightbox</p></td>
+<td><p>White panels and a securely mounted diffuse light</p></td>
+<td><p>Use the course dimensions of approximately 76 × 51 × 51 cm (width × height × depth) and illuminate the interior evenly.</p></td>
+</tr>
+<tr class="row-even"><td><p>Task Area</p></td>
+<td><p>Black mat, yellow vial rack, and 50 mL vials</p></td>
+<td><p>Lay the mat flat and place the rack on the left. Space 1–3 vials apart on the right and leave empty slots in the rack.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Camera</p></td>
+<td><p>One wrist camera and one external camera</p></td>
+<td><p>Identify each camera and inspect both live views. Check wrist-camera focus and ensure the external view includes the rack and pickup area.</p></td>
+</tr>
+<tr class="row-even"><td><p>Leader / Computer Area</p></td>
+<td><p>Leader motion space, participant computer, and mouse</p></td>
+<td><p>Keep the computer and personal belongings outside the leader's motion envelope. Leave an aisle behind participants for instructors and TAs.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cables / Power</p></td>
+<td><p>Organized and labeled cables for the robots, cameras, and light</p></td>
+<td><p>Cables must not tighten or wrap around the arm as it moves. Keep power connections and the power-disconnection point easy to identify and reach.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id3">
+<h3>1. Prepare the Table and Access Routes<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>Place the lightbox on a stable table with its front open toward participants. Reserve room for both manual and motor-driven leader motion. Keep the computer, mouse, and personal belongings outside this area, leave TA access behind participants, and make power connections easy to locate.</p>
+</section>
+<section id="lightbox">
+<h3>2. Assemble the Lightbox<a class="headerlink" href="#lightbox" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Prepare five white foam boards measuring 20 × 30 inches (50.8 × 76.2 cm). Cut two to 20 × 20 inches (50.8 × 50.8 cm) for the side walls.</p></li>
+<li><p>Use the remaining three boards for the floor, back, and ceiling. The finished enclosure is approximately 76 × 51 × 51 cm (width × height × depth), with an open front.</p></li>
+<li><p>Align the edges and secure the full length of each joint with white duct tape or gaffer tape. For repeated assembly, consider the 3D-printed corners described in the assembly instructions. <a class="reference internal" href="05-building-workspace.html#assemble-the-lightbox">3D-printed corners in the assembly guide</a></p></li>
+<li><p>Temporarily position the external camera at the side and confirm that its preview includes the robot, rack, and pickup area before cutting a mounting opening. The approximately <strong>5 × 1.5 cm</strong> Logitech C920 support dimension is a reference; fit the opening to the actual mount so it stays secure.</p></li>
+</ol>
+</section>
+<section id="follower-leader">
+<h3>3. Secure the Follower and Leader<a class="headerlink" href="#follower-leader" title="Link to this heading">#</a></h3>
+<p>Clamp the follower to a sturdy table with its base just inside the front of the lightbox, as shown in the reference photo. Secure the leader in its separate operating area. Before powering on, move each joint slowly to check for interference from clamps, walls, and cables. Leave enough camera-cable slack for motion without allowing it to catch in a joint or gripper.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The SO-101 configuration in this course uses 5 V for the leader and 12 V for the follower. Check the labels on each arm and power supply; do not interchange them. Label the power and USB cables as leader or follower as well.</p>
+</div>
+</section>
+<section id="id4">
+<h3>4. Secure the Light and Set Brightness<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>Use a diffuse LED light that illuminates the lightbox evenly. The course setup uses adjustable brightness, CRI &gt; 90, and approximately 4000 K. With a ceiling panel, make small holes and secure the light inside with zip ties. With an open top, mount the light above the workspace facing down. Do not rely solely on tape that may loosen with heat.</p>
+<p>If the travel lock appears after powering on, hold the power button to release it. The light used in the course adjusts brightness in 25% steps with its center button. Start within 50–100%, check shadows and reflections, and keep brightness consistent during collection and evaluation. Connect power for the full session, and turn the light off after the day-before checks.</p>
+<figure class="align-default" id="id12">
+<a class="reference internal image-reference" href="_images/light-operation.gif"><img alt="Lightbox 조명의 전원과 travel lock을 조작하고 밝기를 조절하는 모습." src="_images/light-operation.gif" style="width: 400px;"/>
+</a>
+<figcaption>
+<p>Example controls for the light used in the course. For a different light, follow that device's operating instructions.<a class="headerlink" href="#id12" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="camera">
+<h3>5. Position Both Cameras and Check Their Views<a class="headerlink" href="#camera" title="Link to this heading">#</a></h3>
+<p>Mount the wrist camera to see the work area immediately ahead of the gripper. Mount the external camera at the side so it sees the robot, rack, and pickup area together. Identify both USB connections, open the previews, and check wrist focus, occlusion, reflections, and overexposure.</p>
+<p>The current event guide matches an external-camera simulation view tilted approximately 54° below horizontal. Follow the <a class="reference internal" href="07-calibrating-so101.html#match-the-external-camera-tilt-to-simulation">camera-tilt procedure</a>: first check the table's level with a phone, then set the tilt. Compare the live camera view with simulation to finish adjusting position and framing.</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id13">
+<a class="reference internal image-reference" href="_images/camera-level-tabletop.jpg"><img alt="테이블 위에서 phone level의 수평 기준을 확인하는 모습." src="_images/camera-level-tabletop.jpg" style="width: 100%;"/>
+</a>
+<figcaption>
+<p>Check the horizontal reference on the table.<a class="headerlink" href="#id13" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id14">
+<a class="reference internal image-reference" href="_images/camera-level-front-face.jpg"><img alt="External camera에 phone을 대고 tilt를 확인하는 모습." src="_images/camera-level-front-face.jpg" style="width: 100%;"/>
+</a>
+<figcaption>
+<p>After setting the camera tilt, verify it in the live view.<a class="headerlink" href="#id14" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="matrackvial">
+<h3>6. Arrange the Mat, Rack, and Vials<a class="headerlink" href="#matrackvial" title="Link to this heading">#</a></h3>
+<p>Looking into the open front of the lightbox, place the yellow rack on the left and the black pickup mat on the right. Flatten the mat and space 1–3 empty 50 mL vials far enough apart for the gripper to approach. Do not stack vials or place them against a wall; orient their caps generally toward the back wall. Leave empty slots in the rack.</p>
+<p>This is the baseline layout used to train the current workshop policy. Return the rack and vials to the same areas between trials, and stop the robot before repositioning props. Follow the <a class="reference internal" href="07-using-workspace.html">workspace guide</a> for details.</p>
+</section>
+<section id="calibrationteleop">
+<h3>7. Check the Runtime, Calibration, and Teleoperation<a class="headerlink" href="#calibrationteleop" title="Link to this heading">#</a></h3>
+<p>After arranging the equipment, verify connections and operation in the following order. Use the linked course procedures for commands and screenshots.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Order</p></th>
+<th class="head"><p>Setup and Acceptance Checks</p></th>
+<th class="head"><p>Detailed Instructions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Course Environment and Assets</p></td>
+<td><p>Prepare the container, simulation assets, lesson models, and starting-pose datasets for the event's <code class="docutils literal notranslate">aidayseoul2026</code> branch in advance. Run both physics-only and camera-rendering checks, including the first-run cache warmup.</p></td>
+<td><p><a class="reference internal" href="06-get-the-code.html">Code and Model Preparation</a>, <a class="reference internal" href="workshop-preparation.html">Course Asset Preparation</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Arm Connections</p></td>
+<td><p>Check power labels before connecting USB. Identify the leader and follower separately with <code class="docutils literal notranslate">lerobot-find-port</code>, and record each arm's port and ID together. Do not copy port values from another station.</p></td>
+<td><p><a class="reference internal" href="07-calibrating-so101.html"><span class="std std-doc">SO-101 calibration</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>Calibration</p></td>
+<td><p>Place each arm in the course reference pose and calibrate it. Set the wrist roll's initial pose carefully, but exclude it from the range sweep. Check the full range of the other joints without cable or clamp interference, and review the calibration-check results for both arms.</p></td>
+<td><p><a class="reference internal" href="07-calibrating-so101.html#calibrate-the-leader-arm"><span class="std std-ref">Leader calibration</span></a>, <a class="reference internal" href="07-calibrating-so101.html#calibrate-the-follower-arm"><span class="std std-ref">Follower calibration</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Camera Identification</p></td>
+<td><p>Use the <code class="docutils literal notranslate">lerobot-find-cameras opencv</code> preview to distinguish the wrist and external cameras. Open both live views, and recheck whether their indices have changed after reconnecting USB.</p></td>
+<td><p><a class="reference internal" href="08-operating-so101.html#camera-setup"><span class="std std-ref">Camera Setup</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>Real Teleop</p></td>
+<td><p>Start with the two arms in similar poses. Clear the surrounding space because the follower will move to match the leader. Check motion direction and gripper operation first, then use both camera views to test picking up a vial and placing it in the rack.</p></td>
+<td><p><a class="reference internal" href="08-operating-so101.html#teleoperation-no-cameras"><span class="std std-ref">Teleoperation</span></a>, <a class="reference internal" href="08-operating-so101.html#teleoperation-with-cameras"><span class="std std-ref">Teleoperation With Cameras</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Day-before acceptance requires securely mounted equipment, unrestricted motion, two working camera views, verified calibration, and a short real-teleoperation test. A PASS on saved calibration files does not replace live connection and motion checks. On a representative station, also verify Sim Teleop, policy inference, and HG-DAgger using the handover procedure below.</p>
+</div>
+</section>
+</section>
+<section id="rtx-laptop">
+<h2>Prepare the RTX Laptop and Course Runtime<a class="headerlink" href="#rtx-laptop" title="Link to this heading">#</a></h2>
+<p>Before participants arrive, every RTX laptop should pass checks for the container, models and datasets, simulation and camera rendering, and policy inference. The sequence below assumes native Ubuntu 24.04 on x86_64. The Korean infrastructure coordinator prepares the computers alongside Leaders' equipment setup, while instructors and TAs rehearse the full workflow on a representative station.</p>
+<section id="laptop-gpu">
+<h3>1. Check the Laptop and GPU<a class="headerlink" href="#laptop-gpu" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Item</p></th>
+<th class="head"><p>Preparation and Acceptance Criteria</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>GPU / Memory</p></td>
+<td><p>Record the actual RTX laptop GPU model, VRAM, system RAM, and available SSD space. Laptop and desktop GPUs with similar product names have different memory and power constraints. Run simulation and the policy server together on a representative laptop.</p></td>
+</tr>
+<tr class="row-odd"><td><p>OS·Driver</p></td>
+<td><p>Prepare Ubuntu 24.04 x86_64 and an NVIDIA driver that supports the GPU. The current container's CUDA 13.x runtime requires the R580 driver family or later.</p></td>
+</tr>
+<tr class="row-even"><td><p>Power / Cooling</p></td>
+<td><p>Connect AC power and check the manufacturer's performance settings. Keep air intakes and exhausts clear, and review power settings to prevent automatic suspend during exercises.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Display / Input</p></td>
+<td><p>Provide a mouse and open the container GUI and browser viewer under the actual participant account. Verify that display output and USB cameras work at the same time.</p></td>
+</tr>
+<tr class="row-even"><td><p>Network / Storage</p></td>
+<td><p>Check access to GitHub, Git LFS, the container registry, and Hugging Face in advance. Reserve space for the container build, eight model repositories, datasets, caches, and exercise outputs.</p></td>
+</tr>
+<tr class="row-odd"><td><p>USB·Robot</p></td>
+<td><p>Provide ports and power for both arms and both cameras. If using a USB hub, test camera feeds and teleoperation with all four devices connected simultaneously.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Run these checks in a <strong>Host terminal</strong>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uname<span class="w"> </span>-m
+nvidia-smi<span class="w"> </span>--query-gpu<span class="o">=</span>name,driver_version,memory.total<span class="w"> </span>--format<span class="o">=</span>csv
+free<span class="w"> </span>-h
+df<span class="w"> </span>-h
+</pre></div>
+</div>
+<p>Assess the laptop against the completion criteria below. Consult <a class="reference external" href="https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html" rel="noreferer noopener" target="_blank">NVIDIA CUDA Compatibility</a> for driver compatibility requirements.</p>
+</section>
+<section id="id5">
+<h3>Automatically Check This Computer's DLI Requirements<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>Open the shared repository in Codex and ask: “Check whether this computer meets the requirements to run the DLI workshop.” The <code class="docutils literal notranslate">so101-dli-prepare</code> skill checks OS, architecture, GPU, driver, RAM, VRAM, storage, tools, Docker runtime, and course assets without installing software or starting GPU work. It reports met, unmet, and unverified requirements, with next steps. To run the check directly, use the command below from the repository root on the Host.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>skills/so101-dli-prepare/scripts/preflight.py<span class="w"> </span>--format<span class="w"> </span>markdown
+</pre></div>
+</div>
+<p>Automatic checks are maintained in the <a class="reference download internal" download="" href="_downloads/837498b7e0f42daf046590ab6ac5bb4b/dli-requirements.json">DLI requirements</a>. The course baseline is native Ubuntu 24.04, x86_64, an RTX GPU, and driver R580 or later; other OS versions are marked unverified against this baseline. Do not interpret the README's tested GPUs as the only supported models. Minimum RAM, VRAM, and storage capacities have not yet been specified, so report the measured values and leave capacity suitability unverified. Do not add together the VRAM of multiple GPUs.</p>
+<p>Meeting the basic runtime requirements means environment preparation can proceed. Missing tools and incomplete assets are reported separately; the presence of files does not prove runtime success. GPU or Docker details that cannot be read due to permissions remain unverified. Workshop readiness requires the live simulation, two cameras, viewer, policy, and physical station checks below. A read-only check does not start robot motion, installation, or downloads.</p>
+</section>
+<section id="host-software-nvidia-container-toolkit">
+<h3>2. Prepare Host Software and NVIDIA Container Toolkit<a class="headerlink" href="#host-software-nvidia-container-toolkit" title="Link to this heading">#</a></h3>
+<p>Install Git, Git LFS, Docker Engine, and NVIDIA Container Toolkit. The workshop container supplies CUDA 13, so a separate Host CUDA Toolkit installation is not required for this container workflow. Follow the <a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/" rel="noreferer noopener" target="_blank">Ubuntu installation guide</a> for Docker and the <a class="reference external" href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html" rel="noreferer noopener" target="_blank">official installation guide</a> for NVIDIA Container Toolkit. Verify that the classroom account can run Docker commands.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>git<span class="w"> </span>git-lfs<span class="w"> </span>curl<span class="w"> </span>ca-certificates
+git<span class="w"> </span>lfs<span class="w"> </span>install
+docker<span class="w"> </span>version
+nvidia-ctk<span class="w"> </span>--version
+</pre></div>
+</div>
+<p>After installing NVIDIA Container Toolkit, configure the Docker runtime from a <strong>Host terminal</strong>. Restarting Docker affects containers already running on that computer, so finish or stop those tasks during the day-before setup first.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>nvidia-ctk<span class="w"> </span>runtime<span class="w"> </span>configure<span class="w"> </span>--runtime<span class="o">=</span>docker
+sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>docker
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>--runtime<span class="o">=</span>nvidia<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>nvidia/cuda:13.0.0-base-ubuntu24.04<span class="w"> </span>nvidia-smi
+</pre></div>
+</div>
+<p>Verify that the GPU and driver are visible inside the container. This checks GPU access; it does not replace simulation, camera-rendering, and policy-inference validation.</p>
+</section>
+<section id="repository-clone-container-build">
+<h3>3. Clone the Repository and Build the Container<a class="headerlink" href="#repository-clone-container-build" title="Link to this heading">#</a></h3>
+<p>Use the <code class="docutils literal notranslate">aidayseoul2026</code> branch of the Seoul workshop fork. From a <strong>Host terminal</strong>, clone into a new directory, retrieve the Git LFS assets, and build the container image. <a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026" rel="noreferer noopener" target="_blank">aidayseoul2026 branch of the Seoul workshop fork</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>lfs<span class="w"> </span>install
+<span class="nb">cd</span><span class="w"> </span>~
+git<span class="w"> </span>clone<span class="w"> </span>--branch<span class="w"> </span>aidayseoul2026<span class="w"> </span>--single-branch<span class="w"> </span>https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop.git
+<span class="nb">cd</span><span class="w"> </span>Sim-to-Real-SO-101-Workshop
+git<span class="w"> </span>lfs<span class="w"> </span>pull
+git<span class="w"> </span>branch<span class="w"> </span>--show-current
+git<span class="w"> </span>rev-parse<span class="w"> </span>HEAD
+docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>so101-workshop<span class="w"> </span>-f<span class="w"> </span>docker/Dockerfile<span class="w"> </span>.
+mkdir<span class="w"> </span>-p<span class="w"> </span>outputs<span class="w"> </span>datasets<span class="w"> </span>models
+</pre></div>
+</div>
+<p>Confirm that the branch is <code class="docutils literal notranslate">aidayseoul2026</code> and record the day-before source commit so every laptop uses the same revision. These commands assume a new installation. If a directory with the same name already exists, inspect its work before choosing the installation location.</p>
+<p>Follow the <a class="reference internal" href="06-get-the-code.html#start-the-workshop-container">container startup procedure</a> from the repository root. This course uses Isaac Lab, Newton, ovrtx, LeRobot, and GR00T in the same image. Keep the container terminal available for later exercises; use the documented connection procedure when opening another shell.</p>
+</section>
+<section id="lesson-model">
+<h3>4. Download the Lesson Models in Advance<a class="headerlink" href="#lesson-model" title="Link to this heading">#</a></h3>
+<p>Use the <code class="docutils literal notranslate">hf</code> CLI in a <strong>Host terminal</strong> to download the one base model and seven lesson policies below into the same Hugging Face cache mounted by the container. If model access requires authentication, complete <code class="docutils literal notranslate">hf auth login</code> and check the classroom account with <code class="docutils literal notranslate">hf auth whoami</code>. If <code class="docutils literal notranslate">hf</code> is available only inside the container, run it there with the documented cache mount.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span>nvidia/GR00T-N1.7-3B
+hf<span class="w"> </span>download<span class="w"> </span>sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929
+hf<span class="w"> </span>download<span class="w"> </span>sreetz-nv/so101_real10_sim75_vision_h16_b64_20k_20261011
+hf<span class="w"> </span>download<span class="w"> </span>sreetz-nv/so101_real10_sim75_hgdagger29_vision_h16_b64_20k_20261013
+hf<span class="w"> </span>download<span class="w"> </span>liorbenhorin-nv/so101_sim_manual_perception_newton_20261008_GR00T17_20k
+hf<span class="w"> </span>download<span class="w"> </span>liorbenhorin-nv/so101_vision_dr_i1_GR00T17_20261013
+hf<span class="w"> </span>download<span class="w"> </span>liorbenhorin-nv/so101_vision_dr_i5_GR00T17_20261013
+hf<span class="w"> </span>download<span class="w"> </span>sreetz-nv/so101-clean-up-vials-into-rack-50-groot-n17-relact-bs64-20k-20260628_johnny_42
+</pre></div>
+</div>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Purpose in the Course</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>GR00T 1.7 base</p></td>
+<td><p>Base-model files required by the policy runtime</p></td>
+</tr>
+<tr class="row-odd"><td><p>Sim-only 20k</p></td>
+<td><p>Simulation and the first real-world evaluation</p></td>
+</tr>
+<tr class="row-even"><td><p>Sim75 + Real10</p></td>
+<td><p>Co-Training comparison and HG-DAgger correction collection</p></td>
+</tr>
+<tr class="row-odd"><td><p>Manual simulation teleoperation 20k</p></td>
+<td><p>Additional sim-only policy comparison</p></td>
+</tr>
+<tr class="row-even"><td><p>i1</p></td>
+<td><p>Evaluation of a policy trained on State Machine data</p></td>
+</tr>
+<tr class="row-odd"><td><p>i5</p></td>
+<td><p>Comparison of Co-Training with more diverse State Machine layouts</p></td>
+</tr>
+<tr class="row-even"><td><p>Johnny42</p></td>
+<td><p>Optional Real → Real comparison</p></td>
+</tr>
+<tr class="row-odd"><td><p>HG-DAgger 20k</p></td>
+<td><p>Comparison of a policy trained on demonstrations and corrections</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Download each complete repository, including its config and processor, rather than only the weights. Record the downloaded revision, and load the policy once using the exact cache or model path planned for class.</p>
+</section>
+<section id="lesson-policy">
+<h3>5. Set Lesson-Policy Precision<a class="headerlink" href="#lesson-policy" title="Link to this heading">#</a></h3>
+<p>Check the following two values in the <code class="docutils literal notranslate">config.json</code> of each of the seven lesson policies. Stop the corresponding policy server and preserve the original settings before making changes.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">"model_params_fp32"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="nt">"use_bf16"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</pre></div>
+</div>
+<p>Select the file for the revision actually used in evaluation. The default Host cache path is <code class="docutils literal notranslate">~/.cache/huggingface/hub/models--&lt;owner&gt;--&lt;model&gt;/snapshots/&lt;revision&gt;/config.json</code>. For a local model directory, check that directory's <code class="docutils literal notranslate">config.json</code>. Leave other settings unchanged, and do not modify the <code class="docutils literal notranslate">nvidia/GR00T-N1.7-3B</code> base-model config.</p>
+<p>Hub cache files may link to shared blobs, so check whether another experiment uses the same file. Create a separate classroom model directory if needed. Recheck the settings after downloading a new revision, and restart the policy server after changes.</p>
+</section>
+<section id="starting-pose-dataset">
+<h3>6. Prepare Starting-Pose Datasets<a class="headerlink" href="#starting-pose-dataset" title="Link to this heading">#</a></h3>
+<p>Run the following command from the repository root on the Host. It retrieves only the metadata and joint-state data needed by <code class="docutils literal notranslate">--start_pose_dataset</code>, excluding video. Exercise code reads the same files through the container's <code class="docutils literal notranslate">./datasets</code> mount.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span>DATASET_ID<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>sreetz-nv/so101_newton_dr500_20260923<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>sreetz-nv/so101_sim_manual_perception_newton_20261008<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>sreetz-nv/so101_real10_sim75_20261011<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>sreetz-nv/so101-clean-up-vials-into-rack-50_20260628_131121<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>liorbenhorin-nv/so101_vials_procedural_left_125ep_20261013<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>liorbenhorin-nv/so101_vials_procedural_all_125ep_20261013
+<span class="k">do</span>
+<span class="w">  </span>hf<span class="w"> </span>download<span class="w"> </span><span class="s2">"</span><span class="nv">$DATASET_ID</span><span class="s2">"</span><span class="w"> </span>--repo-type<span class="w"> </span>dataset<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--include<span class="w"> </span><span class="s2">"meta/**"</span><span class="w"> </span><span class="s2">"data/**"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--local-dir<span class="w"> </span><span class="s2">"./datasets/</span><span class="nv">$DATASET_ID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="k">break</span>
+<span class="k">done</span>
+</pre></div>
+</div>
+<p>Verify that <code class="docutils literal notranslate">meta/</code> and <code class="docutils literal notranslate">data/</code> are present for all six datasets. Use the sim-teleoperation dataset for HG-DAgger starting poses. Do not use correction segments as a starting-pose dataset.</p>
+</section>
+<section id="id6">
+<h3>7. Verify Operation Before Class<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>Inside the course container, check physics-only execution and then rendering from both cameras. Complete the first-run shader-cache warmup the day before. Stop each command with <strong>Ctrl+C</strong> before proceeding.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>list_envs
+zero_agent<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-v0<span class="w"> </span>--cameras<span class="w"> </span>none<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton<span class="w"> </span>--visualizer<span class="w"> </span>newton
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>zero_agent<span class="w"> </span>--task<span class="w"> </span>Newton-So101-Teleop-Vials-To-Rack-v0<span class="w"> </span>--cameras<span class="w"> </span>all<span class="w"> </span><span class="nv">presets</span><span class="o">=</span>newton,ovrtx_renderer
+</pre></div>
+</div>
+<p>Then check the execution sequence for <a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a>, <a class="reference internal" href="08-operating-so101.html">Teleoperation</a>, and the <a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger exercise</a>. Verify each laptop's basic readiness and rehearse the full course workflow on a representative station.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Completion Criteria</p></th>
+<th class="head"><p>Acceptance Check</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Software</p></td>
+<td><p>GPU and Docker work under the classroom account, and the image uses the agreed branch and commit.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Asset</p></td>
+<td><p>LFS assets, one base model, seven lesson policies, and six starting-pose datasets are available at the actual runtime paths.</p></td>
+</tr>
+<tr class="row-even"><td><p>Simulation</p></td>
+<td><p>Physics and wrist/external camera rendering work, and the browser or Rerun viewer displays correctly.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Policy</p></td>
+<td><p>Lesson-policy precision has been checked, and simulation plus the policy server run together without exhausting VRAM. The previous server is stopped when changing models.</p></td>
+</tr>
+<tr class="row-even"><td><p>Robot</p></td>
+<td><p>Connections for both arms and both cameras, calibration, and a short real-teleoperation run have been verified.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Handover</p></td>
+<td><p>Outstanding items, owners, and remediation plans have been handed to instructors and TAs. Stations that are not ready are clearly identified.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="id7">
+<h2>Operational Points During Class<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h3>Class Start and Session Transitions<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>During arrival from <strong>08:30–09:00</strong>, recheck course access, lighting, both cameras, and clearance around the arms. Teaching starts at <strong>09:00</strong>.</p></li>
+<li><p>At each session's start, clarify whether participants should watch the instructor or perform the exercise themselves. Demonstrations follow the same course sequence used by participants.</p></li>
+<li><p>State clearly whether each command runs on the Host or in the Container. Recheck leader/follower and camera selections when transitioning from teleoperation to policy rollouts.</p></li>
+<li><p>TAs support individual stations and share recurring issues with the instructor. Follow <a class="reference internal" href="seoul-workshop-schedule.html">Today's Schedule</a> for session presenters.</p></li>
+</ul>
+</section>
+<section id="policy-server-vram">
+<h3>Policy Servers and VRAM<a class="headerlink" href="#policy-server-vram" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Check <code class="docutils literal notranslate">model_params_fp32: false</code> and <code class="docutils literal notranslate">use_bf16: true</code> in each classroom checkpoint's <code class="docutils literal notranslate">config.json</code>. Stop the corresponding policy server before changing only the required settings.</p></li>
+<li><p>In one instructor's simulation-inference setup, <code class="docutils literal notranslate">model_params_fp32: false</code> saved approximately 3 GB of VRAM with no noticeable task-performance difference. Verify actual memory use and behavior on site.</p></li>
+<li><p>Stop the previous policy server after simulation evaluation and before changing models. Starting another server while the old one remains active can exhaust VRAM. Follow the shutdown procedure in <a class="reference internal" href="troubleshooting.html">Troubleshooting</a> and stop only the servers belonging to the exercise.</p></li>
+</ul>
+</section>
+<section id="robotcamera">
+<h3>Robot / Camera Checks and Evaluation<a class="headerlink" href="#robotcamera" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>If a policy performs poorly, check calibration, leader/follower ports, external-camera tilt, and wrist-camera focus first. Also check whether clamps or cables restricted joint motion during calibration.</p></li>
+<li><p>Before a real rollout, verify the starting pose and rack/vial layout. Stop the robot before repositioning vials.</p></li>
+<li><p>Compare models under matching camera, starting-condition, and task settings, and distinguish autonomous success from completion with human assistance. Consult <a class="reference internal" href="troubleshooting.html">Troubleshooting</a> for errors; involve another TA or instructor when diagnosis is uncertain.</p></li>
+</ul>
+</section>
+<section id="hg-dagger">
+<h3>Required Briefing Before HG-DAgger<a class="headerlink" href="#hg-dagger" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>The instructor demonstrates first. Explain that the physical leader moves under motor power even when the follower is simulated.</p></li>
+<li><p>Move computers and personal belongings outside the leader's motion envelope. The leader can also move during startup, alignment, reset, and normal shutdown.</p></li>
+<li><p>Pause the policy, align the leader, and confirm <code class="docutils literal notranslate">correction_ready</code>. Support the arm before releasing torque.</p></li>
+<li><p>Demonstrate saving a correction and returning control to the policy. Explain that normal shutdown includes arm-return motion and is different from an immediate stop.</p></li>
+</ol>
+<p>Follow the <a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger exercise</a> for detailed controls.</p>
+</section>
+</section>
+<section id="id9">
+<h2>Repository Skills<a class="headerlink" href="#id9" title="Link to this heading">#</a></h2>
+<p>The repository's <code class="docutils literal notranslate">skills/</code> directory contains shared skills for environment installation, course questions, and exercises. <code class="docutils literal notranslate">AGENTS.md</code> directs the agent to read the relevant <code class="docutils literal notranslate">SKILL.md</code>. See <a class="reference internal" href="01-codex.html">CODEX</a> for setup instructions and examples.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Skill</p></th>
+<th class="head"><p>When to Use It</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-prepare</span></code></p></td>
+<td><p>Shared environment installation, checks, and resumption</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-docs</span></code></p></td>
+<td><p>Building and previewing course documentation</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli</span></code></p></td>
+<td><p>Choosing the next student exercise using the schedule and course guide</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-qa</span></code></p></td>
+<td><p>Q&amp;A on concepts, commands, and errors throughout the course</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-gr00t</span></code></p></td>
+<td><p>Learning VLA, GR00T, post-training, and Co-Training</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-cosmos</span></code></p></td>
+<td><p>Cosmos augmentation and video comparison</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-sysid</span></code></p></td>
+<td><p>Learning about the actuation gap, System Identification, and AnchorBench</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-hardware</span></code></p></td>
+<td><p>Checking the workspace, arms, calibration, cameras, and real teleoperation</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-collect</span></code></p></td>
+<td><p>Collecting sim/real demonstrations, Domain Randomization, State Machine, and episode review</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-evaluate</span></code></p></td>
+<td><p>Comparing sim/real rollouts and Co-Training models, and stopping policy servers</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">so101-dli-dagger</span></code></p></td>
+<td><p>HG-DAgger demonstration, correction collection, saving, and review</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Example request: “Read <code class="docutils literal notranslate">skills/so101-dli/SKILL.md</code> and guide me through the course's calibration exercise one step at a time.”</p>
+</section>
+<section id="environment-setup">
+<h2>Environment setup<a class="headerlink" href="#environment-setup" title="Link to this heading">#</a></h2>
+<p>Ask “Set up the environment” in the shared workshop project. The agent reads <code class="docutils literal notranslate">AGENTS.md</code> and <code class="docutils literal notranslate">skills/so101-dli-prepare/SKILL.md</code>, checks the existing installation, and follows the preparation guide. The same skill files support installation, course questions, and exercises.</p>
+<p>To check this computer first, ask “Check whether this computer meets the requirements to run the DLI workshop.” The preparation skill reports basic Host eligibility, missing tools and assets, and unverified capacity or runtime checks. A read-only report does not certify classroom execution or start installation, downloads, or robot motion.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>skills/so101-dli-prepare/scripts/preflight.py<span class="w"> </span>--format<span class="w"> </span>markdown
+</pre></div>
+</div>
+<p>A read-only plan shows the installation checkpoints and commands without executing them:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>skills/so101-dli-prepare/scripts/setup_plan.py
+</pre></div>
+</div>
+<p>Record the agreed source commit, actual model/dataset paths, commands, logs and next action under <code class="docutils literal notranslate"><span class="pre">runs/setup/&lt;station&gt;/</span></code>. Reuse verified installations and downloads when resuming. Permission errors and untested runtime checks remain unknown.</p>
+<section id="build-and-open-the-course-guide">
+<h3>Build and open the course guide<a class="headerlink" href="#build-and-open-the-course-guide" title="Link to this heading">#</a></h3>
+<p>Run these commands on the Host from the repository root after preparing the locked documentation dependencies and Git LFS media. Documentation does not require the robot Container or GPU.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>sync<span class="w"> </span>--frozen
+bash<span class="w"> </span>skills/so101-dli-docs/scripts/build.sh
+python3<span class="w"> </span>skills/so101-dli-docs/scripts/verify_html.py
+</pre></div>
+</div>
+<p>The build prepares both languages. When you build and browse on the same Laptop, start a local preview on an available port:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>skills/so101-dli-docs/scripts/preview.py<span class="w"> </span>start<span class="w"> </span>--bind<span class="w"> </span><span class="m">127</span>.0.0.1<span class="w"> </span>--port<span class="w"> </span><span class="m">8095</span>
+python3<span class="w"> </span>skills/so101-dli-docs/scripts/preview.py<span class="w"> </span>status
+</pre></div>
+</div>
+<p>After the preview starts, open <a class="reference external" href="http://localhost:8095/ko/event/html/index.html" rel="noreferer noopener" target="_blank">the course guide</a> or <a class="reference external" href="http://localhost:8095/ko/event/html/2026-10-28-seoul-preparation.html" rel="noreferer noopener" target="_blank">DLI preparation and delivery</a> in that Laptop’s browser. The local service uses <code class="docutils literal notranslate"><span class="pre">http://localhost:8095</span></code>; building alone does not start the server or open the browser. If you choose a different port, update the links accordingly.</p>
+<p><code class="docutils literal notranslate"><span class="pre">localhost</span></code> refers to the computer running your browser. For access from another PC, replace <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> in the start command with the server’s verified LAN IP and open the URL reported by the preview on that PC.</p>
+<p>Use the verified URL reported by the preview. Keep the requested preview running; its PID, command and log are recorded locally. Use <code class="docutils literal notranslate"><span class="pre">preview.py</span> <span class="pre">stop</span></code> to stop that owned preview. This is background execution, not boot autostart.</p>
+<p>Software preparation and robot operation are separate checks. Confirm the current operator and station readiness before powered robot exercises; a model cache or connection message does not establish successful motion.</p>
+</section>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>What's Next?</h2>
+<p>Continue to the next page in the table of contents:
+    <a class="reference internal course-next-link" href="seoul-workshop-schedule.html">Today’s Schedule</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="index.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</div>
+</a>
+<a class="right-next" href="seoul-workshop-schedule.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Today’s Schedule</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">전날 셋업: 로봇 실습 환경 구성</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#laptopleaderfollower">데스크 전체 배치: Laptop·Leader·Follower</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#station">완성된 station의 기준 모습</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Station 한 세트의 구성</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">1. 작업대와 동선을 확보합니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lightbox">2. Lightbox를 조립합니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#follower-leader">3. Follower와 leader를 고정합니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">4. 조명을 고정하고 밝기를 맞춥니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#camera">5. 두 camera의 위치와 영상을 맞춥니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrackvial">6. Mat·rack·vial을 배치합니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibrationteleop">7. 실행 환경·calibration·Teleop를 점검합니다</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rtx-laptop">RTX Laptop과 수업 실행 환경 준비</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#laptop-gpu">1. Laptop 기본 상태와 GPU를 확인합니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">현재 컴퓨터의 DLI 실행 조건을 자동 점검합니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#host-software-nvidia-container-toolkit">2. Host software와 NVIDIA Container Toolkit을 준비합니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#repository-clone-container-build">3. Repository Clone과 Container Build</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lesson-model">4. Lesson model을 미리 다운로드합니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lesson-policy">5. Lesson policy의 정밀도를 설정합니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-pose-dataset">6. Starting-pose dataset을 준비합니다</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">7. 수업 시작 전 동작을 확인합니다</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">운영 중 짚어야 할 포인트</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">수업 시작과 세션 전환</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-server-vram">Policy server와 VRAM</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robotcamera">Robot·camera 점검과 평가</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hg-dagger">HG-DAgger 시작 전 필수 안내</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">저장소의 실행 Skill</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-setup">Environment setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-and-open-the-course-guide">Build and open the course guide</a></li>
+</ul>
+</li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

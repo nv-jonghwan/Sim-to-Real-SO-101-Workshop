@@ -1,0 +1,776 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Calibrating the SO-101 — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '07-calibrating-so101';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="08-operating-so101.html" rel="next" title="Teleoperating"/>
+<link href="07-using-workspace.html" rel="prev" title="Using the Workspace"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Calibrating the SO-101</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/07-calibrating-so101.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="calibrating-the-so-101">
+<h1>Calibrating the SO-101<a class="headerlink" href="#calibrating-the-so-101" title="Link to this heading">#</a></h1>
+<div class="course-module-type">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M11 17V8a2 2 0 0 1 4 0v6a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v2a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-3c-2 0-4-1-5-3l-5-7a2 2 0 0 1 3-2l1 1"></path>
+<path d="M15 14v5m4-4v4m4-2v3M5 9H3m4-5L5.5 2.5M19 5l1.5-1.5"></path>
+</svg>
+<span>Hands-on</span>
+</div>
+<a class="course-banner reference internal image-reference" href="_images/teleop-calibration-pose.png"><img alt="Positioning the SO-101 leader arm for calibration." class="course-banner" src="_images/teleop-calibration-pose.png" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">What Do I Need for This Module?</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Hands-on. You’ll need the SO-101 leader and follower arms, USB cables, and the assembled workspace from <a class="reference internal" href="07-using-workspace.html"><span class="std std-doc">Using the Workspace</span></a>.</p>
+</div>
+</details><p>You’ll power on and calibrate both arms, then check their joint ranges. The <strong>leader / teleop arm</strong> is the arm you move by hand; the <strong>follower / robot arm</strong> performs the task.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you encounter hardware issues during this session, see the <a class="reference internal" href="troubleshooting.html"><span class="std std-doc">Troubleshooting Guide</span></a> for solutions to common problems.</p>
+</div>
+<section id="learning-objectives">
+<h2>Learning Objectives<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<p>By the end of this session, you’ll be able to:</p>
+<ul class="simple">
+<li><p><strong>Power on</strong> both arms safely</p></li>
+<li><p><strong>Calibrate</strong> the leader and follower for accurate positioning</p></li>
+</ul>
+</section>
+<section id="safety-guidelines">
+<h2>Safety Guidelines<a class="headerlink" href="#safety-guidelines" title="Link to this heading">#</a></h2>
+<p>Review the <a class="reference internal" href="08-operating-so101.html#id1"><span class="std std-ref">Safety</span></a> protocol before powering on the robot.</p>
+</section>
+<section id="powering-on-the-robot">
+<h2>Powering On the Robot<a class="headerlink" href="#powering-on-the-robot" title="Link to this heading">#</a></h2>
+<section id="physical-inspection">
+<h3>Physical Inspection<a class="headerlink" href="#physical-inspection" title="Link to this heading">#</a></h3>
+<p>Before powering on:</p>
+<ol class="arabic simple">
+<li><p><strong>Inspect</strong> the robot for any visible damage</p></li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <strong>leader uses 5V</strong> and the <strong>follower uses 12V</strong>. Do not swap their power supplies.</p>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>Connect</strong> the power and USB cables.</p></li>
+<li><p><strong>Verify</strong> the <strong>power LED</strong> illuminates on the control board at the back of the robot.</p></li>
+<li><p><strong>Connect</strong> both arms to your computer with USB cables.</p></li>
+</ol>
+</section>
+<section id="run-the-docker-container-for-this-course">
+<h3>Run the Docker Container for This Course<a class="headerlink" href="#run-the-docker-container-for-this-course" title="Link to this heading">#</a></h3>
+<p>USB port assignments can change when you reconnect the arms. Usually reconnecting just one won’t reassign the value. Use LeRobot’s port finder to identify each one, then save the ports for later commands.</p>
+<ol class="arabic simple">
+<li><p><strong>Open a terminal on the host</strong> and <strong>change into the workshop folder in your home directory</strong>:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/Sim-to-Real-SO-101-Workshop
+</pre></div>
+</div>
+<p>Use your actual checkout path for the directory change above; <code class="docutils literal notranslate"><span class="pre">~/Sim-to-Real-SO-101-Workshop</span></code> is only an example. In the same terminal, confirm that the directory contains <code class="docutils literal notranslate"><span class="pre">docker/Dockerfile</span></code> and <code class="docutils literal notranslate"><span class="pre">source/</span></code> before running the next block.</p>
+<p><a aria-haspopup="dialog" href="#docker-build-reference" id="docker-build-reference-link">Reference: docker build</a></p>
+<dialog aria-labelledby="docker-build-reference-title" id="docker-build-reference">
+<header class="docker-build-reference-header">
+<h4 id="docker-build-reference-title">Build the workshop Docker image</h4>
+<button autofocus="" class="docker-build-reference-close" type="button">Close</button>
+</header>
+<p>so101-workshop:latest is built locally from this repository. A Docker Hub login does not create this image. If it is missing, docker run can attempt a Hub pull and report pull access denied.</p>
+<p>Run the following steps in a Host terminal before starting the workshop Container. If your checkout uses another folder, use that folder instead of the example path.</p>
+<ol>
+<li><p>Open the repository root and check that its Dockerfile exists.</p><pre><code>cd ~/Sim-to-Real-SO-101-Workshop
+test -f docker/Dockerfile</code></pre></li>
+<li><p>Check Docker access and Buildx. Docker version must show both Client and Server; resolve permission or daemon errors before building.</p><pre><code>docker version
+docker buildx version</code></pre></li>
+<li><p>If Buildx is installed at the Ubuntu path below but docker buildx is not recognized, register it in your user plugin directory. Skip the link command if that link already exists. If the binary is missing, install the Docker Buildx plugin using the official Docker installation guide.</p><pre><code>test -x /usr/libexec/docker/cli-plugins/docker-buildx
+mkdir -p ~/.docker/cli-plugins
+ln -s /usr/libexec/docker/cli-plugins/docker-buildx ~/.docker/cli-plugins/docker-buildx
+docker buildx version</code></pre><p>This link is saved on disk and remains after reboot. It does not restart Docker or interrupt a running build.</p></li>
+<li><p>Build the image. Wait for the command to finish successfully before starting the Container; the first build downloads and installs the course dependencies.</p><pre><code>docker build --progress=plain -t so101-workshop:latest -f docker/Dockerfile .</code></pre><p>If the Docker CLI still cannot dispatch to Buildx, use the installed binary directly.</p><pre><code>/usr/libexec/docker/cli-plugins/docker-buildx build --load --progress=plain -t so101-workshop:latest -f docker/Dockerfile .</code></pre></li>
+<li><p>Check the built image and create the persistent data directories.</p><pre><code>docker image inspect so101-workshop:latest --format '{{.Os}}/{{.Architecture}}'
+mkdir -p outputs datasets models</code></pre><p>The image architecture must match the Host: linux/amd64 on an x86_64 PC, or linux/arm64 on Spark. Architecture alone does not verify simulation, rendering or policy inference.</p></li>
+<li><p>Close this reference and continue with the Container start command in the lesson. The built image survives reboot; start the Container again after reboot. Rebuild when the Dockerfile or required dependencies change.</p></li>
+</ol>
+<p><a href="https://docs.docker.com/engine/install/ubuntu/" rel="noopener noreferrer" target="_blank">Docker installation and Buildx documentation</a></p>
+</dialog>
+<style>
+  #docker-build-reference { box-sizing: border-box; width: min(760px, calc(100% - 32px)); max-height: 85vh; overflow-y: auto; padding: 24px; border: 1px solid var(--pst-color-border, #b5b5b5); border-radius: 12px; background: var(--pst-color-background, white); color: var(--pst-color-text-base, #202020); box-shadow: 0 16px 64px #0005; }
+  #docker-build-reference::backdrop { background: #0009; }
+  #docker-build-reference .docker-build-reference-header { display: flex; align-items: start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+  #docker-build-reference-title { margin: 0; }
+  #docker-build-reference .docker-build-reference-close { flex-shrink: 0; padding: 6px 14px; border: 1px solid var(--pst-color-border, #999); border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+  #docker-build-reference pre { padding: 12px; overflow-x: auto; background: var(--pst-color-surface, #f3f5f1); border-radius: 6px; }
+  #docker-build-reference ol { padding-left: 24px; }
+  #docker-build-reference li { margin-bottom: 20px; }
+  #docker-build-reference p { line-height: 1.6; }
+</style>
+<script>
+(() => {
+  const link = document.getElementById('docker-build-reference-link');
+  const dialog = document.getElementById('docker-build-reference');
+  link.addEventListener('click', (event) => {
+    event.preventDefault();
+    dialog.showModal();
+  });
+  dialog.querySelector('.docker-build-reference-close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (event) => {
+    const bounds = dialog.getBoundingClientRect();
+    if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
+  });
+  dialog.addEventListener('close', () => link.focus());
+})();
+</script>
+<ol class="arabic simple" start="2">
+<li><p><strong>Start</strong> the container from this folder if you haven’t already:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>xhost<span class="w"> </span>+
+docker<span class="w"> </span>run<span class="w"> </span>--name<span class="w"> </span>so101-workshop<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>--privileged<span class="w"> </span>--runtime<span class="o">=</span>nvidia<span class="w"> </span>--network<span class="o">=</span>host<span class="w"> </span>-e<span class="w"> </span>DISPLAY<span class="w"> </span>-v<span class="w"> </span>/tmp/.X11-unix:/tmp/.X11-unix<span class="w"> </span>-v<span class="w"> </span>~/.Xauthority:/root/.Xauthority<span class="w"> </span>-v<span class="w"> </span>/dev:/dev<span class="w"> </span>-v<span class="w"> </span>/run/udev:/run/udev:ro<span class="w"> </span>-v<span class="w"> </span>~/.cache/huggingface:/root/.cache/huggingface<span class="w"> </span>-v<span class="w"> </span>~/.cache/ovrtx:/root/.cache/ovrtx<span class="w"> </span>-v<span class="w"> </span>~/.cache/warp:/root/.cache/warp<span class="w"> </span>-v<span class="w"> </span>./docker/env:/root/env<span class="w"> </span>-v<span class="w"> </span>./source:/workspace/Sim-to-Real-SO-101-Workshop/source<span class="w"> </span>-v<span class="w"> </span>./outputs:/workspace/Sim-to-Real-SO-101-Workshop/outputs<span class="w"> </span>-v<span class="w"> </span>./datasets:/workspace/Sim-to-Real-SO-101-Workshop/datasets<span class="w"> </span>-v<span class="w"> </span>./models:/workspace/Sim-to-Real-SO-101-Workshop/models<span class="w"> </span>so101-workshop:latest
+</pre></div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Connect to an Already-Running Container</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">If the container is already running and you need another terminal, run this on the host. If you are already at the container prompt, skip this step.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>so101-workshop<span class="w"> </span>bash
+</pre></div>
+</div>
+</div>
+</details><p>The workshop’s Python environment and saved settings load automatically.</p>
+</section>
+<section id="identify-the-teleop-arm-port">
+<span id="identify-the-leader-arm-port"></span><h3>Identify the Leader Arm Port<a class="headerlink" href="#identify-the-teleop-arm-port" title="Link to this heading">#</a></h3>
+<ol class="arabic simple" start="3">
+<li><p><strong>Run</strong> this command to start port identification:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-find-port
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>When prompted, <strong>unplug the leader’s USB cable</strong>.</p></li>
+</ol>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Finding all available ports for the MotorBus.
+['/dev/ttyACM0', '/dev/ttyACM2']
+Remove the usb cable from your MotorsBus and press Enter when done.
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>After removing the cable, <strong>press</strong> <strong>Enter</strong>.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">port</span> <span class="n">of</span> <span class="n">this</span> <span class="n">MotorsBus</span> <span class="ow">is</span> <span class="s1">'/dev/ttyACM2'</span>
+<span class="n">Reconnect</span> <span class="n">the</span> <span class="n">USB</span> <span class="n">cable</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>In this example, <code class="docutils literal notranslate"><span class="pre">/dev/ttyACM2</span></code> is the port assigned by the host computer. It’s discovered by a simple diff of connected devices.</p>
+<ol class="arabic simple" start="6">
+<li><p><strong>Reconnect</strong> the leader and <strong>save</strong> its port. Replace <code class="docutils literal notranslate"><span class="pre">/dev/ttyACM2</span></code> with the port the tool found.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setenv<span class="w"> </span><span class="nv">TELEOP_PORT</span><span class="o">=</span>/dev/ttyACM2<span class="w"> </span><span class="c1"># replace with the detected leader port</span>
+setenv<span class="w"> </span><span class="nv">TELEOP_ID</span><span class="o">=</span>orange_teleop<span class="w"> </span><span class="c1"># use this line as-is</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">setenv</span></code> saves these settings in the repository’s <code class="docutils literal notranslate"><span class="pre">docker/env</span></code> file so they load in future container sessions.</p>
+</div>
+</section>
+<section id="identify-the-robot-arm-port">
+<span id="identify-the-follower-arm-port"></span><h3>Identify the Follower Arm Port<a class="headerlink" href="#identify-the-robot-arm-port" title="Link to this heading">#</a></h3>
+<ol class="arabic simple" start="7">
+<li><p><strong>Repeat</strong> for the <strong>follower</strong>, unplugging and reconnecting its USB cable when prompted.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-find-port
+</pre></div>
+</div>
+<ol class="arabic simple" start="8">
+<li><p><strong>Save</strong> the follower’s port, replacing <code class="docutils literal notranslate"><span class="pre">/dev/ttyACM0</span></code> with the port the tool found.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setenv<span class="w"> </span><span class="nv">ROBOT_PORT</span><span class="o">=</span>/dev/ttyACM0<span class="w"> </span><span class="c1"># replace with the detected follower port</span>
+setenv<span class="w"> </span><span class="nv">ROBOT_ID</span><span class="o">=</span>orange_robot<span class="w"> </span><span class="c1"># use this as-is</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The ID names the arm’s calibration file. Use the same ID for that arm in every session.</p>
+</div>
+<ol class="arabic simple" start="9">
+<li><p><strong>Check</strong> the saved ports and IDs:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Teleop port is </span><span class="si">${</span><span class="nv">TELEOP_PORT</span><span class="si">}</span><span class="s2"> with id </span><span class="si">${</span><span class="nv">TELEOP_ID</span><span class="si">}</span><span class="s2">"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"Robot port is </span><span class="si">${</span><span class="nv">ROBOT_PORT</span><span class="si">}</span><span class="s2"> with id </span><span class="si">${</span><span class="nv">ROBOT_ID</span><span class="si">}</span><span class="s2">"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="10">
+<li><p><strong>Continue</strong> calibration in this terminal.</p></li>
+</ol>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>After reconnecting USB devices, run the port finder again if the assignments have changed. These commands are also on the <a class="reference internal" href="quick_reference.html"><span class="std std-doc">Quick Reference</span></a> page.</p>
+</div>
+</section>
+</section>
+<section id="calibration-process">
+<h2>Calibration Process<a class="headerlink" href="#calibration-process" title="Link to this heading">#</a></h2>
+<p>Calibration aligns encoder readings with the physical positions of each link. The policy relies on these joint positions, so incorrect calibration can cause unintended motion, task failures, or collisions.</p>
+<p>Follow the same process for both arms: calibrate, then check.</p>
+<section id="calibrate-the-leader-arm">
+<span id="calibrate-the-teleop-arm-leader"></span><h3>Calibrate the Leader Arm<a class="headerlink" href="#calibrate-the-leader-arm" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Run</strong> the leader calibration command using the port and ID you saved:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-calibrate<span class="w"> </span>--teleop.type<span class="o">=</span>so101_leader<span class="w"> </span>--teleop.port<span class="o">=</span><span class="nv">$TELEOP_PORT</span><span class="w"> </span>--teleop.id<span class="o">=</span><span class="nv">$TELEOP_ID</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>When prompted, <strong>move each joint to the middle of its range</strong>. That ends up looking like this pose, which you can simply match:</p></li>
+</ol>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/teleop_arm_neutral_pose.jpg"><img alt="Leader arm in its calibration pose." src="_images/teleop_arm_neutral_pose.jpg" style="width: 350px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Leader calibration pose</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple" start="3">
+<li><p><strong>Press Enter</strong> once the arm matches the pose.</p></li>
+<li><p><strong>Move</strong> each joint <strong>except wrist roll</strong> through its full range, one at a time.</p></li>
+</ol>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/teleop_calibration.gif"><img alt="Moving the leader joints through their calibration ranges." src="_images/teleop_calibration.gif" style="width: 350px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><em>Example calibration motion. Start in the calibration pose, then sweep the other joints one by one; wrist roll does not need a sweep.</em></span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<ul class="simple">
+<li><p>You can sweep a joint more than once if needed. The script records its minimum and maximum positions. If you miss a joint, run calibration again.</p></li>
+<li><p><strong>Reach the mechanical end stops.</strong> Keep cables and other obstacles clear so they don’t stop a joint early and produce an incorrect calibration.</p></li>
+<li><p>In these newer versions of LeRobot, <strong>wrist roll does not need a range sweep</strong> on either arm. Its range is assigned automatically, but you must still place it in the initial calibration pose shown below. It’s fine if you do move it.</p></li>
+</ul>
+</div>
+<ol class="arabic simple" start="5">
+<li><p><strong>Press Enter</strong> when done.</p></li>
+</ol>
+<span id="check-the-teleop-arm-leader"></span><ol class="arabic simple" id="check-the-leader-arm" start="6">
+<li><p><strong>Check the leader calibration</strong> before moving on to the follower. The checker uses your saved <code class="docutils literal notranslate"><span class="pre">TELEOP_ID</span></code> and <code class="docutils literal notranslate"><span class="pre">TELEOP_PORT</span></code>.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>docker/scripts/so101_check_calibration.py<span class="w"> </span>--arm<span class="w"> </span>teleop
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li><p><strong>Check</strong> that the report says <code class="docutils literal notranslate"><span class="pre">Arm:</span> <span class="pre">teleop</span></code> and names your calibration file. For any <code class="docutils literal notranslate"><span class="pre">WARN</span></code> or live <code class="docutils literal notranslate"><span class="pre">OUT</span> <span class="pre">OF</span> <span class="pre">RANGE</span></code> result, check the arm ID and joint travel. Correct any problems, then recalibrate and run the check again.</p></li>
+</ol>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Optional: how the calibration check works</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">The reference data comes from WowRobo robots calibrated for a live version of this workshop. The checker compares each arm against its own reference dataset: 10 teleop calibrations or 10 follower calibrations. It flags motion ranges outside the mean ±2 population standard deviations. When all reference ranges are identical, a different range produces a warning. These are statistical comparisons, not proof that a calibration is correct or incorrect; even a reference sample can fall outside ±2σ.</p>
+<p class="sd-card-text">The checker also reads live encoder positions when the selected arm connects. Look for the “Live Encoder Positions” section and review any <code class="docutils literal notranslate"><span class="pre">OUT</span> <span class="pre">OF</span> <span class="pre">RANGE</span></code> results. Add <code class="docutils literal notranslate"><span class="pre">--static-only</span></code> to check the saved file without connecting to hardware; a file-only PASS does not verify live positions.</p>
+<p class="sd-card-text">To check a specific file with either arm’s command, add <code class="docutils literal notranslate"><span class="pre">--calibration</span> <span class="pre">/path/to/arm.json</span></code>. The <code class="docutils literal notranslate"><span class="pre">STATS_JSON</span></code> environment variable can override the selected arm’s reference statistics.</p>
+</div>
+</details></section>
+<section id="calibrate-the-follower-arm">
+<span id="calibrate-the-follower-arm-robot"></span><h3>Calibrate the Follower Arm<a class="headerlink" href="#calibrate-the-follower-arm" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Run</strong> the follower calibration command:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-calibrate<span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span><span class="nv">$ROBOT_PORT</span><span class="w"> </span>--robot.id<span class="o">=</span><span class="nv">$ROBOT_ID</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><strong>Move</strong> the follower to the calibration pose, with each joint in the middle of its range:</p></li>
+</ol>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<img alt="" class="sd-card-img-top" src="_images/calibration_pose.jpg"/>
+<div class="sd-card-body docutils">
+<p class="sd-card-text">Calibration Pose Example</p>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<img alt="" class="sd-card-img-top" src="_images/wrist_center.jpg"/>
+<div class="sd-card-body docutils">
+<p class="sd-card-text">Match this wrist-roll position carefully to prevent its readings from wrapping around.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>Press Enter</strong> to begin calibration.</p></li>
+<li><p><strong>Move</strong> each joint <strong>except wrist roll</strong> through its full range, one at a time.</p></li>
+</ol>
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/full_so101_calibration.gif"><img alt="Full SO-101 Calibration Sequence" src="_images/full_so101_calibration.gif" style="width: 60%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Example calibration motion on the SO-101; skip the wrist-roll sweep.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple" start="5">
+<li><p><strong>Press Enter</strong> when done.</p></li>
+</ol>
+<span id="check-the-follower-arm-robot"></span><ol class="arabic simple" id="check-the-follower-arm-calibration" start="6">
+<li><p><strong>Check the follower calibration</strong> before teleoperation. The checker uses your saved <code class="docutils literal notranslate"><span class="pre">ROBOT_ID</span></code> and <code class="docutils literal notranslate"><span class="pre">ROBOT_PORT</span></code>.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>docker/scripts/so101_check_calibration.py
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li><p><strong>Check</strong> that the report says <code class="docutils literal notranslate"><span class="pre">Arm:</span> <span class="pre">follower</span></code> and names your calibration file. Investigate any <code class="docutils literal notranslate"><span class="pre">WARN</span></code> or live <code class="docutils literal notranslate"><span class="pre">OUT</span> <span class="pre">OF</span> <span class="pre">RANGE</span></code> result before teleoperation. Correct any problems, then recalibrate and run the check again.</p></li>
+</ol>
+<p>LeRobot saves the calibration under <code class="docutils literal notranslate"><span class="pre">~/.cache/huggingface/lerobot/calibration</span></code>, organized by arm type and ID.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Show an example calibration check report</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Example follower output from a file-only check:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>============================================================================
+  SO101 CALIBRATION CHECK REPORT
+  Arm:   follower
+  File:  /root/.cache/huggingface/lerobot/calibration/robots/so_follower/so-r-003.json
+  Stats: /workspace/Sim-to-Real-SO-101-Workshop/docker/scripts/calibration_stats.json
+============================================================================
+
+[1] Motion Range vs Stats (threshold ±2.0σ)
+
+  Joint               Range     Mean    Std  Deviation    Offset  Status
+  --------------------------------------------------------------------------
+  shoulder_pan         2724     2735     11     -1.03σ       467  ✓ PASS
+  shoulder_lift        2390     2367     15     +1.51σ       766  ✓ PASS
+  elbow_flex           2226     2222      8     +0.51σ       614  ✓ PASS
+  wrist_flex           2340     2323     12     +1.47σ      -564  ✓ PASS
+  wrist_roll           4095     4095      0          —     -1457  ✓ PASS
+  gripper              1475     1485     18     -0.57σ     -1331  ✓ PASS
+
+[2] Live check skipped (file-only check or arm not connected)
+
+============================================================================
+  Overall: ✓ PASS — calibration looks good.
+============================================================================
+</pre></div>
+</div>
+</div>
+</details></section>
+</section>
+<section id="match-the-external-camera-tilt-to-simulation">
+<h2>Match the External Camera Tilt to Simulation<a class="headerlink" href="#match-the-external-camera-tilt-to-simulation" title="Link to this heading">#</a></h2>
+<p>Camera mounts vary between stations. Adjust the real camera to match the view used to train the provided policies.</p>
+<p>The simulated camera looks about <strong>54° downward from horizontal</strong>. Use a phone level app to set a similar tilt:</p>
+<ol class="arabic simple">
+<li><p><strong>Rest the phone’s long edge on the tabletop</strong> and check for a reading near <strong>0°</strong>.</p></li>
+<li><p><strong>Place that edge against the camera’s front face</strong>, running from top to bottom beside the lens.</p></li>
+<li><p><strong>Adjust the mount</strong> until the edge is about <strong>54° downward</strong>, within a few degrees.</p></li>
+<li><p>In the next lesson, <a class="reference internal" href="08-operating-so101.html#teleoperation-with-cameras"><span class="std std-ref">compare the live view</span></a> with simulation. The robot, rack, and vials should be framed similarly; camera position and field of view matter too.</p></li>
+</ol>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="_images/camera-level-tabletop.jpg"><img alt="Phone level resting on the tabletop with a zero-degree reading." src="_images/camera-level-tabletop.jpg" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Set zero on the tabletop.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id5">
+<a class="reference internal image-reference" href="_images/camera-level-front-face.jpg"><img alt="Phone held against the external camera to check its tilt." src="_images/camera-level-front-face.jpg" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Check the camera tilt with the phone.</span><a class="headerlink" href="#id5" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="key-takeaways">
+<h2>Key Takeaways<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Keep each arm’s port, ID, and calibration file together.</p></li>
+<li><p>Center wrist roll for calibration, but skip its range sweep.</p></li>
+<li><p>Check both calibrations and the camera view before collecting data or running a policy.</p></li>
+</ul>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>What's Next?</h2>
+<p>Continue to the next page in the table of contents:
+    <a class="reference internal course-next-link" href="08-operating-so101.html">Teleoperating</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="07-using-workspace.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Using the Workspace</p>
+</div>
+</a>
+<a class="right-next" href="08-operating-so101.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Teleoperating</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning Objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#safety-guidelines">Safety Guidelines</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#powering-on-the-robot">Powering On the Robot</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-inspection">Physical Inspection</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-docker-container-for-this-course">Run the Docker Container for This Course</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#identify-the-teleop-arm-port">Identify the Leader Arm Port</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#identify-the-robot-arm-port">Identify the Follower Arm Port</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration-process">Calibration Process</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibrate-the-leader-arm">Calibrate the Leader Arm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibrate-the-follower-arm">Calibrate the Follower Arm</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#match-the-external-camera-tilt-to-simulation">Match the External Camera Tilt to Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">Key Takeaways</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

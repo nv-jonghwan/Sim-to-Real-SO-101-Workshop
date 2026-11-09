@@ -1,0 +1,693 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Workspace 구축 — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '05-building-workspace';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">과정 개요</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">SO-101 Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Dataset과 Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Workspace 구축</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/05-building-workspace.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="building-the-workspace">
+<h1>Workspace 구축<a class="headerlink" href="#building-the-workspace" title="Link to this heading">#</a></h1>
+<div class="course-module-type">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M11 17V8a2 2 0 0 1 4 0v6a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v2a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-3c-2 0-4-1-5-3l-5-7a2 2 0 0 1 3-2l1 1"></path>
+<path d="M15 14v5m4-4v4m4-2v3M5 9H3m4-5L5.5 2.5M19 5l1.5-1.5"></path>
+</svg>
+<span>Hands-on</span>
+</div>
+<a class="course-banner reference internal image-reference" href="_images/so101_workspace.jpg"><img alt="Lightbox, camera, vial rack, work mat로 구성된 SO-101 workspace입니다." class="course-banner" src="_images/so101_workspace.jpg" style="width: 100%;"/>
+</a>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">이 Module에 필요한 준비물</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">아래 장비를 준비해 robot 실험 공간을 조립합니다.</p>
+</div>
+</details><p>이 module에서는 <strong>실제 task 공간을 구성하고 표준화</strong>합니다. Lightbox enclosure, 조명, camera, mat, vial, rack을 학습 및 평가에 사용하는 Isaac Lab scene과 일치하도록 준비합니다.</p>
+<p>이 방식으로 lightbox를 구성하면 환경을 일관되게 유지하면서 제공된 model과 dataset을 사용할 수 있습니다.</p>
+<p>과정을 마친 뒤에도 자신만의 robot 실험에 계속 활용할 수 있습니다.</p>
+<section id="video-tutorial">
+<h2>Video Tutorial<a class="headerlink" href="#video-tutorial" title="Link to this heading">#</a></h2>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" frameborder="0" height="315" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube-nocookie.com/embed/6o_amE3jIuE?si=Qf8UxgW3k5H0MOPT" title="YouTube video player" width="560"></iframe><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">실제 workspace부터 준비하는 이유 자세히 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="admonition important">
+<p class="admonition-title">중요</p>
+<p class="sd-card-text">실제 workspace부터 시작하는 이유</p>
+<p class="sd-card-text">실제 환경의 Physical AI 작업을 시작할 때 <strong>실물</strong> workspace가 아직 없을 수도 있습니다. 앞서 설명한 시험의 편의성, 비용, 안전, 반복의 용이성 때문에 simulation부터 시작하는 경우가 많습니다.</p>
+<p class="sd-card-text">이 workshop에서는 세 가지 이유로 실제 공간부터 준비합니다.</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">과정을 마치는 데 필요한 부품을 미리 주문하거나 workspace를 준비할 수 있도록 합니다.</p></li>
+<li><p class="sd-card-text">실제 robot과 teleoperation을 직접 경험합니다. 재미있는 과정입니다!</p></li>
+<li><p class="sd-card-text">AI model과 같은 입력(camera 두 대와 joint position)만 사용할 때 task가 얼마나 어려운지 체감합니다.</p></li>
+</ol>
+</div>
+</div>
+</details></section>
+<section id="the-lightbox-environment">
+<h2>The Lightbox Environment<a class="headerlink" href="#the-lightbox-environment" title="Link to this heading">#</a></h2>
+<p>먼저 다음을 갖춘 <strong>white lightbox enclosure</strong>를 만듭니다.</p>
+<ol class="arabic simple">
+<li><p><strong>Cameras</strong> — robot의 wrist camera 한 대와 workspace에 고정한 external camera 한 대</p></li>
+<li><p><strong>Lights</strong> — 밝기를 조절할 수 있는 diffuse light</p></li>
+<li><p><strong>Props</strong> — centrifuge vial, yellow rack, foam mat</p></li>
+</ol>
+<p><img alt="Vial Rack" src="_images/vial_rack.jpg"/></p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3 sd-fade-in">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Lightbox를 사용하는 이유</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><strong>학습과 debugging의 변수 제한</strong>: 밝고 단순한 enclosure는 시각적 잡음을 줄여 policy가 gripper, vial, rack 등 task에 필요한 특징에 집중하도록 돕습니다.</p>
+<p class="sd-card-text"><strong>Digital twin과 일치</strong>: Isaac Lab scene은 enclosure의 치수, 색상, camera 위치, object geometry를 재현합니다. 실제 공간을 같은 설계로 구성하면 Sim-to-Real 실패의 주요 원인인 visual domain gap을 줄일 수 있습니다.</p>
+<p class="sd-card-text"><strong>성능이 낮은 camera도 활용 가능</strong>: 일반 webcam에는 auto-exposure와 제한된 dynamic range가 있습니다. Box 내부의 밝고 확산된 조명은 깨끗하고 일관된 image를 제공합니다.</p>
+<p class="sd-card-text"><strong>Transfer 가능한 model 준비</strong>: 환경을 통제하면 여러 robot과 setup에 적용할 model을 준비하기 쉽습니다. 통제되지 않은 scene 변화보다 policy와 calibration에 집중해 debugging할 수 있습니다.</p>
+</div>
+</details></section>
+<section id="bill-of-materials">
+<h2>Bill of Materials<a class="headerlink" href="#bill-of-materials" title="Link to this heading">#</a></h2>
+<p>아래 선택지를 기준으로 추산한 전체 robot + workspace 구성 비용은 $500 USD 미만입니다.</p>
+<p>Leader arm이 포함되어 있고 준비가 쉬운 사전 조립 SO-101을 권장합니다. 직접 조립할 수도 있지만 작업이 더 필요합니다.</p>
+<section id="robot">
+<h3>Robot<a class="headerlink" href="#robot" title="Link to this heading">#</a></h3>
+<p>예상 비용: $300 USD</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>항목</p></th>
+<th class="head"><p>설명</p></th>
+<th class="head"><p>Model/사양</p></th>
+<th class="head"><p>수량</p></th>
+<th class="head"><p>상세 내용</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>SO-101 Follower and Leader Arms</strong></p></td>
+<td><p>Manipulation용 6-DoF robot arm(SO-101 또는 유사 제품)</p></td>
+<td><p><a class="reference external" href="https://shop.wowrobo.com/products/so-arm101-diy-kit-assembled-version-1?variant=46588641706201" rel="noreferer noopener" target="_blank">SO-101</a> package 3, orange</p></td>
+<td><p>1</p></td>
+<td><p>Pick-and-place task용 robot입니다. Leader arm은 demonstration recording에 선택적으로 사용합니다. Dataset과 일치하는 wrist camera가 포함되어 있어 이 kit를 권장합니다. <a class="reference external" href="https://github.com/TheRobotStudio/SO-ARM100" rel="noreferer noopener" target="_blank">직접 SO-101을 출력하고 조립</a>할 수도 있습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="workspace">
+<h3>Workspace<a class="headerlink" href="#workspace" title="Link to this heading">#</a></h3>
+<p>예상 비용: $130 USD</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>항목</p></th>
+<th class="head"><p>설명</p></th>
+<th class="head"><p>Model/사양</p></th>
+<th class="head"><p>수량</p></th>
+<th class="head"><p>상세 내용</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>External camera</strong></p></td>
+<td><p>고정 mount를 사용하는 USB webcam, horizontal FoV 약 78°</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/Logitech-C920x-Pro-HD-Webcam/dp/B085TFF7M1" rel="noreferer noopener" target="_blank">Logitech C920</a> 또는 동급 제품</p></td>
+<td><p>1</p></td>
+<td><p>Workspace 전체를 고정된 시점에서 촬영합니다. Simulation과 같은 방향으로 안정적으로 고정해야 합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Lightbox Enclosure Panels</strong></p></td>
+<td><p>White foam board box, 폭 약 30”, 높이 20”, 깊이 20”</p></td>
+<td><p><a class="reference external" href="https://www.michaels.com/product/20-x-30-white-foam-board-10110205" rel="noreferer noopener" target="_blank">20x30”, 두께 3/16” foam board</a> 5장으로 조립</p></td>
+<td><p>5</p></td>
+<td><p>일관된 diffuse lighting과 단순한 배경을 제공합니다. 다른 흰색 lightbox나 두께가 다른 foam board도 사용할 수 있습니다.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Light Source</strong></p></td>
+<td><p>밝기 조절이 가능한 diffuse LED tube light, CRI &gt;90, 약 4000K</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/NEEWER-Inflatable-2700K-5600K-Photography-GC10B/dp/B0DQ7Y8DWX?th=1" rel="noreferer noopener" target="_blank">Neewer Dimmable LED Bar</a></p></td>
+<td><p>1</p></td>
+<td><p>Workspace를 밝고 균일하게 비춥니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Black Work Mat</strong></p></td>
+<td><p>Workspace용 foam mat</p></td>
+<td><p><a class="reference external" href="https://www.michaels.com/product/12-x-18-thick-foam-sheet-by-creatology-10661709" rel="noreferer noopener" target="_blank">Black EVA foam</a></p></td>
+<td><p>1</p></td>
+<td><p>Vial과 rack이 미끄러지지 않는 표면이며 simulation의 색상과 일치합니다.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Centrifuge Vials</strong></p></td>
+<td><p>Screw cap이 있는 투명 plastic 50ml vial</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/Kashi-Scientific-Conical-Centrifuge-Graduation/dp/B0C35JV95M?th=1" rel="noreferer noopener" target="_blank">Falcon tube or similar</a></p></td>
+<td><p>1-4</p></td>
+<td><p>Robot이 조작할 소품입니다. 투명한 측면으로 simulation과 시각적 일관성을 유지합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Vial Rack</strong></p></td>
+<td><p>노란색, vial 4개 이상 수용, simulation asset과 유사한 형태</p></td>
+<td><p>노란색으로 3D print — model은 <a class="reference external" href="https://www.printables.com/model/1675961-vial-rack-50ml-centrifuge" rel="noreferer noopener" target="_blank">여기</a>에서 제공</p></td>
+<td><p>1</p></td>
+<td><p>Vial을 세워 보관하며 pick-and-place의 목표가 됩니다. Digital twin과 같은 노란색이 적합하며, infill 5% 정도로도 사용할 수 있습니다.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>USB-C Charging Block</strong></p></td>
+<td><p>조명 전원 공급용</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/gp/product/B0D72DWLZ1/" rel="noreferer noopener" target="_blank">Anker 25W USB-C Charging Block</a></p></td>
+<td><p>필요에 따라</p></td>
+<td><p>21W 이상. 조명과 accessory에 충분한 전원을 공급하고 device 사양을 준수하세요.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>USB-C Cable</strong></p></td>
+<td><p>조명 전원 공급용</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/Anker-Charging-MacBook-Galaxy-Charger/dp/B088NRLMPV" rel="noreferer noopener" target="_blank">USB-C to USB-C cable, 6ft</a></p></td>
+<td><p>1</p></td>
+<td><p>위 조명은 battery로 동작하지만, cable을 연결하면 계속 전원을 공급할 수 있습니다.</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>(optional) Foam board joints</strong></p></td>
+<td><p>Lightbox 조립용</p></td>
+<td><p>3D print, model은 <a class="reference external" href="https://www.printables.com/model/1652109-foam-board-joints-for-lightbox" rel="noreferer noopener" target="_blank">여기</a>에서 제공</p></td>
+<td><p>8</p></td>
+<td><p>분해할 때 foam board를 손상시키지 않고 조립할 수 있습니다. Tape를 대신 사용할 수도 있습니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="props">
+<h3>Props<a class="headerlink" href="#props" title="Link to this heading">#</a></h3>
+<p>예상 비용: $20 USD</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>항목</p></th>
+<th class="head"><p>설명</p></th>
+<th class="head"><p>Model/사양</p></th>
+<th class="head"><p>수량</p></th>
+<th class="head"><p>상세 내용</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Centrifuge Vials</strong></p></td>
+<td><p>Screw cap이 있는 투명 plastic 50ml vial</p></td>
+<td><p><a class="reference external" href="https://www.amazon.com/Kashi-Scientific-Conical-Centrifuge-Graduation/dp/B0C35JV95M?th=1" rel="noreferer noopener" target="_blank">Falcon tube or similar</a></p></td>
+<td><p>1-4</p></td>
+<td><p>Robot이 조작할 소품입니다. 투명한 측면으로 simulation과 시각적 일관성을 유지합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Vial Rack</strong></p></td>
+<td><p>노란색, vial 4개 수용, simulation USD asset을 만드는 데 사용한 동일 model</p></td>
+<td><p>3D print, model은 <a class="reference external" href="https://www.printables.com/model/1675961-vial-rack-50ml-centrifuge" rel="noreferer noopener" target="_blank">여기</a>에서 제공</p></td>
+<td><p>1</p></td>
+<td><p>Vial을 세워 보관합니다. 색상과 형태를 digital asset에 가깝게 맞추세요.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="build-the-workspace">
+<h2>Workspace 조립<a class="headerlink" href="#build-the-workspace" title="Link to this heading">#</a></h2>
+<p>진행 순서는 다음과 같습니다.</p>
+<ol class="arabic simple">
+<li><p>Foam board를 치수에 맞게 <strong>자릅니다</strong>.</p></li>
+<li><p>External camera용 구멍을 <strong>냅니다</strong>.</p></li>
+<li><p>조명을 <strong>장착합니다</strong>.</p></li>
+<li><p>소품과 robot의 <strong>위치를 맞추고 고정합니다</strong>.</p></li>
+</ol>
+<section id="assemble-the-lightbox">
+<h3>Lightbox 조립<a class="headerlink" href="#assemble-the-lightbox" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Foam board 5장 중 2장을 20” x 20” (50.8 cm x 50.8 cm)로 <strong>자릅니다</strong>. 양쪽 벽으로 사용합니다.</p></li>
+<li><p>20” x 20” (50.8 cm x 50.8 cm) panel 하나에 external camera용 직사각형 구멍을 <strong>냅니다</strong>. Logitech webcam arm은 약 5 cm × 1.5 cm이므로, 헐겁지 않게 끼울 수 있도록 크기를 맞추세요.</p></li>
+<li><p>이제 box를 <strong>조립합니다</strong>. 두 가지 방법이 있습니다.</p></li>
+</ol>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-0">
+방법 A — Tape(빠른 조립)</label><div class="sd-tab-content docutils">
+<p>이음매에 white duct tape 또는 gaffer tape를 붙입니다.</p>
+<ul class="simple">
+<li><p><strong>장점</strong>: 저렴하고 빠르며 별도 도구가 필요 없습니다.</p></li>
+<li><p><strong>단점</strong>: 나중에 tape를 떼면 foam board가 손상됩니다.</p></li>
+</ul>
+<p>Tape를 붙일 때 foam board의 모서리를 맞추세요. 이음매 전체 길이에 붙이는 것이 가장 튼튼합니다. 작은 조각도 사용할 수 있지만 결합력이 약합니다.</p>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-1">
+방법 B — 3D-printed corner(재사용 가능)</label><div class="sd-tab-content docutils">
+<p>위 BOM 링크의 corner assembly를 출력하고 panel을 끼웁니다.</p>
+<ul class="simple">
+<li><p><strong>장점</strong>: 깔끔하며 분해와 재조립이 쉽습니다.</p></li>
+<li><p><strong>단점</strong>: 3D printer가 필요합니다.</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="camera-placement-measurements">
+<h3>Camera 배치 치수<a class="headerlink" href="#camera-placement-measurements" title="Link to this heading">#</a></h3>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/camera_placement.jpeg"><img alt="Camera 배치도" src="_images/camera_placement.jpeg" style="width: 400px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Camera 배치도</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>값</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Height</strong></p></td>
+<td><p>Lightbox 뒤쪽에서 40 cm</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Distance from back wall</strong></p></td>
+<td><p>Robot 뒤쪽에서 camera lens 중심까지 27 cm</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Angle</strong></p></td>
+<td><p>수평에서 아래로 약 54°로, simulation의 기준 view와 맞춥니다. <a class="reference internal" href="07-calibrating-so101.html#match-the-external-camera-tilt-to-simulation"><span class="std std-ref">휴대전화 수평계 정렬 절차</span></a>에 따라 robot, vial, rack이 화면에 들어오게 하세요.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<p>구멍 위치를 확정하기 전에 sample image와 camera view가 일치하는지 확인하세요. 몇 cm 정도의 오차는 허용되지만, 크게 벗어나면 policy가 보는 장면이 달라져 성능이 떨어집니다.</p>
+</div>
+</section>
+</section>
+<section id="set-up-the-light">
+<span id="lighting-setup"></span><h2>조명 설정<a class="headerlink" href="#set-up-the-light" title="Link to this heading">#</a></h2>
+<p>조명은 <strong>밝고 확산되며 daylight 색온도</strong>여야 합니다. BOM에 나온 조명은 이미 diffuse light를 제공합니다.</p>
+<div class="admonition warning">
+<p class="admonition-title">경고</p>
+<p>오래 사용하면 조명이 뜨거워질 수 있습니다. 밤새 켜 두지 말고 긴 session 중에는 온도를 확인하세요.</p>
+</div>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-2">
+Foam board 천장 — 내부 장착</label><div class="sd-tab-content docutils">
+<p>천장을 foam board로 만들었다면, diffuse panel light를 lightbox 내부에서 아래를 향하도록 장착합니다. 작은 구멍을 뚫고 zip tie로 고정하는 방법이 가장 안정적입니다. Tape도 가능하지만 열로 떨어질 수 있습니다.</p>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio"/>
+<label class="sd-tab-label" for="sd-tab-item-3">
+열린 천장 — 외부 장착</label><div class="sd-tab-content docutils">
+<p>열린 상단 위에 external diffuse light를 고정하거나 배치해 workspace를 균일하게 비추도록 각도를 맞춥니다.</p>
+</div>
+</div>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/light-operation.gif"><img alt="Lightbox 조명 켜기와 밝기 조절" src="_images/light-operation.gif" style="width: 400px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><em>Teleoperation이나 policy 실행 전에 조명을 켜고 밝기를 설정하세요.</em></span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple">
+<li><p>조명의 <strong>power button</strong>을 누릅니다.</p></li>
+<li><p><strong>power button</strong>을 다시 길게 눌러 travel lock progress bar가 끝나고 조명이 계속 켜져 있도록 합니다.</p></li>
+<li><p><strong>brightness controls</strong>로 조절합니다. 평가와 data 수집 시에는 대략 **50–100 %**를 사용합니다.</p></li>
+<li><p>AC 전원을 사용할 수 있으면 조명을 <strong>연결하세요</strong>. Battery만으로는 전체 session을 진행하기 어려울 수 있습니다.</p></li>
+</ol>
+</section>
+<section id="mount-the-robot">
+<h2>Robot 고정<a class="headerlink" href="#mount-the-robot" title="Link to this heading">#</a></h2>
+<p>SO-101을 단단한 테이블에 clamp로 고정합니다. 아래 참고 사진처럼 base가 lightbox 안쪽에 오도록 배치하세요.</p>
+<p>Robot의 가동 범위를 확보하고 external camera에서도 잘 보이도록 하는 배치입니다.</p>
+<p>Clamp가 robot의 가동 범위를 <strong>제한하지 않는지 확인</strong>하세요. 전원을 켜기 전에 각 joint를 손으로 움직여 점검합니다.</p>
+<p><img alt="Lightbox" src="_images/so101_workspace.jpg"/></p>
+</section>
+<section id="arrange-the-mat-vials-and-rack">
+<h2>Mat, Vial, Rack 배치<a class="headerlink" href="#arrange-the-mat-vials-and-rack" title="Link to this heading">#</a></h2>
+<p>Simulation environment와 checkpoint model은 rack이 주로 <strong>left</strong>, vial이 <strong>right</strong>에 있는 배치에 맞춰져 있습니다. 위 참고 사진을 기준으로 배치하세요.</p>
+<p>나중에 Isaac Lab environment를 수정하면 다른 배치도 시도할 수 있습니다.</p>
+<section id="rack-placement-measurements">
+<h3>Rack 배치 치수<a class="headerlink" href="#rack-placement-measurements" title="Link to this heading">#</a></h3>
+<p>Foam mat를 평평하게 놓고 vial 1–3개를 다양한 pose로 흩어 놓습니다. 전체 배치는 simulation과 비슷하게 유지하세요.</p>
+</section>
+</section>
+<section id="physical-layout-checklist">
+<h2>실물 배치 점검<a class="headerlink" href="#physical-layout-checklist" title="Link to this heading">#</a></h2>
+<p>Robot을 enclosure에 넣거나 실제 robot software를 실행하기 전에 확인하세요.</p>
+<ol class="arabic simple">
+<li><p><strong>Enclosure</strong> — Lightbox panel 조립을 마치고 내부의 불필요한 물체를 치웁니다.</p></li>
+<li><p><strong>Mat and props</strong> — Foam mat를 평평하게 놓고 <strong>yellow rack</strong>을 지정된 위치에 둡니다. Mat 위에 <strong>1–3 vials</strong>를 다양한 pose로 배치합니다. 전체 배치는 simulation과 같게 유지합니다.</p></li>
+<li><p><strong>Cameras</strong> — Wrist와 external camera를 설치해 mat/rack과 gripper의 작업 영역이 보이게 합니다. 심한 occlusion이나 glare가 없어야 합니다.</p></li>
+<li><p><strong>Cables</strong> — Camera와 robot cable이 걸리거나 joint 움직임을 제한하지 않도록 정리합니다. Cable 때문에 calibration limit이 잘못 잡힐 수 있습니다. <a class="reference internal" href="troubleshooting.html"><span class="std std-doc">Troubleshooting</span></a>의 <em>Calibration Fails</em>를 참고하세요.</p></li>
+<li><p><strong>Lighting</strong> — 앞 절의 기준에 따라 조명을 켜고 충분한 밝기를 확보합니다.</p></li>
+</ol>
+<p>배치를 바꿨다면 <a class="reference internal" href="12-real-evaluation.html"><span class="std std-doc">Real Evaluation</span></a>과 <a class="reference internal" href="13-cotraining-practice.html#workspace-prep"><span class="std std-ref">Co-Training in Practice</span></a> / <a class="reference internal" href="14-strategy3-cosmos.html"><span class="std std-doc">Strategy 4</span></a> 배포 <strong>전에</strong> 이 목록을 다시 확인하세요.</p>
+</section>
+<section id="key-takeaways">
+<h2>핵심 내용<a class="headerlink" href="#key-takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Workspace 설정은 성공적인 학습과 배포에 매우 중요합니다.</p></li>
+</ul>
+</section>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#video-tutorial">Video Tutorial</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-lightbox-environment">The Lightbox Environment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bill-of-materials">Bill of Materials</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robot">Robot</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#workspace">Workspace</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#props">Props</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-the-workspace">Workspace 조립</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assemble-the-lightbox">Lightbox 조립</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#camera-placement-measurements">Camera 배치 치수</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-light">조명 설정</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mount-the-robot">Robot 고정</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#arrange-the-mat-vials-and-rack">Mat, Vial, Rack 배치</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rack-placement-measurements">Rack 배치 치수</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physical-layout-checklist">실물 배치 점검</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-takeaways">핵심 내용</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

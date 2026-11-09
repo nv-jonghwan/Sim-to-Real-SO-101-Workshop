@@ -1,0 +1,1 @@
+../../../ko/assets/widget-presentation.js

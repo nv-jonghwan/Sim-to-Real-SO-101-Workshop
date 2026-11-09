@@ -1,0 +1,750 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Dataset과 Model — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = 'datasets-and-models';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<link href="troubleshooting.html" rel="next" title="Troubleshooting Guide"/>
+<link href="quick_reference.html" rel="prev" title="Quick Reference"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">과정 개요</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">SO-101 Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Dataset과 Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Dataset과 Model</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/datasets-and-models.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="datasets-and-models">
+<h1>Dataset과 Model<a class="headerlink" href="#datasets-and-models" title="Link to this heading">#</a></h1>
+<a class="course-banner reference internal image-reference" href="_images/lerobot_dataset_visualize_teleop_vials_rack_left.png"><img alt="동기화된 camera observation과 joint trajectory를 보여주는 LeRobot dataset viewer입니다." class="course-banner" src="_images/lerobot_dataset_visualize_teleop_vials_rack_left.png" style="width: 100%;"/>
+</a>
+<p>현재 workflow는 LeRobot으로 <strong>GR00T 1.7</strong>을 학습하고 <strong>Isaac Lab 3.0, Newton physics, ovrtx</strong>로 data를 기록합니다.</p>
+<section id="current-model-selection">
+<h2>현재 Model 선택<a class="headerlink" href="#current-model-selection" title="Link to this heading">#</a></h2>
+<p>Base model은 <a class="reference external" href="https://huggingface.co/nvidia/GR00T-N1.7-3B" rel="noreferer noopener" target="_blank">nvidia/GR00T-N1.7-3B</a>입니다. <a class="reference internal" href="10-groot.html"><span class="std std-doc">GR00T Post-Training</span></a>으로 SO-101 task에 맞추세요. Base weight만으로는 task policy가 되지 않습니다.</p>
+<p>아래 세 policy는 실습의 출발점입니다. 모두 GR00T 1.7이지만 training data와 camera 이름이 다릅니다. 세 checkpoint는 공개되어 있으며 원문에서 접근을 확인한 날짜는 2026년 10월 8일입니다.</p>
+<p>Icon은 post-training에 사용한 data를 나타냅니다. 초록은 사용, 회색은 미사용입니다.</p>
+<p>Sim-only policy는 action horizon 16, 30 Hz, simulated time limit 30초, scene seed 76000–76099, source <code class="docutils literal notranslate"><span class="pre">f892b1a08c088e55156a389b3f1e42ab5eaa1049</span></code>에서 <strong>simulation 100회 중 94회 성공</strong>을 기록했습니다. 이후 revision의 10-episode 실습 예상 점수나 실제 성공률·안정적인 복귀/재시작 성능을 뜻하지 않습니다. 선택된 Co-Trained checkpoint에는 공개 성공률이 없으므로 본인 station에서 비교하세요.</p>
+<section id="johnny42-real-to-real-reference">
+<h3>Johnny42: Real-to-Real Reference<a class="headerlink" href="#johnny42-real-to-real-reference" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101-clean-up-vials-into-rack-50_20260628_131121" rel="noreferer noopener" target="_blank">실제 demonstration 50개</a>로 학습했으며 camera key는 <code class="docutils literal notranslate"><span class="pre">wrist</span></code>, <code class="docutils literal notranslate"><span class="pre">front</span></code>입니다. Action chunk와 execution horizon은 모두 16입니다. Training instruction <strong>Pick up the vials and put them in the yellow rack</strong>을 사용하세요. 고정된 <a class="reference external" href="https://huggingface.co/sreetz-nv/so101-clean-up-vials-into-rack-50-groot-n17-relact-bs64-20k-20260628_johnny_42/blob/981f41e4f5b4dda47c6583de502dcac258bf5312/config.json" rel="noreferer noopener" target="_blank">configuration</a>과 <a class="reference external" href="https://huggingface.co/sreetz-nv/so101-clean-up-vials-into-rack-50-groot-n17-relact-bs64-20k-20260628_johnny_42/blob/981f41e4f5b4dda47c6583de502dcac258bf5312/README.md" rel="noreferer noopener" target="_blank">model card</a>를 확인하세요.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Johnny42 선택 또는 Download</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Hub에서 로드:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>sreetz-nv/so101-clean-up-vials-into-rack-50-groot-n17-relact-bs64-20k-20260628_johnny_42
+</pre></div>
+</div>
+<article aria-label="Johnny42 model card" class="course-model-card">
+<div class="model-card-header">
+<div>
+<p class="model-card-family">GR00T 1.7 · SO-101</p>
+<h3 class="model-card-title">Johnny42</h3>
+<p class="model-card-purpose">Real-to-real reference</p>
+</div>
+<a aria-label="Open Johnny42 on Hugging Face (new tab)" class="model-card-hub" href="https://huggingface.co/sreetz-nv/so101-clean-up-vials-into-rack-50-groot-n17-relact-bs64-20k-20260628_johnny_42" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="model-card-face">🤗</span> Hugging Face <span aria-hidden="true">↗</span></a>
+</div>
+<p class="model-card-episodes"><span><strong>50</strong> episodes</span><span class="model-card-composition">50 real demonstrations</span></p>
+<ul aria-label="Post-training data sources" class="model-card-sources">
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="9" rx="3" width="9" x="3" y="3"></rect>
+<rect height="9" rx="3" width="9" x="20" y="20"></rect>
+<path d="M12 7.5h8a4.5 4.5 0 0 1 4.5 4.5v4m-3-3 3 3 3-3M20 24.5h-8a4.5 4.5 0 0 1-4.5-4.5v-4m-3 3 3-3 3 3"></path>
+<path d="M6 7.5h3m-1.5-1.5v3m15 15.5 1.4 1.4 2.6-2.8"></path>
+</svg>
+<span class="model-card-source-name">State machine</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="4"></rect>
+<path d="M11 28h10m-5-6v6M9 17l4-6 5 5 5-8m-3 0h3v3"></path>
+<circle cx="9" cy="17" r="1"></circle>
+<path d="M6 7h1m2 0h1"></path>
+</svg>
+<span class="model-card-source-name">Sim teleop</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M5 28h22M9 28v-5h10v5M13 23l-4-9 8-7m2 0 6 6m-1 3 3 1 2-3M9 15l9 6"></path>
+<circle cx="9" cy="12" r="3"></circle>
+<circle cx="19" cy="6" r="3"></circle>
+<circle cx="25" cy="14" r="2"></circle>
+</svg>
+<span class="model-card-source-name">Real data</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+</ul>
+<p class="model-card-training">20,000 updates · Batch 64 · Learning rate 1e-4<br/>Vision frozen · Language frozen · <a href="https://huggingface.co/sreetz-nv/so101-clean-up-vials-into-rack-50-groot-n17-relact-bs64-20k-20260628_johnny_42/blob/981f41e4f5b4dda47c6583de502dcac258bf5312/README.md" rel="noopener noreferrer" target="_blank">Training details ↗</a></p>
+<p class="model-card-datasets">Training data: <a href="https://huggingface.co/datasets/sreetz-nv/so101-clean-up-vials-into-rack-50_20260628_131121" rel="noopener noreferrer" target="_blank">50 real demos ↗</a></p>
+</article>
+<p class="sd-card-text">검토된 revision을 내려받아 local 파일 사용:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--revision<span class="w"> </span>981f41e4f5b4dda47c6583de502dcac258bf5312<span class="w"> </span>--local-dir<span class="w"> </span>./models/johnny42
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>/workspace/Sim-to-Real-SO-101-Workshop/models/johnny42
+</pre></div>
+</div>
+<p class="sd-card-text">실행 전에 <a class="reference internal" href="12-real-evaluation.html#johnny42-real-rollout"><span class="std std-ref">Johnny42 camera와 instruction 설정</span></a>을 따르세요.</p>
+</div>
+</details></section>
+<section id="vision-trainable-20k-sim-only-reference">
+<h3>Vision-Trainable 20k: Sim-Only Reference<a class="headerlink" href="#vision-trainable-20k-sim-only-reference" title="Link to this heading">#</a></h3>
+<p>GR00T base에서 <a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_newton_dr500_20260923" rel="noreferer noopener" target="_blank">scripted Newton demonstration 500개</a>로 20,000 update를 학습합니다. <code class="docutils literal notranslate"><span class="pre">wrist</span></code>, <code class="docutils literal notranslate"><span class="pre">external</span></code>을 사용하고 32-action-step supervision을 적용하며, 보고된 평가는 prediction당 16개 action을 실행합니다. <a class="reference external" href="https://huggingface.co/sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929/blob/bbfef9eaecc7a7654f42aaa4ceb95245bb140a53/README.md" rel="noreferer noopener" target="_blank">Model card</a>는 94/100 성공(Wilson 95% 구간 87.5–97.2%)을 보고합니다. 실제 예비 관찰에서는 가능성을 보였지만 gripper hesitation과 시작점 미복귀가 있었으며 집계된 실제 성공률은 없습니다.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">94% Simulation Policy 선택 또는 Download</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Hub에서 로드:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929
+</pre></div>
+</div>
+<article aria-label="Vision-trainable 20k model card" class="course-model-card">
+<div class="model-card-header">
+<div>
+<p class="model-card-family">GR00T 1.7 · SO-101</p>
+<h3 class="model-card-title">Vision-trainable 20k</h3>
+<p class="model-card-purpose">Sim-only baseline</p>
+</div>
+<a aria-label="Open Vision-trainable 20k on Hugging Face (new tab)" class="model-card-hub" href="https://huggingface.co/sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="model-card-face">🤗</span> Hugging Face <span aria-hidden="true">↗</span></a>
+</div>
+<p class="model-card-episodes"><span><strong>500</strong> episodes</span><span class="model-card-composition">500 state-machine demonstrations</span></p>
+<ul aria-label="Post-training data sources" class="model-card-sources">
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="9" rx="3" width="9" x="3" y="3"></rect>
+<rect height="9" rx="3" width="9" x="20" y="20"></rect>
+<path d="M12 7.5h8a4.5 4.5 0 0 1 4.5 4.5v4m-3-3 3 3 3-3M20 24.5h-8a4.5 4.5 0 0 1-4.5-4.5v-4m-3 3 3-3 3 3"></path>
+<path d="M6 7.5h3m-1.5-1.5v3m15 15.5 1.4 1.4 2.6-2.8"></path>
+</svg>
+<span class="model-card-source-name">State machine</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="4"></rect>
+<path d="M11 28h10m-5-6v6M9 17l4-6 5 5 5-8m-3 0h3v3"></path>
+<circle cx="9" cy="17" r="1"></circle>
+<path d="M6 7h1m2 0h1"></path>
+</svg>
+<span class="model-card-source-name">Sim teleop</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M5 28h22M9 28v-5h10v5M13 23l-4-9 8-7m2 0 6 6m-1 3 3 1 2-3M9 15l9 6"></path>
+<circle cx="9" cy="12" r="3"></circle>
+<circle cx="19" cy="6" r="3"></circle>
+<circle cx="25" cy="14" r="2"></circle>
+</svg>
+<span class="model-card-source-name">Real data</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+</ul>
+<p class="model-card-training">20,000 updates · Batch 32 · Learning rate 1e-4<br/>Vision trainable · Language frozen · <a href="https://huggingface.co/sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929/blob/bbfef9eaecc7a7654f42aaa4ceb95245bb140a53/README.md" rel="noopener noreferrer" target="_blank">Training details ↗</a></p>
+<p class="model-card-datasets">Training data: <a href="https://huggingface.co/datasets/sreetz-nv/so101_newton_dr500_20260923" rel="noopener noreferrer" target="_blank">500 state-machine demos ↗</a></p>
+</article>
+<p class="sd-card-text">검토된 revision을 내려받아 local 파일 사용:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--revision<span class="w"> </span>bbfef9eaecc7a7654f42aaa4ceb95245bb140a53<span class="w"> </span>--local-dir<span class="w"> </span>./models/sim-vision-20k
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>/workspace/Sim-to-Real-SO-101-Workshop/models/sim-vision-20k
+</pre></div>
+</div>
+</div>
+</details></section>
+<section id="sim75-real10-co-trained-reference">
+<span id="cotrained-reference"></span><h3>Sim75 + Real10: Co-Trained Reference<a class="headerlink" href="#sim75-real10-co-trained-reference" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_sim_manual_perception_newton_20261008" rel="noreferer noopener" target="_blank">Simulation teleoperation episode 75개</a>와 <a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_real_manual" rel="noreferer noopener" target="_blank">실제 demonstration 10개</a>를 결합하고 학습 내내 총 85개를 함께 사용합니다. Simulation data는 Perception-DR environment이며 두 source 모두 <code class="docutils literal notranslate"><span class="pre">wrist</span></code>, <code class="docutils literal notranslate"><span class="pre">external</span></code> camera를 사용합니다.</p>
+<p>Vision trainable, language frozen, effective batch 64(microbatch 16을 4 step 누적)로 20,000 update를 학습합니다. 16-action window와 relative arm action을 사용합니다. <a class="reference external" href="https://huggingface.co/sreetz-nv/so101_real10_sim75_vision_h16_b64_20k_20261011/blob/c7e8049753be5629e73eda69b57a358146bbeb5d/README.md" rel="noreferer noopener" target="_blank">공개 training recipe</a>를 확인하세요.</p>
+<p>조건을 맞춘 simulation 평가는 아직 남아 있으며 예비 실제 trial은 benchmark가 아닙니다. 같은 rollout 설정으로 simulation과 실제 동작을 비교하세요.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Co-Trained Teleoperation Policy 선택 또는 Download</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Hub에서 로드:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>sreetz-nv/so101_real10_sim75_vision_h16_b64_20k_20261011
+</pre></div>
+</div>
+<article aria-label="Sim75 + Real10 model card" class="course-model-card">
+<div class="model-card-header">
+<div>
+<p class="model-card-family">GR00T 1.7 · SO-101</p>
+<h3 class="model-card-title">Sim75 + Real10</h3>
+<p class="model-card-purpose">Co-trained teleoperation policy</p>
+</div>
+<a aria-label="Open Sim75 + Real10 on Hugging Face (new tab)" class="model-card-hub" href="https://huggingface.co/sreetz-nv/so101_real10_sim75_vision_h16_b64_20k_20261011" rel="noopener noreferrer" target="_blank"><span aria-hidden="true" class="model-card-face">🤗</span> Hugging Face <span aria-hidden="true">↗</span></a>
+</div>
+<p class="model-card-episodes"><span><strong>85</strong> episodes</span><span class="model-card-composition">75 sim teleop + 10 real</span></p>
+<ul aria-label="Post-training data sources" class="model-card-sources">
+<li class="model-card-source">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="9" rx="3" width="9" x="3" y="3"></rect>
+<rect height="9" rx="3" width="9" x="20" y="20"></rect>
+<path d="M12 7.5h8a4.5 4.5 0 0 1 4.5 4.5v4m-3-3 3 3 3-3M20 24.5h-8a4.5 4.5 0 0 1-4.5-4.5v-4m-3 3 3-3 3 3"></path>
+<path d="M6 7.5h3m-1.5-1.5v3m15 15.5 1.4 1.4 2.6-2.8"></path>
+</svg>
+<span class="model-card-source-name">State machine</span>
+<span class="model-card-source-status">— Not used</span>
+</li>
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="4"></rect>
+<path d="M11 28h10m-5-6v6M9 17l4-6 5 5 5-8m-3 0h3v3"></path>
+<circle cx="9" cy="17" r="1"></circle>
+<path d="M6 7h1m2 0h1"></path>
+</svg>
+<span class="model-card-source-name">Sim teleop</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+<li class="model-card-source is-active">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<path d="M5 28h22M9 28v-5h10v5M13 23l-4-9 8-7m2 0 6 6m-1 3 3 1 2-3M9 15l9 6"></path>
+<circle cx="9" cy="12" r="3"></circle>
+<circle cx="19" cy="6" r="3"></circle>
+<circle cx="25" cy="14" r="2"></circle>
+</svg>
+<span class="model-card-source-name">Real data</span>
+<span class="model-card-source-status">✓ Used</span>
+</li>
+</ul>
+<p class="model-card-training">20,000 updates · Effective batch 64 (microbatch 16 × 4 accumulation steps) · Learning rate 1e-4<br/>16-action window · Vision trainable · Language frozen · <a href="https://huggingface.co/sreetz-nv/so101_real10_sim75_vision_h16_b64_20k_20261011/blob/c7e8049753be5629e73eda69b57a358146bbeb5d/README.md" rel="noopener noreferrer" target="_blank">Training details ↗</a></p>
+<p class="model-card-datasets">Training data: <a href="https://huggingface.co/datasets/sreetz-nv/so101_real10_sim75_20261011" rel="noopener noreferrer" target="_blank">Merged training dataset ↗</a> · <a href="https://huggingface.co/datasets/sreetz-nv/so101_sim_manual_perception_newton_20261008" rel="noopener noreferrer" target="_blank">75 sim ↗</a> · <a href="https://huggingface.co/datasets/sreetz-nv/so101_real_manual" rel="noopener noreferrer" target="_blank">10 real ↗</a></p>
+</article>
+<p class="sd-card-text">검토된 revision을 내려받아 local 파일 사용:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>download<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--revision<span class="w"> </span>c7e8049753be5629e73eda69b57a358146bbeb5d<span class="w"> </span>--local-dir<span class="w"> </span>./models/sim75-real10
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>/workspace/Sim-to-Real-SO-101-Workshop/models/sim75-real10
+</pre></div>
+</div>
+</div>
+</details><p>두 augmentation mix의 Sim + Cosmos GR00T 1.7 checkpoint는 아직 준비가 필요합니다. Source data와 검증 조건은 <a class="reference internal" href="14-strategy3-cosmos.html"><span class="std std-doc">Augmenting Datasets With Cosmos</span></a>를 확인하세요.</p>
+</section>
+</section>
+<section id="download-models-for-the-workshop-container">
+<h2>Workshop Container용 Model Download<a class="headerlink" href="#download-models-for-the-workshop-container" title="Link to this heading">#</a></h2>
+<p>행사 station 준비에는 <a class="reference internal" href="workshop-preparation.html"><span class="std std-doc">Workshop Preparation Reference</span></a>에 따라 실습 model을 cache하세요.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hf</span></code> CLI가 설치된 <strong>host</strong>의 cloned repository directory에서 실행합니다. Container 시작 전에 <code class="docutils literal notranslate"><span class="pre">outputs/</span></code>, <code class="docutils literal notranslate"><span class="pre">datasets/</span></code>, <code class="docutils literal notranslate"><span class="pre">models/</span></code>를 만드세요. Download는 자동 mount되는 <code class="docutils literal notranslate"><span class="pre">models/</span></code>에 저장합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>~/Sim-to-Real-SO-101-Workshop
+mkdir<span class="w"> </span>-p<span class="w"> </span>outputs<span class="w"> </span>datasets<span class="w"> </span>models
+hf<span class="w"> </span>download<span class="w"> </span>sreetz-nv/so101-clean-up-vials-into-rack-50-groot-n17-relact-bs64-20k-20260628_johnny_42<span class="w"> </span>--revision<span class="w"> </span>981f41e4f5b4dda47c6583de502dcac258bf5312<span class="w"> </span>--local-dir<span class="w"> </span>./models/johnny42
+hf<span class="w"> </span>download<span class="w"> </span>sreetz-nv/so101_newton_dr500_vision_h32_b32_20k_20260929<span class="w"> </span>--revision<span class="w"> </span>bbfef9eaecc7a7654f42aaa4ceb95245bb140a53<span class="w"> </span>--local-dir<span class="w"> </span>./models/sim-vision-20k
+hf<span class="w"> </span>download<span class="w"> </span>sreetz-nv/so101_real10_sim75_vision_h16_b64_20k_20261011<span class="w"> </span>--revision<span class="w"> </span>c7e8049753be5629e73eda69b57a358146bbeb5d<span class="w"> </span>--local-dir<span class="w"> </span>./models/sim75-real10
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">hf</span></code>가 container에만 있다면 내부 <code class="docutils literal notranslate"><span class="pre">/workspace/Sim-to-Real-SO-101-Workshop</span></code>에서 세 <code class="docutils literal notranslate"><span class="pre">hf</span> <span class="pre">download</span></code> 명령을 실행합니다. 같은 host-mounted folder에 저장됩니다.</p>
+<p><a class="reference internal" href="06-get-the-code.html#start-the-workshop-container"><span class="std std-ref">Container 실행 명령</span></a>은 <code class="docutils literal notranslate"><span class="pre">./models</span></code>를 <code class="docutils literal notranslate"><span class="pre">/workspace/Sim-to-Real-SO-101-Workshop/models</span></code>에 mount합니다. Image rebuild는 필요하지 않습니다. 평가 전에 container에서 model 하나를 선택합니다.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Container 설정</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Johnny42</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">MODEL_ID=/workspace/Sim-to-Real-SO-101-Workshop/models/johnny42</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Sim-only</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">MODEL_ID=/workspace/Sim-to-Real-SO-101-Workshop/models/sim-vision-20k</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Co-trained</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">MODEL_ID=/workspace/Sim-to-Real-SO-101-Workshop/models/sim75-real10</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>실습의 Hub ID 대신 이 local <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code>를 평가 명령에 사용합니다. 저장 processor를 포함한 전체 directory를 유지하세요.</p>
+</section>
+<section id="create-your-own-dataset-and-policy">
+<h2>직접 Dataset과 Policy 만들기<a class="headerlink" href="#create-your-own-dataset-and-policy" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Leader-arm demonstration을 <code class="docutils literal notranslate"><span class="pre">&lt;user&gt;/so101_teleop_vials_newton</span></code>에 <strong>수집</strong>하거나 <a class="reference internal" href="08-simulation-teleoperation.html#optional-automated-data-collection"><span class="std std-ref">Automated Data Collection</span></a>으로 <code class="docutils literal notranslate"><span class="pre">&lt;user&gt;/so101_auto_vials_newton</span></code>을 기록합니다.</p></li>
+<li><p>같은 repo ID와 <code class="docutils literal notranslate"><span class="pre">--root</span> <span class="pre">./datasets/&lt;repo_id&gt;</span></code>로 <code class="docutils literal notranslate"><span class="pre">lerobot-dataset-viz</span></code>에서 episode를 <strong>검토</strong>하고 완성 dataset을 해당 Hub repo에 <strong>upload</strong>합니다.</p></li>
+<li><p><a class="reference internal" href="10-groot.html#reference-post-train-your-own-model"><span class="std std-ref">GR00T Post-Training</span></a>으로 <strong>학습</strong>합니다. <code class="docutils literal notranslate"><span class="pre">DATASET_NAME</span></code>을 수집한 dataset으로 지정하세요. 예시 model 이름은 <code class="docutils literal notranslate"><span class="pre">&lt;user&gt;/&lt;dataset_name&gt;_GR00T17</span></code>, local checkpoint 위치는 <code class="docutils literal notranslate"><span class="pre">outputs/train/</span></code> 아래입니다.</p></li>
+<li><p>같은 policy를 simulation에서 먼저, 실제 robot에서 다음으로 <strong>평가</strong>합니다.</p></li>
+</ol>
+<p>README의 mount 구성은 container 종료 후에도 dataset, download model, training output을 host에 보존합니다.</p>
+</section>
+<section id="checkpoint-compatibility">
+<h2>Checkpoint 호환성<a class="headerlink" href="#checkpoint-compatibility" title="Link to this heading">#</a></h2>
+<p>Weight, configuration, processor artifact를 포함한 LeRobot policy repo 또는 checkpoint의 <code class="docutils literal notranslate"><span class="pre">pretrained_model</span></code> directory를 사용하세요.</p>
+<p>확인 사항:</p>
+<ul class="simple">
+<li><p>GR00T 1.7 base model과 호환되는 LeRobot configuration</p></li>
+<li><p>Checkpoint와 같은 image feature: 선택된 sim-only/Co-Trained policy는 <code class="docutils literal notranslate"><span class="pre">observation.images.wrist</span></code>, <code class="docutils literal notranslate"><span class="pre">observation.images.external</span></code>; Johnny42는 <code class="docutils literal notranslate"><span class="pre">observation.images.wrist</span></code>, <code class="docutils literal notranslate"><span class="pre">observation.images.front</span></code></p></li>
+<li><p>Joint 순서: shoulder pan, shoulder lift, elbow flex, wrist flex, wrist roll, gripper</p></li>
+<li><p>일치하는 joint normalization, camera calibration, task geometry, 30 Hz data</p></li>
+<li><p>Gripper exclusion을 포함한 저장된 relative-action preprocessing/postprocessing</p></li>
+<li><p>Checkpoint chunk size 이하의 evaluation action horizon</p></li>
+</ul>
+<p>Camera rename map은 feature 이름만 바꿉니다. Camera geometry, joint 규약, raw Isaac-GR00T checkpoint format 차이를 해결하지는 못합니다.</p>
+</section>
+<section id="download-a-compatible-policy">
+<h2>호환되는 Policy Download<a class="headerlink" href="#download-a-compatible-policy" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Container에서 <strong>인증</strong>하고 학습한 policy의 model ID를 <strong>설정</strong>한 뒤 <strong>download</strong>합니다.</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>hf<span class="w"> </span>auth<span class="w"> </span>login
+<span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span>your_hf_username/so101_teleop_vials_newton_GR00T17
+hf<span class="w"> </span>download<span class="w"> </span><span class="s2">"</span><span class="nv">$MODEL_ID</span><span class="s2">"</span><span class="w"> </span>--local-dir<span class="w"> </span><span class="s2">"./models/</span><span class="nv">$MODEL_ID</span><span class="s2">"</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">models/</span></code> mount가 download를 host에 보존합니다.</p>
+<ol class="arabic simple" start="2">
+<li><p>Nested checkpoint가 있다면 평가용 <code class="docutils literal notranslate"><span class="pre">pretrained_model</span></code> directory를 <strong>선택</strong>합니다.</p></li>
+</ol>
+<p>Repo root에 policy configuration, weight, processor가 있다면 같은 container shell에서 local 경로를 <strong>설정</strong>합니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">MODEL_ID</span><span class="o">=</span><span class="s2">"/workspace/Sim-to-Real-SO-101-Workshop/models/</span><span class="nv">$MODEL_ID</span><span class="s2">"</span>
+</pre></div>
+</div>
+<p>그렇지 않으면 <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code>를 nested <code class="docutils literal notranslate"><span class="pre">pretrained_model</span></code> directory로 설정하세요. Simulation은 <code class="docutils literal notranslate"><span class="pre">--pretrained_name_or_path</span> <span class="pre">"$MODEL_ID"</span></code>, 실제 rollout은 <code class="docutils literal notranslate"><span class="pre">--policy.path="$MODEL_ID"</span></code>로 전달합니다. Hub에서 직접 로드하려면 repository ID를 유지하고 local 경로 설정을 생략하세요.</p>
+</section>
+<section id="system-identification-references">
+<h2>System Identification 참고 자료<a class="headerlink" href="#system-identification-references" title="Link to this heading">#</a></h2>
+<p><a class="reference internal" href="15-strategy4-sysid.html"><span class="std std-doc">System Identification</span></a>은 측정 검토에 <a class="reference external" href="https://huggingface.co/datasets/nvidia/Anchor-Lab" rel="noreferer noopener" target="_blank">Anchor-Lab SO-101 telemetry</a>를, actuator profile과 학습 기록에는 <a class="reference external" href="https://huggingface.co/VigneshBhavan/so101-newton-actuator-ab-paired-checkpoints" rel="noreferer noopener" target="_blank">AnchorBench paired bundle</a>을 사용합니다. <a class="reference external" href="https://huggingface.co/datasets/VigneshBhavan/so101-newton-actuator-ab-paired-demos" rel="noreferer noopener" target="_blank">Paired demonstration</a>은 해당 비교의 policy-training data입니다.</p>
+<p>Anchor-Lab은 signal-level telemetry, paired demonstration은 policy-training episode를 제공합니다. 비교 checkpoint는 GR00T N1.6 artifact이며 현재 과정의 GR00T 1.7 rollout을 대체하도록 검증되지 않았습니다.</p>
+</section>
+<section id="historical-course-artifacts">
+<h2>이전 과정 Artifact<a class="headerlink" href="#historical-course-artifacts" title="Link to this heading">#</a></h2>
+<p>이전 실습의 data와 policy 링크입니다. 전략 연구용 참고이며 현재 Newton/GR00T 1.7 artifact의 검증된 대체물이 아닙니다. Data 재사용 전에 camera schema와 calibration을 확인하세요. <code class="docutils literal notranslate"><span class="pre">grootn16</span></code> repo의 이름을 바꿔 1.7 weight가 있는 것처럼 표현하지 마세요.</p>
+<section id="historical-datasets">
+<h3>이전 Dataset<a class="headerlink" href="#historical-datasets" title="Link to this heading">#</a></h3>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">이전 Demonstration Dataset 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">Dataset</p></th>
+<th class="head"><p class="sd-card-text">설명</p></th>
+<th class="head"><p class="sd-card-text">사용한 실습</p></th>
+<th class="head"><p class="sd-card-text">Visualizer 링크</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_teleop_vials_rack_left" rel="noreferer noopener" target="_blank">sreetz-nv/so101_teleop_vials_rack_left</a></p></td>
+<td><p class="sd-card-text">Sim-only teleoperation demonstration 75개</p></td>
+<td><p class="sd-card-text"><a class="reference internal" href="08-simulation-teleoperation.html"><span class="std std-doc">Teleoperating in Sim</span></a>, <a class="reference internal" href="11-sim-evaluation.html"><span class="std std-doc">Sim Evaluation</span></a>, <a class="reference internal" href="12-real-evaluation.html"><span class="std std-doc">Real Evaluation</span></a></p></td>
+<td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fsreetz-nv%2Fso101_teleop_vials_rack_left%2Fepisode_0" rel="noreferer noopener" target="_blank">Episode 보기</a></p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_teleop_vials_rack_left_sim_and_real" rel="noreferer noopener" target="_blank">sreetz-nv/so101_teleop_vials_rack_left_sim_and_real</a></p></td>
+<td><p class="sd-card-text">위와 같은 simulation demonstration 75개 + 실제 teleoperation demonstration 5개</p></td>
+<td><p class="sd-card-text"><a class="reference internal" href="13-strategy2-cotraining.html"><span class="std std-doc">Strategy 2</span></a></p></td>
+<td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fsreetz-nv%2Fso101_teleop_vials_rack_left_sim_and_real%2Fepisode_0" rel="noreferer noopener" target="_blank">Episode 보기</a></p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_teleop_vials_rack_left_augment_02" rel="noreferer noopener" target="_blank">sreetz-nv/so101_teleop_vials_rack_left_augment_02</a></p></td>
+<td><p class="sd-card-text">Simulation 75개 + Cosmos 증강 episode 7개</p></td>
+<td><p class="sd-card-text"><a class="reference internal" href="14-strategy3-cosmos.html"><span class="std std-doc">Strategy 4</span></a></p></td>
+<td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fsreetz-nv%2Fso101_teleop_vials_rack_left_augment_02%2Fepisode_0" rel="noreferer noopener" target="_blank">Episode 보기</a></p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_teleop_vials_rack_left_cosmos_70" rel="noreferer noopener" target="_blank">sreetz-nv/so101_teleop_vials_rack_left_cosmos_70</a></p></td>
+<td><p class="sd-card-text">Simulation 75개 + Cosmos 증강 episode 70개</p></td>
+<td><p class="sd-card-text"><a class="reference internal" href="14-strategy3-cosmos.html"><span class="std std-doc">Strategy 4</span></a></p></td>
+<td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/spaces/lerobot/visualize_dataset?path=%2Fsreetz-nv%2Fso101_teleop_vials_rack_left_cosmos_70%2Fepisode_0" rel="noreferer noopener" target="_blank">Episode 보기</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</details></section>
+<section id="historical-models">
+<h3>이전 Model<a class="headerlink" href="#historical-models" title="Link to this heading">#</a></h3>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">이전 Policy Checkpoint 보기</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">Model</p></th>
+<th class="head"><p class="sd-card-text">설명</p></th>
+<th class="head"><p class="sd-card-text">사용한 실습</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/aravindhs-NV/grootn16-finetune_sreetz-so101_teleop_vials_rack_left" rel="noreferer noopener" target="_blank">aravindhs-NV/grootn16-finetune_sreetz-so101_teleop_vials_rack_left</a></p></td>
+<td><p class="sd-card-text">Sim-only fine-tuning(Simulation episode 75개)</p></td>
+<td><p class="sd-card-text"><a class="reference internal" href="11-sim-evaluation.html"><span class="std std-doc">Sim Evaluation</span></a>, <a class="reference internal" href="12-real-evaluation.html"><span class="std std-doc">Real Evaluation</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/aravindhs-NV/grootn16-finetune_sreetz-so101_teleop_vials_rack_left_sim_and_real" rel="noreferer noopener" target="_blank">aravindhs-NV/grootn16-finetune_sreetz-so101_teleop_vials_rack_left_sim_and_real</a></p></td>
+<td><p class="sd-card-text">Simulation + 실제 Co-Training(episode 조합 검증 필요)</p></td>
+<td><p class="sd-card-text"><a class="reference internal" href="13-strategy2-cotraining.html"><span class="std std-doc">Strategy 2</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/aravindhs-NV/sreetz-so101_teleop_vials_rack_left_augment_02" rel="noreferer noopener" target="_blank">aravindhs-NV/sreetz-so101_teleop_vials_rack_left_augment_02</a></p></td>
+<td><p class="sd-card-text">Cosmos 증강(Simulation 75개 + Cosmos 7개)</p></td>
+<td><p class="sd-card-text"><a class="reference internal" href="14-strategy3-cosmos.html"><span class="std std-doc">Strategy 4</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><a class="reference external" href="https://huggingface.co/aravindhs-NV/so100-orig-groot-vials-rack-left-cosmos-70" rel="noreferer noopener" target="_blank">aravindhs-NV/so100-orig-groot-vials-rack-left-cosmos-70</a></p></td>
+<td><p class="sd-card-text">Cosmos 증강(Simulation 75개 + Cosmos 70개)</p></td>
+<td><p class="sd-card-text"><a class="reference internal" href="14-strategy3-cosmos.html"><span class="std std-doc">Strategy 4</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</details></section>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>다음 단계</h2>
+<p>목차 순서에 따라 다음 페이지로 이동하세요:
+    <a class="reference internal course-next-link" href="troubleshooting.html">Troubleshooting Guide</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="quick_reference.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">이전</p>
+<p class="prev-next-title">Quick Reference</p>
+</div>
+</a>
+<a class="right-next" href="troubleshooting.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">다음</p>
+<p class="prev-next-title">Troubleshooting Guide</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#current-model-selection">현재 Model 선택</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#johnny42-real-to-real-reference">Johnny42: Real-to-Real Reference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vision-trainable-20k-sim-only-reference">Vision-Trainable 20k: Sim-Only Reference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sim75-real10-co-trained-reference">Sim75 + Real10: Co-Trained Reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#download-models-for-the-workshop-container">Workshop Container용 Model Download</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-your-own-dataset-and-policy">직접 Dataset과 Policy 만들기</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checkpoint-compatibility">Checkpoint 호환성</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#download-a-compatible-policy">호환되는 Policy Download</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-identification-references">System Identification 참고 자료</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#historical-course-artifacts">이전 과정 Artifact</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#historical-datasets">이전 Dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#historical-models">이전 Model</a></li>
+</ul>
+</li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

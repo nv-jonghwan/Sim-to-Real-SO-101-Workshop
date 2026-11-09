@@ -1,0 +1,606 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Today’s Schedule — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = 'seoul-workshop-schedule';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="01-overview.html" rel="next" title="Overview"/>
+<link href="2026-10-28-seoul-preparation.html" rel="prev" title="DLI Preparation and Delivery"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Today’s Schedule</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/seoul-workshop-schedule.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="today-s-schedule">
+<h1>Today’s Schedule<a class="headerlink" href="#today-s-schedule" title="Link to this heading">#</a></h1>
+<p>We will follow the schedule below for the <strong>AI Day Seoul 2026 DLI workshop</strong>. All times are <strong>Seoul local time (KST)</strong>.</p>
+<p><strong>Teaching starts at 09:00.</strong> The period <strong>08:30–09:00</strong> is reserved for arrival and settling in. Lunch is <strong>12:45–13:45</strong>, and the workshop finishes at <strong>17:15</strong>.</p>
+<section id="instructors">
+<h2>Instructors<a class="headerlink" href="#instructors" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Instructor</p></th>
+<th class="head"><p>Sessions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Jonghwan Lee</strong></p></td>
+<td><p><strong>09:00–12:45</strong> · Morning sessions and Q&amp;A</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Hogun Kee</strong></p></td>
+<td><p><strong>13:45–15:40</strong> · Recap and Sim-to-Real Gap through HG-DAgger</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Jihyeon Ryu</strong></p></td>
+<td><p><strong>15:50–17:15</strong> · Cosmos through Conclusion</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="morning-09-0012-45">
+<h2>Morning · 09:00–12:45<a class="headerlink" href="#morning-09-0012-45" title="Link to this heading">#</a></h2>
+<p>Select a topic to open its course materials.</p>
+<div class="seoul-timetable docutils container">
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Session</p></th>
+<th class="head"><p>Time</p></th>
+<th class="head"><p>Topic</p></th>
+<th class="head"><p>Duration</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Instructor</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>AM 1</p></td>
+<td><p>09:00–09:10</p></td>
+<td><p><a class="reference internal" href="01-overview.html"><span class="std std-doc"><strong>Physical AI &amp; today’s task</strong></span></a></p></td>
+<td><p>10 min</p></td>
+<td><p>Lecture</p></td>
+<td><p>Jonghwan Lee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>AM 2</p></td>
+<td><p>09:10–09:30</p></td>
+<td><p><a class="reference internal" href="04-lerobot.html"><span class="std std-doc"><strong>LeRobot</strong></span></a></p></td>
+<td><p>20 min</p></td>
+<td><p>Lecture</p></td>
+<td><p>Jonghwan Lee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>AM 3</p></td>
+<td><p>09:30–10:40</p></td>
+<td><p><a class="reference internal" href="07-using-workspace.html"><span class="std std-doc"><strong>Robot setup</strong></span></a>, <a class="reference internal" href="07-calibrating-so101.html"><span class="std std-doc"><strong>calibration</strong></span></a> &amp; <a class="reference internal" href="08-operating-so101.html"><span class="std std-doc"><strong>real teleop</strong></span></a></p></td>
+<td><p>70 min</p></td>
+<td><p>Hands-on + lecture</p></td>
+<td><p>Jonghwan Lee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>AM 4</p></td>
+<td><p>10:40–11:05</p></td>
+<td><p><a class="reference internal" href="10-groot.html"><span class="std std-doc"><strong>Understanding GR00T</strong></span></a></p></td>
+<td><p>25 min</p></td>
+<td><p>Lecture</p></td>
+<td><p>Jonghwan Lee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>AM 5</p></td>
+<td><p>11:05–11:25</p></td>
+<td><p><a class="reference internal" href="08-simulation-teleoperation.html"><span class="std std-doc"><strong>Sim Teleop</strong></span></a> and <a class="reference internal" href="10-domain-randomization.html"><span class="std std-doc"><strong>Domain Randomization</strong></span></a></p></td>
+<td><p>20 min</p></td>
+<td><p>Lecture + hands-on</p></td>
+<td><p>Jonghwan Lee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>AM 6</p></td>
+<td><p>11:25–11:50</p></td>
+<td><p><a class="reference internal" href="09-code-tour.html"><span class="std std-doc"><strong>Software stack, architecture</strong></span></a></p></td>
+<td><p>25 min</p></td>
+<td><p>Lecture</p></td>
+<td><p>Jonghwan Lee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>—</p></td>
+<td><p>11:50–12:00</p></td>
+<td><p><strong>Break</strong></p></td>
+<td><p>10 min</p></td>
+<td><p>Break</p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>AM 7</p></td>
+<td><p>12:00–12:15</p></td>
+<td><p><a class="reference internal" href="09-state-machine-learning.html"><span class="std std-doc"><strong>State Machine</strong></span></a></p></td>
+<td><p>15 min</p></td>
+<td><p>Lecture + demo</p></td>
+<td><p>Jonghwan Lee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>AM 8</p></td>
+<td><p>12:15–12:35</p></td>
+<td><p><a class="reference internal" href="11-sim-evaluation.html"><span class="std std-doc"><strong>Sim Evaluation</strong></span></a></p></td>
+<td><p>20 min</p></td>
+<td><p>Demo + hands-on</p></td>
+<td><p>Jonghwan Lee</p></td>
+<td><p>Explore different visualizers and models; evaluate headless and with display.</p></td>
+</tr>
+<tr class="row-odd"><td><p>—</p></td>
+<td><p>12:35–12:45</p></td>
+<td><p><strong>Q&amp;A</strong></p></td>
+<td><p>10 min</p></td>
+<td><p>Q&amp;A</p></td>
+<td><p>Jonghwan Lee</p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="lunch-12-4513-45">
+<h2>Lunch · 12:45–13:45<a class="headerlink" href="#lunch-12-4513-45" title="Link to this heading">#</a></h2>
+<p><strong>Lunch: 60 min.</strong> Please be back for the recap at <strong>13:45</strong>.</p>
+</section>
+<section id="afternoon-13-4517-15">
+<h2>Afternoon · 13:45–17:15<a class="headerlink" href="#afternoon-13-4517-15" title="Link to this heading">#</a></h2>
+<div class="seoul-timetable docutils container">
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Session</p></th>
+<th class="head"><p>Time</p></th>
+<th class="head"><p>Topic</p></th>
+<th class="head"><p>Duration</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Instructor</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Return</p></td>
+<td><p>13:45–13:55</p></td>
+<td><p><strong>Welcome back, recap &amp; Q&amp;A</strong></p></td>
+<td><p>10 min</p></td>
+<td><p>Recap + Q&amp;A</p></td>
+<td><p>Hogun Kee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>PM 1</p></td>
+<td><p>13:55–14:10</p></td>
+<td><p><a class="reference internal" href="03-sim-to-real.html"><span class="std std-doc"><strong>Sim2Real and The Reality Gap</strong></span></a></p></td>
+<td><p>15 min</p></td>
+<td><p>Lecture</p></td>
+<td><p>Hogun Kee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>PM 2</p></td>
+<td><p>14:10–14:40</p></td>
+<td><p><a class="reference internal" href="12-real-evaluation.html"><span class="std std-doc"><strong>Real Robot Rollouts with sim-only data</strong></span></a></p></td>
+<td><p>30 min</p></td>
+<td><p>Demo + hands-on</p></td>
+<td><p>Hogun Kee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>PM 3</p></td>
+<td><p>14:40–15:10</p></td>
+<td><p><a class="reference internal" href="13-strategy2-cotraining.html"><span class="std std-doc"><strong>Co-Training theory</strong></span></a> and <a class="reference internal" href="13-cotraining-practice.html"><span class="std std-doc"><strong>practice</strong></span></a></p></td>
+<td><p>30 min</p></td>
+<td><p>Demo + hands-on</p></td>
+<td><p>Hogun Kee</p></td>
+<td><p>Includes a Real → Real model.</p></td>
+</tr>
+<tr class="row-even"><td><p>PM 4</p></td>
+<td><p>15:10–15:40</p></td>
+<td><p><a class="reference internal" href="14-hg-dagger.html"><span class="std std-doc"><strong>HG-DAgger</strong></span></a> · <a class="reference internal" href="14-hg-dagger-practice.html"><span class="std std-doc">Hands-on</span></a></p></td>
+<td><p>30 min</p></td>
+<td><p>Demo + hands-on</p></td>
+<td><p>Hogun Kee</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>—</p></td>
+<td><p>15:40–15:50</p></td>
+<td><p><strong>Break</strong></p></td>
+<td><p>10 min</p></td>
+<td><p>Break</p></td>
+<td><p>—</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>PM 5</p></td>
+<td><p>15:50–16:10</p></td>
+<td><p><a class="reference internal" href="14-strategy3-cosmos.html"><span class="std std-doc"><strong>Cosmos</strong></span></a></p></td>
+<td><p>20 min</p></td>
+<td><p>Instructor demo</p></td>
+<td><p>Jihyeon Ryu</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p>PM 6</p></td>
+<td><p>16:10–16:20</p></td>
+<td><p><a class="reference internal" href="15-strategy4-sysid.html"><span class="std std-doc"><strong>SysID / AnchorBench</strong></span></a></p></td>
+<td><p>10 min</p></td>
+<td><p>Lecture</p></td>
+<td><p>Jihyeon Ryu</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p>PM 7</p></td>
+<td><p>16:20–17:05</p></td>
+<td><p><a class="reference internal" href="15-explore.html"><span class="std std-doc"><strong>Explore, experiment &amp; wrap up</strong></span></a></p></td>
+<td><p>45 min</p></td>
+<td><p>Work time / Q&amp;A</p></td>
+<td><p>Jihyeon Ryu</p></td>
+<td><p>Astra-enabled experiments, discussion with instructors and TA, and time for certification.</p></td>
+</tr>
+<tr class="row-odd"><td><p>PM 8</p></td>
+<td><p>17:05–17:15</p></td>
+<td><p><a class="reference internal" href="16-conclusion.html"><span class="std std-doc"><strong>Conclusion</strong></span></a></p></td>
+<td><p>10 min</p></td>
+<td><p>—</p></td>
+<td><p>Jihyeon Ryu</p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>What's Next?</h2>
+<p>Continue to the next page in the table of contents:
+    <a class="reference internal course-next-link" href="01-overview.html">Overview</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="2026-10-28-seoul-preparation.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">DLI Preparation and Delivery</p>
+</div>
+</a>
+<a class="right-next" href="01-overview.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">next</p>
+<p class="prev-next-title">Overview</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#instructors">Instructors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#morning-09-0012-45">Morning · 09:00–12:45</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lunch-12-4513-45">Lunch · 12:45–13:45</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#afternoon-13-4517-15">Afternoon · 13:45–17:15</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

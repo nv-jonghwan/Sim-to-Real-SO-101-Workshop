@@ -8,9 +8,9 @@
   const id=decodeURIComponent(location.hash.slice(1));
   let current=Math.max(0,course.slides.findIndex(s=>s.id===id)),active=0,working=false,state=null,lastDisplay=0,displayWindow=window.opener,toolsSignature='';
   let channel;
-  try{channel=new BroadcastChannel('so101-dli-'+config.sessionKey);}catch{}
+  try{channel=new BroadcastChannel('so101-dli-'+(config.edition||'self_env')+'-'+config.sessionKey);}catch{}
   document.body.className='script-presenter';
-  document.body.innerHTML=`<header class="presenter-top"><a class="presenter-brand" href="#" aria-label="표지로 이동"><img src="guide/_static/nvidia-logo-horiz-rgb-blk-for-screen.svg" alt="NVIDIA"><span>AI DAYS SEOUL 2026 <i>/</i> DLI</span></a><nav><span id="presenter-connection" role="status">발표 화면 연결 대기</span><button id="open-display">발표 화면 열기 ↗</button><button id="presenter-agenda">목차</button><button id="presenter-fullscreen">전체화면</button></nav></header>
+  document.body.innerHTML=`<header class="presenter-top"><a class="presenter-brand" href="#" aria-label="표지로 이동"><img src="guide/_static/nvidia-logo-horiz-rgb-blk-for-screen.svg" alt="NVIDIA"><span>AI DAYS SEOUL 2026 <i>/</i> ${esc((config.edition||'self_env').toUpperCase())}</span></a><nav><span id="presenter-connection" role="status">발표 화면 연결 대기</span><button id="open-display">발표 화면 열기 ↗</button><button id="presenter-agenda">목차</button><button id="presenter-fullscreen">전체화면</button></nav></header>
     <main class="presenter-workspace"><section class="script-main" aria-label="발표 스크립트"><header class="script-heading"><div class="script-eyebrow">PRESENTER SCRIPT <span id="script-position"></span></div><h1 id="script-title"></h1><p id="script-meta"></p></header><div id="script-scroll" tabindex="0"><div class="script-instructions">← / → 키로 이전·다음 설명을 실행합니다. 중간의 버튼으로도 발표 화면을 조작할 수 있습니다.</div><div id="script-content"></div></div><footer class="script-footer"><span id="cue-position"></span><div><button id="previous-cue" aria-keyshortcuts="ArrowLeft">← 이전 설명</button><button id="next-cue" class="primary" aria-keyshortcuts="ArrowRight">다음 설명 실행 →</button></div></footer></section>
     <aside class="presenter-side" aria-label="장표 미리보기와 조작"><section class="preview-card current-card"><header><strong><span class="live-dot"></span>현재 장표</strong><span id="current-number"></span></header><div class="preview-viewport" id="current-viewport"><iframe id="current-preview" tabindex="-1" title="현재 발표 장표 미리보기" allow="autoplay; fullscreen"></iframe></div><p id="current-selection"></p></section><section class="preview-card next-card"><header><strong>다음 장표</strong><button id="advance-slide">다음 장표로 →</button></header><div class="preview-viewport" id="next-viewport"><iframe id="next-preview" title="다음 발표 장표 미리보기" tabindex="-1"></iframe></div><p id="next-title"></p></section>
     <div class="presenter-slide-nav"><button id="previous-slide">← 이전 장표</button><label><input id="presenter-page" type="number" min="1" max="${course.slides.length}" aria-label="장표 번호"> / ${course.slides.length}</label><span id="presenter-clock"></span></div>
@@ -171,7 +171,7 @@
   $('#presenter-fullscreen').onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
   $('#open-display').onclick=()=>{
     const url=new URL(config.base);url.searchParams.delete('presenter');url.searchParams.set('session',config.sessionKey);url.hash=course.slides[current].id;
-    if(displayWindow&&!displayWindow.closed)displayWindow.focus();else displayWindow=window.open(url.href,'dli-display-'+config.sessionKey);
+    if(displayWindow&&!displayWindow.closed)displayWindow.focus();else displayWindow=window.open(url.href,'dli-display-'+(config.edition||'self_env')+'-'+config.sessionKey);
     if(!displayWindow){$('#presenter-status').textContent='브라우저에서 팝업을 허용한 뒤 발표 화면 열기를 다시 눌러 주세요.';return;}
     setTimeout(()=>previewAPI()?.sendState(),500);
   };

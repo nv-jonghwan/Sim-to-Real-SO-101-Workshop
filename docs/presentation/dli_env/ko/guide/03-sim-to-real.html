@@ -1,0 +1,618 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Sim-to-Real이란? — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=b9c28cd0"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/translations.js?v=afa94a99"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = '03-sim-to-real';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="색인"/>
+<link href="search.html" rel="search" title="검색"/>
+<link href="12-debugging-sim-to-real.html" rel="next" title="Sim-to-Real 문제 Debugging"/>
+<link href="11-sim-evaluation.html" rel="prev" title="Simulation 평가"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="ko" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="검색" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="검색">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">검색</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="목차" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">목차</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI준비와 진행</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">오늘의 일정</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">과정 개요</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">과정 개요</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot과 SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Robot 설정</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Workspace 사용</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">SO-101 Calibration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real 전략 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Simulation에서 Teleoperation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Robotics Application 구성</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">실제 Demonstration으로 State Machine 만들기</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Simulation 평가</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Sim-to-Real이란?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">실물 Robot 실습</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">실제 Robot 평가</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real 전략 2: 실제 Data를 활용한 Co-Training</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training 실습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real 전략 3: HG-DAgger로 Correction 학습</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Correction 수집</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real 전략 4: Cosmos로 Dataset 증강</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real 전략 5: AnchorBench를 활용한 System Identification</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">탐색과 실험</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">탐색과 실험</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">마무리</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">마무리</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">참고 자료</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Dataset과 Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorial 목록</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Sim-to-Real이란?</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../en/guide/03-sim-to-real.html" lang="en" style="margin-left:auto;white-space:nowrap">English</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="what-is-sim-to-real">
+<h1>Sim-to-Real이란?<a class="headerlink" href="#what-is-sim-to-real" title="Link to this heading">#</a></h1>
+<div class="course-module-type course-module-type--lecture">
+<svg aria-hidden="true" focusable="false" viewbox="0 0 32 32">
+<rect height="18" rx="3" width="26" x="3" y="3"></rect>
+<path d="M16 21v4m-6 4 6-4 6 4M11 9h9m-9 2 3.5 4m6.5-4-3.5 4"></path>
+<circle cx="9" cy="9" r="2"></circle>
+<circle cx="22" cy="9" r="2"></circle>
+<circle cx="16" cy="16" r="2"></circle>
+</svg>
+<span>Lecture</span>
+</div>
+<figure class="align-default" id="id1">
+<img alt="Simulation과 실제 환경의 Unitree H1입니다." class="course-banner" src="_images/sim-and-real.png"/>
+<figcaption>
+<p><span class="caption-text">Unitree H1의 Sim-to-Real</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">이 Module에 필요한 준비물</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">없습니다. 이 module은 이론만 다룹니다.</p>
+</div>
+</details><section id="learning-objectives">
+<h2>학습 목표<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<p>이 session을 마치면 다음을 수행할 수 있습니다.</p>
+<ul class="simple">
+<li><p><strong>Define</strong>: sim-to-real transfer와 그 목표 정의</p></li>
+<li><p><strong>Identify</strong>: sim-to-real gap의 네 가지 주요 범주 구분</p></li>
+<li><p><strong>Explain</strong>: 정밀한 simulation에서도 transfer가 어려운 이유 설명</p></li>
+</ul>
+</section>
+<section id="sim-to-real-defined">
+<h2>Sim-to-Real의 정의<a class="headerlink" href="#sim-to-real-defined" title="Link to this heading">#</a></h2>
+<p><strong>Sim-to-real</strong>은 simulation에서 policy를 학습하고 실제 hardware에 배포하는 과정입니다. 전부 또는 대부분을 simulation에서 학습하더라도 실제 환경에서 잘 동작하는 policy를 만드는 것이 목표입니다.</p>
+</section>
+<section id="simulation-evaluation-in-action">
+<h2>Simulation Evaluation in Action<a class="headerlink" href="#simulation-evaluation-in-action" title="Link to this heading">#</a></h2>
+<p>서로 다른 simulation scene에서 policy가 vial-to-rack task를 시도하는 모습을 확인하세요. 왼쪽은 external camera, 오른쪽은 wrist camera입니다. 성공한 배치와 실패를 모두 관찰하세요.</p>
+<figure>
+<video aria-describedby="sim-evaluation-example-caption" aria-label="Simulation policy evaluation at 10 times speed, with external and wrist camera views" controls="" height="550" muted="" playsinline="" poster="_static/videos/sim-evaluation-10x-poster.jpg" preload="none" style="display:block; width:100%; height:auto;" width="1280">
+<source src="_static/videos/sim-evaluation-10x.mp4" type="video/mp4"/>
+</video>
+<figcaption id="sim-evaluation-example-caption">Example simulation evaluation. Playback is <strong>10× speed</strong>.</figcaption>
+</figure></section>
+<section id="the-sim-to-real-gap">
+<h2>The Sim-to-Real Gap<a class="headerlink" href="#the-sim-to-real-gap" title="Link to this heading">#</a></h2>
+<p><strong>sim-to-real gap</strong>은 simulation과 실제 환경 사이의 성능 차이입니다. Simulation에서 높은 성공률을 보인 policy도 실제 hardware에서는 성능이 크게 떨어질 수 있습니다.</p>
+<div class="admonition warning">
+<p class="admonition-title">경고</p>
+<p>Sim-to-real gap은 예상보다 큰 경우가 많습니다.</p>
+<p>흔히 하나의 “gap”처럼 이야기하지만, 실제로는 sensing, actuation, physics, modeling의 차이가 복합적으로 작용합니다.</p>
+<p>Zero-shot transfer는 어렵습니다. 체계적인 시험과 반복 없이 policy가 실제 hardware에서도 바로 동작할 것이라고 가정하지 마세요.</p>
+</div>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/slide-26.png"><img alt="겹친 원은 simulation의 source domain과 실제 환경의 target domain을 나타냅니다. 실제 조건을 더 넓게 포함할수록 transfer에 유리합니다." src="_images/slide-26.png" style="width: 100%;"/>
+</a>
+<figcaption>
+<p><span class="caption-text">Source domain은 학습하는 환경이고, target domain은 policy가 동작하기를 원하는 환경입니다.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="sources-of-the-gap">
+<span id="choosing-a-strategy"></span><span id="sensing-gaps"></span><span id="physics-gaps"></span><span id="actuation-gaps"></span><h2>Gap의 발생 원인<a class="headerlink" href="#sources-of-the-gap" title="Link to this heading">#</a></h2>
+<p><strong>teach the policy to handle variation</strong>, <strong>make simulation closer to the real setup</strong> 또는 두 방법의 조합을 사용할 수 있습니다. 관찰된 실패를 해결하는 변경을 선택하고, 같은 시험 조건에서 비교하세요.</p>
+<p>그림에서 gap을 선택해 예시를 살펴보세요.</p>
+<figure>
+<iframe class="interactive-learning-diagram" loading="lazy" src="_static/interactive/reality-gap-strategies.html" style="display:block; width:100%; height:600px; border:0;" title="Connect sensing, actuation, physics, and modeling gaps to transfer strategies"></iframe>
+</figure><section id="modeling-gap-examples">
+<span id="modeling-gaps"></span><h3>Modeling Gap 예시<a class="headerlink" href="#modeling-gap-examples" title="Link to this heading">#</a></h3>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-2 sd-g-xs-2 sd-g-sm-2 sd-g-md-2 sd-g-lg-2 docutils">
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id3">
+<a class="reference internal image-reference" href="_images/so101-modeling-gap.png"><img alt="SO-101 simulation의 link, joint, gripper를 확대한 모습입니다." src="_images/so101-modeling-gap.png" style="width: 300px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Robot geometry.</strong> Link 치수나 joint 위치의 차이는 robot pose를 바꿀 수 있습니다.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+<div class="sd-col sd-d-flex-column docutils">
+<figure class="align-default" id="id4">
+<a class="reference internal image-reference" href="_images/elbow-reference-frame-offset.svg"><img alt="Calibration된 LeRobot의 zero 방향(초록)과 USD joint-frame의 zero(주황)를 비교하는 elbow 그림입니다." src="_images/elbow-reference-frame-offset.svg" style="width: 300px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Joint reference frames.</strong> Zero 정의가 다르면 같은 joint angle에서도 pose가 달라질 수 있습니다. 표시된 limit은 예시이며 calibration 목표값이 아닙니다.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>이미지를 선택하면 원본 크기로 볼 수 있습니다.</p>
+</section>
+<section id="explore-the-perception-gap">
+<span id="perception-gap-comparison"></span><h3>Perception Gap 살펴보기<a class="headerlink" href="#explore-the-perception-gap" title="Link to this heading">#</a></h3>
+<p>외관 차이로 grasp를 놓치거나 빈 공간으로 손을 뻗을 수 있습니다. 비슷한 증상은 calibration이나 action 실행 문제에서도 발생합니다.</p>
+<p>아래 비교 도구에서 rack edge, hole shape, gripper의 고정된 특징을 살펴보세요. <strong>Sim opacity</strong>를 조절하거나 <strong>Side by side</strong>로 전환하고, <strong>Toggle real / sim</strong>으로 두 이미지를 번갈아 볼 수 있습니다. 저장한 image pair도 불러올 수 있으며 파일은 browser 안에만 유지됩니다. Camera stream이나 robot 연결은 필요하지 않습니다.</p>
+<section aria-labelledby="wrist-comparison-title" class="image-comparison">
+<h4 id="wrist-comparison-title">저장된 wrist 이미지: real과 simulation</h4>
+<div class="image-comparison-controls" hidden="">
+<label>View <select data-control="mode"><option value="overlay">Overlay</option><option value="side">Side by side</option><option value="real">Real only</option><option value="sim">Sim only</option></select></label>
+<label>Sim opacity <input aria-label="Simulation opacity" data-control="opacity" max="100" min="0" type="range" value="50"/><output data-control="value">50%</output></label>
+<button data-control="toggle" type="button">Real / sim 전환</button>
+<button data-control="reset" type="button">예시 초기화</button>
+<label>Load real image <input accept="image/png,image/jpeg,image/webp" data-control="real-file" type="file"/></label>
+<label>Load sim image <input accept="image/png,image/jpeg,image/webp" data-control="sim-file" type="file"/></label>
+</div>
+<p aria-live="polite" class="image-comparison-status" role="status">왼쪽은 real 이미지, 오른쪽은 simulation입니다. 두 이미지 모두 640 × 480입니다.</p>
+<div class="image-comparison-stage" data-mode="side">
+<figure data-image="real"><img alt="Real wrist image with orange gripper fingers, a yellow rack at the left, and a wrapped vial on a dark mat." height="480" src="_static/wrist-comparison/real.jpg" width="640"/><figcaption>Real</figcaption></figure>
+<figure data-image="sim"><img alt="Perception-DR wrist image at the saved native joint angles, with perception materials, camera response, and reset-time wrist blur." height="480" src="_static/wrist-comparison/sim-perception-dr.png" width="640"/><figcaption>Simulation · Perception-DR</figcaption></figure>
+</div>
+<p>이 예시는 vial-to-rack task에서 simulation과 실제 환경 사이의 perceptual difference를 보여 줍니다. <strong>어떤 차이가 보이나요?</strong></p>
+<noscript><p>Opacity slider와 로컬 이미지 선택을 사용하려면 JavaScript를 활성화하세요. JavaScript 없이도 저장된 예시 이미지 두 장은 볼 수 있습니다.</p></noscript>
+</section>
+<p>실제 wrist view와 perception을 조정한 simulation을 나란히 보여줍니다. 조명, texture, edge를 비교하세요.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">ovrtx camera response 조정 방법</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">기본 vial scene은 <code class="docutils literal notranslate"><span class="pre">SO101OVRTXRendererCfg.camera_responses</span></code>로 grading과 tone mapping을 설정하고, DR은 film grain을 추가합니다. Profile은 <code class="docutils literal notranslate"><span class="pre">source/sim_to_real_so101/tasks/camera_profiles.py</span></code>에 있습니다. <code class="docutils literal notranslate"><span class="pre">source/sim_to_real_so101/utils/ovrtx/renderer.py</span></code>의 renderer가 각 camera의 <strong>render product</strong>에 response attribute를 작성하므로 wrist와 external view에 서로 다른 설정을 사용할 수 있습니다. 이는 perception gap을 줄이기 위한 외관 근사입니다. 다른 task에서도 이런 parameter를 어떻게 조정하거나 randomize할지 생각해 보세요.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p class="sd-card-text">설정</p></th>
+<th class="head"><p class="sd-card-text">Wrist camera</p></th>
+<th class="head"><p class="sd-card-text">External camera</p></th>
+<th class="head"><p class="sd-card-text">제어 대상</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">grade:gain</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.18,</span> <span class="pre">1.18,</span> <span class="pre">1.182)</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.07,</span> <span class="pre">1.07,</span> <span class="pre">1.07)</span></code></p></td>
+<td><p class="sd-card-text">Channel별 image gain</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">grade:gamma</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.12,</span> <span class="pre">1.12,</span> <span class="pre">1.12)</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.4,</span> <span class="pre">1.4,</span> <span class="pre">1.4)</span></code></p></td>
+<td><p class="sd-card-text">Midtone response</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">grade:saturation</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.0,</span> <span class="pre">1.0,</span> <span class="pre">1.0)</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(1.2,</span> <span class="pre">1.2,</span> <span class="pre">1.2)</span></code></p></td>
+<td><p class="sd-card-text">Color intensity. External profile은 <code class="docutils literal notranslate"><span class="pre">colorcorr:enabled</span></code>도 활성화합니다.</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">grade:whitePoint</span></code></p></td>
+<td><p class="sd-card-text">Override 없음</p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">(0.95,</span> <span class="pre">0.95,</span> <span class="pre">0.95)</span></code></p></td>
+<td><p class="sd-card-text">External view의 white-point 조정</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">tvNoise:filmGrain:amount</span></code> / <code class="docutils literal notranslate"><span class="pre">size</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">0.015</span></code> / <code class="docutils literal notranslate"><span class="pre">0.25</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">0.003</span></code> / <code class="docutils literal notranslate"><span class="pre">1.0</span></code></p></td>
+<td><p class="sd-card-text">Grain의 강도와 크기</p></td>
+</tr>
+<tr class="row-odd"><td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">tonemap:operator</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">"none"</span></code></p></td>
+<td><p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">"none"</span></code></p></td>
+<td><p class="sd-card-text">기본 renderer operator인 <code class="docutils literal notranslate"><span class="pre">acesApproximation</span></code>을 우회하고 OCIO에 tone mapping을 맡깁니다.</p></td>
+</tr>
+<tr class="row-even"><td><p class="sd-card-text">Gaussian blur sigma</p></td>
+<td><p class="sd-card-text">이 예시는 <code class="docutils literal notranslate"><span class="pre">0.9</span></code> pixel, task 기본값은 <code class="docutils literal notranslate"><span class="pre">0.7–1.1</span></code></p></td>
+<td><p class="sd-card-text">추가 blur 없음</p></td>
+<td><p class="sd-card-text">Wrist image의 부드러움. Reset 시 environment마다 독립적으로 sampling합니다.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="sd-card-text">표의 모든 ovrtx key에는 <code class="docutils literal notranslate"><span class="pre">omni:rtx:post:</span></code> prefix가 붙습니다. 예를 들어 wrist profile의 다음 항목은 grading과 소량의 grain을 활성화합니다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1"># Excerpt from the wrist render-product response profile.</span>
+<span class="linenos"> 2</span><span class="p">{</span>
+<span class="linenos"> 3</span>    <span class="s2">"omni:rtx:post:grade:enabled"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">"omni:rtx:post:grade:gain"</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.18</span><span class="p">,</span> <span class="mf">1.18</span><span class="p">,</span> <span class="mf">1.182</span><span class="p">),</span>
+<span class="linenos"> 5</span>    <span class="s2">"omni:rtx:post:grade:gamma"</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.12</span><span class="p">,</span> <span class="mf">1.12</span><span class="p">,</span> <span class="mf">1.12</span><span class="p">),</span>
+<span class="linenos"> 6</span>    <span class="s2">"omni:rtx:post:tvNoise:enabled"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="s2">"omni:rtx:post:tvNoise:filmGrain:enabled"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="s2">"omni:rtx:post:tvNoise:filmGrain:amount"</span><span class="p">:</span> <span class="mf">0.015</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="s2">"omni:rtx:post:tvNoise:filmGrain:size"</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span>
+<span class="linenos">10</span>    <span class="s2">"omni:rtx:post:tonemap:operator"</span><span class="p">:</span> <span class="s2">"none"</span><span class="p">,</span>
+<span class="linenos">11</span><span class="p">}</span>
+</pre></div>
+</div>
+<p class="sd-card-text"><strong>Blur is separate from those ovrtx attributes.</strong> 이 workshop에서는 rendering 후 Isaac Lab API를 통해 wrist camera에 Gaussian blur를 적용합니다. <code class="docutils literal notranslate"><span class="pre">source/sim_to_real_so101/tasks/vials_to_rack_env_cfg.py</span></code>의 reset event는 다음과 같습니다.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">reset_wrist_blur</span> <span class="o">=</span> <span class="n">EventTerm</span><span class="p">(</span>
+<span class="linenos">2</span>    <span class="n">func</span><span class="o">=</span><span class="n">randomize_camera_blur</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="n">mode</span><span class="o">=</span><span class="s2">"reset"</span><span class="p">,</span>
+<span class="linenos">4</span>    <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+<span class="linenos">5</span>        <span class="s2">"sensor_cfg"</span><span class="p">:</span> <span class="n">SceneEntityCfg</span><span class="p">(</span><span class="s2">"camera_wrist"</span><span class="p">),</span>
+<span class="linenos">6</span>        <span class="s2">"sigma_range"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">),</span>
+<span class="linenos">7</span>    <span class="p">},</span>
+<span class="linenos">8</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="sd-card-text">추출된 blur 값은 해당 environment가 reset될 때까지 고정됩니다. 처리된 RGB는 <strong>display, recording, and policy observations</strong>에 사용됩니다. 실제 조정 시에는 전체 밝기뿐 아니라 highlight와 texture도 확인하고, policy를 평가해 transfer에 도움이 되는지 판단하세요.</p>
+</div>
+</details><p>다른 image pair는 <a class="reference internal" href="troubleshooting.html#wrist-image-alignment"><span class="std std-ref">troubleshooting guide의 wrist-image 비교</span></a>를 확인하세요.</p>
+</section>
+</section>
+<section id="what-makes-transfer-hard">
+<h2>Transfer가 어려운 이유<a class="headerlink" href="#what-makes-transfer-hard" title="Link to this heading">#</a></h2>
+<p>Sim-to-real gap은 simulation fidelity만의 문제가 아닙니다. Simulation이 완벽하더라도 다음 이유로 transfer는 어렵습니다.</p>
+<ol class="arabic simple">
+<li><p><strong>Distribution shift</strong>: 실제 조건이 학습 조건과 다릅니다.</p></li>
+<li><p><strong>Compounding errors</strong>: 작은 perception error가 큰 action error로 이어집니다.</p></li>
+<li><p><strong>Unmodeled dynamics</strong>: 실제 physics에는 simulation에 반영되지 않은 효과가 있습니다. 예를 들어 bearing이나 linear slide가 마모되고, grease가 마르거나 screw가 느슨해지면서 friction과 alignment가 바뀔 수 있습니다.</p></li>
+<li><p><strong>Temporal differences</strong>: 실시간 제약이 동작에 영향을 줍니다.</p></li>
+</ol>
+<p>실패 원인을 policy로 판단하기 전에 camera 할당, joint 순서와 단위, calibration, action 규약, starting pose를 확인하세요. Policy에는 그럴듯한 scene뿐 아니라 호환되는 입력과 명령도 필요합니다.</p>
+</section>
+<section id="summary">
+<h2>정리<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Gap 범주</p></th>
+<th class="head"><p>예시</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Sensing</p></td>
+<td><p>Camera noise, lighting, depth artifacts</p></td>
+</tr>
+<tr class="row-odd"><td><p>Actuation</p></td>
+<td><p>Friction, backlash, thermal effects</p></td>
+</tr>
+<tr class="row-even"><td><p>Physics</p></td>
+<td><p>Contact dynamics, deformables</p></td>
+</tr>
+<tr class="row-odd"><td><p>Modeling</p></td>
+<td><p>CAD errors, mass/inertia estimates</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>이러한 gap을 이해하는 것이 중요합니다. 이 과정에서 각 범주에 대응하는 전략을 배웁니다.</p>
+</section>
+</section>
+<section class="course-next" id="what-s-next">
+<h2>다음 단계</h2>
+<p>목차 순서에 따라 다음 페이지로 이동하세요:
+    <a class="reference internal course-next-link" href="12-debugging-sim-to-real.html">Sim-to-Real 문제 Debugging</a>.
+  </p>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="11-sim-evaluation.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">이전</p>
+<p class="prev-next-title">Simulation 평가</p>
+</div>
+</a>
+<a class="right-next" href="12-debugging-sim-to-real.html" title="next page">
+<div class="prev-next-info">
+<p class="prev-next-subtitle">다음</p>
+<p class="prev-next-title">Sim-to-Real 문제 Debugging</p>
+</div>
+<i class="fa-solid fa-angle-right"></i>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">학습 목표</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sim-to-real-defined">Sim-to-Real의 정의</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-evaluation-in-action">Simulation Evaluation in Action</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-sim-to-real-gap">The Sim-to-Real Gap</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sources-of-the-gap">Gap의 발생 원인</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#modeling-gap-examples">Modeling Gap 예시</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-the-perception-gap">Perception Gap 살펴보기</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-makes-transfer-hard">Transfer가 어려운 이유</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">정리</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

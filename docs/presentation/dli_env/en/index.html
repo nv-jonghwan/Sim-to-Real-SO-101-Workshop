@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-edition="dli_env">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>AI Days Seoul 2026 · DLI_ENV</title>
+  <link rel="icon" href="guide/_static/nvidia-logo-horiz-rgb-blk-for-screen.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="guide/_static/pygments.css">
+  <link rel="stylesheet" href="guide/_static/sphinx-design.min.css">
+  <link rel="stylesheet" href="guide/_static/image-comparison.css">
+  <link rel="stylesheet" href="guide/_static/groot-hyperparameters.css">
+  <link rel="stylesheet" href="guide/_static/model-cards.css">
+  <link rel="stylesheet" href="assets/presentation.css">
+  <link rel="stylesheet" href="assets/refinements.css">
+  <link rel="stylesheet" href="assets/concepts.css">
+  <link rel="stylesheet" href="assets/presenter.css">
+  <link rel="stylesheet" href="guide/_static/module-types.css">
+  <script src="assets/course-concepts.js?v=practice-groups-20261109" defer></script>
+  <script src="assets/portable-content.js" defer></script>
+  <script src="assets/presentation-concepts.js?v=practice-groups-20261109" defer></script>
+  <script src="assets/presenter-script.js?v=practice-groups-20261109" defer></script>
+  <script src="assets/presenter-controls.js?v=practice-groups-20261109" defer></script>
+  <script src="assets/presenter.js?v=practice-groups-20261109" defer></script>
+</head>
+<body>
+  <header class="app-bar">
+    <a class="brand" href="#cover" aria-label="Go to cover"><img src="guide/_static/nvidia-logo-horiz-rgb-blk-for-screen.svg" alt="NVIDIA"><span>AI DAYS SEOUL 2026 <i> / </i> DLI_ENV</span></a>
+    <div class="app-actions"><a data-language-switch href="../ko/index.html" lang="ko" style="color:inherit;text-decoration:none;font-size:13px;padding:6px">한국어</a>
+      <button id="agenda-button" title="Contents and search (G)">Contents <kbd>G</kbd></button>
+      <button id="presenter-button" title="Presenter window (P)">Presenter <kbd>P</kbd></button>
+      <button id="fullscreen-button" title="Fullscreen (F)">Fullscreen <kbd>F</kbd></button>
+      <button id="help-button" class="round" aria-label="Controls help">?</button>
+    </div>
+  </header>
+  <main id="workspace" aria-label="Presentation">
+    <div id="stage-wrap"><section id="stage" aria-live="polite"></section></div>
+    <aside id="console" hidden>
+      <div class="console-heading"><span class="eyebrow">PRESENTER VIEW</span><h2 id="console-title">Presenter view</h2><p id="connection">Connecting to presentation</p></div>
+      <div class="console-clock"><span id="wall-clock"></span><span>KST</span></div>
+      <div class="console-next"><span class="eyebrow">UP NEXT</span><h3 id="next-title"></h3><p id="next-session"></p><button id="console-next-button">Go to next slide</button></div>
+      <div class="console-body"><div class="eyebrow">CURRENT LESSON · SOURCE</div><div id="console-notes" class="lesson-content"></div></div>
+    </aside>
+  </main>
+  <footer class="control-bar">
+    <button id="session-button" class="session-button" title="Select session"><span id="session-label"></span><span class="session-details"><span id="session-time"></span><span id="session-instructor" hidden></span></span></button>
+    <div class="navigation"><button id="previous-button" class="arrow" aria-label="Previous slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button><label class="page-label"><input id="page-number" type="number" min="1" aria-label="Slide number"><span id="page-total"></span></label><button id="next-button" class="arrow" aria-label="Next slide"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></div>
+    <div class="footer-tools"><button id="timer-button" title="Start/pause elapsed presentation timer"><span class="timer-dot"></span><span id="timer">00:00</span></button><button id="reset-timer" title="Reset timer" aria-label="Reset timer">Reset</button><a id="source-link" target="_blank" rel="noopener">Open guide <kbd>O</kbd></a></div>
+    <div id="progress" aria-hidden="true"></div>
+  </footer>
+  <dialog id="agenda-dialog" class="agenda-dialog"><div class="dialog-top"><div><span class="eyebrow">TODAY’S SCHEDULE · KST</span><h2>Today's Schedule</h2></div><button data-close class="close-button" aria-label="Close contents">Close <kbd>Esc</kbd></button></div><div class="agenda-toolbar"><input id="search" type="search" placeholder="Search titles and course content" aria-label="Search slides"><button id="reference-button">References</button></div><div id="agenda-list"></div></dialog>
+  <dialog id="reading-dialog" class="reading-dialog"><div class="dialog-top"><div><span class="eyebrow">COURSE REFERENCE</span><h2 id="reading-title" tabindex="-1"></h2></div><div class="reading-controls"><button id="reading-back" hidden>← Previous explanation</button><a id="reading-source" target="_blank" rel="noopener">Course source ↗</a><button data-close class="close-button">Close <kbd>Esc</kbd></button></div></div><div id="reading-body" class="lesson-content"></div></dialog>
+  <dialog id="objectives-dialog" class="objectives-dialog" aria-labelledby="objectives-title" aria-describedby="objectives-chapter">
+    <header class="objectives-heading"><div><p id="objectives-chapter"></p><h2 id="objectives-title" tabindex="-1">Learning Objectives</h2></div><button class="objectives-close" data-close-objectives aria-label="Close learning objectives"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+    <div id="objectives-body" class="lesson-content" tabindex="0" role="region" aria-label="Chapter learning objectives"></div>
+    <footer class="objectives-footer"><button data-close-objectives>Close <kbd>Esc</kbd></button></footer>
+  </dialog>
+  <dialog id="help-dialog" class="help-dialog"><div class="dialog-top"><h2>Presentation controls</h2><button data-close class="close-button">Close <kbd>Esc</kbd></button></div><dl><dt><kbd>←</kbd> <kbd>→</kbd> / <kbd>Page Up</kbd> <kbd>Page Down</kbd></dt><dd>Previous/next slide</dd><dt><kbd>Space</kbd> / <kbd>Shift + Space</kbd></dt><dd>Next/previous slide</dd><dt><kbd>G</kbd></dt><dd>Schedule, contents, and full-text search</dd><dt><kbd>P</kbd></dt><dd>Separate presenter window — synchronize slides and selections in the same browser</dd><dt><kbd>F</kbd></dt><dd>Toggle fullscreen</dd><dt><kbd>B</kbd></dt><dd>Blank/restore presentation</dd><dt><kbd>D</kbd></dt><dd>Open current slide's full explanation and exercise commands</dd><dt><kbd>O</kbd></dt><dd>Open current course source</dd><dt><kbd>Home</kbd> / <kbd>End</kbd></dt><dd>Cover/final main-course slide</dd></dl><p>Use the mouse or keyboard within interactive diagrams. If a diagram has keyboard focus, click outside it before changing slides.</p><p>Start videos manually; they stop when you leave the slide. Use tabs and step menus within a topic. Open learning objectives on a chapter's first slide and use command links for exercise commands.</p></dialog>
+  <button id="blank-screen" hidden aria-label="Click to restore presentation"><span>AI DAYS SEOUL 2026 <i>·</i> DLI_ENV</span></button>
+  <div id="toast" role="status"></div>
+</body>
+</html>

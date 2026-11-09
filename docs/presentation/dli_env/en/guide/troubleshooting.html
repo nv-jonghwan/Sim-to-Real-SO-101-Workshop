@@ -1,0 +1,829 @@
+
+<!DOCTYPE html>
+
+<html data-content_root="./" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Troubleshooting Guide — Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</title>
+<script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+<!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+<noscript>
+<style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+</noscript>
+<!-- Loaded before other Sphinx assets -->
+<link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet"/>
+<link href="_static/pygments.css?v=8f2a1f02" rel="stylesheet" type="text/css"/>
+<link href="_static/styles/nvidia-sphinx-theme.css?v=df3ac72c" rel="stylesheet" type="text/css"/>
+<link href="_static/copybutton.css?v=76b2166b" rel="stylesheet" type="text/css"/>
+<link href="_static/nvlearning.css?v=d3374dad" rel="stylesheet" type="text/css"/>
+<link href="_static/sphinx-design.min.css?v=95c83b7e" rel="stylesheet" type="text/css"/>
+<link href="_static/groot-hyperparameters.css?v=8a071b51" rel="stylesheet" type="text/css"/>
+<link href="_static/image-comparison.css?v=0c0fa7dd" rel="stylesheet" type="text/css"/>
+<link href="_static/course-banners.css?v=c83c9380" rel="stylesheet" type="text/css"/>
+<link href="_static/model-cards.css?v=04e3dc9f" rel="stylesheet" type="text/css"/>
+<link href="_static/module-types.css?v=0532cb56" rel="stylesheet" type="text/css"/>
+<link href="_static/sidebar-toggle.css?v=a382040d" rel="stylesheet" type="text/css"/>
+<link href="_static/seoul-schedule.css?v=d2d5434c" rel="stylesheet" type="text/css"/>
+<!-- So that users can add custom icons -->
+<script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+<!-- Pre-loaded scripts that we'll load fully later -->
+<link as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<link as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" rel="preload"/>
+<script src="_static/documentation_options.js?v=2caa9db7"></script>
+<script src="_static/doctools.js?v=9bcbadda"></script>
+<script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+<script src="_static/clipboard.min.js?v=a7894cd8"></script>
+<script src="_static/copybutton.js?v=f281be69"></script>
+<script src="_static/design-tabs.js?v=f930bc37"></script>
+<script>DOCUMENTATION_OPTIONS.pagename = 'troubleshooting';</script>
+<script defer="defer" src="_static/sidebar-toggle.js?v=f996f5ef"></script>
+<script defer="defer" src="_static/interactive-diagram-embed.js?v=ffef333d"></script>
+<script defer="defer" src="_static/groot-hyperparameters.js?v=ab734820"></script>
+<script defer="defer" src="_static/image-comparison.js?v=30e2d86d"></script>
+<link href="_static/favicon.png" rel="icon"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="datasets-and-models.html" rel="prev" title="Datasets and Models"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+<meta content="" name="docsearch:version"/>
+<script src="https://assets.adobedtm.com/5d4962a43b79/c1061d2c5e7b/launch-191c2462b890.min.js"></script>
+</head>
+<body data-bs-root-margin="0px 0px -60%" data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-default-mode="" data-offset="180">
+<div class="skip-link d-print-none" id="pst-skip-link"><a href="#main-content">Skip to main content</a></div>
+<div id="pst-scroll-pixel-helper"></div>
+<button class="btn rounded-pill" id="pst-back-to-top" type="button">
+<i class="fa-solid fa-arrow-up"></i>Back to top</button>
+<dialog id="pst-search-dialog">
+<form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input aria-label="Search the docs ..." autocapitalize="off" autocomplete="off" autocorrect="off" class="form-control" name="q" placeholder="Search the docs ..." spellcheck="false" type="search"/>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+</dialog>
+<div class="pst-async-banner-revealer d-none">
+<aside aria-label="Version warning" class="d-none d-print-none" id="bd-header-version-warning"></aside>
+</div>
+<header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+<button aria-label="Site navigation" class="pst-navbar-icon sidebar-toggle primary-toggle">
+<span class="fa-solid fa-bars"></span>
+</button>
+<div class="col-lg-3 navbar-header-items__start">
+<div class="navbar-item">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a></div>
+</div>
+<div class="col-lg-9 navbar-header-items">
+<div class="navbar-header-items__end">
+<div class="navbar-item navbar-persistent--container">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="navbar-persistent--mobile">
+<button aria-label="Search" class="btn search-button-field search-button__button pst-js-only" data-bs-placement="bottom" data-bs-toggle="tooltip" title="Search">
+<i class="fa-solid fa-magnifying-glass"></i>
+<span class="search-button__default-text">Search</span>
+<span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+</div>
+<button aria-label="On this page" class="pst-navbar-icon sidebar-toggle secondary-toggle">
+<span class="fa-solid fa-outdent"></span>
+</button>
+</div>
+</header>
+<div class="bd-container">
+<div class="bd-container__inner bd-page-width">
+<dialog id="pst-primary-sidebar-modal"></dialog>
+<div class="bd-sidebar-primary bd-sidebar" id="pst-primary-sidebar">
+<a class="navbar-brand logo" href="index.html">
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-blk-for-screen.svg"/>
+<img alt="Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac - Home" class="logo__image only-dark pst-js-only" src="_static/nvidia-logo-horiz-rgb-wht-for-screen.svg"/>
+<p class="title logo__title">Train an SO-101 Robot From Sim-to-Real With NVIDIA Isaac</p>
+</a>
+<div class="sidebar-header-items sidebar-primary__section">
+<div class="sidebar-header-items__end">
+<div class="navbar-item">
+<button aria-label="Color mode" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" data-bs-placement="bottom" data-bs-title="Color mode" data-bs-toggle="tooltip">
+<i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+<i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+<i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+</button></div>
+<div class="navbar-item"><ul aria-label="Icon Links" class="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link pst-navbar-icon" data-bs-placement="bottom" data-bs-toggle="tooltip" href="https://forms.gle/WC82m74fnxTrB8et9" rel="noopener" target="_blank" title="Survey"><i aria-hidden="true" class="fa-solid fa-comment fa-lg"></i>
+<span class="sr-only">Survey</span></a>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sidebar-primary-items__start sidebar-primary__section">
+<div class="sidebar-primary-item">
+<nav aria-label="Table of Contents" class="bd-docs-nav bd-links">
+<p aria-level="1" class="bd-links__title" role="heading">Table of Contents</p>
+<div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">AI Day Seoul 2026</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="2026-10-28-seoul-preparation.html">DLI Preparation and Delivery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="seoul-workshop-schedule.html">Today’s Schedule</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01-overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-codex.html">CODEX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-lerobot.html">LeRobot and the SO-101</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Setup Your Robot</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="07-using-workspace.html">Using the Workspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-calibrating-so101.html">Calibrating the SO-101</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-operating-so101.html">Teleoperating</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">GR00T</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-groot.html">Isaac GR00T: Vision-Language-Action Models</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Simulation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="10-domain-randomization.html">Sim-to-Real Strategy 1: Domain Randomization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-simulation-teleoperation.html">Teleoperating in Sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-code-tour.html">Architecture Tour: Building the Robotics Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-state-machine-learning.html">Learning From Real Demonstrations With a State Machine</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11-sim-evaluation.html">Sim Evaluation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Sim-to-Real Gap</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="03-sim-to-real.html">What Is Sim-to-Real?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12-debugging-sim-to-real.html">Debugging Sim-to-Real Issues</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Working in Real</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="12-real-evaluation.html">Real Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-strategy2-cotraining.html">Sim-to-Real Strategy 2: Co-Training With Real Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13-cotraining-practice.html">Co-Training in Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger.html">Sim-to-Real Strategy 3: Learn From Corrections With HG-DAgger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="14-hg-dagger-practice.html">HG-DAgger: Collect Corrections</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cosmos</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="14-strategy3-cosmos.html">Sim-to-Real Strategy 4: Augmenting Datasets With Cosmos</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">System Identification</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-strategy4-sysid.html">Sim-to-Real Strategy 5: System Identification With AnchorBench</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Explore and Experiment</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="15-explore.html">Explore and Experiment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conclusion</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="16-conclusion.html">Conclusion</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="quick_reference.html">Quick Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets-and-models.html">Datasets and Models</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/nv-jonghwan/Sim-to-Real-SO-101-Workshop/tree/aidayseoul2026">Workshop Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://www.youtube.com/watch?v=3TL3ALQxQX8&amp;list=PL2bKqBZg-pzVQspO8-wieuIFctBdz_Tr_&amp;pp=0gcJCcsEOCosWNin">Video Tutorials Playlist</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://docs.nvidia.com/learning/physical-ai/">Physical AI Learning</a></li>
+</ul>
+</div>
+</nav></div>
+</div>
+<div class="sidebar-primary-items__end sidebar-primary__section">
+</div>
+</div>
+<main class="bd-main" id="main-content" role="main">
+<div class="bd-content">
+<div class="bd-article-container">
+<div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+<div class="header-article-items__start">
+<div class="header-article-item"><button aria-controls="pst-primary-sidebar" aria-expanded="true" aria-label="Collapse navigation sidebar" class="btn btn-sm pst-navbar-icon course-sidebar-toggle" hidden="" title="Collapse navigation sidebar" type="button">
+<span aria-hidden="true" class="course-sidebar-collapse-icon">
+<span class="fa-solid fa-bars"></span>
+</span>
+<span aria-hidden="true" class="course-sidebar-expand-icon">
+<span class="fa-solid fa-outdent"></span>
+</span>
+</button></div>
+<div class="header-article-item">
+<nav aria-label="Breadcrumb" class="d-print-none">
+<ul class="bd-breadcrumbs">
+<li class="breadcrumb-item breadcrumb-home">
+<a aria-label="Home" class="nav-link" href="index.html">
+<i class="fa-solid fa-home"></i>
+</a>
+</li>
+<li aria-current="page" class="breadcrumb-item active"><span class="ellipsis">Troubleshooting Guide</span></li>
+</ul>
+</nav>
+</div>
+<div class="header-article-item"><a class="btn btn-sm course-language-link" href="../../ko/guide/troubleshooting.html" lang="ko" style="margin-left:auto;white-space:nowrap">한국어</a></div>
+</div>
+</div>
+</div>
+<div id="searchbox"></div>
+<article class="bd-article">
+<section id="troubleshooting-guide">
+<h1>Troubleshooting Guide<a class="headerlink" href="#troubleshooting-guide" title="Link to this heading">#</a></h1>
+<a class="course-banner reference internal image-reference" href="_images/rerun_viewer.png"><img alt="Rerun camera views and joint plots for inspecting robot behavior." class="course-banner" src="_images/rerun_viewer.png" style="width: 100%;"/>
+</a>
+<p>This page consolidates troubleshooting information from across this learning path for easy access.</p>
+<p>All workshop commands run in the single <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container with its Python environment active. Keep using the terminal started in <a class="reference internal" href="06-get-the-code.html#start-the-workshop-container"><span class="std std-ref">Get the Code</span></a>, stopping each exercise before starting the next. Extra shells are optional; see <a class="reference internal" href="06-get-the-code.html#container-shell-recovery"><span class="std std-ref">container shell recovery</span></a>.</p>
+<section id="hardware-issues">
+<h2>Hardware Issues<a class="headerlink" href="#hardware-issues" title="Link to this heading">#</a></h2>
+<section id="first-thing-to-try">
+<h3>First Thing to Try<a class="headerlink" href="#first-thing-to-try" title="Link to this heading">#</a></h3>
+<p>Unplug power, and replug the power cable. Do this 2X if the next command doesn’t run. If that doesn’t solve, proceed to the next steps.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Robot Doesn’t Respond</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Check</strong> USB connection</p></li>
+<li><p class="sd-card-text"><strong>Verify</strong> power LED is on</p></li>
+<li><p class="sd-card-text"><strong>Try</strong> a different USB port</p></li>
+<li><p class="sd-card-text">Inside the <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container, <strong>run</strong> <code class="docutils literal notranslate"><span class="pre">lerobot-find-port</span></code> to confirm the port is correct.</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">No Ports Found or Permission Denied on /dev/ttyACM*</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">If <code class="docutils literal notranslate"><span class="pre">lerobot-find-port</span></code> finds no ports, or you see permission denied when accessing the robot:</p>
+<p class="sd-card-text">First, check the USB connection and confirm that the workshop container was started with the documented <code class="docutils literal notranslate"><span class="pre">/dev</span></code> mount and <code class="docutils literal notranslate"><span class="pre">--privileged</span></code> option. Re-run <code class="docutils literal notranslate"><span class="pre">lerobot-find-port</span></code> at the same container prompt after reconnecting the device.</p>
+<p class="sd-card-text">If permissions still fail and a host-side fix is needed:</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Stop</strong> the active exercise, then <strong>exit</strong> the main container shell to return to the host prompt. With the documented <code class="docutils literal notranslate"><span class="pre">--rm</span></code> invocation, this stops and removes the container; mounted files persist.</p></li>
+<li><p class="sd-card-text">On the <strong>host</strong>, <strong>grant</strong> read/write access only to the connected serial ports you identified (the paths below are examples):</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">666</span><span class="w"> </span>/dev/ttyACM0
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">666</span><span class="w"> </span>/dev/ttyACM1
+</pre></div>
+</div>
+<p class="sd-card-text">Permissions reset when devices are reconnected; re-run these after unplugging/replugging USB if needed.</p>
+<ol class="arabic simple" start="3">
+<li><p class="sd-card-text">For persistent <strong>host</strong> access, <strong>add</strong> your host user to the <code class="docutils literal notranslate"><span class="pre">dialout</span></code> group (and <code class="docutils literal notranslate"><span class="pre">video</span></code> for cameras), then log out and back in:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>dialout<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span>
+sudo<span class="w"> </span>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>video<span class="w"> </span><span class="s2">"</span><span class="nv">$USER</span><span class="s2">"</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p class="sd-card-text"><strong>Restart</strong> the workshop container using <a class="reference internal" href="06-get-the-code.html#start-the-workshop-container"><span class="std std-ref">Get the Code</span></a>, then verify ports and saved settings.</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Power Not Connected (All Motors Missing)</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">If you see this error showing all motors missing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Missing</span> <span class="n">motor</span> <span class="n">IDs</span><span class="p">:</span>
+  <span class="o">-</span> <span class="mi">1</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+  <span class="o">-</span> <span class="mi">2</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+  <span class="o">-</span> <span class="mi">3</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+  <span class="o">-</span> <span class="mi">4</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+  <span class="o">-</span> <span class="mi">5</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+  <span class="o">-</span> <span class="mi">6</span> <span class="p">(</span><span class="n">expected</span> <span class="n">model</span><span class="p">:</span> <span class="mi">777</span><span class="p">)</span>
+
+<span class="n">Full</span> <span class="n">expected</span> <span class="n">motor</span> <span class="nb">list</span> <span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">model_number</span><span class="p">):</span>
+<span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">777</span><span class="p">}</span>
+
+<span class="n">Full</span> <span class="n">found</span> <span class="n">motor</span> <span class="nb">list</span> <span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">model_number</span><span class="p">):</span>
+<span class="p">{}</span>
+</pre></div>
+</div>
+<p class="sd-card-text">This indicates <strong>power is not connected</strong> to the robot. The USB connection allows communication, but the motors need separate power.</p>
+<p class="sd-card-text"><strong>Solution:</strong></p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Connect</strong> the 12V power supply to the robot</p></li>
+<li><p class="sd-card-text"><strong>Verify</strong> the power LED illuminates</p></li>
+<li><p class="sd-card-text"><strong>Retry</strong> the command</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Single Motor Disconnected</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">If you see an error showing one motor missing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Full</span> <span class="n">expected</span> <span class="n">motor</span> <span class="nb">list</span> <span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">model_number</span><span class="p">):</span>
+<span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">777</span><span class="p">}</span>
+
+<span class="n">Full</span> <span class="n">found</span> <span class="n">motor</span> <span class="nb">list</span> <span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">model_number</span><span class="p">):</span>
+<span class="p">{</span><span class="mi">2</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="mi">777</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="mi">777</span><span class="p">}</span>
+</pre></div>
+</div>
+<p class="sd-card-text">This indicates motor 1 is disconnected or not communicating. Sometimes this will happen unexpectedly, in which case a simple repower should solve it.</p>
+<p class="sd-card-text"><strong>Solution:</strong></p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Power cycle</strong>: Unplug and replug the power cable</p></li>
+<li><p class="sd-card-text">If that doesn’t work, <strong>inspect motor cables</strong> for loose connections</p></li>
+<li><p class="sd-card-text"><strong>Check</strong> the cable connecting to the specific missing motor</p></li>
+<li><p class="sd-card-text">The motor chain is daisy-chained—a loose connection can affect motors downstream</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Motor Connection Error</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">If you see this error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ConnectionError: Failed to write 'Torque_Enable' on id_=2 with '1' after 1 tries. [TxRxResult] There is no status packet!
+</pre></div>
+</div>
+<p class="sd-card-text">This indicates communication failure with a specific motor.</p>
+<p class="sd-card-text"><strong>Solution:</strong></p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Check power</strong>: Ensure the 12V power supply is connected and LED is on</p></li>
+<li><p class="sd-card-text"><strong>Check USB</strong>: Verify the USB cable is securely connected at both ends</p></li>
+<li><p class="sd-card-text"><strong>Restart motors</strong>: Power cycle the robot (disconnect and reconnect power)</p></li>
+<li><p class="sd-card-text"><strong>Check motor ID</strong>: The motor with the specified ID may have a loose connection</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Calibration Fails</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Ensure</strong> the robot port matches the robot.id of the real robot</p></li>
+<li><p class="sd-card-text"><strong>Ensure</strong> robot is in exact calibration pose</p></li>
+<li><p class="sd-card-text"><strong>Check</strong> that motors can move freely</p></li>
+<li><p class="sd-card-text"><strong>Verify</strong> no joint is at a limit</p></li>
+<li><p class="sd-card-text"><strong>True end stops only</strong> — During the range sweep, move each joint <strong>except wrist roll</strong> to its mechanical end stop, not a cable or obstacle. LeRobot sets the wrist-roll range automatically. A cable pinched between links (or the robot hitting a cable) creates a false min/max and wrong calibration. Check cable routing so the arm can reach its real limits.</p></li>
+</ol>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/calibration_cable_snag.gif"><img alt="SO-101 arm segment showing cable routing near a joint" src="_images/calibration_cable_snag.gif" style="width: 400px;"/>
+</a>
+</figure>
+<ol class="arabic simple" start="6">
+<li><p class="sd-card-text"><strong>Re-run</strong> calibration from step 1</p></li>
+</ol>
+</div>
+</details></section>
+</section>
+<section id="camera-issues">
+<h2>Camera Issues<a class="headerlink" href="#camera-issues" title="Link to this heading">#</a></h2>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Dark or No Image</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">If the camera feed is very dark or black:</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Check the lens cap</strong> — Ensure the lens cap is removed from the camera. This is a common cause of dark or missing feed.</p></li>
+<li><p class="sd-card-text"><strong>Verify</strong> the camera is powered and connected</p></li>
+<li><p class="sd-card-text">Inside the <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container, <strong>run</strong> <code class="docutils literal notranslate"><span class="pre">lerobot-find-cameras</span> <span class="pre">opencv</span></code> to confirm the camera is detected</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Camera Index Changed</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Camera indices may change any time cameras are unplugged or replugged into your computer.</p>
+<p class="sd-card-text"><strong>Solution:</strong></p>
+<ol class="arabic simple">
+<li><p class="sd-card-text">Inside the <code class="docutils literal notranslate"><span class="pre">so101-workshop</span></code> container, <strong>run</strong> <code class="docutils literal notranslate"><span class="pre">lerobot-find-cameras</span> <span class="pre">opencv</span></code> to discover current indices</p></li>
+<li><p class="sd-card-text"><strong>Update</strong> your configuration with the new indices</p></li>
+<li><p class="sd-card-text"><strong>Verify</strong> by checking the captured test images</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Blurry or Out-of-Focus Image</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">If the camera feed is blurry or the policy has trouble with fine visual detail:</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Check focus</strong> — Ensure the camera lens is in focus.</p></li>
+<li><p class="sd-card-text"><strong>Clean</strong> the lens if it is smudged or dusty</p></li>
+<li><p class="sd-card-text"><strong>Verify</strong> the camera is fixed in place and not vibrating</p></li>
+</ol>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Wrong Camera Feed</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">If the policy receives incorrect visual input:</p>
+<ol class="arabic simple">
+<li><p class="sd-card-text"><strong>Check</strong> camera assignments match expectations</p></li>
+<li><p class="sd-card-text"><strong>Verify</strong> the wrist camera and external camera are correctly identified</p></li>
+<li><p class="sd-card-text"><strong>Re-run</strong> <code class="docutils literal notranslate"><span class="pre">lerobot-find-cameras</span> <span class="pre">opencv</span></code> to confirm indices</p></li>
+</ol>
+</div>
+</details></section>
+<section id="policy-deployment-issues">
+<h2>Policy Deployment Issues<a class="headerlink" href="#policy-deployment-issues" title="Link to this heading">#</a></h2>
+<section id="cuda-out-of-memory">
+<h3>CUDA Out of Memory<a class="headerlink" href="#cuda-out-of-memory" title="Link to this heading">#</a></h3>
+<p>The most likely cause during workshop evaluation is an extra policy server still running and holding GPU memory. Stop the current evaluation with <strong>Ctrl+C</strong>, then run this in the workshop container to stop all matching LeRobot policy servers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<p>Wait for the servers to exit and check GPU memory with <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code>. Before retrying simulation evaluation, start just one server using the <a class="reference internal" href="11-sim-evaluation.html#run-policy-evaluation"><span class="std std-ref">startup and readiness commands</span></a>. Always <a class="reference internal" href="11-sim-evaluation.html#stop-evaluation"><span class="std std-ref">stop the server</span></a> after finishing with a policy and before starting the next one.</p>
+</section>
+<section id="inference-is-slow">
+<h3>Inference Is Slow<a class="headerlink" href="#inference-is-slow" title="Link to this heading">#</a></h3>
+<p>If real-robot inference is slow, check that you stopped the simulation policy server. It can still use GPU resources. In the terminal where you started it, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">kill</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span>
+<span class="nb">wait</span><span class="w"> </span><span class="s2">"</span><span class="nv">$POLICY_SERVER_PID</span><span class="s2">"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+<span class="nb">unset</span><span class="w"> </span>POLICY_SERVER_PID
+</pre></div>
+</div>
+<p>Or <strong>stop all policy servers</strong> in the container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkill<span class="w"> </span>-f<span class="w"> </span><span class="s1">'[l]erobot\.async_inference\.policy_server'</span>
+</pre></div>
+</div>
+<p>If you started the server in a different terminal, stop it there instead.</p>
+</section>
+<section id="compare-simulated-and-real-camera-images">
+<span id="so101-wrist-perception-gap"></span><h3>Compare simulated and real camera images<a class="headerlink" href="#compare-simulated-and-real-camera-images" title="Link to this heading">#</a></h3>
+<p>These two unedited 640 × 480 frames show the visual differences a policy can
+encounter when moving from a simulated dataset to the physical workstation.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">View an illustrative sim/real camera comparison and its limitations</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="_images/perception-gap-sim-wrist-20260924.png"><img alt="Simulated wrist camera showing orange gripper fingers, a yellow rack, and smooth white vials on a dark mat." src="_images/perception-gap-sim-wrist-20260924.png" style="width: 640px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Simulation.</strong> First wrist-camera frame of episode 0 from
+<a class="reference external" href="https://huggingface.co/datasets/sreetz-nv/so101_newton_dr500_20260923" rel="noreferer noopener" target="_blank"><code class="docutils literal notranslate"><span class="pre">sreetz-nv/so101_newton_dr500_20260923</span></code></a>,
+dataset revision <code class="docutils literal notranslate"><span class="pre">a08882a61870706727c153beec6ae10ec6747146</span></code>.</span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="_images/perception-gap-real-wrist-20260924.png"><img alt="Physical wrist camera showing brighter orange gripper fingers, a partly visible yellow rack, a blue-gray mat, and a textured white vial near the image edge." src="_images/perception-gap-real-wrist-20260924.png" style="width: 640px;"/>
+</a>
+<figcaption>
+<p><span class="caption-text"><strong>Real hardware.</strong> SO-101 wrist-camera frame captured on September 24, 2026,
+at 640 × 480 with MJPEG capture configured at 30 FPS.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
+<p class="sd-card-text">In this pair, the real image has brighter gripper and rack highlights with
+less visible detail. The mat appears blue-gray rather than dark gray, and the
+real vial has surface texture and folds absent from the smooth simulated vial.
+These differences suggest checking lighting, camera exposure, color response,
+and object materials when investigating transfer failures.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p class="sd-card-text">The arm pose, gripper opening, and vial layout differ between these frames.
+This is an illustrative perception-gap comparison, <strong>not a camera calibration
+test</strong>. It does not establish a field-of-view error, a sensor dynamic-range
+measurement, or the cause of a policy failure.</p>
+</div>
+<p class="sd-card-text">For a controlled comparison, reproduce the physical arm’s measured joint pose
+in simulation, match the vial and rack layout, and record the real camera’s
+exposure and white-balance settings. Compare the resulting camera images before
+changing the simulation. Apply any camera-response adjustment to the images
+used for both data collection and policy evaluation, then test its effect on
+real-robot performance.</p>
+</div>
+</details></section>
+<section id="overlay-saved-wrist-images-to-inspect-alignment">
+<span id="wrist-image-alignment"></span><h3>Overlay saved wrist images to inspect alignment<a class="headerlink" href="#overlay-saved-wrist-images-to-inspect-alignment" title="Link to this heading">#</a></h3>
+<p>Use the <a class="reference internal" href="03-sim-to-real.html#perception-gap-comparison"><span class="std std-ref">interactive perception-gap comparison in What Is Sim-to-Real?</span></a> to overlay saved wrist images, adjust simulation opacity, or compare the views side by side. The alternate image pair below provides another comparison.</p>
+<section id="alternate-pair-robot-confirmed-level">
+<h4>Alternate pair: robot confirmed level<a class="headerlink" href="#alternate-pair-robot-confirmed-level" title="Link to this heading">#</a></h4>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Inspect the alternate image pair and its capture conditions</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">In this second pair, also captured on September 28, 2026, the operator confirmed
+that the physical robot base was level and moved the rack to align it by eye.
+The simulation uses the encoder pose captured for this comparison, the elbow
+asset correction, and measured lens intrinsics and distortion. It retains the
+original authored camera mount; no candidate mount offset is applied. The rack
+settled under physics before capture. The loose vials were still moving slightly
+and are not alignment references.</p>
+<section aria-labelledby="wrist-level-comparison-title" class="image-comparison">
+<h4 id="wrist-level-comparison-title">Alternate pair: robot confirmed level</h4>
+<div class="image-comparison-controls" hidden="">
+<label>View <select data-control="mode"><option value="overlay">Overlay</option><option value="side">Side by side</option><option value="real">Real only</option><option value="sim">Sim only</option></select></label>
+<label>Sim opacity <input aria-label="Simulation opacity" data-control="opacity" max="100" min="0" type="range" value="50"/><output data-control="value">50%</output></label>
+<button data-control="toggle" type="button">Toggle real / sim</button>
+<button data-control="reset" type="button">Reset example</button>
+<label>Load real image <input accept="image/png,image/jpeg,image/webp" data-control="real-file" type="file"/></label>
+<label>Load sim image <input accept="image/png,image/jpeg,image/webp" data-control="sim-file" type="file"/></label>
+</div>
+<p aria-live="polite" class="image-comparison-status" role="status">Real image on the left; simulation on the right. Both are 640 × 480.</p>
+<div class="image-comparison-stage" data-mode="side">
+<figure data-image="real"><img alt="Real wrist image with the robot base confirmed level and a yellow rack aligned by eye; a calibration target stands behind the rack." height="480" src="_static/wrist-comparison/real-level.jpg" width="640"/><figcaption>Real — base confirmed level</figcaption></figure>
+<figure data-image="sim"><img alt="Simulated wrist image at the captured arm joint angles, with the rack settled, using measured lens parameters and the original camera mount." height="480" src="_static/wrist-comparison/sim-level.png" width="640"/><figcaption>Simulation — measured lens, original mount</figcaption></figure>
+</div>
+<p>This example shows perceptual differences between simulation and reality for our vial-to-rack task. <strong>What do you notice is different?</strong></p>
+<noscript><p>Enable JavaScript for the opacity slider and local image selection. The two saved example images remain visible without it.</p></noscript>
+</section>
+<p class="sd-card-text">The rack corners, hole positions, and gripper outlines align much more closely
+in this pair. Brightness, highlights, and surface detail still differ. The real
+scene also contains a calibration target absent from simulation. This is a
+qualitative alignment example: the rack position was not independently measured,
+and both the lens parameters and scene alignment differ from the first pair.
+It therefore does not isolate the effect of leveling the base or establish that
+the camera mount is calibrated.</p>
+</div>
+</details></section>
+</section>
+<section id="the-arm-reaches-where-there-is-no-vial">
+<h3>The arm reaches where there is no vial<a class="headerlink" href="#the-arm-reaches-where-there-is-no-vial" title="Link to this heading">#</a></h3>
+<p>When the arm reaches where there’s no vial, find the <strong>first place the observation, prediction, and motion disagree</strong>.</p>
+<ol class="arabic simple">
+<li><p><strong>Replay one failed pickup.</strong> Compare the camera image, the image actually sent to GR00T, predicted actions, and executed motion. Is the vial visible in the model’s input?</p></li>
+<li><p><strong>Move only the vial in simulation.</strong> Keep the arm and cameras fixed. Does the predicted reach follow the vial?</p>
+<ul class="simple">
+<li><p>Same reach despite moving the vial: investigate visual conditioning or learned position bias.</p></li>
+<li><p>Reach follows but consistently misses: check calibration and action conversion.</p></li>
+</ul>
+</li>
+<li><p><strong>Check the action pipeline.</strong> Verify joint order, units, normalization, and relative-action decoding. Make sure relative actions aren’t converted twice.</p></li>
+<li><p><strong>Try more frequent replanning.</strong> Compare executing 16, 8, and 4 actions before requesting a fresh prediction. Keep the model and test scenes unchanged.</p></li>
+<li><p><strong>Improve data where failures occur.</strong> Add successful demonstrations with varied vial positions, starting poses, and recovery approaches. Test on layouts excluded from training.</p></li>
+</ol>
+<p><strong>Change one factor at a time.</strong> Repeat the same scenes and record wrong-location reaches as well as successful pickups. Treat each explanation as a hypothesis until a controlled test supports it.</p>
+</section>
+<section id="test-policy-inputs-with-fixed-or-dummy-observations">
+<h3>Test policy inputs with fixed or “dummy” observations<a class="headerlink" href="#test-policy-inputs-with-fixed-or-dummy-observations" title="Link to this heading">#</a></h3>
+<p>Run this diagnostic offline, without sending predictions to the physical robot.
+A useful test observation starts with a saved, valid observation: both camera
+images, the measured joint state, and the task instruction. Retain the checkpoint’s
+saved preprocessing and action postprocessing so feature names, image conversion,
+normalization, and relative-action decoding match deployment.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Show the offline fixed-observation diagnostic procedure</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<ol class="arabic simple">
+<li><p class="sd-card-text">Save the raw camera frames, the corresponding joint state, and the actual
+preprocessed input sent to the model. Check camera assignments, image freshness,
+color order, resizing, and cropping. A live viewer alone does not establish
+what the model received.</p></li>
+<li><p class="sd-card-text">Predict from that fixed observation repeatedly, resetting any queued action
+chunk between trials. Fix the random seed or repeat enough times to measure
+prediction variability before comparing conditions.</p></li>
+<li><p class="sd-card-text">Change one input at a time. For a meaningful visual test, render the same
+simulated arm and camera pose with the vial in two different positions.
+Hold the joint state and task text fixed and compare the decoded action chunks.</p></li>
+<li><p class="sd-card-text">As an additional diagnostic, replace one camera image with a constant image
+of the same shape and type. Keep the other inputs unchanged. This deliberately
+unrealistic “dummy” input can reveal sensitivity to a camera, but a similar
+prediction does not by itself prove that the model ignores vision: the other
+camera, joint state, or a learned action prior may dominate.</p></li>
+</ol>
+<p class="sd-card-text">Compare predictions offline first. For any simulated rollout comparison, reset
+both the environment and the policy’s queued actions between conditions. See the
+<a class="reference internal" href="#so101-wrist-perception-gap">perception-gap example</a> for why
+matching the arm pose and scene layout matters.</p>
+</div>
+</details></section>
+<section id="replay-a-recorded-episode-on-the-physical-arm">
+<h3>Replay a recorded episode on the physical arm<a class="headerlink" href="#replay-a-recorded-episode-on-the-physical-arm" title="Link to this heading">#</a></h3>
+<p>Recorded-action replay bypasses policy prediction. It checks whether the stored
+joint commands produce a comparable physical trajectory; it does not test the
+policy’s visual reasoning or closed-loop recovery.</p>
+<ol class="arabic simple">
+<li><p>Inspect a short episode with the dataset viewer. Confirm the robot, saved
+calibration, joint order, units, action convention, and recording FPS. Workshop
+arm actions use native degrees for the first five joints and a percentage for
+the gripper. Use the recorded absolute actions directly; do not apply the
+policy’s relative-action decoding to them.</p></li>
+<li><p>Compare the episode’s starting joint state with the real arm’s measured state.
+Prepare the matching start pose with the supervised positioning procedure;
+replay does not provide a general collision-aware move to the start. For an
+initial motion check, clear the workspace of loose objects and remain at the
+stop control.</p></li>
+<li><p>Inside the workshop container, run the installed LeRobot replay command with
+your dataset and calibrated follower identifiers:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>lerobot-replay<span class="w"> </span>--robot.type<span class="o">=</span>so101_follower<span class="w"> </span>--robot.port<span class="o">=</span>/dev/ttyACM0<span class="w"> </span>--robot.id<span class="o">=</span>&lt;follower_id&gt;<span class="w"> </span>--robot.use_degrees<span class="o">=</span><span class="nb">true</span><span class="w"> </span>--dataset.repo_id<span class="o">=</span>&lt;hf_user/dataset_name&gt;<span class="w"> </span>--dataset.root<span class="o">=</span>./datasets/&lt;hf_user/dataset_name&gt;<span class="w"> </span>--dataset.episode<span class="o">=</span><span class="m">0</span><span class="w"> </span>--play_sounds<span class="o">=</span><span class="nb">false</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Stop with <strong>Ctrl+C</strong> if the trajectory deviates. Record the actual joint states
+and camera views with a separate logging setup if quantitative comparison is
+needed; this replay command does not itself save those comparison observations.
+Compare against the episode’s <strong>observed joint states</strong>, as well as its commanded
+actions: commands and measured positions can differ because of lag and contact.</p></li>
+<li><p>If the recorded commands reproduce the same motion but a policy rollout
+does not, investigate policy inputs, prediction, or action-chunk execution.
+If replay diverges too, investigate calibration, joint mapping, gripper
+mapping, actuator response, mounting, and contacts before retraining.</p></li>
+</ol>
+<p>A simulation episode also depends on the asset geometry and joint offsets used
+when it was collected. Matching numeric joint values alone cannot establish a
+matching physical pose. For a stationary camera comparison, read the real arm’s
+encoders and reproduce that pose in simulation without moving the real arm.</p>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">“It worked once but not consistently”</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><strong>Likely cause:</strong> Distribution shift</p>
+<p class="sd-card-text"><strong>Solution:</strong></p>
+<ul class="simple">
+<li><p class="sd-card-text">Check if initial conditions vary between trials</p></li>
+<li><p class="sd-card-text">Ensure cameras are stable and haven’t shifted</p></li>
+</ul>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">“Grasp is always off by the same amount”</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><strong>Likely cause:</strong> Calibration or camera positioning</p>
+<p class="sd-card-text"><strong>Solution:</strong></p>
+<ul class="simple">
+<li><p class="sd-card-text">Re-run robot calibration</p></li>
+<li><p class="sd-card-text">Check camera positioning</p></li>
+<li><p class="sd-card-text">Verify workspace setup matches training</p></li>
+</ul>
+</div>
+</details></section>
+</section>
+<section id="simulation-and-display-issues">
+<h2>Simulation and Display Issues<a class="headerlink" href="#simulation-and-display-issues" title="Link to this heading">#</a></h2>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">No Simulated Camera Images</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Use explicit <code class="docutils literal notranslate"><span class="pre">--cameras</span> <span class="pre">all</span> <span class="pre">presets=newton,ovrtx_renderer</span></code>. <code class="docutils literal notranslate"><span class="pre">--cameras</span> <span class="pre">none</span></code> intentionally disables images. The first ovrtx launch can take a few minutes to warm up caches.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Browser Is Blank or Controls Do Not Work</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Use <code class="docutils literal notranslate"><span class="pre">--browser-display</span></code> and open <code class="docutils literal notranslate"><span class="pre">http://localhost:8090</span></code> on the host. Focus the browser for keyboard controls. In recording mode, <strong>Space</strong> starts/saves, <strong>C</strong> discards, and <strong>R</strong> discards/resets. Use only one browser tab connected to the viewer at a time.</p>
+<p class="sd-card-text">Use the documented host networking. Browser display uses ports 8090, 49100, and 47998. Stop other display sessions using those ports. <code class="docutils literal notranslate"><span class="pre">--browser-display</span></code> and <code class="docutils literal notranslate"><span class="pre">--rerun</span></code> are mutually exclusive; Rerun/headless modes have no recording keyboard controls.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Policy Server or Checkpoint Errors</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Follow the background-server startup and readiness check in <a class="reference internal" href="11-sim-evaluation.html#run-policy-evaluation"><span class="std std-ref">Sim Evaluation</span></a> using the same container terminal. The sim client uses <code class="docutils literal notranslate"><span class="pre">--server_address</span> <span class="pre">localhost:8080</span></code>.</p>
+<p class="sd-card-text">If readiness times out or evaluation cannot connect, run <code class="docutils literal notranslate"><span class="pre">tail</span> <span class="pre">-n</span> <span class="pre">40</span> <span class="pre">outputs/policy-server.log</span></code>. Resolve the reported error before retrying; do not launch duplicate servers on the same port. After evaluation, use the documented <a class="reference internal" href="11-sim-evaluation.html#stop-evaluation"><span class="std std-ref">server cleanup</span></a>.</p>
+<p class="sd-card-text">Verify that <code class="docutils literal notranslate"><span class="pre">MODEL_ID</span></code> identifies a LeRobot GR00T 1.7 policy with saved configuration and processors, and that the server can access its local path or Hub repository. A rename map handles feature names only. See <a class="reference internal" href="datasets-and-models.html#checkpoint-compatibility"><span class="std std-ref">Checkpoint Compatibility</span></a>.</p>
+</div>
+</details></section>
+<section id="dataset-and-recording-issues">
+<h2>Dataset and Recording Issues<a class="headerlink" href="#dataset-and-recording-issues" title="Link to this heading">#</a></h2>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Automated Collection Has Not Exported a Dataset</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text"><code class="docutils literal notranslate"><span class="pre">vials_state_machine</span> <span class="pre">--record</span></code> stages successful episodes and assembles the LeRobot dataset after reaching <code class="docutils literal notranslate"><span class="pre">--num_episodes</span></code>. This is a successful-episode target, not an attempt count. Watch the terminal’s collection count and wait for final export before running <code class="docutils literal notranslate"><span class="pre">lerobot-dataset-viz</span></code> or uploading. An early interruption can leave staged episodes without a completed dataset.</p>
+<p class="sd-card-text">Use both cameras with <code class="docutils literal notranslate"><span class="pre">--cameras</span> <span class="pre">all</span> <span class="pre">presets=newton,ovrtx_renderer</span></code> and provide <code class="docutils literal notranslate"><span class="pre">--repo_id</span></code> and <code class="docutils literal notranslate"><span class="pre">--task_name</span></code>. See <a class="reference internal" href="08-simulation-teleoperation.html#optional-automated-data-collection"><span class="std std-ref">Automated Data Collection</span></a>.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Training Cannot Find a Locally Recorded Dataset</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">The lesson’s <code class="docutils literal notranslate"><span class="pre">lerobot-train</span></code> command selects a dataset by its Hub ID. Inspect and upload <code class="docutils literal notranslate"><span class="pre">./datasets/&lt;repo_id&gt;</span></code> to the same dataset repository before training. In a new shell, set <code class="docutils literal notranslate"><span class="pre">HF_USER</span></code>, <code class="docutils literal notranslate"><span class="pre">DATASET_NAME</span></code>, and the derived training variables again; ordinary <code class="docutils literal notranslate"><span class="pre">export</span></code> assignments do not carry across shells.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Dataset Already Exists</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Simulation recording derives its path as <code class="docutils literal notranslate"><span class="pre">datasets/&lt;repo_id&gt;</span></code>. Add <code class="docutils literal notranslate"><span class="pre">--resume</span></code> to append to that dataset, or use a different <code class="docutils literal notranslate"><span class="pre">--repo_id</span></code> for a new collection. Real recording uses <code class="docutils literal notranslate"><span class="pre">--dataset.repo_id</span></code> and <code class="docutils literal notranslate"><span class="pre">--dataset.root</span></code>. Inspect and preserve existing episodes before changing paths.</p>
+</div>
+</details><details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Dataset Missing Images or Final Episodes</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg aria-hidden="true" class="sd-octicon sd-octicon-chevron-right" height="1.5em" version="1.1" viewbox="0 0 24 24" width="1.5em"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Record with both cameras and renderer presets. Wait for the saving indicator to clear and the terminal to confirm each episode is saved. Let <strong>Ctrl+C</strong> shutdown finish before stopping the container.</p>
+<p class="sd-card-text">Use <code class="docutils literal notranslate"><span class="pre">lerobot-dataset-viz</span></code> with the matching repo ID and <code class="docutils literal notranslate"><span class="pre">--root</span> <span class="pre">./datasets/&lt;repo_id&gt;</span></code> to inspect saved data.</p>
+</div>
+</details></section>
+<section id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading">#</a></h2>
+<p>If you’re stuck:</p>
+<ol class="arabic simple">
+<li><p><strong>Check this guide</strong> for your specific error message</p></li>
+<li><p><strong>Power cycle</strong> the robot (fixes many transient issues)</p></li>
+<li><p><strong>Re-run camera detection</strong> if visual behavior is unexpected</p></li>
+<li><p><strong>Re-run</strong> the diagnostic steps above if the issue persists</p></li>
+</ol>
+</section>
+</section>
+</article>
+<footer class="prev-next-footer d-print-none">
+<div class="prev-next-area">
+<a class="left-prev" href="datasets-and-models.html" title="previous page">
+<i class="fa-solid fa-angle-left"></i>
+<div class="prev-next-info">
+<p class="prev-next-subtitle">previous</p>
+<p class="prev-next-title">Datasets and Models</p>
+</div>
+</a>
+</div>
+</footer>
+</div>
+<dialog id="pst-secondary-sidebar-modal"></dialog>
+<div class="bd-sidebar-secondary bd-toc" id="pst-secondary-sidebar"><div class="sidebar-secondary-items sidebar-secondary__inner">
+<div class="sidebar-secondary-item">
+<div class="page-toc tocsection onthispage" id="pst-page-navigation-heading-2">
+<i class="fa-solid fa-list"></i> On this page
+  </div>
+<nav aria-labelledby="pst-page-navigation-heading-2" class="bd-toc-nav page-toc">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-issues">Hardware Issues</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#first-thing-to-try">First Thing to Try</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#camera-issues">Camera Issues</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#policy-deployment-issues">Policy Deployment Issues</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cuda-out-of-memory">CUDA Out of Memory</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inference-is-slow">Inference Is Slow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#compare-simulated-and-real-camera-images">Compare simulated and real camera images</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overlay-saved-wrist-images-to-inspect-alignment">Overlay saved wrist images to inspect alignment</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#alternate-pair-robot-confirmed-level">Alternate pair: robot confirmed level</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-arm-reaches-where-there-is-no-vial">The arm reaches where there is no vial</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-policy-inputs-with-fixed-or-dummy-observations">Test policy inputs with fixed or “dummy” observations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#replay-a-recorded-episode-on-the-physical-arm">Replay a recorded episode on the physical arm</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-and-display-issues">Simulation and Display Issues</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-and-recording-issues">Dataset and Recording Issues</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-help">Getting Help</a></li>
+</ul>
+</nav></div>
+</div></div>
+</div>
+<footer class="bd-footer-content">
+</footer>
+</main>
+</div>
+</div>
+<!-- Scripts loaded after <body> so the DOM is not blocked -->
+<script defer="" src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer="" src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+<footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+<div class="footer-items__start">
+<div class="footer-item">
+<a class="footer-brand logo" href="https://www.nvidia.com">
+<img alt="NVIDIA" class="logo__image only-light" src="_static/nvidia-logo-horiz-rgb-1c-blk-for-screen.svg"/>
+<img alt="NVIDIA" class="logo__image only-dark" src="_static/nvidia-logo-horiz-rgb-1c-wht-for-screen.svg"/>
+</a></div>
+<div class="footer-item">
+<div class="footer-links">
+<a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/">Privacy Policy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/">Manage My Privacy</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/preferences/start/">Do Not Sell or Share My Data</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/">Terms of Service</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/accessibility/">Accessibility</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/about-nvidia/company-policies/">Corporate Policies</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/product-security/">Product Security</a>
+   |
+
+
+
+  <a class="external" href="https://www.nvidia.com/en-us/contact/">Contact</a>
+</div>
+</div>
+<div class="footer-item">
+<p class="copyright">
+
+      Copyright © 2026 NVIDIA CORPORATION &amp; AFFILIATES. All rights reserved.
+      <br/>
+</p>
+</div>
+<div class="footer-item">
+<div class="extra_footer">
+<small><a href="2026-10-28-seoul-preparation.html">Setup guide</a></small>
+<script type="text/javascript">if (typeof _satellite !== "undefined") {_satellite.pageBottom();}</script>
+</div></div>
+</div>
+</div>
+</footer>
+</body>
+</html>

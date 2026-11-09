@@ -1,0 +1,1 @@
+../../../ko/guide/searchindex.js
