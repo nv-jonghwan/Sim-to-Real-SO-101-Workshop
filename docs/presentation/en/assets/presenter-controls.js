@@ -148,7 +148,7 @@
       videos().forEach(v=>v.pause());
       return;
     }
-    if(['show','diagram','scroll','accordion','widget','widget-file','zoom','video'].includes(a.kind)&&a.scope!=='popup'&&a.scope!=='objectives')close();
+    if(['show','diagram','scroll','accordion','widget','widget-file','zoom','video','practice','practice-commands'].includes(a.kind)&&a.scope!=='popup'&&a.scope!=='objectives')close();
     await context(a);
     const s=slide(),pane=s.panes?.[a.pane??api.pane]||s.rail_overview;
     switch(a.kind){

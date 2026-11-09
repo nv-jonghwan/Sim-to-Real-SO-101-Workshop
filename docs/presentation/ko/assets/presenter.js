@@ -137,6 +137,8 @@
       if(at===current&&cueIndex!==null)active=cueIndex;
       // A narrated cue owns playback. Re-entering it restarts its clip; ordinary
       // pause/seek controls do not trigger this automatic replay.
+      const opening=scripts[current].steps[0]?.actions[0]?.action;
+      if(action.kind==='slide'&&opening?.kind==='objectives')await c.run(opening);
       const media=cueChange&&['show','scroll','slide'].includes(action.kind)&&scripts[current].steps[active]?.media_cue;
       if(media){await c.run(media);receive(previewAPI().captureState());}
       $('#presenter-status').textContent='화면에 반영했습니다.';
@@ -225,7 +227,7 @@
     if(event.data?.type==='dli:ready'){
       wirePreviewKeys();
       const opening=scripts[current].steps[0];
-      if(opening?.media_cue)run(opening.actions[0].action,0);
+      if(opening?.media_cue||opening?.actions[0]?.action.kind==='objectives')run(opening.actions[0].action,0);
       channel?.postMessage({type:'hello',role:'controller'});receive(previewAPI().captureState());
     }else if(event.data?.type==='dli:state')receive(event.data.state);
     else if(event.data?.type==='dli:media-error'){$('#presenter-status').textContent=event.data.message;$('#presenter-status').classList.add('error');}

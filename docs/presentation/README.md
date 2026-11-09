@@ -128,7 +128,7 @@ Open [index.html](index.html) in Chrome or Edge, choose self_env or dli_env, the
 | English | [en/index.html](en/index.html) | [English guide](en/guide/index.html) | English |
 | 한국어 | [ko/index.html](ko/index.html) | [한국어 교재](ko/guide/index.html) | 한국어 |
 
-Each edition has 70 slides in both languages. self_env has 380 presenter cues per language; dli_env has 394. dli_env keeps the workshop exercises and prepared-checkpoint evaluation, but omits installation, build, Hub authentication, model download, and data upload from class. Optional training and preparation are summarized as independent follow-up sequences with reminders and detailed-guide links. The narration connects the essential technical reasoning, demonstrations, and exercise decisions; detailed commands and reference procedures remain in the slides and course guide. Tabs, diagrams, media, and guide content are available independently of the shorter narration. The English version uses the English course source and translated presentation-specific explanations and narration. Course terminology and executable commands are retained.
+Each edition has 70 slides in both languages. self_env has 398 presenter cues per language; dli_env has 412. dli_env keeps the workshop exercises and prepared-checkpoint evaluation, but omits installation, build, Hub authentication, model download, and data upload from class. Optional training and preparation are summarized as independent follow-up sequences with reminders and detailed-guide links. The narration connects the essential technical reasoning, demonstrations, and exercise decisions; detailed commands and reference procedures remain in the slides and course guide. Tabs, diagrams, media, and guide content are available independently of the shorter narration. The English version uses the English course source and translated presentation-specific explanations and narration. Course terminology and executable commands are retained.
 
 ### Edition maintenance
 
@@ -191,3 +191,5 @@ Skipped procedures retain a concise explanation of what they do, why they matter
 - 참가자 실습 카드는 충분한 실습 시간을 안내하며, 완료를 확인한 뒤 강사가 직접 다음 설명으로 진행합니다.
 
 실습 안내 팝업에는 목표·순서·완료 기준만 표시합니다. 명령 모음은 발표자 카드의 **실습 명령 모음 열기** 버튼을 눌렀을 때만 별도 팝업으로 표시됩니다. 도표의 학습 항목 108개는 각각 선택과 짧은 설명 카드가 연결되어 있습니다.
+
+학습목표가 있는 18개 단원은 짧은 목표 설명 카드로 시작합니다. 목표 팝업을 함께 표시하고 다음 설명에서 본문이나 실습 안내로 전환합니다. 실습을 소개하는 대사는 번호 대신 실제 수행할 내용을 말하며, 진행표와 버튼의 번호는 탐색용으로 유지합니다.

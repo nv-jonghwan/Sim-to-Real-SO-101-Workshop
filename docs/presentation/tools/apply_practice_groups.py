@@ -9,6 +9,7 @@ def load(p):return json.loads(p.read_text().split('=',1)[1].strip().removesuffix
 def save(p,n,x):p.write_text('window.'+n+'='+json.dumps(x,ensure_ascii=False,separators=(',',':'))+';\n')
 # number, title ko/en, start/end slides, goal ko/en, tasks ko/en, checks ko/en,
 # existing command locations (slide, pane, pre index, ko/en heading).
+SPOKEN={'1': ('장비 연결을 확인하고 leader로 follower를 조작하는', 'checking device connections and teleoperating the follower with the leader'), '2': ('simulation의 로봇을 조작하고 demonstration을 기록하는', 'teleoperating the simulated robot and recording demonstrations'), '3': ('기록한 episode를 Visualizer에서 검토하는', 'reviewing recorded episodes in the visualizer'), '4-A': ('제공된 policy를 simulation에서 평가하는', 'evaluating the supplied policy in simulation'), '4-B': ('simulation에서 평가한 policy를 실제 로봇에서 실행하는', 'running the simulation-evaluated policy on the real robot'), '4-C': ('Co-Trained policy를 실제 로봇에서 평가하고 baseline과 비교하는', 'evaluating the co-trained policy on the real robot and comparing it with the baseline'), '5-A': ('실제 로봇에서 HG-DAgger correction을 수집하는', 'collecting HG-DAgger corrections on the real robot'), '5-B': ('correction으로 학습된 policy를 사람의 개입 없이 평가하는', 'evaluating the correction-trained policy without human intervention')}
 GROUPS=[
 ('1','장비 연결 확인과 실제 Teleoperation','Device checks and real teleoperation',12,17,
  'Leader와 follower, 두 카메라가 같은 실습 환경에 올바르게 연결되어 있는지 확인합니다.','Verify that the leader, follower, and both cameras are correctly connected in the prepared environment.',
@@ -87,8 +88,9 @@ for lang in ['ko','en']:
   def make(phase,i,text):
    title=pick({'start':'설명·시연','practice':'참가자 실습','check':'완료 확인'}[phase],{'start':'Explain and demonstrate','practice':'Participant practice','check':'Completion check'}[phase])+' · '+num
    return {'id':'practice-'+num+'-'+phase,'title':title,'html':'<p>'+text+'</p>','actions':[{'label':pick('실습 '+num+' · 진행 안내','Exercise '+num+' · instructions'),'action':{'kind':'practice','slide':c['slides'][i]['id'],'group':num,'phase':phase}}]+([{'label':pick('실습 명령 모음 열기','Open exercise commands'),'action':{'kind':'practice-commands','slide':c['slides'][i]['id'],'group':num}}] if phase!='check' else []), 'narration':{'mode':'practice-group','group':num,'phase':phase}}
-  intro=pick('지금부터 실습 '+num+'번입니다. '+goal+' 먼저 제가 핵심 명령과 예상 결과를 보여드리겠습니다. 설명과 시연이 끝나면 직접 실습하실 시간을 충분히 드리겠습니다. 그때 앞서 확인한 순서대로 진행해 주세요.','We are starting exercise '+num+'. '+goal+' I will first demonstrate the key commands and expected results. Please watch the explanation and demonstration first. I will then give you plenty of time to try it yourselves, following the steps we have reviewed.')
-  work=pick('지금부터 실습 '+num+'번을 직접 해보실 시간을 충분히 드리겠습니다. 화면의 첫 단계부터 앞서 확인한 순서대로 진행해 주세요. 실습하시는 동안 이 화면을 유지하겠습니다. 막히면 오류 메시지와 현재 단계를 알려 주세요.','We will now allow plenty of time for you to work through exercise '+num+'. Start with the first task and follow the steps we have reviewed. We will keep this screen open while you work. If blocked, share the error and current step.')
+  spoken=pick(*SPOKEN[num])
+  intro=pick('지금부터 '+spoken+' 실습을 해보겠습니다. '+goal+' 먼저 제가 핵심 명령과 예상 결과를 보여드리겠습니다. 설명과 시연이 끝나면 직접 실습하실 시간을 충분히 드리겠습니다. 그때 앞서 확인한 순서대로 진행해 주세요.','Now we will practice '+spoken+'. '+goal+' I will first demonstrate the key commands and expected results. Please watch the explanation and demonstration first. I will then give you plenty of time to try it yourselves, following the steps we have reviewed.')
+  work=pick('이제 '+spoken+' 실습을 직접 해보실 시간을 충분히 드리겠습니다. 화면의 첫 단계부터 앞서 확인한 순서대로 진행해 주세요. 실습하시는 동안 이 화면을 유지하겠습니다. 막히면 오류 메시지와 현재 단계를 알려 주세요.','We will now allow plenty of time for you to practice '+spoken+'. Start with the first task and follow the steps we have reviewed. We will keep this screen open while you work. If blocked, share the error and current step.')
   check=pick('함께 완료 상태를 확인하겠습니다. '+' / '.join(checks)+'. 아직 완료하지 못한 분의 상태를 확인한 뒤 다음 설명으로 넘어가겠습니다.','Let us check completion together: '+' / '.join(checks)+'. We will check anyone still blocked before moving to the next explanation.')
   opening=make('start',start,intro);practice=make('practice',end,work);closing=make('check',end,check)
   if num=='2':
@@ -146,8 +148,8 @@ for lang in ['ko','en']:
  def rewrite(i,match,k,e):
   step=next(x for x in s[i]['steps'] if match(x));step['html']='<p>'+pick(k,e)+'</p>'
  rewrite(11,lambda x:x['actions'][0]['action'].get('pane')==1,
-  'Dataset ID와 revision은 data와 checkpoint의 출처를 연결합니다. 방금은 공개 Hub data를 조회했고, 이후 실습 3에서는 직접 기록한 로컬 episode를 검토합니다. 자신의 data를 공유할 때 필요한 인증·upload·revision 관리 절차는 수업 후 Hub 가이드에서 참고하실 수 있습니다.',
-  'Dataset IDs and revisions connect data provenance to checkpoints. We have just inspected public Hub data; in exercise 3 we will review locally recorded episodes. For sharing your own work after class, the Hub guide covers authentication, upload, and revision management.')
+  'Dataset ID와 revision은 data와 checkpoint의 출처를 연결합니다. 방금은 공개 Hub data를 조회했고, 이후 로컬 data 검토에서는 직접 기록한 로컬 episode를 검토합니다. 자신의 data를 공유할 때 필요한 인증·upload·revision 관리 절차는 수업 후 Hub 가이드에서 참고하실 수 있습니다.',
+  'Dataset IDs and revisions connect data provenance to checkpoints. We have just inspected public Hub data; during local data review we will review locally recorded episodes. For sharing your own work after class, the Hub guide covers authentication, upload, and revision management.')
  for step in s[14]['steps']:
   a=step['actions'][0]['action']
   if a['kind']=='command' and a.get('index')==0:
