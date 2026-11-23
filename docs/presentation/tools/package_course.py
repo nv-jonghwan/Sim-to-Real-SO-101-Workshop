@@ -8,6 +8,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 from datetime import datetime, timezone
 import argparse
 import hashlib
+import html
 import json
 import os
 import re
@@ -108,6 +109,7 @@ Windows에서는 `py -3 -m http.server 8096 --bind 127.0.0.1`을 사용할 수 �
 - 화살표: 이전·다음 장표. G: 목차·검색. F: 전체화면. O: 교재 열기.
 - 도표·계산기·명령 복사·학습목표·영상은 학습자가 직접 조작할 수 있습니다.
 {'' if learner else '- P: 발표자 창 열기. 발표자 카드의 화살표와 버튼으로 발표 화면을 제어합니다. 두 창은 같은 브라우저에서 연결됩니다.'}
+{'' if learner else '- speaker-notes/에는 self_env·dli_env의 한·영 전체 대본과 강의 진행 안내가 있습니다. 리허설에는 이 파일을, 실제 시연에는 발표자 카드를 사용하세요.'}
 
 ## English
 
@@ -118,13 +120,35 @@ Media and fonts are included. External websites such as Hugging Face and YouTube
 '''
 
 
+def export_speaker_notes(stage):
+    """Export readable narration from the same cues used by the presenter UI."""
+    def plain(text):
+        text=re.sub(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', r'[\2](\1)', text, flags=re.S)
+        text=re.sub(r'</p\s*>', '\n\n', text)
+        return html.unescape(re.sub(r'<[^>]+>', '', text)).strip()
+    for deck in DECKS:
+        lang=deck.split('/')[-1]
+        edition='dli_env' if deck.startswith('dli_env/') else 'self_env'
+        script=json.loads((stage/deck/'assets/presenter-script.js').read_text().split('=',1)[1].strip().removesuffix(';'))
+        lines=[f'# {edition} · {lang} · Speaker script',
+               'Presenter-only rehearsal copy. Slide and cue order matches the presenter window. Use the window for synchronized diagrams, calculators, videos, and commands.']
+        for slide in script:
+            lines.append(f"## {slide['index']+1:02d}. {slide['title']}")
+            for cue in slide['steps']:
+                lines.extend([f"### {cue['title']}", plain(cue['html'])])
+        dest=stage/'speaker-notes'/edition/(lang+'.md')
+        dest.parent.mkdir(parents=True,exist_ok=True)
+        dest.write_text('\n\n'.join(lines)+'\n')
+    shutil.copyfile(ROOT/'docs/presentation/LECTURE-REVIEW.md',stage/'speaker-notes/README.md')
+
+
 def collect_files(build):
     files = {}
     for f in (build/'presentation').rglob('*'):
         rel = f.relative_to(build/'presentation')
         if not f.is_file() or any(p.startswith('.') for p in rel.parts):
             continue
-        if rel.parts[0] in {'downloads', 'tools', 'checks'} or (len(rel.parts)>1 and rel.parts[1]=='guide'):
+        if rel.parts[0] in {'downloads', 'tools', 'checks', 'speaker-notes'} or rel.name=='LECTURE-REVIEW.md' or (len(rel.parts)>1 and rel.parts[1]=='guide'):
             continue
         files[rel.as_posix()] = f
     for lang, guide in [('en', build/'event/html'), ('ko', build/'ko/event/html')]:
@@ -206,6 +230,7 @@ def main():
             else:shutil.copyfile(data,target)
         (stage/'README.md').write_text(readme(mode))
         (stage/'README.txt').write_text(readme(mode))
+        if mode=='presenter':export_speaker_notes(stage)
         prefix='AIDaySeoul2026-DLI-'+mode+'/'
         manifest={'audience':mode,'packaged_date':args.date,'languages':['ko','en'],'editions':['self_env','dli_env'],'speaker_scripts_included':mode=='presenter','source_commit':subprocess.check_output(['git','-C',str(ROOT),'rev-parse','HEAD'],text=True).strip()}
         (stage/'PACKAGE.json').write_text(json.dumps(manifest,indent=2)+'\n')

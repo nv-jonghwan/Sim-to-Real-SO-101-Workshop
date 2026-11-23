@@ -19,6 +19,10 @@ python3 docs/presentation/tools/package_course.py --date 20261123
 
 결과 ZIP과 SHA-256은 `docs/_build/presentation/downloads/`에, 압축 전 결과는 `docs/_build/course-releases/{learner,presenter}/`에 저장됩니다. 각 ZIP의 README는 해당 버전에 맞는 실행 방법을 안내합니다. 두 ZIP을 같은 폴더에 덮어 풀지 마세요. 아래의 발표자 조작 설명은 원본과 presenter판에 해당합니다.
 
+## 강의 대본과 리허설
+
+각 환경의 한·영 대본은 `assets/presenter-script.js`에 있으며 발표자 카드와 도표·영상·계산기 제어를 연결합니다. [강의 진행 안내와 기술 근거](LECTURE-REVIEW.md)에 하루의 설명 흐름, DLI 생략 범위, 시간 배분과 검토 근거를 정리했습니다. Presenter ZIP의 `speaker-notes/`에는 카드 순서 그대로 읽을 수 있는 self_env·dli_env의 한·영 Markdown 대본을 포함합니다. Learner ZIP에는 이 파일과 발표자 대본·제어 코드를 포함하지 않습니다.
+
 ## 학습 환경 선택
 
 - **self_env**: [한국어·English](self_env/index.html). 현재 발표자료의 전체 실습 절차를 자신의 환경에서 수행합니다.
