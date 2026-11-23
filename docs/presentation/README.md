@@ -1,5 +1,24 @@
 # AI Days Seoul 2026 · DLI Presentations
 
+## 배포판과 발표자판
+
+공유할 때는 **learner ZIP**, 강사가 발표할 때는 **presenter ZIP**을 사용합니다. 기존 통합 ZIP은 발표자 기능까지 포함했으며, 현재의 통합 다운로드 파일명은 learner ZIP을 가리킵니다.
+
+| 구성 | 배포판 · learner | 발표자판 · presenter |
+| --- | --- | --- |
+| self_env·dli_env, 한국어·영어 장표와 전체 가이드 | 포함 | 포함 |
+| 학습목표·실습 명령·도표·계산기·영상·폰트 | 포함 | 포함 |
+| 발표자 대본·별도 제어 창·Hands-on 시연 버튼 | 제외 | 포함 |
+| 발표 타이머·화면 가리기·발표 창 동기화 | 제외 | 포함 |
+
+`docs/presentation` 원본은 발표자 기능을 유지합니다. 발표자료와 양쪽 언어의 가이드를 `docs/_build`에 빌드한 뒤 아래 명령으로 배포판과 발표자판을 각각 생성합니다. 배포판은 발표 기능을 숨기는 방식이 아니라 대본 파일과 해당 제어 코드를 제외해 생성합니다.
+
+```bash
+python3 docs/presentation/tools/package_course.py --date 20261123
+```
+
+결과 ZIP과 SHA-256은 `docs/_build/presentation/downloads/`에, 압축 전 결과는 `docs/_build/course-releases/{learner,presenter}/`에 저장됩니다. 각 ZIP의 README는 해당 버전에 맞는 실행 방법을 안내합니다. 두 ZIP을 같은 폴더에 덮어 풀지 마세요. 아래의 발표자 조작 설명은 원본과 presenter판에 해당합니다.
+
 ## 학습 환경 선택
 
 - **self_env**: [한국어·English](self_env/index.html). 현재 발표자료의 전체 실습 절차를 자신의 환경에서 수행합니다.
@@ -15,11 +34,11 @@
 
 ### 1. ZIP 압축 풀기
 
-ZIP의 압축을 모두 푼 뒤, 아래 파일들이 있는 `AIDaySeoul2026-DLI` 폴더에서 터미널을 엽니다.
+ZIP의 압축을 모두 푼 뒤, 아래 파일들이 있는 `AIDaySeoul2026-DLI-learner` 또는 `AIDaySeoul2026-DLI-presenter` 폴더에서 터미널을 엽니다.
 ZIP 안의 `index.html`만 따로 꺼내지 말고, 폴더 구조를 그대로 유지하세요.
 
 ```text
-AIDaySeoul2026-DLI/
+AIDaySeoul2026-DLI-learner/ (발표자판은 AIDaySeoul2026-DLI-presenter/)
 ├── README.md
 ├── index.html
 ├── self_env/
